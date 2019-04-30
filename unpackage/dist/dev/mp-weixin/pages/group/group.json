@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "我的公会",
+  "usingComponents": {
+    "guild-component": "/components/guildComponent"
+  }
+}

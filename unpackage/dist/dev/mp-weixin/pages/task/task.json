@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "任务",
+  "usingComponents": {
+    "btn-component": "/components/btnComponent",
+    "modal-component": "/components/modalComponent"
+  }
+}

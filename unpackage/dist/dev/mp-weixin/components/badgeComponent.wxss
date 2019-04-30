@@ -1,0 +1,17 @@
+.badge.data-v-f980a04e {
+  border-radius: 30rpx;
+  background-color: #f00;
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #fff;
+  font-size: 20rpx;
+  line-height: 1;
+  -webkit-transform: translate(50%, -50%);
+      -ms-transform: translate(50%, -50%);
+          transform: translate(50%, -50%);
+}
+.badge.circle.data-v-f980a04e {
+  border-radius: 50%;
+}
+

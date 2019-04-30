@@ -1,0 +1,61 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/user/user",
+    "pages/pet/pet",
+    "pages/group/group",
+    "pages/adver/adver",
+    "pages/user/login/login",
+    "pages/star/star",
+    "pages/user/rank/rank",
+    "pages/star/rank_history/rank_history",
+    "pages/group/dynamic/dynamic",
+    "pages/task/task",
+    "pages/recharge/recharge",
+    "pages/notice/notice"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "超级明星榜",
+    "navigationBarBackgroundColor": "#efccc8",
+    "enablePullDownRefresh": false,
+    "onReachBottomDistance": 100
+  },
+  "tabBar": {
+    "color": "#b296ad",
+    "selectedColor": "#694491",
+    "backgroundColor": "#efccc8",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "/static/image/tab/rank.png",
+        "selectedIconPath": "/static/image/tab/rank-tap.png",
+        "text": "排名"
+      },
+      {
+        "pagePath": "pages/pet/pet",
+        "iconPath": "/static/image/tab/pet.png",
+        "selectedIconPath": "/static/image/tab/pet-tap.png",
+        "text": "精灵"
+      },
+      {
+        "pagePath": "pages/group/group",
+        "iconPath": "/static/image/tab/group.png",
+        "selectedIconPath": "/static/image/tab/group-tap.png",
+        "text": "我的公会"
+      },
+      {
+        "pagePath": "pages/user/user",
+        "iconPath": "/static/image/tab/user.png",
+        "selectedIconPath": "/static/image/tab/user-tap.png",
+        "text": "个人中心"
+      }
+    ]
+  },
+  "usingComponents": {
+    "load-icon-component": "/components/loadIconComponent"
+  },
+  "sitemapLocation": "sitemap.json"
+}

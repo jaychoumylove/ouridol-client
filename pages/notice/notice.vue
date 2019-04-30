@@ -1,0 +1,37 @@
+<template>
+	<view class="container">
+		<block v-for="(item,index) in article" :key="index">
+			<view class="article-title" v-if="item.title">{{item.title}}</view>
+			<view class="article-content" v-if="item.content.length>0" v-for="(item1,index1) in item.content" :key="index1">{{item1}}</view>
+			<image class="article-image" v-if="item.image" :src="item.image" mode="widthFix"></image>
+		</block>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				article: [],
+			};
+		},
+		onLoad(option) {
+			this.getArticle(option.id)
+		},
+		methods: {
+			getArticle(id) {
+				this.$app.request(this.$app.API.ARTICLE, {
+					id
+				}, res => {
+					this.article = JSON.parse(res.data.value)
+				})
+			}
+		},
+	}
+</script>
+
+<style lang="scss" scoped>
+	.container {
+		padding:20upx 40upx;
+	}
+</style>

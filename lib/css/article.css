@@ -1,0 +1,22 @@
+.article-title {
+	display: flex;
+	margin-top: 40upx;
+	margin-bottom: 20upx;
+	align-items: center;
+	font-size: 32upx;
+	border-left: 10upx solid #67458f;
+	padding-left: 20upx;
+	font-weight: 700;
+}
+
+.article-content {
+	text-indent: 30upx;
+	margin: 10upx;
+}
+
+.article-image {
+	width: 60%;
+	margin: 30upx auto;
+	display: block;
+	border-radius: 10upx;
+}

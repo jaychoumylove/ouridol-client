@@ -1,0 +1,32 @@
+.container.data-v-c535a686 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 12rpx 0;
+  background-color: rgba(255, 255, 255, 0.3);
+  margin: 10rpx 0;
+}
+.container .rank-num.data-v-c535a686 {
+    width: 90rpx;
+    text-align: center;
+}
+.container .avatar image.data-v-c535a686 {
+    width: 110rpx;
+    height: 110rpx;
+    border-radius: 50%;
+}
+.container .text-container.data-v-c535a686 {
+    width: 350rpx;
+    padding: 0 30rpx;
+    line-height: 44rpx;
+}
+
