@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "guild-component": "/components/guildComponent"
+  }
+}

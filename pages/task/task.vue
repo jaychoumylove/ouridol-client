@@ -2,9 +2,9 @@
 	<view class="container">
 		<loadIconComponent v-if="requestCount>0" type='whole'></loadIconComponent>
 
-		<view class="item" v-for="(item,index) in taskList" :key="index">
+		<view class="item" v-for="(item,index) in taskList" :key="index" v-if="!(item.type==4 && $app.getData('sysInfo').system.indexOf('iOS')!=-1 && $app.getData('config').ios_switch == 0)">
 			<view class="left-content">
-				<image class="img" :src="item.img" mode=""></image>
+				<image class="img" :src="item.task_type.img" mode=""></image>
 				<view class="content">
 					<view class="top">{{item.name}}</view>
 					<view class="bottom" v-if="item.times">已完成({{item.doneTimes}}/{{item.times}})</view>
@@ -17,22 +17,28 @@
 						<image src="/static/image/user/b1.png" mode="widthFix"></image>
 						<view class="add-count">+{{item.coin}}</view>
 					</view>
-
 					<view class="right-item" v-if="item.stone">
 						<image src="/static/image/user/b2.png" mode="widthFix"></image>
 						<view class="add-count">+{{item.stone}}</view>
+					</view>
+					<view class="right-item" v-if="item.trumpet">
+						<image src="/static/image/user/b3.png" mode="widthFix"></image>
+						<view class="add-count">+{{item.trumpet}}</view>
 					</view>
 
 				</view>
 				<view class="btn" @tap="doTask(item)">
 					<btnComponent type="default" v-if="item.status == 0">
 						<button type="primary"></button>
-						
+
 						<button class="btn" open-type="share" v-if="item.type == 9">
 							<view class="flex-set" style="width: 130upx;height: 65upx;">{{item.task_type.btn_text}}</view>
 						</button>
+						<button class="btn" open-type="contact" show-message-card v-else-if="$app.getData('sysInfo').system.indexOf('iOS')!=-1 && item.type == 4">
+							<view class="flex-set" style="width: 130upx;height: 65upx;">回复"1"</view>
+						</button>
 						<view v-else class="flex-set" style="width: 130upx;height: 65upx;">{{item.task_type.btn_text}}</view>
-						
+
 					</btnComponent>
 					<btnComponent type="success" v-if="item.status == 1">
 						<view class="flex-set" style="width: 130upx;height: 65upx;">可领取</view>
@@ -88,6 +94,11 @@
 		},
 		onLoad() {
 			this.getTaskList()
+			this.getShareText()
+
+		},
+		onShareAppMessage() {
+			return this.$app.commonShareAppMessage()
 		},
 		methods: {
 			clipboard() {
@@ -102,12 +113,13 @@
 				this.$app.request(this.$app.API.TASK_WEIBO, {
 					weiboUrl: this.weiboUrl
 				}, res => {
-					this.$app.toast('提交成功','success')
-					this.modal=''
+					this.$app.toast('提交成功', 'success')
+					this.modal = ''
 					this.getTaskList()
 				})
 			},
 			doTask(task) {
+				if(task.type == 4 && this.$app.getData('sysInfo').system.indexOf('iOS')!=-1) return
 				if (task.status == 0) {
 					if (task.task_type.gopage) {
 						this.$app.goPage(task.task_type.gopage)
@@ -116,17 +128,21 @@
 					} else if (task.task_type.id == 8) {
 						// 微博发帖
 						this.modal = 'weibo'
-						this.getShareText()
 					}
 				} else if (task.status == 1) {
 					// 去领取
 					this.$app.request(this.$app.API.TASK_SETTLE, {
 						task_id: task.id
 					}, res => {
+						let toast = '领取成功'
+						if (res.data.coin) toast += '，能量+' + res.data.coin
+						if (res.data.stone) toast += '，灵丹+' + res.data.stone
+						if (res.data.trumpet) toast += '，喇叭+' + res.data.trumpet
+
 						this.getTaskList()
 						this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
 							this.$app.setData('userCurrency', res.data)
-							this.$app.toast('领取成功')
+							this.$app.toast(toast)
 						})
 					})
 				}
@@ -189,16 +205,15 @@
 					display: flex;
 					flex-direction: column;
 					justify-content: space-around;
-
+					align-items: flex-start;
 					margin-right: 30upx;
-
+					width: 100upx;
 					.right-item {
 						display: flex;
 						align-items: center;
 
 						image {
-							width: 30upx;
-							height: 30upx;
+							width: 40upx;
 						}
 					}
 				}

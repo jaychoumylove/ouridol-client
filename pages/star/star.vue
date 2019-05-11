@@ -1,5 +1,11 @@
 <template>
-	<guildComponent ref="guildComponent"></guildComponent>
+	<view class="star-container">
+		<guildComponent ref="guildComponent"></guildComponent>
+		<view v-if="tips" class="tips-container" @tap="tips=false">
+			<image src="/static/image/star/blank.png" mode="widthFix"></image>
+		</view>
+	</view>
+
 </template>
 
 <script>
@@ -9,19 +15,54 @@
 			guildComponent,
 		},
 		data() {
-			return {};
+			return {
+				tips: false,
+			};
 		},
 		onShareAppMessage() {
 			return this.$app.commonShareAppMessage()
 		},
 		onLoad(option) {
-			this.$refs.guildComponent.load(option.starid)
+			this.starid = option.starid
+			if (this.starid == this.$app.getData('userStar').id) {
+				this.$app.goPage('/pages/group/group')
+			}
 		},
-		onShow() {},
+		onReady() {},
+		onShow() {
+			if (!this.$app.getData('userStar').id) this.tips = true
+			this.$nextTick(function() {
+				this.$refs.guildComponent.load(this.starid)
+			})
+		},
+		onUnload() {
+			this.$refs.guildComponent.unLoad(this.starid)
+			this.$refs.guildComponent.modal = ''
+
+		},
 		methods: {}
 	}
 </script>
 
 <style lang="scss" scoped>
+	.star-container {
+		position: relative;
+		height: 100%;
 
+		.tips-container {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(#000, 0.8);
+
+			image {
+				width: 100%;
+				position: absolute;
+				top: -20upx;
+				right: -14upx;
+			}
+		}
+	}
 </style>

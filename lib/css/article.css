@@ -12,6 +12,7 @@
 .article-content {
 	text-indent: 30upx;
 	margin: 10upx;
+	display: block;
 }
 
 .article-image {

@@ -1,21 +1,14 @@
 <template>
 	<view class="container">
 		<view class="left-container flex-set">
-			<view class="rank-num" v-if="rank">{{rank}}</view>
-			<view class='avatar'><image :src="avatar" mode="aspectFill"></image></view>
-			<view class='badge'></view>
-			<view class="text-container">
-				<slot name="text-line-1"></slot>
-				<slot name="text-line-2"></slot>
-			</view>
+			<view class="rank-num">{{rank}}</view>
+			<image class='avatar' v-if="avatar" :src="avatar" mode="aspectFill"></image>
+
+			<slot name="left-container"></slot>
 		</view>
 		<view class="right-container">
-			
+			<slot name="right-container"></slot>
 		</view>
-		<!-- 
-		<btnComponent type="default">
-			<view class="flex-set" style="width: 130upx;height: 65upx;">打榜</view>
-		</btnComponent> -->
 	</view>
 </template>
 
@@ -42,28 +35,25 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 12upx 0;
+		padding: 15upx 0;
 		background-color: rgba(255, 255, 255, .3);
 		margin: 10upx 0;
+		width: 100%;
 
-		.left-container {}
 
-		.rank-num {
-			width: 90upx;
-			text-align: center;
+		.left-container {
+
+			.rank-num {
+				text-align: center;
+				width: 90upx;
+			}
+
+			.avatar {
+				width: 110upx;
+				height: 110upx;
+				border-radius: 50%;
+				margin-right: 40upx;
+			}
 		}
-
-		.avatar image {
-			width: 110upx;
-			height: 110upx;
-			border-radius: 50%;
-		}
-
-		.text-container {
-			width: 350upx;
-			padding: 0 30upx;
-			line-height: 44upx;
-		}
-
 	}
 </style>

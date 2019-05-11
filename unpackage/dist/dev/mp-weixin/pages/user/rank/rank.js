@@ -122,10 +122,6 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 //
 //
 //
-//
-//
-//
-//
 var _default =
 {
   data: function data() {
@@ -148,8 +144,8 @@ var _default =
         var resList = [];
         res.data.forEach(function (e, i) {
           resList.push({
-            avatar: e.user.avatarurl || _this.$app.AVATAR,
-            nickname: e.user.nickname || _this.$app.NICKNAME,
+            avatar: e.user && e.user.avatarurl || _this.$app.AVATAR,
+            nickname: e.user && e.user.nickname || _this.$app.NICKNAME,
             hot: _this.$app.formatNumberRgx(e.thisweek_count) });
 
         });

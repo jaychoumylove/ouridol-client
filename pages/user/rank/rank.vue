@@ -12,11 +12,7 @@
 				</view>
 				<view class="text-container">
 					<view class="star-name text-overflow">{{item.nickname}}</view>
-					<!-- <view class="star-name">{{item.name}}</view> -->
-					<!-- <view class="bottom-text">
-						<view class="hot-count">朱一龙</view>
-						 <view class="hot-count">{{item.hot}}</view> 
-					</view> -->
+
 				</view>
 				<!-- <view class="level">lv10</view> -->
 				<view class="count">{{item.hot}}</view>
@@ -31,8 +27,8 @@
 		data() {
 			return {
 				requestCount: 1,
-				
-				starid:null,
+
+				starid: null,
 				userRank: [],
 			};
 		},
@@ -48,9 +44,9 @@
 					const resList = []
 					res.data.forEach((e, i) => {
 						resList.push({
-							avatar: e.user.avatarurl || this.$app.AVATAR,
-							nickname:e.user.nickname||this.$app.NICKNAME,
-							hot:this.$app.formatNumberRgx(e.thisweek_count),
+							avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
+							nickname: e.user && e.user.nickname || this.$app.NICKNAME,
+							hot: this.$app.formatNumberRgx(e.thisweek_count),
 						})
 					})
 					this.userRank = resList

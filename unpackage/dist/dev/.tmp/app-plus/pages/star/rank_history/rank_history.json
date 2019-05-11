@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "往期榜单",
+  "usingComponents": {
+    "load-icon-component": "/components/loadIconComponent"
+  }
+}

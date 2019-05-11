@@ -136,12 +136,19 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
       default: "/static/image/guild/hart.png" } },
 
 
+  created: function created() {
+
+
+  },
   mounted: function mounted() {
     this.show = true;
   },
   methods: {
-    closeModal: function closeModal() {
-      this.$emit('closeModal');
+    closeModal: function closeModal() {var _this = this;
+      this.show = false;
+      setTimeout(function () {
+        _this.$emit('closeModal');
+      }, 200);
     } } };exports.default = _default;
 
 /***/ }),

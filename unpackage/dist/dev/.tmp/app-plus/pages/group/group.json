@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "偶像圈",
+  "usingComponents": {
+    "load-icon-component": "/components/loadIconComponent",
+    "guild-component": "/components/guildComponent"
+  }
+}

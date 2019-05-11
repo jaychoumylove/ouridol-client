@@ -41,6 +41,7 @@
 
 	.button.success {
 		background: url(http://wx4.sinaimg.cn/large/0060lm7Tly1g2ey5oz2oag303s01p741.gif) center no-repeat/100% 100%;
+		color:#FFF;
 	}
 
 	.button.disable {

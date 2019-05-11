@@ -5,7 +5,7 @@
 		<view class="item-wrapper" v-for="(item,index) in history" :key="index">
 			<view class="title">{{item.date}}</view>
 			<view class="topthree-container">
-				<view class="content" @tap="goGroup(item.rankList[1]&&item.rankList[1].starid)">
+				<view class="content">
 					<image class='crown' src="/static/image/index/ic_huangguang_2.png" mode=""></image>
 					<view class="avatar" style="background-color: #9E9095;">
 						<image class='position-set' :src="item.rankList[1]&&item.rankList[1].avatar" mode="aspectFill"></image>
@@ -15,7 +15,7 @@
 						<image src="/static/image/index/ic_hot.png" mode=""></image>
 					</view>
 				</view>
-				<view class="content" @tap="goGroup(item.rankList[0]&&item.rankList[0].starid)">
+				<view class="content">
 					<image class='crown' src="/static/image/index/ic_huangguang_1.png" mode=""></image>
 					<view class="avatar" style="background-color: #FFC329;">
 						<image class='position-set' :src="item.rankList[0]&&item.rankList[0].avatar" mode="aspectFill"></image>
@@ -25,7 +25,7 @@
 						<image src="/static/image/index/ic_hot.png" mode=""></image>
 					</view>
 				</view>
-				<view class="content" @tap="goGroup(item.rankList[2]&&item.rankList[2].starid)">
+				<view class="content">
 					<image class='crown' src="/static/image/index/ic_huangguang_3.png" mode=""></image>
 					<view class="avatar" style="background-color: #EC7E3D;">
 						<image class='position-set' :src="item.rankList[2]&&item.rankList[2].avatar" mode="aspectFill"></image>
@@ -54,7 +54,7 @@
 		},
 		methods: {
 			/**
-			 * 去圈子打榜
+			 * 去偶像圈打榜
 			 */
 			goGroup(starid) {
 				if (this.$app.getData('userStar')['id'] == starid) {

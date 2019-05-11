@@ -1,0 +1,2 @@
+setCssToHead(["wx-view { color: #FFF; }\n",],undefined,{path:"./pages/user/login/login.wxss"})();
+document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/user/login/login.wxml') } }));

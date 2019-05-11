@@ -151,9 +151,9 @@ var _default =
           for (var _iterator = res.data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {var v = _step.value;
             resList.push({
               type: v.type,
-              avatarurl: v.user.avatarurl,
-              nickname: v.user.nickname,
-              star: v.user.user_star.star.name,
+              avatarurl: v.user && v.user.avatarurl || _this.$app.AVATAR,
+              nickname: v.user && v.user.nickname || _this.$app.NICKNAME,
+              star: v.user && v.user.user_star && v.user.user_star.star.name || '???',
               time: v.create_time.slice(11),
               coin: Math.abs(v.coin) });
 

@@ -36,12 +36,19 @@
 				default: "/static/image/guild/hart.png"
 			},
 		},
+		created() {
+			
+
+		},
 		mounted() {
 			this.show = true
 		},
 		methods: {
 			closeModal() {
-				this.$emit('closeModal')
+				this.show = false
+				setTimeout(() => {
+					this.$emit('closeModal')
+				}, 200)
 			}
 		}
 	}
@@ -56,7 +63,7 @@
 		bottom: 0;
 		z-index: 99;
 		background-color: rgba(0, 0, 0, .5);
-		transition: .3s;
+		transition: .2s;
 		opacity: 0.1;
 
 		.modal-container {
@@ -67,6 +74,8 @@
 			background: url(http://wx3.sinaimg.cn/large/0060lm7Tly1g2dpyg3vxng30gp0kk74c.gif) center no-repeat/cover;
 			display: flex;
 			flex-direction: column;
+			transition: .2s;
+			transform: scale(0.9);
 
 			.top-wrapper {
 				width: 100%;
@@ -117,5 +126,9 @@
 
 	.container.show {
 		opacity: 1;
+
+		.modal-container {
+			transform: scale(1);
+		}
 	}
 </style>

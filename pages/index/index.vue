@@ -1,12 +1,12 @@
 <template>
-	<view class="container" :style="{top:scrollTop}">
+	<view class="index-container" :style="{top:scrollTop}">
 
 		<loadIconComponent v-if="requestCount>0" type='whole'></loadIconComponent>
 
 		<view class="top-tab-container">
 			<view class="left-tab-group">
-				<view class="tab-item" :class="{active:sign == 0}" @tap="changeSign(0)">爱豆总榜</view>
-				<view class="tab-item" :class="{active:sign == 1}" @tap="changeSign(1)">韩星榜</view>
+				<view class="tab-item" :class="{active:sign == 0}">周榜</view>
+				<!-- <view class="tab-item" :class="{active:sign == 1}" @tap="changeSign(1)">韩星榜</view> -->
 				<!-- <view class="tab-item" :class="{active:sign == 2}" @tap="changeSign(2)">创造营</view> -->
 			</view>
 			<view class="right-search">
@@ -20,7 +20,7 @@
 		<view class="middle-text-container">
 			<view class="" @tap="$app.goPage('/pages/star/rank_history/rank_history')">往期榜单</view>
 			<view class="" style='font-size: 24upx;'>本期截止：{{cutOffDate}}23:59</view>
-			<view class="rule" @tap="this.$app.goPage('/pages/notice/notice?id=1')">打榜规则</view>
+			<view class="rule" @tap="$app.goPage('/pages/notice/notice?id=1')">打榜说明</view>
 		</view>
 		<view class="topthree-container" v-if="!keywords">
 			<view class="content" @tap="goGroup(rankList[1]&&rankList[1].starid)">
@@ -66,33 +66,27 @@
 		<view class="rank-list-container">
 			<view class="rank-list-item" v-for="(item,index) in rankList" :key="index" v-if="keywords || index>2" @tap="goGroup(item.starid)">
 
-				<!-- <listItemComponent :rank="!keywords?index+1:''" :avatar="item.avatar">
-					<template v-slot:text-line-1>
-						<view class="star-name">{{item.name}}</view>
-					</template>
-					<template v-slot:text-line-2>
-						<view class="star-name">{{item.name}}</view>
-					</template>
-				</listItemComponent> -->
-			
-				<view class="rank-num">
-					<view v-if="!keywords">{{index+1}}</view>
-				</view>
-				<view class='avatar'>
-					<image :src="item.avatar" mode="aspectFill"></image>
-				</view>
-				<view class='badge'></view>
-				<view class="text-container">
-					<view class="star-name">{{item.name}}</view>
-					<view class="bottom-text">
-						<view class="hot-count">{{item.hot}}</view>
-						<image class="icon-heart" src="/static/image/index/ic_hot.png" mode=""></image>
-					</view>
-				</view>
-				<btnComponent type="default">
-					<view class="flex-set" style="width: 130upx;height: 65upx;">打榜</view>
-				</btnComponent>
+				<listItemComponent :rank="!keywords?index+1:''" :avatar="item.avatar">
 
+					<template v-slot:left-container>
+						<view class="left-container">
+							<view class="star-name">{{item.name}}</view>
+							<view class="bottom-text">
+								<view class="hot-count">{{item.hot}}</view>
+								<image class="icon-heart" src="/static/image/index/ic_hot.png" mode=""></image>
+							</view>
+						</view>
+					</template>
+
+					<template v-slot:right-container>
+						<view class="right-container">
+							<btnComponent type="default">
+								<view class="flex-set" style="width: 130upx;height: 65upx;">打榜</view>
+							</btnComponent>
+						</view>
+
+					</template>
+				</listItemComponent>
 
 			</view>
 
@@ -133,7 +127,9 @@
 			};
 		},
 
-		onLoad() {
+		onLoad(option) {
+			// 跳转到明星页
+			option.starid && this.goGroup(option.starid)
 			this.getSunday()
 		},
 		onShow() {
@@ -144,6 +140,9 @@
 			this.page = 1
 			this.keywords = ''
 			this.getRankList()
+		},
+		onShareAppMessage() {
+			return this.$app.commonShareAppMessage()
 		},
 		onHide() {
 			this.scrollTop = 1
@@ -167,11 +166,12 @@
 		methods: {
 			getSunday() {
 				const time = new Date()
-				time.setDate(time.getDate() - time.getDay() + 7)
+				const day = time.getDay() || 7
+				time.setDate(time.getDate() - day + 7)
 				this.cutOffDate = (time.getMonth() + 1) + '月' + time.getDate() + '日'
 			},
 			/**
-			 * 去圈子打榜
+			 * 去偶像圈打榜
 			 */
 			goGroup(starid) {
 				if (this.$app.getData('userStar')['id'] == starid) {
@@ -179,6 +179,7 @@
 				} else {
 					this.$app.goPage('/pages/star/star?starid=' + starid)
 				}
+				return
 			},
 			/**
 			 * 其他榜单（韩星榜）
@@ -247,9 +248,12 @@
 </script>
 
 <style lang="scss" scoped>
-	.container {
+	.index-container {
 		padding: 90upx 20upx 0;
+		/* #ifdef H5 */
+		margin-bottom: 100upx;
 
+		/* #endif */
 		.top-tab-container {
 			height: 70upx;
 			color: $color_1;
@@ -258,8 +262,8 @@
 			align-items: center;
 			position: fixed;
 			width: 100%;
-			top: 0;
 			left: 0;
+			margin-top: -90upx;
 			z-index: 6;
 			padding: 0 20upx;
 			background-color: $color_0;
@@ -405,10 +409,8 @@
 					margin-top: 16upx;
 					color: #6F3309;
 					border-radius: 10upx;
-					background-color: #FDDE2F;
 					width: 136upx;
 					height: 68upx;
-					border: 1px solid #C2B15C;
 				}
 			}
 		}
@@ -419,27 +421,8 @@
 			margin-right: -20upx;
 
 			.rank-list-item {
-				display: flex;
-				justify-content: flex-start;
-				align-items: center;
-				padding: 12upx 0;
-				background-color: rgba(255, 255, 255, .3);
-				margin: 10upx 0;
 
-				.rank-num {
-					width: 90upx;
-					text-align: center;
-				}
-
-				.avatar image {
-					width: 110upx;
-					height: 110upx;
-					border-radius: 50%;
-				}
-
-				.text-container {
-					width: 350upx;
-					padding: 0 30upx;
+				.left-container {
 					line-height: 44upx;
 
 					.bottom-text {
@@ -457,6 +440,11 @@
 						}
 					}
 				}
+
+				.right-container {
+					margin-right: 40upx;
+				}
+
 
 			}
 

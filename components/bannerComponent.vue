@@ -1,6 +1,6 @@
 <template>
-	<swiper class='banner-wrapper' :style='{height:bannerHeightComputed}' indicator-dots="false" circular="true" autoplay="true">
-		<swiper-item v-for="item in bannerList" :key='item.img' @click="goPage(item.url)" class="banner-item">
+	<swiper class='banner-wrapper' :style='{height:bannerHeightComputed}' circular="true" autoplay="true">
+		<swiper-item v-for="(item,index) in bannerList" :key='index' @click="goPage(item.url)" class="banner-item">
 			<image class='banner-item-img' :src="item.img" mode="aspectFill"></image>
 		</swiper-item>
 	</swiper>

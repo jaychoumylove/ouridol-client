@@ -154,7 +154,7 @@ var _default =
   },
   methods: {
     /**
-              * 去圈子打榜
+              * 去偶像圈打榜
               */
     goGroup: function goGroup(starid) {
       if (this.$app.getData('userStar')['id'] == starid) {

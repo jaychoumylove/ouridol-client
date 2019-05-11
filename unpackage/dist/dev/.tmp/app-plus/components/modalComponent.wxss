@@ -1,0 +1,76 @@
+.container.data-v-70ba910f {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99;
+  background-color: rgba(0, 0, 0, 0.5);
+  -webkit-transition: .3s;
+  -o-transition: .3s;
+  transition: .3s;
+  opacity: 0.1;
+}
+.container .modal-container.data-v-70ba910f {
+    width: 600rpx;
+    height: 740rpx;
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    border-radius: 20rpx;
+    background: url(http://wx3.sinaimg.cn/large/0060lm7Tly1g2dpyg3vxng30gp0kk74c.gif) center no-repeat/cover;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+            flex-direction: column;
+}
+.container .modal-container .top-wrapper.data-v-70ba910f {
+      width: 100%;
+      height: 12.6%;
+      position: relative;
+}
+.container .modal-container .top-wrapper .title.data-v-70ba910f {
+        font-size: 34rpx;
+        position: absolute;
+        top: 50%;
+        -webkit-transform: translateY(-50%);
+            -ms-transform: translateY(-50%);
+                transform: translateY(-50%);
+        left: 30rpx;
+        color: #FFF;
+}
+.container .modal-container .top-wrapper .center-img.data-v-70ba910f {
+        width: 100rpx;
+        height: 100rpx;
+        position: absolute;
+        left: 50%;
+        -webkit-transform: translateX(-50%);
+            -ms-transform: translateX(-50%);
+                transform: translateX(-50%);
+        top: -30%;
+}
+.container .modal-container .top-wrapper .close-btn.data-v-70ba910f {
+        position: absolute;
+        right: 0rpx;
+        top: 0rpx;
+}
+.container .modal-container .top-wrapper .close-btn image.data-v-70ba910f {
+          width: 56rpx;
+          height: 56rpx;
+}
+.container .modal-container .content.data-v-70ba910f {
+      width: 100%;
+      -webkit-box-flex: 1;
+      -webkit-flex: 1;
+          -ms-flex: 1;
+              flex: 1;
+      position: relative;
+}
+.container.show.data-v-70ba910f {
+  opacity: 1;
+}
+

@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "任务",
+  "usingComponents": {
+    "load-icon-component": "/components/loadIconComponent",
+    "btn-component": "/components/btnComponent",
+    "modal-component": "/components/modalComponent"
+  }
+}

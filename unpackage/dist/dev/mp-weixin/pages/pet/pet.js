@@ -98,7 +98,50 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var modalComponent = function modalComponent() {return __webpack_require__.e(/*! import() | components/modalComponent */ "components/modalComponent").then(__webpack_require__.bind(null, /*! @/components/modalComponent.vue */ "../../../../../Develop/uni-app/work_0420/components/modalComponent.vue"));};var btnComponent = function btnComponent() {return __webpack_require__.e(/*! import() | components/btnComponent */ "components/btnComponent").then(__webpack_require__.bind(null, /*! @/components/btnComponent.vue */ "../../../../../Develop/uni-app/work_0420/components/btnComponent.vue"));};var _default =
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var modalComponent = function modalComponent() {return __webpack_require__.e(/*! import() | components/modalComponent */ "components/modalComponent").then(__webpack_require__.bind(null, /*! @/components/modalComponent.vue */ "../../../../../Develop/uni-app/work_0420/components/modalComponent.vue"));};var btnComponent = function btnComponent() {return __webpack_require__.e(/*! import() | components/btnComponent */ "components/btnComponent").then(__webpack_require__.bind(null, /*! @/components/btnComponent.vue */ "../../../../../Develop/uni-app/work_0420/components/btnComponent.vue"));};var listItemComponent = function listItemComponent() {return __webpack_require__.e(/*! import() | components/listItemComponent */ "components/listItemComponent").then(__webpack_require__.bind(null, /*! @/components/listItemComponent.vue */ "../../../../../Develop/uni-app/work_0420/components/listItemComponent.vue"));};var _default =
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -209,7 +252,8 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 {
   components: {
     modalComponent: modalComponent,
-    btnComponent: btnComponent },
+    btnComponent: btnComponent,
+    listItemComponent: listItemComponent },
 
   data: function data() {
     return {
@@ -220,19 +264,23 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
       invitList: [],
       invitAward: '',
       modal: '',
-      earnCuttime: 1 };
+      modalTitle: '',
+      earnCuttime: 1, // 收益计时
+      skillShow: false, // 显示技能
+      skillList: [], // 技能升级列表
+      currentSkillType: 1 };
 
-
   },
-  onShareAppMessage: function onShareAppMessage() {
-    return this.$app.commonShareAppMessage();
+  onShareAppMessage: function onShareAppMessage(e) {
+    var shareType = e.target && e.target.dataset.share;
+    return this.$app.commonShareAppMessage(shareType);
   },
-  onLoad: function onLoad() {
-    this.getSpriteInfo();
-    this.initInterval();
-  },
+  onLoad: function onLoad() {},
   onShow: function onShow() {
-    // this.getSpriteInfo()
+    this.getSpriteInfo();
+
+    this.initInterval();
+    this.getInvitList();
     this.userCurrency = this.$app.getData('userCurrency') || {
       coin: 0,
       stone: 0,
@@ -240,6 +288,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
   },
   methods: {
+    /**
+              * 收益计时器
+              */
     initInterval: function initInterval() {var _this = this;
       clearInterval(this.$app.petTimeId);
       this.$app.petTimeId = setInterval(function () {
@@ -252,8 +303,8 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
     },
     tapSprite: function tapSprite() {var _this2 = this;
-      // 精灵升级
-      if (this.spriteInfo.need_stone) {
+      if (this.spriteInfo.need_stone && this.userCurrency.stone >= this.spriteInfo.need_stone) {
+        // 精灵升级
         this.$app.request(this.$app.API.SPRITE_UPGRAGE, {}, function (res) {
           _this2.$app.request(_this2.$app.API.USER_CURRENCY, {}, function (res) {
             _this2.$app.setData('userCurrency', res.data);
@@ -265,59 +316,122 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
           _this2.$app.toast('升级成功', 'success');
 
         }, 'POST', true);
+      } else {
+        // 显示技能
+        // this.skillShow = !this.skillShow
       }
 
     },
-    // 被邀请好友列表
-    getInvitList: function getInvitList() {var _this3 = this;
+    openSkillModal: function openSkillModal(type) {
+      this.modal = 'skill';
+      this.currentSkillType = type;
+      this.getSkill();
+    },
+    openInvitModal: function openInvitModal() {
       this.modal = 'invit';
+      this.getInvitList();
+    },
+    /**精灵技能升级*/
+    skillUpgrade: function skillUpgrade() {var _this3 = this;
+      this.modal = '';
+      this.$app.request(this.$app.API.SPRITE_UPGRAGE, {
+        type: this.currentSkillType },
+      function (res) {
+        _this3.$app.request(_this3.$app.API.USER_CURRENCY, {}, function (res) {
+          _this3.$app.setData('userCurrency', res.data);
+          _this3.userCurrency = _this3.$app.getData('userCurrency');
+        });
+        _this3.getSpriteInfo();
+
+        _this3.$app.toast('升级成功', 'success');
+      });
+    },
+    getSkill: function getSkill() {var _this4 = this;
+      this.$app.request(this.$app.API.SPRITE_SKILL, {
+        type: this.currentSkillType },
+      function (res) {
+        var resList = [];
+        if (_this4.currentSkillType == 1) {
+          // 技能一
+          _this4.modalTitle = '助人为乐';var _iteratorNormalCompletion = true;var _didIteratorError = false;var _iteratorError = undefined;try {
+            for (var _iterator = res.data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {var v = _step.value;
+              var item = {
+                level: v.level,
+                desc: '对方' + v.percent + '%能量的奖励',
+                need_stone: '升级需要消耗' + v.need_stone + '灵丹',
+                avatar: '/static/image/pet/skillone-n.png' };
+
+              if (v.level <= _this4.spriteInfo.skillone_level) {
+                item.status = 1;
+              }
+              resList.push(item);
+            }} catch (err) {_didIteratorError = true;_iteratorError = err;} finally {try {if (!_iteratorNormalCompletion && _iterator.return != null) {_iterator.return();}} finally {if (_didIteratorError) {throw _iteratorError;}}}
+        }
+        _this4.skillList = resList;
+
+      });
+    },
+    // 被邀请好友列表
+    getInvitList: function getInvitList() {var _this5 = this;
+
       this.$app.request(this.$app.API.USER_INVITLIST, {
         type: 1 },
       function (res) {
-        _this3.invitAward = res.data.award;
+        _this5.invitAward = res.data.award;
         var resList = [];
         res.data.list.forEach(function (e, i) {
           resList.push({
-            avatar: e.user.avatarurl || _this3.$app.AVATAR,
+            avatar: e.user && e.user.avatarurl || _this5.$app.AVATAR,
             status: e.status,
-            uid: e.ral_user_id,
-            nickname: e.user.nickname,
-            week_count: e.user.user_star.thisweek_count });
+            uid: e.user.id,
+            nickname: e.user && e.user.nickname || _this5.$app.NICKNAME,
+            earn: e.sprite.earn });
 
         });
-        _this3.invitList = resList;
+        _this5.invitList = resList;
       });
     },
+    goOther: function goOther(uid) {
+      this.modal = '';
+      this.$app.goPage('/pages/pet/other/other?user_id=' + uid);
+    },
     //HTTP
-    settle: function settle() {var _this4 = this;
+    settle: function settle() {var _this6 = this;
       if (this.spriteInfo.earn == 0) {
         this.$app.toast('能量太少了，稍后再来吧');
       } else {
-        this.$app.request(this.$app.API.SPRITE_SETTLE, {}, function (res) {
-          _this4.getSpriteInfo();
+        this.$app.request(this.$app.API.SPRITE_SETTLE, {
+          user_id: this.$app.getData('userInfo').id,
+          settle: this.spriteInfo.earn },
+        function (res) {
+          _this6.getSpriteInfo();
 
-          _this4.$app.toast('收集到能量:' + res.data);
-          _this4.$app.request(_this4.$app.API.USER_CURRENCY, {}, function (res) {
-            _this4.$app.setData('userCurrency', res.data);
-            _this4.userCurrency = _this4.$app.getData('userCurrency');
-
+          _this6.$app.toast('收集成功,能量+' + res.data);
+          _this6.$app.request(_this6.$app.API.USER_CURRENCY, {}, function (res) {
+            _this6.$app.setData('userCurrency', res.data);
+            _this6.userCurrency = _this6.$app.getData('userCurrency');
           });
+          _this6.earnCuttime = 0;
+
+          _this6.initInterval();
         }, 'POST', true);
       }
 
     },
-    getSpriteInfo: function getSpriteInfo() {var _this5 = this;
-      this.$app.request(this.$app.API.SPRITE_INFO, {}, function (res) {
-        _this5.spriteInfo = res.data;
+    getSpriteInfo: function getSpriteInfo() {var _this7 = this;
+      this.$app.request(this.$app.API.SPRITE_INFO, {
+        user_id: this.$app.getData('userInfo').id },
+      function (res) {
+        _this7.spriteInfo = res.data;
 
         if (res.data.isFull) {
-          _this5.$app.toast('能量已满了，快点收能量吧');
-          clearInterval(_this5.$app.petTimeId);
-          _this5.earnCuttime = 100;
+          _this7.$app.toast('能量已满了，快点收能量吧');
+          clearInterval(_this7.$app.petTimeId);
+          _this7.earnCuttime = 100;
         } else {
-          _this5.initInterval();
+          _this7.initInterval();
         }
-        _this5.$app.closeLoading(_this5);
+        _this7.$app.closeLoading(_this7);
       });
 
     } } };exports.default = _default;
@@ -352,6 +466,14 @@ var render = function() {
   var _c = _vm._self._c || _h
   if (!_vm._isMounted) {
     _vm.e0 = function($event) {
+      return _vm.$app.goPage("/pages/notice/notice?id=2")
+    }
+
+    _vm.e1 = function($event) {
+      _vm.modal = ""
+    }
+
+    _vm.e2 = function($event) {
       _vm.modal = ""
     }
   }

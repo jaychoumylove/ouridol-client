@@ -71,7 +71,7 @@
 		bottom: 0;
 		right: 0;
 		background-color: $color_0;
-		z-index: 99;
+		z-index: 9;
 	}
 
 	@keyframes lineWave {

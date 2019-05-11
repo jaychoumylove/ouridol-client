@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "modal-component": "/components/modalComponent",
+    "btn-component": "/components/btnComponent"
+  }
+}

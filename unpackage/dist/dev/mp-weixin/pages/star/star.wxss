@@ -1,0 +1,19 @@
+.star-container.data-v-ec09d8ec {
+  position: relative;
+  height: 100%;
+}
+.star-container .tips-container.data-v-ec09d8ec {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+}
+.star-container .tips-container image.data-v-ec09d8ec {
+      width: 100%;
+      position: absolute;
+      top: -20rpx;
+      right: -14rpx;
+}
+

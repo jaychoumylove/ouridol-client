@@ -1,0 +1,1 @@
+<view class="position-set" bind:__l="__l">请登录</view>

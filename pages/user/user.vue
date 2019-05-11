@@ -4,9 +4,12 @@
 
 		<view class="top-content-container">
 			<view class="row userinfo">
-				<button class="avatar" open-type="getUserInfo" @getuserinfo="getUserInfo">
-					<image :src="userInfo.avatarurl" mode="aspectFill"></image>
-					<view class="tips">点击获取</view>
+
+				<button open-type="getUserInfo" @getuserinfo="getUserInfo">
+					<view class="avatar">
+						<image :src="userInfo.avatarurl" mode="aspectFill"></image>
+						<view class="tips">点击获取</view>
+					</view>
 				</button>
 				<view class="info-content">
 					<view class="item-line top">
@@ -15,8 +18,8 @@
 						<view class="vip-expire">(2019年6月18日到期)</view> -->
 					</view>
 					<view class="item-line middle">
-						<view class="id-content" v-if="userInfo.id">ID:{{userInfo.id * 12345}}</view>
-						<view class="mystar" v-if="$app.getData('userStar').id" @tap="$app.goPage('/pages/group/group')">我的公会</view>
+						<view class="id-content flex-set" v-if="userInfo.id" @tap="$app.copy(userInfo.id*1234)">ID:{{userInfo.id*1234}}</view>
+						<view class="mystar flex-set" v-if="userStar.id" @tap="$app.goPage('/pages/group/group')">{{userStar.name}}偶像圈</view>
 						<!-- <view class="fan-level">
 							<image src="/static/image/user/h1-2.png" mode=""></image>
 							<view class="fan-text">高积分</view>
@@ -24,52 +27,58 @@
 					</view>
 					<!-- <view class="item-line bottom">"江城纯色美"</view> -->
 				</view>
-
-
 			</view>
 
-			<view class="row currency">
-				<view class="item-content flex-set">
-					<view class="item-content-top">
-						<image src="/static/image/user/b1.png" mode="aspectFit"></image>
-						<view class="num">{{userCurrency.coin}}</view>
-					</view>
-					<view class="item-content-bottom">能量</view>
+		</view>
+		<view class="row currency">
+			<view class="item-content flex-set">
+				<view class="item-content-top">
+					<image src="/static/image/user/b1.png" mode="aspectFit"></image>
+					<view class="num">{{userCurrency.coin}}</view>
 				</view>
-				<view class="item-content flex-set">
-					<view class="item-content-top">
-						<image src="/static/image/user/b2.png" mode="aspectFit"></image>
-						<view class="num">{{userCurrency.stone}}</view>
-					</view>
-					<view class="item-content-bottom">灵丹</view>
+				<view class="item-content-bottom">能量</view>
+			</view>
+			<view class="item-content flex-set">
+				<view class="item-content-top">
+					<image src="/static/image/user/b2.png" mode="aspectFit"></image>
+					<view class="num">{{userCurrency.stone}}</view>
 				</view>
-				<view class="item-content flex-set">
-					<view class="item-content-top">
-						<image src="/static/image/user/b3.png" mode="aspectFit"></image>
-						<view class="num">{{userCurrency.trumpet}}</view>
-					</view>
-					<view class="item-content-bottom">喇叭</view>
+				<view class="item-content-bottom">灵丹</view>
+			</view>
+			<view class="item-content flex-set">
+				<view class="item-content-top">
+					<image src="/static/image/user/b3.png" mode="aspectFit"></image>
+					<view class="num">{{userCurrency.trumpet}}</view>
 				</view>
-				<!-- <view class="item-content flex-set" @tap="$app.toast('敬请期待')">
+				<view class="item-content-bottom">喇叭</view>
+			</view>
+			<!-- <view class="item-content flex-set" @tap="$app.toast('敬请期待')">
 					<view class="item-content-top">
 						<image src="/static/image/user/b4.png" mode="aspectFit"></image>
 						<badgeComponent size="6"></badgeComponent>
 					</view>
 					<view class="item-content-bottom">道具</view>
 				</view> -->
-			</view>
 		</view>
 
 		<view class="function-container-list">
-			<view class="list-item" @tap="$app.goPage('/pages/recharge/recharge')">
-				<image src="/static/image/user/s1.png" mode="widthFix"></image>
-				<view class="text">鲜花充值</view>
+			<view class="list-item" @tap="$app.goPage('/pages/recharge/recharge')" v-if="$app.getData('sysInfo').system.indexOf('iOS')==-1">
+				<image src="/static/image/user/r1.png" mode="widthFix"></image>
+				<view class="text">补充能量</view>
 				<view class="badge-wrapper">
 					<badgeComponent></badgeComponent>
 				</view>
 			</view>
+			<block v-else>
+				<button open-type="contact" show-message-card v-if="$app.getData('config').ios_switch == 1">
+					<view class="list-item">
+						<image src="/static/image/user/r1.png" mode="widthFix"></image>
+						<view class="text">补充能量 回复"1"</view>
+					</view>
+				</button>
+			</block>
 			<view class="list-item" @tap="$app.goPage('/pages/task/task')">
-				<image src="/static/image/user/s7.png" mode="widthFix"></image>
+				<image src="/static/image/user/r2.png" mode="widthFix"></image>
 				<view class="text">每日任务</view>
 			</view>
 			<!-- <view class="list-item" @tap="$app.toast('敬请期待')">
@@ -83,17 +92,18 @@
 				<image src="/static/image/user/s3.png" mode="widthFix"></image>
 				<view class="text">个人明细</view>
 			</view> -->
+			<button open-type="contact" show-message-card>
+				<view class="list-item">
+					<image src="/static/image/user/r3.png" mode="widthFix"></image>
+					<view class="text">联系客服</view>
+				</view>
+			</button>
 
-			<!-- <view class="list-item">
-				<image src="/static/image/user/s4.png" mode=""></image>
-				<view class="text">好友</view>
+			<view v-if="userStar.id" class="list-item" @tap="exitGroup">
+				<image src="/static/image/user/r4.png" mode="widthFix"></image>
+				<view class="text">退出偶像圈</view>
 			</view>
-			
-			<view class="list-item">
-				<image src="/static/image/user/s5.png" mode=""></image>
-				<view class="text">我的荣誉</view>
-			</view>
-			
+			<!-- 
 			<view class="list-item">
 				<image src="/static/image/user/s6.png" mode=""></image>
 				<view class="text">参与话题</view>
@@ -148,6 +158,7 @@
 
 				userInfo: {},
 				userCurrency: {},
+				userStar: {},
 				modal: '',
 				rechargeList: [],
 			};
@@ -164,9 +175,21 @@
 				stone: 0,
 				trumpet: 0
 			}
+			this.userStar = this.$app.getData('userStar') || {}
+		},
+		onShareAppMessage() {
+			return this.$app.commonShareAppMessage()
 		},
 		methods: {
-			
+			exitGroup() {
+				this.$app.modal(`只有一次机会，\n是否退出${this.$app.getData('userStar').name}偶像圈？`, () => {
+					this.$app.request(this.$app.API.USER_EXIT, {}, res => {
+						this.$app.toast('退出成功')
+						this.$app.setData('userStar', {})
+						this.userStar = {}
+					})
+				})
+			},
 			// HTTP
 			/**
 			 * 保存用户详细信息
@@ -206,6 +229,10 @@
 					width: 140upx;
 					height: 140upx;
 
+					z-index: 1;
+					// -webkit-backface-visibility: hidden;
+					// -webkit-transform: translate3d(0, 0, 0);
+
 					.tips {
 						position: absolute;
 						width: 100%;
@@ -213,7 +240,7 @@
 						bottom: 0;
 						height: 40upx;
 						color: #fff;
-						font-size: 16upx;
+						font-size: 20upx;
 						text-align: center;
 						line-height: 30upx;
 					}
@@ -228,6 +255,7 @@
 					.item-line {
 						display: flex;
 						align-items: center;
+
 						.username {
 							font-weight: 700;
 							margin-right: 8upx;
@@ -253,7 +281,8 @@
 							padding: 0 10upx;
 							color: #853E1D;
 						}
-						.mystar{
+
+						.mystar {
 							margin-left: 10upx;
 							border-radius: 20upx;
 							font-size: 24upx;
@@ -293,33 +322,36 @@
 				}
 			}
 
-			.row.currency {
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
-				margin-top: 40upx;
+		}
 
-				.item-content {
-					width: 100%;
-					flex-direction: column;
+		.row.currency {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			background-color: rgba(#000, .05);
+			margin-left: -20upx;
+			margin-right: -20upx;
+			padding: 30upx 0;
 
-					.item-content-top {
-						display: flex;
-						align-items: center;
-						position: relative;
+			.item-content {
+				width: 100%;
+				flex-direction: column;
 
-						image {
-							width: 40upx;
-							height: 40upx;
-							margin-right: 4upx;
-						}
+				.item-content-top {
+					display: flex;
+					align-items: center;
+					position: relative;
+
+					image {
+						width: 50upx;
+						height: 50upx;
+						margin-right: 4upx;
 					}
+				}
 
-					.item-content-bottom {
-						color: #999;
-						font-size: 26upx;
-						margin-top: 4upx;
-					}
+				.item-content-bottom {
+					font-size: 28upx;
+					margin-top: 4upx;
 				}
 			}
 		}
@@ -351,6 +383,6 @@
 			}
 		}
 
-		
+
 	}
 </style>

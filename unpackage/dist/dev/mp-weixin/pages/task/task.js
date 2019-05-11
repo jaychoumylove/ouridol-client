@@ -170,6 +170,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
+
+
+
+
 {
   components: {
     btnComponent: btnComponent,
@@ -188,6 +194,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   onLoad: function onLoad() {
     this.getTaskList();
+    this.getShareText();
+
+  },
+  onShareAppMessage: function onShareAppMessage() {
+    return this.$app.commonShareAppMessage();
   },
   methods: {
     clipboard: function clipboard() {var _this = this;
@@ -208,6 +219,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     doTask: function doTask(task) {var _this3 = this;
+      if (task.type == 4 && this.$app.getData('sysInfo').system.indexOf('iOS') != -1) return;
       if (task.status == 0) {
         if (task.task_type.gopage) {
           this.$app.goPage(task.task_type.gopage);
@@ -216,17 +228,21 @@ __webpack_require__.r(__webpack_exports__);
         } else if (task.task_type.id == 8) {
           // 微博发帖
           this.modal = 'weibo';
-          this.getShareText();
         }
       } else if (task.status == 1) {
         // 去领取
         this.$app.request(this.$app.API.TASK_SETTLE, {
           task_id: task.id },
         function (res) {
+          var toast = '领取成功';
+          if (res.data.coin) toast += '，能量+' + res.data.coin;
+          if (res.data.stone) toast += '，灵丹+' + res.data.stone;
+          if (res.data.trumpet) toast += '，喇叭+' + res.data.trumpet;
+
           _this3.getTaskList();
           _this3.$app.request(_this3.$app.API.USER_CURRENCY, {}, function (res) {
             _this3.$app.setData('userCurrency', res.data);
-            _this3.$app.toast('领取成功');
+            _this3.$app.toast(toast);
           });
         });
       }
@@ -275,6 +291,10 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
+  var g0 = _vm.$app.getData("sysInfo").system.indexOf("iOS")
+  var g1 = _vm.$app.getData("config")
+  var g2 = _vm.$app.getData("sysInfo").system.indexOf("iOS")
+
   if (!_vm._isMounted) {
     _vm.e0 = function($event) {
       _vm.modal = ""
@@ -284,6 +304,17 @@ var render = function() {
       _vm.weiboUrl = $event.detail.value
     }
   }
+
+  _vm.$mp.data = Object.assign(
+    {},
+    {
+      $root: {
+        g0: g0,
+        g1: g1,
+        g2: g2
+      }
+    }
+  )
 }
 var staticRenderFns = []
 render._withStripped = true

@@ -90,23 +90,21 @@ var _ext_func = _interopRequireDefault(__webpack_require__(/*! @/lib/ext_func */
   _ext_func.default),
 
   onLaunch: function onLaunch(option) {
+    console.log(option);
     this.getUser();
-    if (option.query.referrer) {
+    if (option.query && option.query.referrer && option.query.referrer != this.$app.getData('userInfo').id) {
       // 推荐人
-      console.log('推荐人', option.query.referrer);
-      this.$app.setData('referrer', option.query.referrer);
+      this.$app.setData('referrer', parseInt(option.query.referrer));
+      this.joinMass();
+    } else {
+      this.$app.setData('referrer', 0);
     }
     this.$app.setData('sysInfo', uni.getSystemInfoSync());
-    // 获取服务提供商（用于支付）
-    // uni.getProvider({
-    // 	service: 'payment',
-    // 	success: function(res) {
-    // 		console.log(res.provider)
-    // 	}
-    // });
   },
 
   onShow: function onShow() {
+    this.getConfig();
+
     if (!this.$app.socketTask || this.$app.socketTask.readyState == 2 || this.$app.socketTask.readyState == 3) {
       this.$app.initSocket();
     }
@@ -121,8 +119,22 @@ var _ext_func = _interopRequireDefault(__webpack_require__(/*! @/lib/ext_func */
         });
         _this.$app.request(_this.$app.API.USER_STAR, {}, function (res) {
           _this.$app.setData('userStar', res.data);
+          if (!res.data.id) _this.$app.noob = true;
         });
       });
+    },
+    getConfig: function getConfig() {var _this2 = this;
+      this.$app.request(this.$app.API.CONFIG, {}, function (res) {
+        _this2.$app.setData('config', res.data);
+      });
+    },
+    /**
+        * 分享
+        */
+    joinMass: function joinMass() {
+      this.$app.request(this.$app.API.SHARE_JOINMASS, {
+        referrer: this.$app.getData('referrer') });
+
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["default"]))
 

@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "load-icon-component": "/components/loadIconComponent",
+    "list-item-component": "/components/listItemComponent"
+  }
+}

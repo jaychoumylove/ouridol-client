@@ -9,23 +9,21 @@
 			...ExtFunc,
 		},
 		onLaunch: function(option) {
+			console.log(option);
 			this.getUser()
-			if (option.query.referrer) {
+			if (option.query && option.query.referrer && option.query.referrer != this.$app.getData('userInfo').id) {
 				// 推荐人
-				console.log('推荐人', option.query.referrer);
-				this.$app.setData('referrer', option.query.referrer)
+				this.$app.setData('referrer', parseInt(option.query.referrer))
+				this.joinMass()
+			} else {
+				this.$app.setData('referrer', 0)
 			}
 			this.$app.setData('sysInfo', uni.getSystemInfoSync())
-			// 获取服务提供商（用于支付）
-			// uni.getProvider({
-			// 	service: 'payment',
-			// 	success: function(res) {
-			// 		console.log(res.provider)
-			// 	}
-			// });
 		},
 
 		onShow: function() {
+			this.getConfig()
+
 			if (!this.$app.socketTask || this.$app.socketTask.readyState == 2 || this.$app.socketTask.readyState == 3) {
 				this.$app.initSocket()
 			}
@@ -40,17 +38,29 @@
 					})
 					this.$app.request(this.$app.API.USER_STAR, {}, res => {
 						this.$app.setData('userStar', res.data)
+						if (!res.data.id) this.$app.noob = true
 					})
 				})
 			},
-
-
+			getConfig() {
+				this.$app.request(this.$app.API.CONFIG, {}, res => {
+					this.$app.setData('config', res.data)
+				})
+			},
+			/**
+			 * 分享
+			 */
+			joinMass() {
+				this.$app.request(this.$app.API.SHARE_JOINMASS, {
+					referrer: this.$app.getData('referrer')
+				})
+			}
 		}
 	};
 </script>
 
 <style lang='scss'>
-	@import '/lib/iconfont.css';
+	@import '/lib/css/iconfont.css';
 	@import '/lib/css/article.css';
 
 	/*每个页面公共css */
@@ -100,6 +110,7 @@
 		font-size: 28upx;
 		position: relative;
 		height: 100%;
+		-webkit-appearance: none;
 	}
 
 	page::before {
@@ -136,8 +147,8 @@
 		padding: 0;
 		background-color: transparent;
 		font-size: 28upx;
-		line-height: 1;
-
+		line-height: 1.5;
+		color: $color_1;
 	}
 
 	button::after {
@@ -170,6 +181,6 @@
 
 	.placeholder-style {
 		/* font-size: 24upx; */
-		font-size: 24upx;
+		font-size: 26upx;
 	}
 </style>

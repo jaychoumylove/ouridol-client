@@ -6,7 +6,7 @@
   right: 0;
   color: #fff;
   font-size: 20rpx;
-  line-height: 1;
+  line-height: 1.5;
   -webkit-transform: translate(50%, -50%);
       -ms-transform: translate(50%, -50%);
           transform: translate(50%, -50%);

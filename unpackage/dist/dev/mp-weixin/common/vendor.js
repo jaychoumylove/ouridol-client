@@ -9,7 +9,7 @@
 
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; // 基础常量
-var HOST = 'cs.huamufang.com';
+var HOST = 'ouridol.xiaolishu.com';
 // const HOST = 'rank.xiaolishu.com';
 var VERSION = 'v1';var _default =
 
@@ -19,7 +19,7 @@ var VERSION = 'v1';var _default =
   HTTP_URL: 'https://' + HOST + '/api/' + VERSION + '/',
   WSS_URL: 'wss://' + HOST + '/wss',
 
-  AVATAR: '/static/image/ic_wechat.png',
+  AVATAR: 'https://wx.qlogo.cn/mmhead/gBSelbQM7M19TeazvLwo3f8znKS8KR1CuibicFHc1GTWI/132',
   NICKNAME: '神秘粉丝',
 
 
@@ -31,11 +31,12 @@ var VERSION = 'v1';var _default =
     STAR_RANK: 'star/rank', // 明星榜单
     STAR_RANK_HISTORY: 'star/rank/history', // 明星榜单lishi
     STAR_INFO: 'star/info', // 明星信息
-    STAR_CHART: 'star/chart', // 明星圈子聊天内容
+    STAR_CHART: 'star/chart', // 明星偶像圈聊天内容
     STAR_JOINCHART: 'star/joinchart', // 加入明星聊天室socket
-    STAR_SENDMSG: 'star/sendmsg', // 在圈子中发言
+    STAR_LEAVECHART: 'star/leavechart', // 离开明星聊天室socket
+    STAR_SENDMSG: 'star/sendmsg', // 在偶像圈中发言
     STAR_SENDHOT: 'star/sendhot', // 给明星贡献人气
-    STAR_FOLLOW: 'star/follow', // 加入明星圈子
+    STAR_FOLLOW: 'star/follow', // 加入明星偶像圈
     STAR_STEAL: 'star/steal', // 偷花
     STAR_DYNAMIC: 'star/dynamic', // 动态
 
@@ -49,10 +50,23 @@ var VERSION = 'v1';var _default =
     USER_INVITLIST: 'user/invitlist', // 用户邀请信息
     USER_INVITAWARD: 'user/invitaward', // 用户邀请奖励
     USER_SAYWORLD: 'user/sayworld', // 世界喊话
+    USER_EXIT: 'user/exit', // 退出偶像圈
+    USER_FATHER: 'user/father', // 师徒关系
+    USER_SONEARN: 'user/sonearn', // 获取徒弟的收益
+    USER_CHECKEARN: 'user/checkearn', // 检查是否有收益
+
+
+    SHARE_MASS: 'share/mass', // 分享集结
+    SHARE_STARMASS: 'share/start', // 分享开始
+    SHARE_JOINMASS: 'share/joinmass', // 加入集结
+    SHARE_SETTLEMASS: 'share/settlemass', // 结算集结收益
+
+    EXT_SAVEFORMID: 'user/saveformid', // 保存formId
 
     SPRITE_INFO: 'sprite', // 精灵信息
     SPRITE_SETTLE: 'sprite/settle', // 精灵结算
     SPRITE_UPGRAGE: 'sprite/upgrade', // 精灵升级
+    SPRITE_SKILL: 'sprite/skill', // 精灵技能
 
     USER_BIND: 'user/bind', // 绑定client_id
 
@@ -67,7 +81,10 @@ var VERSION = 'v1';var _default =
     TREASURE: 'treasure', // 寻宝
     TREASURE_SETTLE: 'treasure/settle', // 寻宝结算
 
-    ARTICLE: 'article' // 获取文章
+    ARTICLE: 'article', // 获取文章
+    ARTICLE_LIST: 'article/list',
+
+    CONFIG: 'config' // 配置信息
   } };exports.default = _default;
 
 /***/ }),
@@ -138,6 +155,8 @@ var _default = {
   // 页面相关
 
   initSocket: function initSocket() {var _this2 = this;
+    this.socketTask && this.socketTask.close();
+
     this.socketTask = uni.connectSocket({
       url: this.WSS_URL,
       success: function success(res) {
@@ -147,9 +166,11 @@ var _default = {
 
     this.socketTask.onMessage(function (res) {
       var msg = JSON.parse(res.data);
-      console.log('收到 WebSocket消息', msg);
-      var type = msg.type;
-      var data = msg.data;
+      console.log('收到 WebSocket消息', msg);var
+
+      type =
+
+      msg.type,data = msg.data;
       var page = _this2.getPage(); // 当前页面栈实例对象
 
       switch (type) {
@@ -161,7 +182,7 @@ var _default = {
           // 新的clientId可能需要重新joinGroup
           page && page.$refs.guildComponent && page.$refs.guildComponent.joinGroup();
           break;
-        case 'chartMsg': // 圈子聊天
+        case 'chartMsg': // 偶像圈聊天
           page && page.$refs.guildComponent && page.$refs.guildComponent.addChartMsg(data);
           break;
         case 'sayworld': // 世界喊话
@@ -174,7 +195,11 @@ var _default = {
 
     this.socketTask.onClose(function (res) {
       console.log('WebSocket 已关闭！', res);
-      _this2.initSocket();
+      if (res.code == 1006) {
+        // "abnormal closure"
+        _this2.initSocket();
+      }
+      // reason : "interrupted" // 关屏中断"abnormal closure"
     });
   },
   /**
@@ -188,11 +213,33 @@ var _default = {
       });
     }
   },
+  /**分享*/
+  commonShareAppMessage: function commonShareAppMessage(shareType) {
+    // 默认跳转到首页
+    var path = "/pages/index/index?referrer=".concat(this.getData('userInfo').id);
+    if (this.getData('userStar').id) {
+      // 从首页跳转到明星页
+      path += "&starid=".concat(this.getData('userStar').id);
+    }
+    // 默认标题
+    var title = this.getData('config').share_text;
+    // 默认使用明星分享海报，没有则使用默认
+    var imageUrl = this.getData('userStar').share_img || this.getData('config').share_img;
 
-  commonShareAppMessage: function commonShareAppMessage() {
+    if (shareType) {
+      // 使用特殊配置
+      var share = this.getData('config').share_cfg[shareType - 1];
+      if (share.title) title = share.title;
+      if (share.path) path = share.path;
+      if (share.imageUrl) imageUrl = share.imageUrl;
+
+      //--------------
+      title = title.replace(/STARNAME/g, this.getData('userStar').name || '我们的');
+    }
     return {
-      title: '测试',
-      path: '/pages/index/index?referrer=' + this.getData('userInfo')['id'] };
+      title: title,
+      path: path,
+      imageUrl: imageUrl };
 
   } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["default"]))
@@ -220,13 +267,13 @@ var _default = {
   request: function request(url) {var _this = this;var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};var _success = arguments.length > 2 ? arguments[2] : undefined;var method = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'POST';var block = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
     // 堵塞请求
     if (block && this.isBlock) {
-      this.toast('点太快了，请稍后再试');
+      this.toast('请稍后再试');
       return;
     }
 
     data.token = this.getData('token'); // 带上token
+    // data.token = 'Y1J3S2l2OGw1eVhCcjNMVmRwWHNOREEwT1RFME9UazRNamdtTkRNPQ=='// 带上token
     this.isBlock = true;
-    console.log('url', url);
     uni.request({
       url: url.indexOf('https://') != -1 ? url : this.HTTP_URL + url,
       method: method,
@@ -296,6 +343,15 @@ var _default = {
       } });
 
   },
+  // 复制
+  copy: function copy(data) {var _this2 = this;
+    uni.setClipboardData({
+      data: data.toString(),
+      success: function success() {
+        _this2.toast('复制成功', 'success');
+      } });
+
+  },
   /**获取元素节点信息 */
   getEle: function getEle(dom, callBack) {
     //创建节点选择器
@@ -306,9 +362,13 @@ var _default = {
   },
 
   setData: function setData(key, value) {
+    // this[key] = value
+    // 缓存
     uni.setStorageSync(key, value);
   },
   getData: function getData(key) {
+    // return this[key]
+    // 缓存
     return uni.getStorageSync(key);
   },
 
@@ -418,6 +478,23 @@ createPage(_adver.default);
 
 /***/ }),
 
+/***/ "../../../../../Develop/uni-app/work_0420/main.js?{\"page\":\"pages%2Ffather%2Ffather\"}":
+/*!*******************************************************************************!*\
+  !*** D:/Develop/uni-app/work_0420/main.js?{"page":"pages%2Ffather%2Ffather"} ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(createPage) {__webpack_require__(/*! uni-pages */ "../../../../../Develop/uni-app/work_0420/pages.json");
+
+var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ "./node_modules/@dcloudio/vue-cli-plugin-uni/packages/mp-vue/dist/mp.runtime.esm.js"));
+var _father = _interopRequireDefault(__webpack_require__(/*! ./pages/father/father.vue */ "../../../../../Develop/uni-app/work_0420/pages/father/father.vue"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+createPage(_father.default);
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["createPage"]))
+
+/***/ }),
+
 /***/ "../../../../../Develop/uni-app/work_0420/main.js?{\"page\":\"pages%2Fgroup%2Fdynamic%2Fdynamic\"}":
 /*!*****************************************************************************************!*\
   !*** D:/Develop/uni-app/work_0420/main.js?{"page":"pages%2Fgroup%2Fdynamic%2Fdynamic"} ***!
@@ -469,6 +546,23 @@ createPage(_index.default);
 
 /***/ }),
 
+/***/ "../../../../../Develop/uni-app/work_0420/main.js?{\"page\":\"pages%2Fnotice%2Flist%2Flist\"}":
+/*!************************************************************************************!*\
+  !*** D:/Develop/uni-app/work_0420/main.js?{"page":"pages%2Fnotice%2Flist%2Flist"} ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(createPage) {__webpack_require__(/*! uni-pages */ "../../../../../Develop/uni-app/work_0420/pages.json");
+
+var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ "./node_modules/@dcloudio/vue-cli-plugin-uni/packages/mp-vue/dist/mp.runtime.esm.js"));
+var _list = _interopRequireDefault(__webpack_require__(/*! ./pages/notice/list/list.vue */ "../../../../../Develop/uni-app/work_0420/pages/notice/list/list.vue"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+createPage(_list.default);
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["createPage"]))
+
+/***/ }),
+
 /***/ "../../../../../Develop/uni-app/work_0420/main.js?{\"page\":\"pages%2Fnotice%2Fnotice\"}":
 /*!*******************************************************************************!*\
   !*** D:/Develop/uni-app/work_0420/main.js?{"page":"pages%2Fnotice%2Fnotice"} ***!
@@ -482,6 +576,23 @@ createPage(_index.default);
 var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ "./node_modules/@dcloudio/vue-cli-plugin-uni/packages/mp-vue/dist/mp.runtime.esm.js"));
 var _notice = _interopRequireDefault(__webpack_require__(/*! ./pages/notice/notice.vue */ "../../../../../Develop/uni-app/work_0420/pages/notice/notice.vue"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 createPage(_notice.default);
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["createPage"]))
+
+/***/ }),
+
+/***/ "../../../../../Develop/uni-app/work_0420/main.js?{\"page\":\"pages%2Fpet%2Fother%2Fother\"}":
+/*!***********************************************************************************!*\
+  !*** D:/Develop/uni-app/work_0420/main.js?{"page":"pages%2Fpet%2Fother%2Fother"} ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(createPage) {__webpack_require__(/*! uni-pages */ "../../../../../Develop/uni-app/work_0420/pages.json");
+
+var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ "./node_modules/@dcloudio/vue-cli-plugin-uni/packages/mp-vue/dist/mp.runtime.esm.js"));
+var _other = _interopRequireDefault(__webpack_require__(/*! ./pages/pet/other/other.vue */ "../../../../../Develop/uni-app/work_0420/pages/pet/other/other.vue"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+createPage(_other.default);
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["createPage"]))
 
 /***/ }),
@@ -1029,7 +1140,7 @@ function getData(vueOptions, context) {
     try {
       data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
-      if (Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
@@ -7126,7 +7237,7 @@ function type(obj) {
 
 function flushCallbacks$1(vm) {
     if (vm.__next_tick_callbacks && vm.__next_tick_callbacks.length) {
-        if (Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+        if (Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
             var mpInstance = vm.$mp[vm.mpType];
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:flushCallbacks[' + vm.__next_tick_callbacks.length + ']');
@@ -7147,14 +7258,14 @@ function nextTick$1(vm, cb) {
     //1.nextTick 之前 已 setData 且 setData 还未回调完成
     //2.nextTick 之前存在 render watcher
     if (!vm.__next_tick_pending && !hasRenderWatcher(vm)) {
-        if(Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance = vm.$mp[vm.mpType];
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:nextVueTick');
         }
         return nextTick(cb, vm)
     }else{
-        if(Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance$1 = vm.$mp[vm.mpType];
             console.log('[' + (+new Date) + '][' + (mpInstance$1.is || mpInstance$1.route) + '][' + vm._uid +
                 ']:nextMPTick');
@@ -7223,7 +7334,7 @@ var patch = function(oldVnode, vnode) {
         });
         var diffData = diff(data, mpData);
         if (Object.keys(diffData).length) {
-            if (Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+            if (Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
                 console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + this._uid +
                     ']差量更新',
                     JSON.stringify(diffData));

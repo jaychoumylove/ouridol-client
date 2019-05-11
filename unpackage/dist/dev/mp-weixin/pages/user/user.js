@@ -237,6 +237,16 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
+
+
+
+
+
+
+
+
+
+
 {
   components: {
     badgeComponent: badgeComponent,
@@ -248,6 +258,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
       userInfo: {},
       userCurrency: {},
+      userStar: {},
       modal: '',
       rechargeList: [] };
 
@@ -264,21 +275,33 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
       stone: 0,
       trumpet: 0 };
 
+    this.userStar = this.$app.getData('userStar') || {};
+  },
+  onShareAppMessage: function onShareAppMessage() {
+    return this.$app.commonShareAppMessage();
   },
   methods: {
-
+    exitGroup: function exitGroup() {var _this = this;
+      this.$app.modal("\u53EA\u6709\u4E00\u6B21\u673A\u4F1A\uFF0C\n\u662F\u5426\u9000\u51FA".concat(this.$app.getData('userStar').name, "\u5076\u50CF\u5708\uFF1F"), function () {
+        _this.$app.request(_this.$app.API.USER_EXIT, {}, function (res) {
+          _this.$app.toast('退出成功');
+          _this.$app.setData('userStar', {});
+          _this.userStar = {};
+        });
+      });
+    },
     // HTTP
     /**
      * 保存用户详细信息
      */
-    getUserInfo: function getUserInfo(e) {var _this = this;
+    getUserInfo: function getUserInfo(e) {var _this2 = this;
       var userInfo = e.detail.userInfo;
       if (userInfo) {
         this.$app.request(this.$app.API.USER_SAVEINFO, userInfo, function (res) {
-          _this.$app.request(_this.$app.API.USER_INFO, {}, function (res) {
-            _this.$app.setData('userInfo', res.data);
-            _this.userInfo = _this.$app.getData('userInfo');
-            _this.$app.toast('更新成功');
+          _this2.$app.request(_this2.$app.API.USER_INFO, {}, function (res) {
+            _this2.$app.setData('userInfo', res.data);
+            _this2.userInfo = _this2.$app.getData('userInfo');
+            _this2.$app.toast('更新成功');
           });
         }, 'POST', true);
       }
@@ -312,18 +335,23 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  var g0 = _vm.$app.getData("userStar")
+  var g0 = _vm.$app.getData("sysInfo").system.indexOf("iOS")
+  var g1 = _vm.$app.getData("config")
 
   if (!_vm._isMounted) {
     _vm.e0 = function($event) {
-      return _vm.$app.goPage("/pages/group/group")
+      return _vm.$app.copy(_vm.userInfo.id * 1234)
     }
 
     _vm.e1 = function($event) {
-      return _vm.$app.goPage("/pages/recharge/recharge")
+      return _vm.$app.goPage("/pages/group/group")
     }
 
     _vm.e2 = function($event) {
+      return _vm.$app.goPage("/pages/recharge/recharge")
+    }
+
+    _vm.e3 = function($event) {
       return _vm.$app.goPage("/pages/task/task")
     }
   }
@@ -332,7 +360,8 @@ var render = function() {
     {},
     {
       $root: {
-        g0: g0
+        g0: g0,
+        g1: g1
       }
     }
   )

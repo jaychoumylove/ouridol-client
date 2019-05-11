@@ -1,5 +1,5 @@
 {
-    "name" : "work_0420",
+    "name" : "我们的偶像",
     "appid" : "__UNI__61CB11E",
     "description" : "",
     "versionName" : "1.0.0",
@@ -55,12 +55,12 @@
     /* 快应用特有相关 */
     "mp-weixin" : {
         /* 小程序特有相关 */
-        "appid" : "wxb90a2375e2c7b52a",
+        "appid" : "wx7dc912994c80d9ac",
         "setting" : {
             "urlCheck" : false,
             "postcss" : true,
             "es6" : false,
-            "minified" : false
+            "minified" : true
         },
         "usingComponents" : true
     }

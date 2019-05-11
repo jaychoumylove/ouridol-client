@@ -4,8 +4,8 @@
 
 		<view class="top-container flex-set">
 			<view class="top-title one">能量充值</view>
-			<view class="top-title two">我的能量：4646</view>
-			<view class="top-title three">我的灵丹：55165</view>
+			<view class="top-title two">我的能量：{{userCurrency.coin}}</view>
+			<view class="top-title three">我的灵丹：{{userCurrency.stone}}</view>
 <!-- 			<view class="top-title two">我的<image src="/static/image/user/b1.png" mode="widthFix"></image>：4646</view>
 			<view class="top-title three">我的<image src="/static/image/user/b2.png" mode="widthFix"></image>：55165</view> -->
 		</view>

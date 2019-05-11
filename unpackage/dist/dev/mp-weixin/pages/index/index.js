@@ -203,12 +203,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-
-
-
-
-
 {
   components: {
     bannerComponent: bannerComponent,
@@ -233,7 +227,9 @@ __webpack_require__.r(__webpack_exports__);
 
   },
 
-  onLoad: function onLoad() {
+  onLoad: function onLoad(option) {
+    // 跳转到明星页
+    option.starid && this.goGroup(option.starid);
     this.getSunday();
   },
   onShow: function onShow() {
@@ -244,6 +240,9 @@ __webpack_require__.r(__webpack_exports__);
     this.page = 1;
     this.keywords = '';
     this.getRankList();
+  },
+  onShareAppMessage: function onShareAppMessage() {
+    return this.$app.commonShareAppMessage();
   },
   onHide: function onHide() {
     this.scrollTop = 1;
@@ -267,11 +266,12 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     getSunday: function getSunday() {
       var time = new Date();
-      time.setDate(time.getDate() - time.getDay() + 7);
+      var day = time.getDay() || 7;
+      time.setDate(time.getDate() - day + 7);
       this.cutOffDate = time.getMonth() + 1 + '月' + time.getDate() + '日';
     },
     /**
-        * 去圈子打榜
+        * 去偶像圈打榜
         */
     goGroup: function goGroup(starid) {
       if (this.$app.getData('userStar')['id'] == starid) {
@@ -279,6 +279,7 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         this.$app.goPage('/pages/star/star?starid=' + starid);
       }
+      return;
     },
     /**
         * 其他榜单（韩星榜）
@@ -378,7 +379,7 @@ var render = function() {
     }
 
     _vm.e1 = function($event) {
-      return this.$app.goPage("/pages/notice/notice?id=1")
+      return _vm.$app.goPage("/pages/notice/notice?id=1")
     }
   }
 }

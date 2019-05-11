@@ -38,7 +38,7 @@
 		right: 0;
 		color: #fff;
 		font-size: 20upx;
-		line-height: 1;
+		line-height: 1.5;
 		transform: translate(50%, -50%);
 	}
 

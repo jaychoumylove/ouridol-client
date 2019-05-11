@@ -4,7 +4,6 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "超级明星榜",
 				"enablePullDownRefresh": true
 			}
 		}, {
@@ -20,7 +19,7 @@
 		}, {
 			"path": "pages/group/group",
 			"style": {
-				"navigationBarTitleText": "我的公会"
+				"navigationBarTitleText": "偶像圈"
 			}
 		}
 	    ,{
@@ -60,10 +59,22 @@
             "style" : {}
         }
        
+        ,{
+            "path" : "pages/notice/list/list",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/pet/other/other",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/father/father",
+            "style" : {"navigationBarTitleText": "师徒"}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "超级明星榜",
+		"navigationBarTitleText": "我们的偶像",
 		"navigationBarBackgroundColor": "#efccc8",
 		"enablePullDownRefresh": false,
 		"onReachBottomDistance": 100
@@ -88,7 +99,7 @@
 				"pagePath": "pages/group/group",
 				"iconPath": "/static/image/tab/group.png",
 				"selectedIconPath": "/static/image/tab/group-tap.png",
-				"text": "我的公会"
+				"text": "偶像圈"
 			}, {
 				"pagePath": "pages/user/user",
 				"iconPath": "/static/image/tab/user.png",

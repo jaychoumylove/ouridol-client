@@ -1,0 +1,8 @@
+.banner-wrapper.data-v-5c91914c {
+  border-radius: 10rpx;
+  overflow: hidden;
+}
+.banner-wrapper .banner-item-img.data-v-5c91914c {
+    border-radius: 10rpx;
+}
+
