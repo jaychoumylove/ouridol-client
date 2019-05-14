@@ -11,7 +11,7 @@
 			</view>
 
 			<view v-else class="select-container">
-				<loadIconComponent v-if="requestCount>0" type='whole'></loadIconComponent>
+				
 
 				<view class="search-wrapper">
 					<input type="text" value="" placeholder="搜索爱豆" @input="searchInput" />
@@ -129,7 +129,8 @@
 <style lang="scss" scoped>
 	.group-container {
 		height: 100%;
-
+		width: 100%;
+		position: fixed;
 		.blank-container {
 			height: 100%;
 

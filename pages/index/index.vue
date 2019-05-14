@@ -1,7 +1,7 @@
 <template>
 	<view class="index-container" :style="{top:scrollTop}">
 
-		<loadIconComponent v-if="requestCount>0" type='whole'></loadIconComponent>
+		
 
 		<view class="top-tab-container">
 			<view class="left-tab-group">
@@ -29,7 +29,7 @@
 					<image class='position-set' :src="rankList[1]&&rankList[1].avatar" mode="aspectFill"></image>
 				</view>
 				<view class="starname">{{rankList[1]&&rankList[1].name}}</view>
-				<view class="hot">{{rankList[1]&&rankList[1].hot}}
+				<view class="hot">{{rankList[1]&&rankList[1].hot||0}}
 					<image src="/static/image/index/ic_hot.png" mode=""></image>
 				</view>
 				<btnComponent type="default">
@@ -42,7 +42,7 @@
 					<image class='position-set' :src="rankList[0]&&rankList[0].avatar" mode="aspectFill"></image>
 				</view>
 				<view class="starname">{{rankList[0]&&rankList[0].name}}</view>
-				<view class="hot">{{rankList[0]&&rankList[0].hot}}
+				<view class="hot">{{rankList[0]&&rankList[0].hot||0}}
 					<image src="/static/image/index/ic_hot.png" mode=""></image>
 				</view>
 				<btnComponent type="default">
@@ -55,7 +55,7 @@
 					<image class='position-set' :src="rankList[2]&&rankList[2].avatar" mode="aspectFill"></image>
 				</view>
 				<view class="starname">{{rankList[2]&&rankList[2].name}}</view>
-				<view class="hot">{{rankList[2]&&rankList[2].hot}}
+				<view class="hot">{{rankList[2]&&rankList[2].hot||0}}
 					<image src="/static/image/index/ic_hot.png" mode=""></image>
 				</view>
 				<btnComponent type="default">
@@ -174,7 +174,7 @@
 			 * 去偶像圈打榜
 			 */
 			goGroup(starid) {
-				if (this.$app.getData('userStar')['id'] == starid) {
+				if (this.$app.getData('userStar', true)['id'] == starid) {
 					this.$app.goPage('/pages/group/group')
 				} else {
 					this.$app.goPage('/pages/star/star?starid=' + starid)

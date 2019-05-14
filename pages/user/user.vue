@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<loadIconComponent v-if="requestCount>0" type='whole'></loadIconComponent>
+		
 
 		<view class="top-content-container">
 			<view class="row userinfo">
@@ -182,10 +182,10 @@
 		},
 		methods: {
 			exitGroup() {
-				this.$app.modal(`只有一次机会，\n是否退出${this.$app.getData('userStar').name}偶像圈？`, () => {
+				this.$app.modal(`只有一次机会\n并且会清除你的师徒关系\n是否退出${this.$app.getData('userStar').name}偶像圈？`, () => {
 					this.$app.request(this.$app.API.USER_EXIT, {}, res => {
 						this.$app.toast('退出成功')
-						this.$app.setData('userStar', {})
+						this.$app.setData('userStar', {}, true)
 						this.userStar = {}
 					})
 				})
@@ -197,7 +197,10 @@
 			getUserInfo(e) {
 				const userInfo = e.detail.userInfo
 				if (userInfo) {
-					this.$app.request(this.$app.API.USER_SAVEINFO, userInfo, res => {
+					this.$app.request(this.$app.API.USER_SAVEINFO, {
+						iv: e.detail.iv,
+						encryptedData: e.detail.encryptedData,
+					}, res => {
 						this.$app.request(this.$app.API.USER_INFO, {}, res => {
 							this.$app.setData('userInfo', res.data)
 							this.userInfo = this.$app.getData('userInfo')

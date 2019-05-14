@@ -124,13 +124,13 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
   },
   onLoad: function onLoad(option) {
     this.starid = option.starid;
-    if (this.starid == this.$app.getData('userStar').id) {
+    if (this.starid == this.$app.getData('userStar', true).id) {
       this.$app.goPage('/pages/group/group');
     }
   },
   onReady: function onReady() {},
   onShow: function onShow() {
-    if (!this.$app.getData('userStar').id) this.tips = true;
+    if (!this.$app.getData('userStar', true).id) this.tips = true;
     this.$nextTick(function () {
       this.$refs.guildComponent.load(this.starid);
     });

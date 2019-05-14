@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<loadIconComponent v-if="requestCount>0" type='whole'></loadIconComponent>
+		
 
 		<view class="top-container flex-set">
 			<view class="top-title one">能量充值</view>

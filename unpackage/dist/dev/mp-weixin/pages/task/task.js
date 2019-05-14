@@ -192,9 +192,12 @@ __webpack_require__.r(__webpack_exports__);
       weiboUrl: '' };
 
   },
-  onLoad: function onLoad() {
+  onShow: function onShow() {
     this.getTaskList();
     this.getShareText();
+  },
+  onLoad: function onLoad() {
+
 
   },
   onShareAppMessage: function onShareAppMessage() {
@@ -219,7 +222,6 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     doTask: function doTask(task) {var _this3 = this;
-      if (task.type == 4 && this.$app.getData('sysInfo').system.indexOf('iOS') != -1) return;
       if (task.status == 0) {
         if (task.task_type.gopage) {
           this.$app.goPage(task.task_type.gopage);
@@ -228,7 +230,11 @@ __webpack_require__.r(__webpack_exports__);
         } else if (task.task_type.id == 8) {
           // 微博发帖
           this.modal = 'weibo';
+        } else if (task.task_type.id == 4 && this.$app.getData('sysInfo').system.indexOf('iOS') != -1) {
+          // ios 去公众号
+          return;
         }
+
       } else if (task.status == 1) {
         // 去领取
         this.$app.request(this.$app.API.TASK_SETTLE, {
@@ -293,7 +299,8 @@ var render = function() {
   var _c = _vm._self._c || _h
   var g0 = _vm.$app.getData("sysInfo").system.indexOf("iOS")
   var g1 = _vm.$app.getData("config")
-  var g2 = _vm.$app.getData("sysInfo").system.indexOf("iOS")
+  var g2 = _vm.$app.getData("config")
+  var g3 = _vm.$app.getData("sysInfo").system.indexOf("iOS")
 
   if (!_vm._isMounted) {
     _vm.e0 = function($event) {
@@ -311,7 +318,8 @@ var render = function() {
       $root: {
         g0: g0,
         g1: g1,
-        g2: g2
+        g2: g2,
+        g3: g3
       }
     }
   )

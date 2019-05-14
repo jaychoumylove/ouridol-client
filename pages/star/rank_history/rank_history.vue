@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<loadIconComponent v-if="requestCount>0" type='whole'></loadIconComponent>
+		
 
 		<view class="item-wrapper" v-for="(item,index) in history" :key="index">
 			<view class="title">{{item.date}}</view>

@@ -9,6 +9,7 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
+    z-index: 3;
 }
 .star-container .tips-container image.data-v-ec09d8ec {
       width: 100%;

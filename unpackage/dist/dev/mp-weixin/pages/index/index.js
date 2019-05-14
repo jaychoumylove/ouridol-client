@@ -274,7 +274,7 @@ __webpack_require__.r(__webpack_exports__);
         * 去偶像圈打榜
         */
     goGroup: function goGroup(starid) {
-      if (this.$app.getData('userStar')['id'] == starid) {
+      if (this.$app.getData('userStar', true)['id'] == starid) {
         this.$app.goPage('/pages/group/group');
       } else {
         this.$app.goPage('/pages/star/star?starid=' + starid);

@@ -24,13 +24,13 @@
 		},
 		onLoad(option) {
 			this.starid = option.starid
-			if (this.starid == this.$app.getData('userStar').id) {
+			if (this.starid == this.$app.getData('userStar', true).id) {
 				this.$app.goPage('/pages/group/group')
 			}
 		},
 		onReady() {},
 		onShow() {
-			if (!this.$app.getData('userStar').id) this.tips = true
+			if (!this.$app.getData('userStar', true).id) this.tips = true
 			this.$nextTick(function() {
 				this.$refs.guildComponent.load(this.starid)
 			})
@@ -56,6 +56,7 @@
 			right: 0;
 			bottom: 0;
 			background: rgba(#000, 0.8);
+			z-index: 3;
 
 			image {
 				width: 100%;

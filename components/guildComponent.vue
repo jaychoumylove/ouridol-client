@@ -1,9 +1,9 @@
 <template>
 	<view class='guild-container'>
-		<loadIconComponent v-if="showLoading" type='whole'></loadIconComponent>
+		<!-- <loadIconComponent v-if="showLoading" type='whole'></loadIconComponent> -->
 		<!-- 新手指引 -->
 		<view v-if="tips" class="tips-container" @tap="tips=false">
-			<image src="/static/image/star/blank-1.png" mode="widthFix"></image>
+			<image class='image' src="/static/image/star/blank-1.png" mode="widthFix"></image>
 		</view>
 
 		<view class="top-container">
@@ -46,7 +46,7 @@
 					<view class="top-text-wrapper">
 						<view class="star-name">本期 NO.{{star.weekRank}}</view>
 						<view class='bottom'>
-							<image src="/static/image/index/ic_hot.png" mode=""></image>
+							<image class='image' src="/static/image/index/ic_hot.png" mode=""></image>
 							<view>{{star.weekHot}}</view>
 						</view>
 					</view>
@@ -216,9 +216,16 @@
 				<!-- <view class="explain-wrapper">说明：还未确定后完全好大无穷皇帝和我去我前进的气温降低哦</view> -->
 				<view class="bottom-wrapper">
 					<view class="text">我的能量：{{app.getData('userCurrency')['coin']}}</view>
-					<view class="text flex-set" @tap="app.goPage('/pages/recharge/recharge')" v-if="app.getData('sysInfo')&&app.getData('sysInfo').system.indexOf('iOS') == -1">
+
+					<view class="text flex-set" @tap="app.goPage('/pages/recharge/recharge')" v-if="app.getData('sysInfo').system.indexOf('iOS') == -1">
 						<image src="/static/image/star/4.png" mode="widthFix" style="width: 35upx;"></image>补充能量 >
 					</view>
+					<button open-type="contact" show-message-card v-if="app.getData('sysInfo').system.indexOf('iOS') != -1 && $app.getData('config').ios_switch == 1">
+						<view class="text flex-set">
+							<image src="/static/image/star/4.png" mode="widthFix" style="width: 35upx;"></image>补充能量 回复"1"
+						</view>
+					</button>
+
 					<!-- <view class="text">道具>></view> -->
 				</view>
 				<view class="btn-wrapper">
@@ -332,10 +339,10 @@
 						</view>
 					</view>
 					<!-- #ifdef MP -->
-					<view class="item" v-for="n in 100" :key="n" v-if="fakeinvitList.length + n + 1 <= 100">
+					<view class="item" v-for="n in invitNum" :key="n" v-if="fakeinvitList.length + n + 1 <= 100">
 						<!-- #endif -->
 						<!-- #ifdef H5 -->
-						<view class="item" v-for="n in 100" :key="n" v-if="fakeinvitList.length + n <= 100">
+						<view class="item" v-for="n in invitNum" :key="n" v-if="fakeinvitList.length + n <= 100">
 							<!-- #endif -->
 							<view class='avatar'>
 								<image src="/static/image/ic_wechat.png" mode="aspectFill"></image>
@@ -432,7 +439,7 @@
 								<image :src="item.avatar" mode="aspectFill"></image>
 							</view>
 							<view class="text-container">
-								<view class="star-name">{{item.nickname}}</view>
+								<view class="star-name text-overflow">{{item.nickname}}</view>
 							</view>
 							<view class="egg flex-set">
 								<view class="num-wrapper position-set">{{item.earn}}</view>
@@ -475,7 +482,9 @@
 
 				userCurrency: {},
 
-				star: {},
+				star: {
+					weekRank: 0,
+				},
 				userRankList: [],
 				chartList: [],
 				index: -1, // 聊天窗位置
@@ -485,6 +494,7 @@
 				starRankList: [],
 				invitAward: {}, // 邀请奖励
 				invitList: [], // 我的邀请列表
+				invitNum: 10, // 拉票列表数量
 				spriteEarn: false,
 				rechargeList: [], // 充值商品列表
 				danmaku: null, // 当前弹幕
@@ -614,7 +624,7 @@
 			getMass() {
 				this.$app.request(this.$app.API.SHARE_MASS, {}, res => {
 					this.mass = res.data
-					
+
 					if (res.data.mass_user.length >= 3 && res.data.mass_settle_time < res.data.mass_start_time) {
 						// 超过3个人可结算
 						this.mass.isSettle = true
@@ -684,8 +694,11 @@
 			},
 			// 初始化世界喊话弹幕
 			initDanmaku() {
+				console.log(this.danmakuQueue);
 				clearInterval(this.$app.sayworldTimeId)
 				// 定时显示弹幕
+				// this.danmakuQueue = []
+				// this.danmaku = null
 				this.$app.sayworldTimeId = setInterval(() => {
 					this.danmaku = this.danmakuQueue.shift() || null
 				}, 10000)
@@ -724,15 +737,15 @@
 			 * 保存用户详细信息
 			 */
 			getUserInfo(e) {
-				const userInfo = e.detail.userInfo
-				if (userInfo) {
-					this.$app.request(this.$app.API.USER_SAVEINFO, userInfo, res => {
+					this.$app.request(this.$app.API.USER_SAVEINFO, {
+						iv: e.detail.iv,
+						encryptedData: e.detail.encryptedData,
+					}, res => {
 						this.$app.request(this.$app.API.USER_INFO, {}, res => {
 							this.$app.setData('userInfo', res.data)
 							this.sendOrFollow()
 						})
 					}, 'POST', true)
-				}
 			},
 			/**偷能量*/
 			steal(starid, index, steal) {
@@ -780,6 +793,14 @@
 						})
 					})
 					this.fakeinvitList = resList
+
+					this.invitNum = 10
+					clearInterval(this.$app.invitNumTimeId)
+					this.$app.invitNumTimeId = setInterval(() => {
+						this.invitNum += 10
+						if (this.invitNum >= 100)
+							clearInterval(this.$app.invitNumTimeId)
+					}, 1000)
 
 					this.$app.closeLoading(this)
 				})
@@ -887,7 +908,7 @@
 							rer_user_id: this.$app.getData('referrer'), // 推荐人
 						}, res => {
 							this.$app.request(this.$app.API.USER_STAR, {}, res => {
-								this.$app.setData('userStar', res.data)
+								this.$app.setData('userStar', res.data, true)
 								this.$app.goPage('/pages/group/group')
 							})
 						}, 'POST', true)
@@ -1171,7 +1192,7 @@
 						.bottom {
 							display: flex;
 
-							image {
+							.image {
 								width: 34upx;
 								height: 34upx;
 								margin-right: 10upx;
@@ -1880,7 +1901,7 @@
 				margin: 20upx;
 				flex-wrap: wrap;
 				align-items: center;
-				
+
 				.ava {
 					margin: 20upx;
 					width: 100upx;
@@ -1890,7 +1911,8 @@
 					font-size: 50upx;
 					overflow: hidden;
 					z-index: 1;
-					image{
+
+					image {
 						border-radius: 50%;
 					}
 				}

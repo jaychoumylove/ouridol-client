@@ -1,6 +1,6 @@
 <template>
 	<view class="pet-container">
-		<loadIconComponent v-if="requestCount>0" type='whole'></loadIconComponent>
+		
 
 		<view class="top-row-container">
 			<view class="block">
@@ -103,7 +103,7 @@
 								<image :src="item.avatar" mode="aspectFill"></image>
 							</view>
 							<view class="text-container">
-								<view class="star-name">{{item.nickname}}</view>
+								<view class="star-name text-overflow">{{item.nickname}}</view>
 							</view>
 							<view class="egg flex-set">
 								<view class="num-wrapper position-set">{{item.earn}}</view>
@@ -159,8 +159,15 @@
 			return {
 				requestCount: 1,
 
-				userCurrency: {},
-				spriteInfo: {},
+				userCurrency: {
+					coin: 0,
+					stone: 0,
+					trumpet: 0,
+				},
+				spriteInfo: {
+					sprite_level:0,
+					earnPer:0,
+				},
 				invitList: [],
 				invitAward: '',
 				modal: '',

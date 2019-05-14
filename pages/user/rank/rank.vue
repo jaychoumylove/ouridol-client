@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<loadIconComponent v-if="requestCount>0" type='whole'></loadIconComponent>
+		
 
 		<scroll-view scroll-y class="list-wrapper">
 			<view class="item" :class="{one:index==0,two:index==1,three:index==2}" v-for="(item,index) in userRank" :key="index">

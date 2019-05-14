@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<loadIconComponent v-if="requestCount>0" type='whole'></loadIconComponent>
+		
 
 		<view class="item" v-for="(item,index) in list" :key="index" :class="{send:item.type == 2}">
 			<image class="avatar" :src="item.avatarurl" mode="aspectFill"></image>

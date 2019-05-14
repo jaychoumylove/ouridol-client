@@ -92,7 +92,7 @@ var _ext_func = _interopRequireDefault(__webpack_require__(/*! @/lib/ext_func */
   onLaunch: function onLaunch(option) {
     console.log(option);
     this.getUser();
-    if (option.query && option.query.referrer && option.query.referrer != this.$app.getData('userInfo').id) {
+    if (option.query && option.query.referrer && option.query.referrer != this.$app.getData('userInfo', true).id) {
       // 推荐人
       this.$app.setData('referrer', parseInt(option.query.referrer));
       this.joinMass();
@@ -100,6 +100,8 @@ var _ext_func = _interopRequireDefault(__webpack_require__(/*! @/lib/ext_func */
       this.$app.setData('referrer', 0);
     }
     this.$app.setData('sysInfo', uni.getSystemInfoSync());
+
+    this.$app.checkUpdate();
   },
 
   onShow: function onShow() {
@@ -113,12 +115,12 @@ var _ext_func = _interopRequireDefault(__webpack_require__(/*! @/lib/ext_func */
   methods: {
     getUser: function getUser() {var _this = this;
       this.$app.request(this.$app.API.USER_INFO, {}, function (res) {
-        _this.$app.setData('userInfo', res.data);
+        _this.$app.setData('userInfo', res.data, true);
         _this.$app.request(_this.$app.API.USER_CURRENCY, {}, function (res) {
           _this.$app.setData('userCurrency', res.data);
         });
         _this.$app.request(_this.$app.API.USER_STAR, {}, function (res) {
-          _this.$app.setData('userStar', res.data);
+          _this.$app.setData('userStar', res.data, true);
           if (!res.data.id) _this.$app.noob = true;
         });
       });

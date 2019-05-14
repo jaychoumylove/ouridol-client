@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<loadIconComponent v-if="requestCount>0" type='whole'></loadIconComponent>
+		
 
 		<view class="item-wrapper" :class="{top:item.isTop}" v-for="(item,index) in articleList" :key="index" @tap="goArticle(item.id)">
 			<view class="left text-overflow">{{item.title}}{{item.isTop?'[置顶]':''}}

@@ -1,6 +1,6 @@
 <template>
 	<view class="father-container">
-		<loadIconComponent v-if="requestCount>0" type='whole'></loadIconComponent>
+		
 
 		<view class="top-container">
 			<image class="avatar" :src="userInfo.avatarurl" mode="aspectFill"></image>
@@ -42,7 +42,7 @@
 				</view>
 
 				<view class="text-container">
-					<view class="star-name">{{item.nickname}}</view>
+					<view class="star-name text-overflow">{{item.nickname}}</view>
 					<view class="bottom-text">
 						<view class="hot-count" v-if="item.cur_contribute">贡献{{item.cur_contribute}}</view>
 					</view>

@@ -11,7 +11,7 @@
 		onLaunch: function(option) {
 			console.log(option);
 			this.getUser()
-			if (option.query && option.query.referrer && option.query.referrer != this.$app.getData('userInfo').id) {
+			if (option.query && option.query.referrer && option.query.referrer != this.$app.getData('userInfo', true).id) {
 				// 推荐人
 				this.$app.setData('referrer', parseInt(option.query.referrer))
 				this.joinMass()
@@ -19,6 +19,8 @@
 				this.$app.setData('referrer', 0)
 			}
 			this.$app.setData('sysInfo', uni.getSystemInfoSync())
+
+			this.$app.checkUpdate()
 		},
 
 		onShow: function() {
@@ -32,12 +34,12 @@
 		methods: {
 			getUser() {
 				this.$app.request(this.$app.API.USER_INFO, {}, res => {
-					this.$app.setData('userInfo', res.data)
+					this.$app.setData('userInfo', res.data, true)
 					this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
 						this.$app.setData('userCurrency', res.data)
 					})
 					this.$app.request(this.$app.API.USER_STAR, {}, res => {
-						this.$app.setData('userStar', res.data)
+						this.$app.setData('userStar', res.data, true)
 						if (!res.data.id) this.$app.noob = true
 					})
 				})
@@ -110,7 +112,7 @@
 		font-size: 28upx;
 		position: relative;
 		height: 100%;
-		-webkit-appearance: none;
+		/* -webkit-appearance: none; */
 	}
 
 	page::before {

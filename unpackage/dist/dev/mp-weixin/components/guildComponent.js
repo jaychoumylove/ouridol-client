@@ -559,6 +559,13 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
+
+
+
+
+
+
+
 {
   components: {
     modalComponent: modalComponent,
@@ -575,7 +582,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
       userCurrency: {},
 
-      star: {},
+      star: {
+        weekRank: 0 },
+
       userRankList: [],
       chartList: [],
       index: -1, // 聊天窗位置
@@ -585,6 +594,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
       starRankList: [],
       invitAward: {}, // 邀请奖励
       invitList: [], // 我的邀请列表
+      invitNum: 10, // 拉票列表数量
       spriteEarn: false,
       rechargeList: [], // 充值商品列表
       danmaku: null, // 当前弹幕
@@ -784,8 +794,11 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     },
     // 初始化世界喊话弹幕
     initDanmaku: function initDanmaku() {var _this5 = this;
+      console.log(this.danmakuQueue);
       clearInterval(this.$app.sayworldTimeId);
       // 定时显示弹幕
+      // this.danmakuQueue = []
+      // this.danmaku = null
       this.$app.sayworldTimeId = setInterval(function () {
         _this5.danmaku = _this5.danmakuQueue.shift() || null;
       }, 10000);
@@ -824,15 +837,15 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
         * 保存用户详细信息
         */
     getUserInfo: function getUserInfo(e) {var _this7 = this;
-      var userInfo = e.detail.userInfo;
-      if (userInfo) {
-        this.$app.request(this.$app.API.USER_SAVEINFO, userInfo, function (res) {
-          _this7.$app.request(_this7.$app.API.USER_INFO, {}, function (res) {
-            _this7.$app.setData('userInfo', res.data);
-            _this7.sendOrFollow();
-          });
-        }, 'POST', true);
-      }
+      this.$app.request(this.$app.API.USER_SAVEINFO, {
+        iv: e.detail.iv,
+        encryptedData: e.detail.encryptedData },
+      function (res) {
+        _this7.$app.request(_this7.$app.API.USER_INFO, {}, function (res) {
+          _this7.$app.setData('userInfo', res.data);
+          _this7.sendOrFollow();
+        });
+      }, 'POST', true);
     },
     /**偷能量*/
     steal: function steal(starid, index, _steal) {var _this8 = this;
@@ -880,6 +893,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
         });
         _this10.fakeinvitList = resList;
+
+        _this10.invitNum = 10;
+        clearInterval(_this10.$app.invitNumTimeId);
+        _this10.$app.invitNumTimeId = setInterval(function () {
+          _this10.invitNum += 10;
+          if (_this10.invitNum >= 100)
+          clearInterval(_this10.$app.invitNumTimeId);
+        }, 1000);
 
         _this10.$app.closeLoading(_this10);
       });
@@ -987,7 +1008,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
             rer_user_id: _this14.$app.getData('referrer') // 推荐人
           }, function (res) {
             _this14.$app.request(_this14.$app.API.USER_STAR, {}, function (res) {
-              _this14.$app.setData('userStar', res.data);
+              _this14.$app.setData('userStar', res.data, true);
               _this14.$app.goPage('/pages/group/group');
             });
           }, 'POST', true);
@@ -1153,11 +1174,12 @@ var render = function() {
   var g4 = _vm.app.getData("userInfo")
   var g5 = _vm.app.getData("userStar")
   var g6 = _vm.app.getData("userCurrency")
-  var g7 = _vm.app.getData("sysInfo")
+  var g7 = _vm.app.getData("sysInfo").system.indexOf("iOS")
   var g8 = _vm.app.getData("sysInfo").system.indexOf("iOS")
   var g9 = _vm.$app.getData("config")
-  var g10 = _vm.app.getData("config")
+  var g10 = _vm.$app.getData("config")
   var g11 = _vm.app.getData("config")
+  var g12 = _vm.app.getData("config")
 
   if (!_vm._isMounted) {
     _vm.e0 = function($event) {
@@ -1234,7 +1256,8 @@ var render = function() {
         g8: g8,
         g9: g9,
         g10: g10,
-        g11: g11
+        g11: g11,
+        g12: g12
       }
     }
   )

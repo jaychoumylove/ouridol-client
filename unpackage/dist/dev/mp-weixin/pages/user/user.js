@@ -282,10 +282,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
   },
   methods: {
     exitGroup: function exitGroup() {var _this = this;
-      this.$app.modal("\u53EA\u6709\u4E00\u6B21\u673A\u4F1A\uFF0C\n\u662F\u5426\u9000\u51FA".concat(this.$app.getData('userStar').name, "\u5076\u50CF\u5708\uFF1F"), function () {
+      this.$app.modal("\u53EA\u6709\u4E00\u6B21\u673A\u4F1A\n\u5E76\u4E14\u4F1A\u6E05\u9664\u4F60\u7684\u5E08\u5F92\u5173\u7CFB\n\u662F\u5426\u9000\u51FA".concat(this.$app.getData('userStar').name, "\u5076\u50CF\u5708\uFF1F"), function () {
         _this.$app.request(_this.$app.API.USER_EXIT, {}, function (res) {
           _this.$app.toast('退出成功');
-          _this.$app.setData('userStar', {});
+          _this.$app.setData('userStar', {}, true);
           _this.userStar = {};
         });
       });
@@ -297,7 +297,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     getUserInfo: function getUserInfo(e) {var _this2 = this;
       var userInfo = e.detail.userInfo;
       if (userInfo) {
-        this.$app.request(this.$app.API.USER_SAVEINFO, userInfo, function (res) {
+        this.$app.request(this.$app.API.USER_SAVEINFO, {
+          iv: e.detail.iv,
+          encryptedData: e.detail.encryptedData },
+        function (res) {
           _this2.$app.request(_this2.$app.API.USER_INFO, {}, function (res) {
             _this2.$app.setData('userInfo', res.data);
             _this2.userInfo = _this2.$app.getData('userInfo');

@@ -182,7 +182,7 @@
           display: -ms-flexbox;
           display: flex;
 }
-.guild-container .top-container .top-content .row-info .top-text-wrapper .bottom image.data-v-22b9dcee {
+.guild-container .top-container .top-content .row-info .top-text-wrapper .bottom .image.data-v-22b9dcee {
             width: 34rpx;
             height: 34rpx;
             margin-right: 10rpx;

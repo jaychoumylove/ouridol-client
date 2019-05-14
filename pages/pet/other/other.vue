@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<loadIconComponent v-if="requestCount>0" type='whole'></loadIconComponent>
+		
 
 		<view class="user-container">
 			<image :src="userInfo.avatarurl" mode="widthFix"></image>
@@ -113,14 +113,19 @@
 
 				user_id: null,
 
-				spriteInfo: {},
+				spriteInfo: {
+					sprite_level:0,
+				},
 				invitList: [],
 				invitAward: '',
 				modal: '',
 				earnCuttime: 1, // 收益计时
 				skillShow: false, // 显示技能
 
-				userInfo: {},
+				userInfo: {
+					nickname:this.$app.NICKNAME,
+
+				},
 			};
 		},
 		onShareAppMessage() {
@@ -133,9 +138,7 @@
 		},
 
 		methods: {
-
 			//HTTP
-
 			getUserInfo() {
 				this.$app.request(this.$app.API.USER_INFO, {
 					user_id: this.user_id

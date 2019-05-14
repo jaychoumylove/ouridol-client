@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<loadIconComponent v-if="requestCount>0" type='whole'></loadIconComponent>
+		
 
 		<view class="item" v-for="(item,index) in taskList" :key="index" v-if="!(item.type==4 && $app.getData('sysInfo').system.indexOf('iOS')!=-1 && $app.getData('config').ios_switch == 0)">
 			<view class="left-content">
@@ -34,7 +34,7 @@
 						<button class="btn" open-type="share" v-if="item.type == 9">
 							<view class="flex-set" style="width: 130upx;height: 65upx;">{{item.task_type.btn_text}}</view>
 						</button>
-						<button class="btn" open-type="contact" show-message-card v-else-if="$app.getData('sysInfo').system.indexOf('iOS')!=-1 && item.type == 4">
+						<button class="btn" open-type="contact" show-message-card v-else-if="$app.getData('config').ios_switch == 1 && $app.getData('sysInfo').system.indexOf('iOS')!=-1 && item.type == 4">
 							<view class="flex-set" style="width: 130upx;height: 65upx;">回复"1"</view>
 						</button>
 						<view v-else class="flex-set" style="width: 130upx;height: 65upx;">{{item.task_type.btn_text}}</view>
@@ -92,9 +92,12 @@
 				weiboUrl: '',
 			};
 		},
-		onLoad() {
+		onShow() {
 			this.getTaskList()
 			this.getShareText()
+		},
+		onLoad() {
+
 
 		},
 		onShareAppMessage() {
@@ -119,7 +122,6 @@
 				})
 			},
 			doTask(task) {
-				if(task.type == 4 && this.$app.getData('sysInfo').system.indexOf('iOS')!=-1) return
 				if (task.status == 0) {
 					if (task.task_type.gopage) {
 						this.$app.goPage(task.task_type.gopage)
@@ -128,7 +130,11 @@
 					} else if (task.task_type.id == 8) {
 						// 微博发帖
 						this.modal = 'weibo'
+					} else if (task.task_type.id == 4 && this.$app.getData('sysInfo').system.indexOf('iOS') != -1) {
+						// ios 去公众号
+						return
 					}
+
 				} else if (task.status == 1) {
 					// 去领取
 					this.$app.request(this.$app.API.TASK_SETTLE, {
@@ -208,6 +214,7 @@
 					align-items: flex-start;
 					margin-right: 30upx;
 					width: 100upx;
+
 					.right-item {
 						display: flex;
 						align-items: center;

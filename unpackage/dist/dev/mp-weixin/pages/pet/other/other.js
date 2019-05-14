@@ -213,14 +213,19 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
       user_id: null,
 
-      spriteInfo: {},
+      spriteInfo: {
+        sprite_level: 0 },
+
       invitList: [],
       invitAward: '',
       modal: '',
       earnCuttime: 1, // 收益计时
       skillShow: false, // 显示技能
 
-      userInfo: {} };
+      userInfo: {
+        nickname: this.$app.NICKNAME } };
+
+
 
   },
   onShareAppMessage: function onShareAppMessage() {
@@ -233,9 +238,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
   },
 
   methods: {
-
     //HTTP
-
     getUserInfo: function getUserInfo() {var _this = this;
       this.$app.request(this.$app.API.USER_INFO, {
         user_id: this.user_id },

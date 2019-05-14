@@ -259,8 +259,15 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     return {
       requestCount: 1,
 
-      userCurrency: {},
-      spriteInfo: {},
+      userCurrency: {
+        coin: 0,
+        stone: 0,
+        trumpet: 0 },
+
+      spriteInfo: {
+        sprite_level: 0,
+        earnPer: 0 },
+
       invitList: [],
       invitAward: '',
       modal: '',
