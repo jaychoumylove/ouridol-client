@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/open/open",
     "pages/index/index",
     "pages/user/user",
     "pages/pet/pet",
@@ -11,11 +12,16 @@
     "pages/star/rank_history/rank_history",
     "pages/group/dynamic/dynamic",
     "pages/task/task",
-    "pages/recharge/recharge",
-    "pages/notice/notice",
     "pages/notice/list/list",
     "pages/pet/other/other",
-    "pages/father/father"
+    "pages/father/father",
+    "pages/active_one/active_one",
+    "pages/fanclub/fanclub",
+    "pages/notice/notice",
+    "pages/signin/signin",
+    "pages/recharge/recharge",
+    "pages/log/log",
+    "pages/msg/msg"
   ],
   "subPackages": [],
   "window": {
@@ -41,7 +47,7 @@
         "pagePath": "pages/pet/pet",
         "iconPath": "/static/image/tab/pet.png",
         "selectedIconPath": "/static/image/tab/pet-tap.png",
-        "text": "精灵"
+        "text": "能量精灵"
       },
       {
         "pagePath": "pages/group/group",

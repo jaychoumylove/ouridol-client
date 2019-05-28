@@ -1,7 +1,7 @@
 <template>
 	<view class="container">
-
-		<block v-for="(item,index) in article" :key="index">
+		<web-view :src="webview" v-if="webview"></web-view>
+		<block v-else v-for="(item,index) in article" :key="index">
 			<view class="article-title" v-if="item.title">{{item.title}}</view>
 			<text class="article-content" decode v-if="item.content.length>0" v-for="(item1,index1) in item.content" :key="index1">{{item1}}</text>
 			<image class="article-image" v-if="item.image" :src="item.image" mode="widthFix"></image>
@@ -14,17 +14,27 @@
 		data() {
 			return {
 				article: [],
+				webview: '',
 			};
 		},
 		onLoad(option) {
-			this.getArticle(option.id)
+			if (option.url) {
+				this.webview = option.url
+			} else if (option.id) {
+				this.getArticle(option.id)
+			}
 		},
 		methods: {
 			getArticle(id) {
 				this.$app.request(this.$app.API.ARTICLE, {
 					id
 				}, res => {
-					this.article = JSON.parse(res.data.value)
+
+					try {
+						this.article = JSON.parse(res.data.value)
+					} catch (e) {
+						this.webview = res.data.value
+					}
 
 					uni.setNavigationBarTitle({
 						title: res.data.name

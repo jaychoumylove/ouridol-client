@@ -1,5 +1,6 @@
 {
   "navigationBarTitleText": "偶像圈",
+  "disableScroll": true,
   "usingComponents": {
     "guild-component": "/components/guildComponent"
   }

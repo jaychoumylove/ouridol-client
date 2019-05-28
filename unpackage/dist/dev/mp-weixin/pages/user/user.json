@@ -1,5 +1,6 @@
 {
   "navigationBarTitleText": "个人中心",
+  "disableScroll": true,
   "usingComponents": {
     "badge-component": "/components/badgeComponent",
     "modal-component": "/components/modalComponent"

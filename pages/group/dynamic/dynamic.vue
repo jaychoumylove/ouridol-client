@@ -40,7 +40,7 @@
 		onLoad(option) {
 			this.starid = option.starid
 			this.starname = option.starname
-			this.getDynamic()
+			// this.getDynamic()
 		},
 		methods: {
 			getDynamic() {

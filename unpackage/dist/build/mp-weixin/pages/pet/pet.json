@@ -1,5 +1,6 @@
 {
-  "navigationBarTitleText": "精灵",
+  "navigationBarTitleText": "能量精灵",
+  "disableScroll": true,
   "usingComponents": {
     "modal-component": "/components/modalComponent",
     "btn-component": "/components/btnComponent",

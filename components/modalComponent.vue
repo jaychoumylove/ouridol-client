@@ -37,11 +37,9 @@
 			},
 		},
 		created() {
-			
-
+			this.show = true
 		},
 		mounted() {
-			this.show = true
 		},
 		methods: {
 			closeModal() {
@@ -64,7 +62,7 @@
 		z-index: 99;
 		background-color: rgba(0, 0, 0, .5);
 		transition: .2s;
-		opacity: 0.1;
+		opacity: 0;
 
 		.modal-container {
 			width: 600upx;

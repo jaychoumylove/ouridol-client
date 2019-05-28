@@ -9,9 +9,9 @@
 
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; // 基础常量
-// const HOST = 'ouridol.xiaolishu.com';
+var HOST = 'ouridol.xiaolishu.com';
 // const HOST = 'rank.xiaolishu.com';
-var HOST = 'cs.huamufang.com';
+// const HOST = 'cs.huamufang.com';
 var VERSION = 'v1';var _default =
 
 {
@@ -22,7 +22,6 @@ var VERSION = 'v1';var _default =
 
   AVATAR: 'https://wx.qlogo.cn/mmhead/gBSelbQM7M19TeazvLwo3f8znKS8KR1CuibicFHc1GTWI/132',
   NICKNAME: '神秘粉丝',
-
 
   API: {
     AUTH_LOGIN: 'user/login', // 用户登录
@@ -79,13 +78,22 @@ var VERSION = 'v1';var _default =
     EXT_SHARETEXT: 'sharetext', // 分享文字
     TASK_WEIBO: 'task/weibo', // 提交微博链接
 
+    EXT_ACTIVEINFO: 'active/info', // 活动信息
+    EXT_ACTIVECARD: 'active/card', // 打卡
+    EXT_ACTIVE_USERRANK: 'active/userrank', // 用户打开排名
+
     TREASURE: 'treasure', // 寻宝
     TREASURE_SETTLE: 'treasure/settle', // 寻宝结算
 
     ARTICLE: 'article', // 获取文章
-    ARTICLE_LIST: 'article/list',
+    ARTICLE_LIST: 'article/list', // 全部文章
 
-    CONFIG: 'config' // 配置信息
+    CONFIG: 'config', // 配置信息
+    EXT_FUNCLUB_JOIN: 'funclub/join', // 后援会加入
+
+    USER_SIGNIN: 'user/signin', // 用户签到
+
+    LOG: 'ext/log' // 用户日志
   } };exports.default = _default;
 
 /***/ }),
@@ -101,26 +109,39 @@ var VERSION = 'v1';var _default =
 /* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; // 扩展方法
 var _default = {
   /**登录 */
-  login: function login(callBack) {var _this = this;
+  login: function login(callBack) {
+    var getAuth = function () {var _this = this;var js_code = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';var code = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+      // 通用登录接口
+      this.request(this.API.AUTH_LOGIN, {
+        platform: this.getData('sysInfo')['platform'],
+        model: this.getData('sysInfo')['model'],
+        js_code: js_code, // 微信小程序登录
+        code: code // 微信网页授权登录
+      }, function (res) {
+        if (res.data.token) {
+          _this.setData('token', res.data.token);
+          callBack && callBack();
+        }
+      });
+    }.bind(this);
+
 
     uni.login({
       success: function success(res) {
-        var sendData = {
-          platform: _this.getData('sysInfo')['platform'],
-          model: _this.getData('sysInfo')['model'] };
-
-
-
-
-
-        sendData['js_code'] = res.code;
-
-
-        _this.request(_this.API.AUTH_LOGIN, sendData, function (res) {
-          _this.setData('token', res.data.token);
-          callBack && callBack();
-        });
+        getAuth(res.code);
       } });
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -154,53 +175,57 @@ var _default = {
   },
 
   // 页面相关
-  initSocket: function initSocket() {var _this2 = this;
-    this.socketTask && this.socketTask.close();
+  invokeSocket: function invokeSocket() {var _this2 = this;
+    if (!this.socketTask || this.socketTask.readyState == 2 || this.socketTask.readyState == 3) {
+      this.socketTask = uni.connectSocket({
+        url: this.WSS_URL,
+        success: function success(res) {
+          console.log('WebSocket 连接成功！', res);
+        } });
 
-    this.socketTask = uni.connectSocket({
-      url: this.WSS_URL,
-      success: function success(res) {
-        console.log('WebSocket 连接成功！', res);
-      } });
 
+      this.socketTask.onMessage(function (res) {
+        var msg = JSON.parse(res.data);
+        console.log('收到 WebSocket消息', msg);var
 
-    this.socketTask.onMessage(function (res) {
-      var msg = JSON.parse(res.data);
-      console.log('收到 WebSocket消息', msg);var
+        type =
 
-      type =
+        msg.type,data = msg.data;
+        var page = _this2.getPage(); // 当前页面栈实例对象
 
-      msg.type,data = msg.data;
-      var page = _this2.getPage(); // 当前页面栈实例对象
+        switch (type) {
+          case 'init': // 保存ClientId 并绑定user_id
+            _this2.setData('clientId', data);
+            // this.getData('userInfo') && this.request(this.API.USER_BIND, {
+            // 	client_id: data
+            // })
+            // 新的clientId可能需要重新joinGroup
+            page && page.$refs.guildComponent &&
+            page.$refs.guildComponent.joinGroup && page.$refs.guildComponent.joinGroup();
+            break;
+          case 'chartMsg': // 偶像圈聊天
+            page && page.$refs.guildComponent &&
+            page.$refs.guildComponent.addChartMsg && page.$refs.guildComponent.addChartMsg(data);
+            break;
+          case 'sayworld': // 世界喊话
+            page && page.$refs.guildComponent &&
+            page.$refs.guildComponent.addDanmaku && page.$refs.guildComponent.addDanmaku(data);
+            break;
+          default:
+            break;}
 
-      switch (type) {
-        case 'init': // 保存ClientId 并绑定user_id
-          _this2.setData('clientId', data);
-          _this2.getData('userInfo') && _this2.request(_this2.API.USER_BIND, {
-            client_id: data });
+      });
 
-          // 新的clientId可能需要重新joinGroup
-          page && page.$refs.guildComponent && page.$refs.guildComponent.joinGroup();
-          break;
-        case 'chartMsg': // 偶像圈聊天
-          page && page.$refs.guildComponent && page.$refs.guildComponent.addChartMsg(data);
-          break;
-        case 'sayworld': // 世界喊话
-          page && page.$refs.guildComponent && page.$refs.guildComponent.addDanmaku(data);
-          break;
-        default:
-          break;}
-
-    });
-
-    this.socketTask.onClose(function (res) {
-      console.log('WebSocket 已关闭！', res);
-      if (res.code == 1006) {
-        // "abnormal closure"
-        _this2.initSocket();
-      }
-      // reason : "interrupted" // 关屏中断"abnormal closure"
-    });
+      this.socketTask.onClose(function (res) {
+        console.log('WebSocket 已关闭！', res);
+        if (res.code == 1006) {
+          // 重连
+          // "abnormal closure"
+          _this2.invokeSocket();
+        }
+        // reason : "interrupted" // 关屏中断"abnormal closure"
+      });
+    }
   },
   /**
       * 关闭全屏loading
@@ -229,9 +254,11 @@ var _default = {
     if (shareType) {
       // 使用特殊配置
       var share = this.getData('config').share_cfg[shareType - 1];
-      if (share.title) title = share.title;
-      if (share.path) path = share.path;
-      if (share.imageUrl) imageUrl = share.imageUrl;
+      if (share) {
+        if (share.title) title = share.title;
+        if (share.path) path = share.path;
+        if (share.imageUrl) imageUrl = share.imageUrl;
+      }
 
       //--------------
       title = title.replace(/STARNAME/g, this.getData('userStar').name || '我们的');
@@ -272,18 +299,15 @@ var _default = {
     }
 
     data.token = this.getData('token'); // 带上token
-    // data.token = 'Y1J3S2l2OGw1eVhCcjNMVmRwWHNOREEwT1RFME9UazRNamdtTkRNPQ=='// 带上token
     this.isBlock = true;
-    // uni.showNavigationBarLoading()
     uni.request({
       url: url.indexOf('https://') != -1 ? url : this.HTTP_URL + url,
       method: method,
       data: data,
       header: {
-        "content-type": "application/x-www-form-urlencoded" },
+        'content-type': 'application/x-www-form-urlencoded' },
 
       success: function success(res) {
-        // uni.hideNavigationBarLoading()
         _this.isBlock = false;
         if (res.statusCode != 200) {
           // 请求失败
@@ -300,6 +324,9 @@ var _default = {
           // 操作成功
           _success && _success(res.data);
         }
+      },
+      fail: function fail(res) {
+        console.error('请求失败！' + JSON.stringify(res));
       } });
 
   },
@@ -363,20 +390,22 @@ var _default = {
     query.exec(callBack);
   },
 
-  setData: function setData(key, value) {var cache = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-    if (cache) {
-      uni.setStorageSync(key, value);
-    }
+  setData: function setData(key, value) {var sync = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
     this[key] = value;
+    if (sync) {
+      // 同步保存到缓存
+      uni.setStorageSync(key, value);
+    } else {
+      // 异步保存到缓存
+      uni.setStorage({
+        key: key,
+        data: value });
+
+    }
   },
-  getData: function getData(key) {var cache = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-    var value;
-    if (cache) {
-      value = uni.getStorageSync(key);
-    }
-    if (!value) {
-      value = this[key] || {};
-    }
+  getData: function getData(key) {
+    var value = this[key];
+    if (!value || !value.length) value = uni.getStorageSync(key);
     return value;
   },
 
@@ -386,14 +415,23 @@ var _default = {
   timeGethms: function timeGethms(time) {
     var time = parseInt(time);
 
+    var day = Math.floor(time / 3600 / 24);
+    time -= day * 3600 * 24;
+    if (day < 10) day = '0' + day;
+
     var hour = Math.floor(time / 3600);
+    time -= hour * 3600;
     if (hour < 10) hour = '0' + hour;
-    var min = Math.floor(time % 3600 / 60);
+
+    var min = Math.floor(time / 60);
+    time -= min * 60;
     if (min < 10) min = '0' + min;
-    var sec = Math.floor(time % 3600 % 60);
+
+    var sec = time;
     if (sec < 10) sec = '0' + sec;
 
     return {
+      day: parseInt(day),
       hour: parseInt(hour),
       min: parseInt(min),
       sec: parseInt(sec),
@@ -436,8 +474,121 @@ var _default = {
       */
   getPage: function getPage() {
     return getCurrentPages()[getCurrentPages().length - 1] && getCurrentPages()[getCurrentPages().length - 1].$vm || null;
+  },
+
+  /**
+      * 获取url参数
+      */
+  getQueryString: function getQueryString(name) {
+    var queryStr = location.href.split('?')[1];
+    if (!queryStr) return;
+    var vars = queryStr.split("&");
+    for (var i = 0; i < vars.length; i++) {
+      var pair = vars[i].split("=");
+      if (pair[0] == name) {
+        return decodeURIComponent(pair[1]);
+      }
+    }
+    return;
+  },
+  /**
+      * 文件上传
+      * @param Array file 文件路径
+      */
+  upload: function upload(file, callBack) {
+    var url = this.HTTP_URL + 'upload';
+    var realFile = [];
+    if (typeof file == 'string') {
+      file = [file];
+    }var _loop = function _loop(
+    i) {
+      if (!file[i]) {
+        file.splice(i, 1);
+      } else {
+        uni.uploadFile({
+          url: url,
+          filePath: file[i],
+          name: 'file',
+          success: function success(res) {
+            realFile[i] = JSON.parse(res.data).data.url;
+            if (realFile.length == file.length) {
+              // 全部上传完成
+              callBack && callBack(realFile);
+            }
+          } });
+
+      }};for (var i = 0; i < file.length; i++) {_loop(i);
+    }
+
   } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["default"]))
+
+/***/ }),
+
+/***/ "../../../../../Develop/uni-app/work_0420/lib/utils/ald-stat-conf.js":
+/*!***************************************************************!*\
+  !*** D:/Develop/uni-app/work_0420/lib/utils/ald-stat-conf.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+exports.app_key = "490ebb2e62a7e5417c5b4f6814a3e9cd"; //请在此行填写从阿拉丁后台获取的appkey
+exports.getLocation = false; //默认不获取用户坐标位置
+exports.plugin = false; //您的小程序中是否使用了插件。根据是否启用插件会有不同的接入方式，请参考文档文档。
+exports.useOpen = false; //默认不启用，是否启用openid计算，开启后必须上传openid，否则数据不会上报。
+
+/***/ }),
+
+/***/ "../../../../../Develop/uni-app/work_0420/lib/utils/ald-stat.js":
+/*!**********************************************************!*\
+  !*** D:/Develop/uni-app/work_0420/lib/utils/ald-stat.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+!function (n, t) { true ? module.exports = t() : undefined;}(void 0, function () {function n() {this.concurrency = 4, this.queue = [], this.tasks = [], this.activeCount = 0;var n = this;this.push = function (t) {this.tasks.push(new Promise(function (e, o) {var r = function r() {n.activeCount++, t().then(function (n) {e(n);}).then(function () {n.next();});};n.activeCount < n.concurrency ? r() : n.queue.push(r);}));}, this.all = function () {return Promise.all(this.tasks);}, this.next = function () {n.activeCount--, n.queue.length > 0 && n.queue.shift()();};}function t() {this.request = [], this.updata = !1, this.push = function (n) {this.request.length >= 8 && !this.updata && (this.updata = !0, e()), this.request.length >= 10 ? (this.request.shift(), this.request.push(n)) : this.request.push(n);}, this.concat = function () {this.request.map(function (n) {wx.Queue.push(n);}), this.request = [];};}function e() {"function" == typeof dn && "" === G && dn().then(function (n) {28 === n.length && (G = n, wx.setStorageSync("aldstat_op", n));});}function o(n) {this.app = n;}function r(n) {j = S(), W = n, ln = n.scene, this.aldstat = new o(this);}function i(n) {e();var t;t = n.scene != ln, ln = n.scene, V = 0, W = n, F = n.query.ald_share_src, X = n.query.aldsrc || "", Y = n.query.ald_share_src, fn || ($ = !1), fn = !1, hn || (0 !== Q && Date.now() - Q > 3e4 ? (T = S(), N = Date.now()) : t && (N = Date.now(), T = S())), 0 !== Q && Date.now() - Q < 3e4 && (rn = !0), n.query.ald_share_src && "1044" == n.scene && n.shareTicket ? wx.getShareInfo({ shareTicket: n.shareTicket, success: function success(n) {nn = n, D("event", "ald_share_click", JSON.stringify(n));} }) : n.query.ald_share_src && D("event", "ald_share_click", 1), "" === tn && wx.getSetting({ withCredentials: !0, success: function success(n) {if (n.authSetting["scope.userInfo"]) {wx.getUserInfo({ withCredentials: !0, success: function success(n) {var t = v();tn = n, t.ufo = _(n), K = y(n.userInfo.avatarUrl.split("/")), w(t);} });}} }), q("app", "show");}function s() {e(), Q = Date.now(), "" === tn && wx.getSetting({ success: function success(n) {n.authSetting["scope.userInfo"] && wx.getUserInfo({ withCredentials: !0, success: function success(n) {tn = n, K = y(n.userInfo.avatarUrl.split("/"));var t = v();t.ufo = _(n), w(t);} });} }), q("app", "hide");}function a(n) {Z++, D("event", "ald_error_message", n);}function u(n) {un = n;}function c() {sn = B ? this.$mp.page.route : this.route, A("page", "show"), rn = !1;}function f() {an = sn;}function h() {an = sn;}function l() {D("event", "ald_pulldownrefresh", 1);}function p() {D("event", "ald_reachbottom", 1);}function d(n) {hn = !0;var t = m(n.path),e = {};for (var o in W.query) {"ald_share_src" === o && (e[o] = W.query[o]);}var r = "";if (r = n.path.indexOf("?") == -1 ? n.path + "?" : n.path.substr(0, n.path.indexOf("?")) + "?", "" !== t) for (var o in t) {e[o] = t[o];}e.ald_share_src ? e.ald_share_src.indexOf(z) == -1 && e.ald_share_src.length < 200 && (e.ald_share_src = e.ald_share_src + "," + z) : e.ald_share_src = z;for (var i in e) {i.indexOf("ald") == -1 && (r += i + "=" + e[i] + "&");}return n.path = r + "ald_share_src=" + e.ald_share_src, D("event", "ald_share_status", n), n;}function g() {function n() {return Math.floor(65536 * (1 + Math.random())).toString(16).substring(1);}return n() + n() + n() + n() + n() + n() + n() + n();}function w(n) {function t() {return new Promise(function (t, e) {var o = { AldStat: "MiniApp-Stat", se: J || "", op: G || "", img: K };"" === E || (o.ai = E), wx.request({ url: "https://" + U + ".aldwx.com/d.html", data: n, header: o, method: "GET", success: function success(n) {t(200 == n.statusCode ? "" : "status error");}, fail: function fail() {t("fail");} });});}V++, n.at = T, n.uu = z, n.v = C, n.ak = H.app_key.replace(/(\t)|(\s)/g, ""), n.wsr = W, n.ifo = $, n.rq_c = V, n.ls = j, n.te = b, n.et = Date.now(), n.st = Date.now(), H.useOpen ? "" === G ? pn.push(t) : (wx.Queue.push(t), pn.concat()) : wx.Queue.push(t);}function v() {var n = {};for (var t in en) {n[t] = en[t];}return n;}function y(n) {for (var t = "", e = 0; e < n.length; e++) {n[e].length > t.length && (t = n[e]);}return t;}function S() {return "" + Date.now() + Math.floor(1e7 * Math.random());}function _(n) {var t = {};for (var e in n) {"rawData" != e && "errMsg" != e && (t[e] = n[e]);}return t;}function m(n) {if (n.indexOf("?") == -1) return "";var t = {};return n.split("?")[1].split("&").forEach(function (n) {var e = n.split("=")[1];t[n.split("=")[0]] = e;}), t;}function x(n) {for (var t in n) {if ("object" == typeof n[t] && null !== n[t]) return !0;}return !1;}function q(n, t) {var e = v();e.ev = n, e.life = t, e.ec = Z, e.dr = Date.now() - N, X && (e.qr = X, e.sr = X), F && (e.usr = F), w(e);}function A(n, t) {var e = v();e.ev = n, e.life = t, e.pp = sn, e.pc = an, e.dr = Date.now() - N, hn && (e.so = 1), hn = !1, un && "{}" != JSON.stringify(un) && (e.ag = un), X && (e.qr = X, e.sr = X), F && (e.usr = F), rn && (e.ps = 1), on || (cn = sn, on = !0, e.ifp = on, e.fp = sn), w(e);}function D(n, t, e) {var o = v();o.ev = n, o.tp = t, o.dr = Date.now() - N, e && (o.ct = e), w(o);}function M(n, t, e) {if (n[t]) {var o = n[t];n[t] = function (n) {e.call(this, n, t), o.call(this, n);};} else n[t] = function (n) {e.call(this, n, t);};}function I(n) {var t = {};for (var e in n) {"onLaunch" !== e && "onShow" !== e && "onHide" !== e && "onError" !== e && (t[e] = n[e]);}return t.onLaunch = function (t) {r.call(this, t), "function" == typeof n.onLaunch && n.onLaunch.call(this, t);}, t.onShow = function (t) {i.call(this, t), n.onShow && "function" == typeof n.onShow && n.onShow.call(this, t);}, t.onHide = function () {s.call(this), n.onHide && "function" == typeof n.onHide && n.onHide.call(this);}, t.onError = function (t) {a.call(this, t), n.onError && "function" == typeof n.onError && n.onError.call(this, t);}, t;}function P(n) {var t = {};for (var e in n) {"onLoad" !== e && "onShow" !== e && "onHide" !== e && "onUnload" !== e && "onPullDownRefresh" !== e && "onReachBottom" !== e && "onShareAppMessage" !== e && (t[e] = n[e]);}return t.onLoad = function (t) {u.call(this, t), "function" == typeof n.onLoad && n.onLoad.call(this, t);}, t.onShow = function (t) {c.call(this), "function" == typeof n.onShow && n.onShow.call(this, t);}, t.onHide = function (t) {f.call(this), "function" == typeof n.onHide && n.onHide.call(this, t);}, t.onUnload = function (t) {h.call(this), "function" == typeof n.onUnload && n.onUnload.call(this, t);}, t.onReachBottom = function (t) {p(), n.onReachBottom && "function" == typeof n.onReachBottom && n.onReachBottom.call(this, t);}, t.onPullDownRefresh = function (t) {l(), n.onPullDownRefresh && "function" == typeof n.onPullDownRefresh && n.onPullDownRefresh.call(this, t);}, n.onShareAppMessage && "function" == typeof n.onShareAppMessage && (t.onShareAppMessage = function (t) {var e = n.onShareAppMessage.call(this, t);return void 0 === e ? (e = {}, e.path = this.route) : void 0 === e.path && (e.path = this.route), d.call(this, e);}), t;}function L(n) {return App(I(n));}function O(n) {return Page(P(n));}function R(n) {return B = !0, I(n);}function k(n) {return P(n);}var H = __webpack_require__(/*! ./ald-stat-conf */ "../../../../../Develop/uni-app/work_0420/lib/utils/ald-stat-conf.js");void 0 === wx.Queue && (wx.Queue = new n(), wx.Queue.all()), H.useOpen && console.warn("提示：开启了useOpen配置后，如果不上传用户opendId则不会上报数据。");var C = "7.3.0",U = "log",b = "wx",E = function () {return void 0 === wx.getAccountInfoSync ? "" : wx.getAccountInfoSync().miniProgram.appId.split("").map(function (n) {return n.charCodeAt(0) + 9;}).join("-");}(),B = !1,T = S(),j = "",N = 0,Q = 0,J = "",G = function () {var n = "";try {n = wx.getStorageSync("aldstat_op");} catch (n) {}return n;}(),K = "",V = 0,W = "",$ = "",z = function () {var n = "";try {n = wx.getStorageSync("aldstat_uuid");} catch (t) {n = "uuid_getstoragesync";}if (n) $ = !1;else {n = g();try {wx.setStorageSync("aldstat_uuid", n), $ = !0;} catch (n) {wx.setStorageSync("aldstat_uuid", "uuid_getstoragesync");}}return n;}(),F = "",X = "",Y = "",Z = 0,nn = "",tn = "",en = {},on = !1,rn = !1,sn = "",an = "",un = "",cn = "",fn = !0,hn = !1,ln = "",pn = new t(),dn = "";!function () {wx.request({ url: "https://" + U + ".aldwx.com/config/app.json", header: { AldStat: "MiniApp-Stat" }, method: "GET", success: function success(n) {200 === n.statusCode && (C < n.data.version && console.warn("您的SDK不是最新版本，请尽快升级！"), n.data.warn && console.warn(n.data.warn), n.data.error && console.error(n.data.error));} });}(), wx.aldstat = new o("");try {var gn = wx.getSystemInfoSync();en.br = gn.brand, en.pm = gn.model, en.pr = gn.pixelRatio, en.ww = gn.windowWidth, en.wh = gn.windowHeight, en.lang = gn.language, en.wv = gn.version, en.wvv = gn.platform, en.wsdk = gn.SDKVersion, en.sv = gn.system;} catch (n) {}wx.getNetworkType({ success: function success(n) {en.nt = n.networkType;} }), wx.getSetting({ success: function success(n) {n.authSetting["scope.userLocation"] ? wx.getLocation({ type: "wgs84", success: function success(n) {en.lat = n.latitude, en.lng = n.longitude, en.spd = n.speed;} }) : H.getLocation && wx.getLocation({ type: "wgs84", success: function success(n) {en.lat = n.latitude, en.lng = n.longitude, en.spd = n.speed;} });} }), o.prototype.sendEvent = function (n, t) {if ("" !== n && "string" == typeof n && n.length <= 255) {if ("string" == typeof t && t.length <= 255) D("event", n, t);else if ("object" == typeof t) {if (JSON.stringify(t).length >= 255) return void console.error("自定义事件参数不能超过255个字符");if (x(t)) return void console.error("事件参数，参数内部只支持Number,String等类型，请参考接入文档");for (var e in t) {"number" == typeof t[e] && (t[e] = t[e] + "s##");}D("event", n, JSON.stringify(t));} else void 0 === t ? D("event", n, !1) : console.error("事件参数必须为String,Object类型,且参数长度不能超过255个字符");} else console.error("事件名称必须为String类型且不能超过255个字符");}, o.prototype.sendSession = function (n) {if ("" === n || !n) return void console.error("请传入从后台获取的session_key");J = n;var t = v();t.tp = "session", t.ct = "session", t.ev = "event", "" === tn ? wx.getSetting({ success: function success(n) {n.authSetting["scope.userInfo"] ? wx.getUserInfo({ success: function success(n) {t.ufo = _(n), K = y(n.userInfo.avatarUrl.split("/")), "" !== nn && (t.gid = nn), w(t);} }) : "" !== nn && (t.gid = nn, w(t));} }) : (t.ufo = tn, "" !== nn && (t.gid = nn), w(t));}, o.prototype.sendOpenid = function (n) {if ("" === n || !n || 28 !== n.length) return void console.error("openID不能为空");G = n, wx.setStorageSync("aldstat_op", n);var t = v();t.tp = "openid", t.ev = "event", t.ct = "openid", w(t);}, o.prototype.setOpenid = function (n) {"function" == typeof n && (dn = n, e());};return H.plugin ? { App: L, Page: O, MpvueApp: R, MpvuePage: k } : function (n) {!function () {var n = App,t = Page,e = Component;App = function App(t) {M(t, "onLaunch", r), M(t, "onShow", i), M(t, "onHide", s), M(t, "onError", a), n(t);}, Page = function Page(n) {var e = n.onShareAppMessage;M(n, "onLoad", u), M(n, "onUnload", h), M(n, "onShow", c), M(n, "onHide", f), M(n, "onReachBottom", p), M(n, "onPullDownRefresh", l), void 0 !== e && null !== e && (n.onShareAppMessage = function (n) {if (void 0 !== e) {var t = e.call(this, n);return void 0 === t ? (t = {}, t.path = sn) : void 0 === t.path && (t.path = sn), d(t);}}), t(n);}, Component = function Component(n) {try {var t = n.methods.onShareAppMessage;M(n.methods, "onLoad", u), M(n.methods, "onUnload", h), M(n.methods, "onShow", c), M(n.methods, "onHide", f), M(n.methods, "onReachBottom", p), M(n.methods, "onPullDownRefresh", l), void 0 !== t && null !== t && (n.methods.onShareAppMessage = function (n) {if (void 0 !== t) {var e = t.call(this, n);return void 0 === e ? (e = {}, e.path = sn) : void 0 === e.path && (e.path = sn), d(e);}}), e(n);} catch (t) {e(n);}};}();}();});
+
+/***/ }),
+
+/***/ "../../../../../Develop/uni-app/work_0420/lib/utils/xhtad_conf.js":
+/*!************************************************************!*\
+  !*** D:/Develop/uni-app/work_0420/lib/utils/xhtad_conf.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+exports.app_key = 'xhutuice82873f0d3568a4'; //app_key可从小虎推后台接入SDK处获取
+
+/***/ }),
+
+/***/ "../../../../../Develop/uni-app/work_0420/lib/utils/xhtad_md5.js":
+/*!***********************************************************!*\
+  !*** D:/Develop/uni-app/work_0420/lib/utils/xhtad_md5.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+function safe_add(e, f) {var g = (65535 & e) + (65535 & f);return (e >> 16) + (f >> 16) + (g >> 16) << 16 | 65535 & g;}function rol(e, f) {return e << f | e >>> 32 - f;}function cmn(e, f, g, h, j, k) {return safe_add(rol(safe_add(safe_add(f, e), safe_add(h, k)), j), g);}function ff(e, f, g, h, j, k, l) {return cmn(f & g | ~f & h, e, f, j, k, l);}function gg(e, f, g, h, j, k, l) {return cmn(f & h | g & ~h, e, f, j, k, l);}function hh(e, f, g, h, j, k, l) {return cmn(f ^ g ^ h, e, f, j, k, l);}function ii(e, f, g, h, j, k, l) {return cmn(g ^ (f | ~h), e, f, j, k, l);}function coreMD5(e) {for (var f = 1732584193, g = -271733879, h = -1732584194, j = 271733878, k = 0; k < e.length; k += 16) {var l = f,m = g,n = h,o = j;f = ff(f, g, h, j, e[k + 0], 7, -680876936), j = ff(j, f, g, h, e[k + 1], 12, -389564586), h = ff(h, j, f, g, e[k + 2], 17, 606105819), g = ff(g, h, j, f, e[k + 3], 22, -1044525330), f = ff(f, g, h, j, e[k + 4], 7, -176418897), j = ff(j, f, g, h, e[k + 5], 12, 1200080426), h = ff(h, j, f, g, e[k + 6], 17, -1473231341), g = ff(g, h, j, f, e[k + 7], 22, -45705983), f = ff(f, g, h, j, e[k + 8], 7, 1770035416), j = ff(j, f, g, h, e[k + 9], 12, -1958414417), h = ff(h, j, f, g, e[k + 10], 17, -42063), g = ff(g, h, j, f, e[k + 11], 22, -1990404162), f = ff(f, g, h, j, e[k + 12], 7, 1804603682), j = ff(j, f, g, h, e[k + 13], 12, -40341101), h = ff(h, j, f, g, e[k + 14], 17, -1502002290), g = ff(g, h, j, f, e[k + 15], 22, 1236535329), f = gg(f, g, h, j, e[k + 1], 5, -165796510), j = gg(j, f, g, h, e[k + 6], 9, -1069501632), h = gg(h, j, f, g, e[k + 11], 14, 643717713), g = gg(g, h, j, f, e[k + 0], 20, -373897302), f = gg(f, g, h, j, e[k + 5], 5, -701558691), j = gg(j, f, g, h, e[k + 10], 9, 38016083), h = gg(h, j, f, g, e[k + 15], 14, -660478335), g = gg(g, h, j, f, e[k + 4], 20, -405537848), f = gg(f, g, h, j, e[k + 9], 5, 568446438), j = gg(j, f, g, h, e[k + 14], 9, -1019803690), h = gg(h, j, f, g, e[k + 3], 14, -187363961), g = gg(g, h, j, f, e[k + 8], 20, 1163531501), f = gg(f, g, h, j, e[k + 13], 5, -1444681467), j = gg(j, f, g, h, e[k + 2], 9, -51403784), h = gg(h, j, f, g, e[k + 7], 14, 1735328473), g = gg(g, h, j, f, e[k + 12], 20, -1926607734), f = hh(f, g, h, j, e[k + 5], 4, -378558), j = hh(j, f, g, h, e[k + 8], 11, -2022574463), h = hh(h, j, f, g, e[k + 11], 16, 1839030562), g = hh(g, h, j, f, e[k + 14], 23, -35309556), f = hh(f, g, h, j, e[k + 1], 4, -1530992060), j = hh(j, f, g, h, e[k + 4], 11, 1272893353), h = hh(h, j, f, g, e[k + 7], 16, -155497632), g = hh(g, h, j, f, e[k + 10], 23, -1094730640), f = hh(f, g, h, j, e[k + 13], 4, 681279174), j = hh(j, f, g, h, e[k + 0], 11, -358537222), h = hh(h, j, f, g, e[k + 3], 16, -722521979), g = hh(g, h, j, f, e[k + 6], 23, 76029189), f = hh(f, g, h, j, e[k + 9], 4, -640364487), j = hh(j, f, g, h, e[k + 12], 11, -421815835), h = hh(h, j, f, g, e[k + 15], 16, 530742520), g = hh(g, h, j, f, e[k + 2], 23, -995338651), f = ii(f, g, h, j, e[k + 0], 6, -198630844), j = ii(j, f, g, h, e[k + 7], 10, 1126891415), h = ii(h, j, f, g, e[k + 14], 15, -1416354905), g = ii(g, h, j, f, e[k + 5], 21, -57434055), f = ii(f, g, h, j, e[k + 12], 6, 1700485571), j = ii(j, f, g, h, e[k + 3], 10, -1894986606), h = ii(h, j, f, g, e[k + 10], 15, -1051523), g = ii(g, h, j, f, e[k + 1], 21, -2054922799), f = ii(f, g, h, j, e[k + 8], 6, 1873313359), j = ii(j, f, g, h, e[k + 15], 10, -30611744), h = ii(h, j, f, g, e[k + 6], 15, -1560198380), g = ii(g, h, j, f, e[k + 13], 21, 1309151649), f = ii(f, g, h, j, e[k + 4], 6, -145523070), j = ii(j, f, g, h, e[k + 11], 10, -1120210379), h = ii(h, j, f, g, e[k + 2], 15, 718787259), g = ii(g, h, j, f, e[k + 9], 21, -343485551), f = safe_add(f, l), g = safe_add(g, m), h = safe_add(h, n), j = safe_add(j, o);}return [f, g, h, j];}function binl2hex(e) {for (var f = "0123456789abcdef", g = "", h = 0; h < 4 * e.length; h++) {g += f.charAt(15 & e[h >> 2] >> 8 * (h % 4) + 4) + f.charAt(15 & e[h >> 2] >> 8 * (h % 4));}return g;}function binl2b64(e) {for (var g = "", h = 0; h < 32 * e.length; h += 6) {g += "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt(63 & e[h >> 5] << h % 32 | 63 & e[h >> 6] >> 32 - h % 32);}return g;}function str2binl(e) {for (var f = (e.length + 8 >> 6) + 1, g = Array(16 * f), h = 0; h < 16 * f; h++) {g[h] = 0;}for (var h = 0; h < e.length; h++) {g[h >> 2] |= (255 & e.charCodeAt(h)) << 8 * (h % 4);}return g[h >> 2] |= 128 << 8 * (h % 4), g[16 * f - 2] = 8 * e.length, g;}function strw2binl(e) {for (var f = (e.length + 4 >> 5) + 1, g = Array(16 * f), h = 0; h < 16 * f; h++) {g[h] = 0;}for (var h = 0; h < e.length; h++) {g[h >> 1] |= e.charCodeAt(h) << 16 * (h % 2);}return g[h >> 1] |= 128 << 16 * (h % 2), g[16 * f - 2] = 16 * e.length, g;}function hexMD5(e) {return binl2hex(coreMD5(str2binl(e)));}function hexMD5w(e) {return binl2hex(coreMD5(strw2binl(e)));}function b64MD5(e) {return binl2b64(coreMD5(str2binl(e)));}function b64MD5w(e) {return binl2b64(coreMD5(strw2binl(e)));}function calcMD5(e) {return binl2hex(coreMD5(str2binl(e)));}module.exports = { hexMD5: hexMD5 };
+
+/***/ }),
+
+/***/ "../../../../../Develop/uni-app/work_0420/lib/utils/xhtad_sdk.min.js":
+/*!***************************************************************!*\
+  !*** D:/Develop/uni-app/work_0420/lib/utils/xhtad_sdk.min.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+!function (t, e) {module.exports = function () {var t = __webpack_require__(/*! ./xhtad_conf.js */ "../../../../../Develop/uni-app/work_0420/lib/utils/xhtad_conf.js"),e = __webpack_require__(/*! ./xhtad_md5.js */ "../../../../../Develop/uni-app/work_0420/lib/utils/xhtad_md5.js");if (!t.app_key || 22 !== t.app_key.length) return console.warn("\u5C0F\u4E92\u63A8\u63D0\u793A\uFF1A\u914D\u7F6E\u9519\u8BEF\uFF0C\u8BF7\u5728xhtad_conf.js\u4E2D\u6B63\u786E\u914D\u7F6E\u60A8\u7684app_key\u3002"), !1;var n = "https://log.xiaohutui.com",u = { ak: t.app_key.replace(/(^\s*)|(\s*$)/g, ""), v: "1.3", pb: "", pm: "", sv: "", pv: "", nt: "", ww: 0, wh: 0, pr: 0, long: 0, lat: 0, wvv: "", wv: "", lang: "", pp: "", uuid: "", user_info: {} },o = 0,edata = '',a = function a() {function t() {return Math.floor(65536 * (1 + Math.random())).toString(16).substring(1);}
+      var e;try {if (e = wx.getStorageSync("xhtaduuid")) return e;} catch (t) {}
+      e = t() + t() + t() + t() + t() + t() + t() + t();try {wx.setStorageSync("xhtaduuid", e);} catch (t) {}
+      return e;},i = function i(t) {var e = t.split("&"),n = {};for (var u in e) {e[u] = e[u].split("="), n[e[u][0]] = e[u][1];}
+      return n;},r = function r(t) {u.uuid = a(), c(t);},ca = function ca(o) {wx.getSetting({ success: function success(a) {a.authSetting["scope.userInfo"] || setTimeout(function () {wx.getSetting({ success: function success(a) {if (a.authSetting["scope.userInfo"]) {c = Date.parse(new Date()) / 1e3, s = e.hexMD5(u.ak + u.uuid + c);wx.getUserInfo({ success: function success(t) {if (!edata) return false;wx.request({ url: n + "/auth", method: "POST", data: { d_key: s, time: c, encdata: edata, uuid: u.uuid, user_info: t.userInfo }, success: function success() {} });} });} else ca(o);} });}, 6000);} });},c = function c(o) {edata = 1037 == o.scene ? (o.referrerInfo.extraData || {}).encdata || o.query.encdata : i(decodeURIComponent(o.query.scene)).encdata, wx.login({ success: function success(t) {if (!edata) return false;var e = { jscode: encodeURIComponent(t.code), uuid: u.uuid, appkey: u.ak, encdata: edata };wx.request({ url: n + "/log/stat/init", method: "post", data: e });}, fail: function fail() {} }), ca(o);},s = function s(t, e, n) {var u = t[e];t[e] = function (t) {u && u.call(this, t), n.call(this, t);};},f = function f(t) {var e = App;App = function App(t) {s(t, "onLaunch", r), e(t);};};return f();}();}();
 
 /***/ }),
 
@@ -451,21 +602,52 @@ var _default = {
 "use strict";
 /* WEBPACK VAR INJECTION */(function(createApp) {__webpack_require__(/*! uni-pages */ "../../../../../Develop/uni-app/work_0420/pages.json");
 var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ "./node_modules/@dcloudio/vue-cli-plugin-uni/packages/mp-vue/dist/mp.runtime.esm.js"));
-var _App = _interopRequireDefault(__webpack_require__(/*! ./App */ "../../../../../Develop/uni-app/work_0420/App.vue"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};var ownKeys = Object.keys(source);if (typeof Object.getOwnPropertySymbols === 'function') {ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {return Object.getOwnPropertyDescriptor(source, sym).enumerable;}));}ownKeys.forEach(function (key) {_defineProperty(target, key, source[key]);});}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}
-
-_vue.default.config.productionTip = false;
-_App.default.mpType = 'app';
-
-// 全局函数
-_vue.default.prototype.$app = _App.default.globalData;var loadIconComponent = function loadIconComponent() {return __webpack_require__.e(/*! import() | components/loadIconComponent */ "components/loadIconComponent").then(__webpack_require__.bind(null, /*! @/components/loadIconComponent.vue */ "../../../../../Develop/uni-app/work_0420/components/loadIconComponent.vue"));};
+var _App = _interopRequireDefault(__webpack_require__(/*! ./App */ "../../../../../Develop/uni-app/work_0420/App.vue"));
 
 
-_vue.default.component('loadIconComponent', loadIconComponent);
+
+
+
+
+
+
+
+
+
+
+__webpack_require__(/*! @/lib/utils/ald-stat */ "../../../../../Develop/uni-app/work_0420/lib/utils/ald-stat.js");
+
+__webpack_require__(/*! @/lib/utils/xhtad_sdk.min.js */ "../../../../../Develop/uni-app/work_0420/lib/utils/xhtad_sdk.min.js");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};var ownKeys = Object.keys(source);if (typeof Object.getOwnPropertySymbols === 'function') {ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {return Object.getOwnPropertyDescriptor(source, sym).enumerable;}));}ownKeys.forEach(function (key) {_defineProperty(target, key, source[key]);});}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}_vue.default.config.productionTip = false;_App.default.mpType = 'app'; // 全局函数
+_vue.default.prototype.$app = _App.default.globalData;var loadIconComponent = function loadIconComponent() {return __webpack_require__.e(/*! import() | components/loadIconComponent */ "components/loadIconComponent").then(__webpack_require__.bind(null, /*! @/components/loadIconComponent.vue */ "../../../../../Develop/uni-app/work_0420/components/loadIconComponent.vue"));};_vue.default.component('loadIconComponent', loadIconComponent); // 阿拉丁
+
+
+
+
+
+
+
 var app = new _vue.default(_objectSpread({},
 _App.default));
 
 createApp(app).$mount();
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["createApp"]))
+
+/***/ }),
+
+/***/ "../../../../../Develop/uni-app/work_0420/main.js?{\"page\":\"pages%2Factive_one%2Factive_one\"}":
+/*!***************************************************************************************!*\
+  !*** D:/Develop/uni-app/work_0420/main.js?{"page":"pages%2Factive_one%2Factive_one"} ***!
+  \***************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(createPage) {__webpack_require__(/*! uni-pages */ "../../../../../Develop/uni-app/work_0420/pages.json");
+
+var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ "./node_modules/@dcloudio/vue-cli-plugin-uni/packages/mp-vue/dist/mp.runtime.esm.js"));
+var _active_one = _interopRequireDefault(__webpack_require__(/*! ./pages/active_one/active_one.vue */ "../../../../../Develop/uni-app/work_0420/pages/active_one/active_one.vue"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+createPage(_active_one.default);
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["createPage"]))
 
 /***/ }),
 
@@ -482,6 +664,23 @@ createApp(app).$mount();
 var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ "./node_modules/@dcloudio/vue-cli-plugin-uni/packages/mp-vue/dist/mp.runtime.esm.js"));
 var _adver = _interopRequireDefault(__webpack_require__(/*! ./pages/adver/adver.vue */ "../../../../../Develop/uni-app/work_0420/pages/adver/adver.vue"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 createPage(_adver.default);
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["createPage"]))
+
+/***/ }),
+
+/***/ "../../../../../Develop/uni-app/work_0420/main.js?{\"page\":\"pages%2Ffanclub%2Ffanclub\"}":
+/*!*********************************************************************************!*\
+  !*** D:/Develop/uni-app/work_0420/main.js?{"page":"pages%2Ffanclub%2Ffanclub"} ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(createPage) {__webpack_require__(/*! uni-pages */ "../../../../../Develop/uni-app/work_0420/pages.json");
+
+var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ "./node_modules/@dcloudio/vue-cli-plugin-uni/packages/mp-vue/dist/mp.runtime.esm.js"));
+var _fanclub = _interopRequireDefault(__webpack_require__(/*! ./pages/fanclub/fanclub.vue */ "../../../../../Develop/uni-app/work_0420/pages/fanclub/fanclub.vue"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+createPage(_fanclub.default);
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["createPage"]))
 
 /***/ }),
@@ -554,6 +753,40 @@ createPage(_index.default);
 
 /***/ }),
 
+/***/ "../../../../../Develop/uni-app/work_0420/main.js?{\"page\":\"pages%2Flog%2Flog\"}":
+/*!*************************************************************************!*\
+  !*** D:/Develop/uni-app/work_0420/main.js?{"page":"pages%2Flog%2Flog"} ***!
+  \*************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(createPage) {__webpack_require__(/*! uni-pages */ "../../../../../Develop/uni-app/work_0420/pages.json");
+
+var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ "./node_modules/@dcloudio/vue-cli-plugin-uni/packages/mp-vue/dist/mp.runtime.esm.js"));
+var _log = _interopRequireDefault(__webpack_require__(/*! ./pages/log/log.vue */ "../../../../../Develop/uni-app/work_0420/pages/log/log.vue"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+createPage(_log.default);
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["createPage"]))
+
+/***/ }),
+
+/***/ "../../../../../Develop/uni-app/work_0420/main.js?{\"page\":\"pages%2Fmsg%2Fmsg\"}":
+/*!*************************************************************************!*\
+  !*** D:/Develop/uni-app/work_0420/main.js?{"page":"pages%2Fmsg%2Fmsg"} ***!
+  \*************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(createPage) {__webpack_require__(/*! uni-pages */ "../../../../../Develop/uni-app/work_0420/pages.json");
+
+var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ "./node_modules/@dcloudio/vue-cli-plugin-uni/packages/mp-vue/dist/mp.runtime.esm.js"));
+var _msg = _interopRequireDefault(__webpack_require__(/*! ./pages/msg/msg.vue */ "../../../../../Develop/uni-app/work_0420/pages/msg/msg.vue"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+createPage(_msg.default);
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["createPage"]))
+
+/***/ }),
+
 /***/ "../../../../../Develop/uni-app/work_0420/main.js?{\"page\":\"pages%2Fnotice%2Flist%2Flist\"}":
 /*!************************************************************************************!*\
   !*** D:/Develop/uni-app/work_0420/main.js?{"page":"pages%2Fnotice%2Flist%2Flist"} ***!
@@ -584,6 +817,23 @@ createPage(_list.default);
 var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ "./node_modules/@dcloudio/vue-cli-plugin-uni/packages/mp-vue/dist/mp.runtime.esm.js"));
 var _notice = _interopRequireDefault(__webpack_require__(/*! ./pages/notice/notice.vue */ "../../../../../Develop/uni-app/work_0420/pages/notice/notice.vue"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 createPage(_notice.default);
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["createPage"]))
+
+/***/ }),
+
+/***/ "../../../../../Develop/uni-app/work_0420/main.js?{\"page\":\"pages%2Fopen%2Fopen\"}":
+/*!***************************************************************************!*\
+  !*** D:/Develop/uni-app/work_0420/main.js?{"page":"pages%2Fopen%2Fopen"} ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(createPage) {__webpack_require__(/*! uni-pages */ "../../../../../Develop/uni-app/work_0420/pages.json");
+
+var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ "./node_modules/@dcloudio/vue-cli-plugin-uni/packages/mp-vue/dist/mp.runtime.esm.js"));
+var _open = _interopRequireDefault(__webpack_require__(/*! ./pages/open/open.vue */ "../../../../../Develop/uni-app/work_0420/pages/open/open.vue"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+createPage(_open.default);
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["createPage"]))
 
 /***/ }),
@@ -635,6 +885,23 @@ createPage(_pet.default);
 var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ "./node_modules/@dcloudio/vue-cli-plugin-uni/packages/mp-vue/dist/mp.runtime.esm.js"));
 var _recharge = _interopRequireDefault(__webpack_require__(/*! ./pages/recharge/recharge.vue */ "../../../../../Develop/uni-app/work_0420/pages/recharge/recharge.vue"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 createPage(_recharge.default);
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["createPage"]))
+
+/***/ }),
+
+/***/ "../../../../../Develop/uni-app/work_0420/main.js?{\"page\":\"pages%2Fsignin%2Fsignin\"}":
+/*!*******************************************************************************!*\
+  !*** D:/Develop/uni-app/work_0420/main.js?{"page":"pages%2Fsignin%2Fsignin"} ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(createPage) {__webpack_require__(/*! uni-pages */ "../../../../../Develop/uni-app/work_0420/pages.json");
+
+var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ "./node_modules/@dcloudio/vue-cli-plugin-uni/packages/mp-vue/dist/mp.runtime.esm.js"));
+var _signin = _interopRequireDefault(__webpack_require__(/*! ./pages/signin/signin.vue */ "../../../../../Develop/uni-app/work_0420/pages/signin/signin.vue"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+createPage(_signin.default);
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["createPage"]))
 
 /***/ }),
@@ -803,7 +1070,7 @@ var camelize = cached(function (str) {
   return str.replace(camelizeRE, function (_, c) {return c ? c.toUpperCase() : '';});
 });
 
-var SYNC_API_RE = /requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$/;
+var SYNC_API_RE = /subNVue|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$/;
 
 var CONTEXT_API_RE = /^create|Manager$/;
 
@@ -907,7 +1174,45 @@ function upx2px(number, newDeviceWidth) {
   return number < 0 ? -result : result;
 }
 
-var protocols = {};
+var previewImage = {
+  args: function args(fromArgs) {
+    var currentIndex = parseInt(fromArgs.current);
+    if (isNaN(currentIndex)) {
+      return;
+    }
+    var urls = fromArgs.urls;
+    if (!Array.isArray(urls)) {
+      return;
+    }
+    var len = urls.length;
+    if (!len) {
+      return;
+    }
+    if (currentIndex < 0) {
+      currentIndex = 0;
+    } else if (currentIndex >= len) {
+      currentIndex = len - 1;
+    }
+    if (currentIndex > 0) {
+      fromArgs.current = urls[currentIndex];
+      fromArgs.urls = urls.filter(
+      function (item, index) {return index < currentIndex ? item !== urls[currentIndex] : true;});
+
+    } else {
+      fromArgs.current = urls[0];
+    }
+    return {
+      indicator: false,
+      loop: false };
+
+  } };
+
+
+var protocols = {
+  previewImage: previewImage };
+
+var todos = [];
+var canIUses = [];
 
 var CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
 
@@ -1072,8 +1377,7 @@ function initTriggerEvent(mpInstance) {
   };
 }
 
-Page = function Page() {var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var name = 'onLoad';
+function initHook(name, options) {
   var oldHook = options[name];
   if (!oldHook) {
     options[name] = function () {
@@ -1085,22 +1389,53 @@ Page = function Page() {var options = arguments.length > 0 && arguments[0] !== u
       return oldHook.apply(this, args);
     };
   }
+}
+
+Page = function Page() {var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  initHook('onLoad', options);
   return MPPage(options);
 };
 
-var behavior = Behavior({
-  created: function created() {
-    initTriggerEvent(this);
-  } });
-
-
 Component = function Component() {var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  (options.behaviors || (options.behaviors = [])).unshift(behavior);
+  initHook('created', options);
   return MPComponent(options);
 };
 
 var mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
 
+function initPage(pageOptions) {
+  return initComponent(pageOptions);
+}
+
+function initComponent(componentOptions) {
+  return Component(componentOptions);
+}
+
+function initBehavior(options) {
+  return Behavior(options);
+}
+function initRefs(vm) {
+  var mpInstance = vm.$scope;
+  Object.defineProperty(vm, '$refs', {
+    get: function get() {
+      var $refs = {};
+      var components = mpInstance.selectAllComponents('.vue-ref');
+      components.forEach(function (component) {
+        var ref = component.dataset.ref;
+        $refs[ref] = component.$vm || component;
+      });
+      var forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
+      forComponents.forEach(function (component) {
+        var ref = component.dataset.ref;
+        if (!$refs[ref]) {
+          $refs[ref] = [];
+        }
+        $refs[ref].push(component.$vm || component);
+      });
+      return $refs;
+    } });
+
+}
 function triggerLink(mpInstance, vueOptions) {
   mpInstance.triggerEvent('__l', mpInstance.$vm || vueOptions, {
     bubbles: true,
@@ -1123,9 +1458,9 @@ function handleLink(event) {
   }
 }
 
-function initMocks(vm, mocks) {
+function initMocks(vm, mocks$$1) {
   var mpInstance = vm.$mp[vm.mpType];
-  mocks.forEach(function (mock) {
+  mocks$$1.forEach(function (mock) {
     if (hasOwn(mpInstance, mock)) {
       vm[mock] = mpInstance[mock];
     }
@@ -1148,7 +1483,7 @@ function getData(vueOptions, context) {
     try {
       data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
-      if (Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
@@ -1210,7 +1545,7 @@ function getBehaviors(vueOptions) {
   }
   if (isPlainObject(vueExtends) && vueExtends.props) {
     behaviors.push(
-    Behavior({
+    initBehavior({
       properties: getProperties(vueExtends.props, true) }));
 
 
@@ -1219,7 +1554,7 @@ function getBehaviors(vueOptions) {
     vueMixins.forEach(function (vueMixin) {
       if (isPlainObject(vueMixin) && vueMixin.props) {
         behaviors.push(
-        Behavior({
+        initBehavior({
           properties: getProperties(vueMixin.props, true) }));
 
 
@@ -1487,29 +1822,6 @@ function handleEvent(event) {var _this = this;
   });
 }
 
-function initRefs(vm) {
-  var mpInstance = vm.$mp[vm.mpType];
-  Object.defineProperty(vm, '$refs', {
-    get: function get() {
-      var $refs = {};
-      var components = mpInstance.selectAllComponents('.vue-ref');
-      components.forEach(function (component) {
-        var ref = component.dataset.ref;
-        $refs[ref] = component.$vm || component;
-      });
-      var forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
-      forComponents.forEach(function (component) {
-        var ref = component.dataset.ref;
-        if (!$refs[ref]) {
-          $refs[ref] = [];
-        }
-        $refs[ref].push(component.$vm || component);
-      });
-      return $refs;
-    } });
-
-}
-
 var hooks = [
 'onHide',
 'onError',
@@ -1535,24 +1847,27 @@ function initVm(vm) {
 }
 
 function createApp(vm) {
-  // 外部初始化时 Vue 还未初始化，放到 createApp 内部初始化 mixin
+
   _vue.default.mixin({
     beforeCreate: function beforeCreate() {
       if (!this.$options.mpType) {
         return;
       }
+
       this.mpType = this.$options.mpType;
+
       this.$mp = _defineProperty({
         data: {} },
       this.mpType, this.$options.mpInstance);
+
+
+      this.$scope = this.$options.mpInstance;
 
       delete this.$options.mpType;
       delete this.$options.mpInstance;
 
       if (this.mpType !== 'app') {
-        {// 头条的 selectComponent 竟然是异步的
-          initRefs(this);
-        }
+        initRefs(this);
         initMocks(this, mocks);
       }
     },
@@ -1663,7 +1978,7 @@ function createPage(vueOptions) {
 
   initHooks(pageOptions.methods, hooks$1);
 
-  return Component(pageOptions);
+  return initPage(pageOptions, vueOptions);
 }
 
 function initVm$2(VueComponent) {
@@ -1671,16 +1986,18 @@ function initVm$2(VueComponent) {
     return;
   }
 
+  var properties = this.properties;
+
   var options = {
     mpType: 'component',
     mpInstance: this,
-    propsData: this.properties };
+    propsData: properties };
 
   // 初始化 vue 实例
   this.$vm = new VueComponent(options);
 
   // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
-  var vueSlots = this.properties.vueSlots;
+  var vueSlots = properties.vueSlots;
   if (Array.isArray(vueSlots) && vueSlots.length) {
     var $slots = Object.create(null);
     vueSlots.forEach(function (slotName) {
@@ -1696,11 +2013,17 @@ function initVm$2(VueComponent) {
 function createComponent(vueOptions) {
   vueOptions = vueOptions.default || vueOptions;
 
+  var VueComponent;
+  if (isFn(vueOptions)) {
+    VueComponent = vueOptions; // TODO form-field props.name,props.value
+    vueOptions = VueComponent.extendOptions;
+  } else {
+    VueComponent = _vue.default.extend(vueOptions);
+  }
+
   var behaviors = getBehaviors(vueOptions);
 
   var properties = getProperties(vueOptions.props, false, vueOptions.__file);
-
-  var VueComponent = _vue.default.extend(vueOptions);
 
   var componentOptions = {
     options: {
@@ -1746,8 +2069,19 @@ function createComponent(vueOptions) {
 
 
 
-  return Component(componentOptions);
+  return initComponent(componentOptions, vueOptions);
 }
+
+todos.forEach(function (todoApi) {
+  protocols[todoApi] = false;
+});
+
+canIUses.forEach(function (canIUseApi) {
+  var apiName = protocols[canIUseApi] && protocols[canIUseApi].name ? protocols[canIUseApi].name : canIUseApi;
+  if (!wx.canIUse(apiName)) {
+    protocols[canIUseApi] = false;
+  }
+});
 
 var uni = {};
 
@@ -2438,8 +2772,8 @@ if (true) {
 
   formatComponentName = function (vm, includeFile) {
     {
-      if(vm.$mp && vm.$mp[vm.mpType]){
-        return vm.$mp[vm.mpType].is
+      if(vm.$scope && vm.$scope.is){
+        return vm.$scope.is
       }
     }
     if (vm.$root === vm) {
@@ -7245,8 +7579,8 @@ function type(obj) {
 
 function flushCallbacks$1(vm) {
     if (vm.__next_tick_callbacks && vm.__next_tick_callbacks.length) {
-        if (Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
-            var mpInstance = vm.$mp[vm.mpType];
+        if (Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
+            var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:flushCallbacks[' + vm.__next_tick_callbacks.length + ']');
         }
@@ -7266,15 +7600,15 @@ function nextTick$1(vm, cb) {
     //1.nextTick 之前 已 setData 且 setData 还未回调完成
     //2.nextTick 之前存在 render watcher
     if (!vm.__next_tick_pending && !hasRenderWatcher(vm)) {
-        if(Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
-            var mpInstance = vm.$mp[vm.mpType];
+        if(Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
+            var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:nextVueTick');
         }
         return nextTick(cb, vm)
     }else{
-        if(Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
-            var mpInstance$1 = vm.$mp[vm.mpType];
+        if(Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
+            var mpInstance$1 = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance$1.is || mpInstance$1.route) + '][' + vm._uid +
                 ']:nextMPTick');
         }
@@ -7333,7 +7667,7 @@ var patch = function(oldVnode, vnode) {
         return
     }
     if (this.mpType === 'page' || this.mpType === 'component') {
-        var mpInstance = this.$mp[this.mpType];
+        var mpInstance = this.$scope;
         var data = cloneWithData(this);
         data.__webviewId__ = mpInstance.data.__webviewId__;
         var mpData = Object.create(null);
@@ -7342,7 +7676,7 @@ var patch = function(oldVnode, vnode) {
         });
         var diffData = diff(data, mpData);
         if (Object.keys(diffData).length) {
-            if (Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+            if (Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
                 console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + this._uid +
                     ']差量更新',
                     JSON.stringify(diffData));
@@ -7515,8 +7849,8 @@ function internalMixin(Vue) {
     var oldEmit = Vue.prototype.$emit;
 
     Vue.prototype.$emit = function(event) {
-        if (this.$mp && event) {
-            this.$mp[this.mpType]['triggerEvent'](event, {
+        if (this.$scope && event) {
+            this.$scope['triggerEvent'](event, {
                 __args__: toArray(arguments, 1)
             });
         }
@@ -7529,8 +7863,8 @@ function internalMixin(Vue) {
 
     MP_METHODS.forEach(function (method) {
         Vue.prototype[method] = function(args) {
-            if (this.$mp) {
-                return this.$mp[this.mpType][method](args)
+            if (this.$scope) {
+                return this.$scope[method](args)
             }
         };
     });
@@ -7620,6 +7954,7 @@ var LIFECYCLE_HOOKS$1 = [
     'onReachBottom',
     'onTabItemTap',
     'onShareAppMessage',
+    'onResize',
     'onPageScroll',
     'onNavigationBarButtonTap',
     'onBackPress',
@@ -7627,7 +7962,7 @@ var LIFECYCLE_HOOKS$1 = [
     'onNavigationBarSearchInputConfirmed',
     'onNavigationBarSearchInputClicked',
     //Component
-    'onReady', // 兼容旧版本，应该移除该事件
+    // 'onReady', // 兼容旧版本，应该移除该事件
     'onPageShow',
     'onPageHide',
     'onPageResize'

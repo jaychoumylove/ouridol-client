@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		
+
 
 		<view class="user-container">
 			<image :src="userInfo.avatarurl" mode="widthFix"></image>
@@ -56,6 +56,11 @@
 					<view class="progress-bar" :style="{width:earnCuttime + '%'}"></view>
 					{{earnCuttime}}
 				</view> -->
+			</view>
+			
+			<view class="hand-wrap position-set" v-show="spriteInfo.earn >= 2">
+				<image class='bubble flex-set' src="/static/image/pet/bubble.png" mode="widthFix"></image>
+				<image class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
 			</view>
 
 		</view>
@@ -114,7 +119,7 @@
 				user_id: null,
 
 				spriteInfo: {
-					sprite_level:0,
+					sprite_level: 0,
 				},
 				invitList: [],
 				invitAward: '',
@@ -123,7 +128,7 @@
 				skillShow: false, // 显示技能
 
 				userInfo: {
-					nickname:this.$app.NICKNAME,
+					nickname: this.$app.NICKNAME,
 
 				},
 			};
@@ -132,7 +137,7 @@
 			return this.$app.commonShareAppMessage()
 		},
 		onLoad(option) {
-			this.user_id = option.user_id
+			this.user_id = option.user_id || 0
 			this.getSpriteInfo()
 			this.getUserInfo()
 		},
@@ -153,23 +158,18 @@
 				})
 			},
 			settle() {
-				if (this.spriteInfo.earn < 100) {
+				if (this.spriteInfo.earn < 2) {
 					this.$app.toast('TA的能量太少了，稍后再来吧')
 				} else {
 					this.$app.request(this.$app.API.SPRITE_SETTLE, {
 						user_id: this.user_id
 					}, res => {
-						if (this.user_id == 1) {
-							this.spriteInfo.earn = 0
-						} else {
-							this.getSpriteInfo()
 
-						}
+						this.getSpriteInfo()
 
-						this.$app.toast('为TA收集能量，你获得:' + res.data+'能量')
+						this.$app.toast('为TA收集能量，你获得:' + res.data + '能量')
 						this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
 							this.$app.setData('userCurrency', res.data)
-
 						})
 					}, 'POST', true)
 				}
@@ -329,6 +329,7 @@
 				transform: scale(1);
 			}
 		}
+
 		@keyframes shine {
 
 			0%,
@@ -340,6 +341,7 @@
 				transform: scale(1);
 			}
 		}
+
 		.earn-container::before {
 			content: "";
 			position: absolute;
@@ -353,6 +355,7 @@
 			filter: blur(10upx);
 			animation: shine 1.5s linear infinite;
 		}
+
 		.earn-container {
 			position: absolute;
 			right: 0upx;
@@ -369,6 +372,7 @@
 				left: 90upx;
 				flex-direction: column;
 				z-index: 2;
+
 				.num-wrapper {
 					z-index: 3;
 					top: 32upx;
@@ -421,6 +425,43 @@
 
 			}
 
+
+.hand-wrap {
+				width: 100upx;
+				top: -4upx;
+				left: 134upx;
+				z-index: 2;
+
+				.bubble::before {
+					content: "可收集";
+					position: absolute;
+					margin-top: -4upx;
+					font-size: 24upx;
+					font-weight: 700;
+				}
+
+				.hand {
+					width: 80upx;
+					position: absolute;
+					right: -6upx;
+					top: 20upx;
+					animation: scale 1s linear infinite;
+				}
+
+				@keyframes scale {
+
+					0%,
+					100% {
+						transform: scale(0.9);
+					}
+
+					50% {
+						transform: scale(1.1);
+					}
+
+				}
+
+			}
 		}
 
 		.invit-modal-container {

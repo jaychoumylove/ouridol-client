@@ -25,4 +25,10 @@
 .button.fangde.data-v-0edcff80 {
   background: url(http://wx2.sinaimg.cn/large/0060lm7Tly1g2jwmn4sshg305v05vwea.gif) center no-repeat/100% 100%;
 }
+.button.css.data-v-0edcff80 {
+  background-color: #ffd1b2;
+  border-radius: 60rpx;
+  -webkit-box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.3), inset 0 0 4rpx rgba(0, 0, 0, 0.3);
+          box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.3), inset 0 0 4rpx rgba(0, 0, 0, 0.3);
+}
 

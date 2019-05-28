@@ -11,7 +11,7 @@
 			</view>
 
 			<view v-else class="select-container">
-				
+
 
 				<view class="search-wrapper">
 					<input type="text" value="" placeholder="搜索爱豆" @input="searchInput" />
@@ -56,7 +56,7 @@
 
 				requestCount: 1,
 				blankHide: true,
-				rankList: [],
+				rankList: this.$app.getData('group_rankList') || [],
 				keywords: '',
 				page: 1,
 
@@ -81,7 +81,7 @@
 		},
 		onHide() {
 			if (this.starid) {
-				this.$refs.guildComponent.unLoad(this.starid)
+				this.$refs.guildComponent.unLoad && this.$refs.guildComponent.unLoad(this.starid)
 				this.$refs.guildComponent.modal = ''
 			}
 		},
@@ -104,17 +104,15 @@
 					size: 100,
 					keywords: this.keywords,
 				}, res => {
-					const resList = []
 					res.data.forEach(e => {
 						const item = {}
 						item.starid = e.star.id
 						item.name = e.star.name
 						item.avatar = e.star.head_img_s ? e.star.head_img_s : e.star.head_img_l
-						resList.push(item)
+						this.rankList.push(item)
 					})
 
-					this.rankList = resList
-
+					this.$app.setData('group_rankList', this.rankList)
 					this.$nextTick(function() {
 						this.scrollLeft = 0
 					});
@@ -129,8 +127,7 @@
 <style lang="scss" scoped>
 	.group-container {
 		height: 100%;
-		width: 100%;
-		position: fixed;
+
 		.blank-container {
 			height: 100%;
 

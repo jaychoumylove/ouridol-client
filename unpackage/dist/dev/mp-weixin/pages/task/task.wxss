@@ -42,6 +42,9 @@
           -ms-flex-pack: distribute;
               justify-content: space-around;
 }
+.container .item .left-content .content .top.data-v-4980ab6a {
+        max-width: 250rpx;
+}
 .container .item .left-content .content .bottom.data-v-4980ab6a {
         font-size: 24rpx;
         color: #888;

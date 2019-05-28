@@ -1,7 +1,5 @@
 .group-container.data-v-42c9a1ca {
   height: 100%;
-  width: 100%;
-  position: fixed;
 }
 .group-container .blank-container.data-v-42c9a1ca {
     height: 100%;

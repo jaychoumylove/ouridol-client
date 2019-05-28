@@ -5,4 +5,13 @@
 .banner-wrapper .banner-item-img.data-v-4d1b2482 {
     border-radius: 10rpx;
 }
+.banner-wrapper.muti.data-v-4d1b2482 {
+  margin: 0 -20rpx;
+  padding: 18rpx 0;
+}
+.banner-wrapper.muti .banner-item-img.data-v-4d1b2482 {
+    -webkit-transform: scale(0.95);
+        -ms-transform: scale(0.95);
+            transform: scale(0.95);
+}
 

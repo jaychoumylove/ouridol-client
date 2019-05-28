@@ -1,8 +1,17 @@
-.banner-wrapper.data-v-5c91914c {
+.banner-wrapper.data-v-52b29390 {
   border-radius: 10rpx;
   overflow: hidden;
 }
-.banner-wrapper .banner-item-img.data-v-5c91914c {
+.banner-wrapper .banner-item-img.data-v-52b29390 {
     border-radius: 10rpx;
+}
+.banner-wrapper.muti.data-v-52b29390 {
+  margin: 0 -20rpx;
+  padding: 18rpx 0;
+}
+.banner-wrapper.muti .banner-item-img.data-v-52b29390 {
+    -webkit-transform: scale(0.95);
+        -ms-transform: scale(0.95);
+            transform: scale(0.95);
 }
 

@@ -63,5 +63,12 @@
             "minified" : true
         },
         "usingComponents" : true
+    },
+    "h5" : {
+        "title" : "我们的偶像",
+        "domain" : "rank.xiaolishu.com",
+        "router" : {
+            "mode" : "hash"
+        }
     }
 }

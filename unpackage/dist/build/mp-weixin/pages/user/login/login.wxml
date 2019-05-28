@@ -1,1 +1,1 @@
-<view class="position-set" bind:__l="__l">请登录</view>
+<view class="container flex-set data-v-b3b2a542" bind:__l="__l"><view class="avatar data-v-b3b2a542"><image src="{{userInfo.avatarurl||$app.AVATAR}}" mode="aspectFill" class="data-v-b3b2a542"></image></view><view class="nickname data-v-b3b2a542">{{''+(userInfo.nickname||$app.NICKNAME)+''}}</view><btn-component type="css" class="data-v-b3b2a542" vue-slots="{{['default']}}"><view class="flex-set data-v-b3b2a542" style="width:160rpx;height:80rpx;">确认登录</view></btn-component></view>

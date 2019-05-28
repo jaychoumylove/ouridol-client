@@ -1,6 +1,5 @@
 .index-container.data-v-f893cda0 {
   padding: 90rpx 20rpx 0;
-
 }
 .index-container .top-tab-container.data-v-f893cda0 {
     height: 70rpx;
@@ -221,5 +220,29 @@
 }
 .index-container .rank-list-container .rank-list-item .right-container.data-v-f893cda0 {
       margin-right: 40rpx;
+}
+.index-container .open-ad-container.data-v-f893cda0 {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9;
+    background-color: rgba(0, 0, 0, 0.5);
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+            flex-direction: column;
+}
+.index-container .open-ad-container .main.data-v-f893cda0 {
+      width: 540rpx;
+      height: 960rpx;
+      border-radius: 20rpx;
+}
+.index-container .open-ad-container .close-btn.data-v-f893cda0 {
+      width: 80rpx;
+      height: 80rpx;
+      margin-top: 10rpx;
 }
 

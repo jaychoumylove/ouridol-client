@@ -2,6 +2,13 @@
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 
 		{
+			"path": "pages/open/open",
+			"style": {
+				"navigationStyle": "custom",
+				"disableScroll": true
+			}
+		},
+		{
 			"path": "pages/index/index",
 			"style": {
 				"enablePullDownRefresh": true
@@ -9,75 +16,110 @@
 		}, {
 			"path": "pages/user/user",
 			"style": {
-				"navigationBarTitleText": "个人中心"
+				"navigationBarTitleText": "个人中心",
+				"disableScroll": true
+
 			}
 		}, {
 			"path": "pages/pet/pet",
 			"style": {
-				"navigationBarTitleText": "精灵"
+				"navigationBarTitleText": "能量精灵",
+				"disableScroll": true
+
 			}
 		}, {
 			"path": "pages/group/group",
 			"style": {
-				"navigationBarTitleText": "偶像圈"
+				"navigationBarTitleText": "偶像圈",
+				"disableScroll": true
+			}
+		}, {
+			"path": "pages/adver/adver",
+			"style": {}
+		},
+		{
+			"path": "pages/user/login/login",
+			"style": {}
+		},
+		{
+			"path": "pages/star/star",
+			"style": {
+				"disableScroll": true
+			}
+		}, {
+			"path": "pages/user/rank/rank",
+			"style": {
+				"navigationBarTitleText": "周贡献榜"
+			}
+		}, {
+			"path": "pages/star/rank_history/rank_history",
+			"style": {
+				"navigationBarTitleText": "往期榜单"
+			}
+		}, {
+			"path": "pages/group/dynamic/dynamic",
+			"style": {
+				"navigationBarTitleText": "动态"
+			}
+		}, {
+			"path": "pages/task/task",
+			"style": {
+				"navigationBarTitleText": "任务"
+			}
+		},
+		{
+			"path": "pages/notice/list/list",
+			"style": {}
+		}, {
+			"path": "pages/pet/other/other",
+			"style": {}
+		}, {
+			"path": "pages/father/father",
+			"style": {
+				"navigationBarTitleText": "师徒"
+			}
+		}, {
+			"path": "pages/active_one/active_one",
+			"style": {}
+		}, {
+			"path": "pages/fanclub/fanclub",
+			"style": {}
+		},
+		{
+			"path": "pages/notice/notice",
+			"style": {}
+		},
+		{
+			"path": "pages/signin/signin",
+			"style": {
+				"navigationBarTitleText": "签到"
+			}
+		},
+		{
+			"path": "pages/recharge/recharge",
+			"style": {
+				"navigationBarTitleText": "充值"
 			}
 		}
-	    ,{
-            "path" : "pages/adver/adver",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/user/login/login",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/star/star",
-            "style" : {} 
-        }
-        ,{
-            "path" : "pages/user/rank/rank",
-            "style" : {"navigationBarTitleText": "周贡献榜"}
-        }
-        ,{
-            "path" : "pages/star/rank_history/rank_history",
-            "style" : {"navigationBarTitleText": "往期榜单"}
-        }
-        ,{
-            "path" : "pages/group/dynamic/dynamic",
-            "style" : {"navigationBarTitleText": "动态"}
-        }
-        ,{
-            "path" : "pages/task/task",
-            "style" : {"navigationBarTitleText": "任务"}
-        }
-        ,{
-            "path" : "pages/recharge/recharge",
-            "style" : {"navigationBarTitleText": "充值"}
-        }
-        ,{
-            "path" : "pages/notice/notice",
-            "style" : {}
-        }
-       
-        ,{
-            "path" : "pages/notice/list/list",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/pet/other/other",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/father/father",
-            "style" : {"navigationBarTitleText": "师徒"}
-        }
-    ],
+
+		, {
+			"path": "pages/log/log",
+			"style": {}
+		}, {
+			"path": "pages/msg/msg",
+			"style": {}
+		}
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "我们的偶像",
 		"navigationBarBackgroundColor": "#efccc8",
 		"enablePullDownRefresh": false,
+		// #ifdef H5
+		"navigationStyle": "custom",
+		// #endif
 		"onReachBottomDistance": 100
+
 	},
 	"tabBar": {
 		"color": "#b296ad",
@@ -94,7 +136,7 @@
 				"pagePath": "pages/pet/pet",
 				"iconPath": "/static/image/tab/pet.png",
 				"selectedIconPath": "/static/image/tab/pet-tap.png",
-				"text": "精灵"
+				"text": "能量精灵"
 			}, {
 				"pagePath": "pages/group/group",
 				"iconPath": "/static/image/tab/group.png",

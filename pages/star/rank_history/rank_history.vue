@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		
+
 
 		<view class="item-wrapper" v-for="(item,index) in history" :key="index">
 			<view class="title">{{item.date}}</view>
@@ -68,7 +68,7 @@
 					const resList = []
 					res.data.forEach(weekItem => {
 						const item = {
-							date: weekItem.date.toString().slice(0, 4) + '第' + weekItem.date.toString().slice(4) + '周',
+							date: weekItem.date.toString().slice(0, 4) + '第' + (weekItem.date.toString().slice(4) - 19) + '期',
 							rankList: [],
 						}
 

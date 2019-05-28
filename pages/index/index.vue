@@ -1,8 +1,5 @@
 <template>
 	<view class="index-container" :style="{top:scrollTop}">
-
-		
-
 		<view class="top-tab-container">
 			<view class="left-tab-group">
 				<view class="tab-item" :class="{active:sign == 0}">周榜</view>
@@ -89,12 +86,15 @@
 				</listItemComponent>
 
 			</view>
-
-
 			<loadIconComponent v-if="showBottomLoading"></loadIconComponent>
 
 		</view>
 
+
+		<view class="open-ad-container flex-set" v-if="modal=='indexBanner' && $app.getData('config').index_banner && $app.getData('config').index_banner.img_url">
+			<image class="main" :src="$app.getData('config').index_banner.img_url" mode="aspectFill" @tap="modal='';$app.goPage($app.getData('config').index_banner.gopage)"></image>
+			<image class='close-btn' src="/static/image/index/close.png" mode="" @tap="modal = ''"></image>
+		</view>
 	</view>
 
 </template>
@@ -111,6 +111,7 @@
 		},
 		data() {
 			return {
+				modal: 'indexBanner',
 				showBottomLoading: true,
 				requestCount: 1,
 
@@ -123,7 +124,7 @@
 				keywords: '',
 				rankField: 'week_hot',
 				sign: 0,
-				rankList: [],
+				rankList: this.$app.getData('index_rankList') || [],
 			};
 		},
 
@@ -205,8 +206,6 @@
 					this.sign = 0
 					this.getRankList()
 				}
-
-
 			},
 
 			// HTTP
@@ -234,6 +233,8 @@
 					})
 					if (this.page == 1) {
 						this.rankList = rankList
+						this.$app.setData('index_rankList', this.rankList)
+
 					} else {
 						// 追加data
 						this.rankList = this.rankList.concat(rankList)
@@ -249,6 +250,8 @@
 
 <style lang="scss" scoped>
 	.index-container {
+
+
 		padding: 90upx 20upx 0;
 		/* #ifdef H5 */
 		margin-bottom: 100upx;
@@ -449,6 +452,30 @@
 			}
 
 
+		}
+
+		.open-ad-container {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			z-index: 9;
+			background-color: rgba(0, 0, 0, .5);
+			flex-direction: column;
+
+			.main {
+				width: 540upx;
+				height: 960upx;
+				border-radius: 20upx;
+
+			}
+
+			.close-btn {
+				width: 80upx;
+				height: 80upx;
+				margin-top: 10upx;
+			}
 		}
 	}
 </style>

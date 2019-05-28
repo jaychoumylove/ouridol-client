@@ -51,4 +51,10 @@
 	.button.fangde {
 		background: url(http://wx2.sinaimg.cn/large/0060lm7Tly1g2jwmn4sshg305v05vwea.gif) center no-repeat/100% 100%;
 	}
+	
+	.button.css{
+		background-color: #ffd1b2;
+		border-radius: 60upx;
+		box-shadow: 0 2upx 4upx rgba(#000, 0.3),inset 0 0 4upx rgba(#000, 0.3);
+	}
 </style>

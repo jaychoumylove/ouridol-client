@@ -31,15 +31,14 @@
 		onReady() {},
 		onShow() {
 			if (!this.$app.getData('userStar', true).id) this.tips = true
-			this.$nextTick(function() {
-				this.$refs.guildComponent.load(this.starid)
-			})
+			this.$refs.guildComponent.load(this.starid)
 		},
 		onUnload() {
 			this.$refs.guildComponent.unLoad(this.starid)
 			this.$refs.guildComponent.modal = ''
 
 		},
+		
 		methods: {}
 	}
 </script>

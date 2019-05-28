@@ -9,7 +9,7 @@
   -webkit-transition: .2s;
   -o-transition: .2s;
   transition: .2s;
-  opacity: 0.1;
+  opacity: 0;
 }
 .container .modal-container.data-v-70ba910f {
     width: 600rpx;

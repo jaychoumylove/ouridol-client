@@ -1,3 +1,4 @@
+@charset "UTF-8";
 .container.data-v-c9261288 {
   height: 100%;
   overflow: hidden;
@@ -271,6 +272,49 @@
 100% {
     -webkit-transform: translateX(0);
             transform: translateX(0);
+}
+}
+.container .earn-container .hand-wrap.data-v-c9261288 {
+      width: 100rpx;
+      top: -4rpx;
+      left: 134rpx;
+      z-index: 2;
+}
+.container .earn-container .hand-wrap .bubble.data-v-c9261288::before {
+        content: "\53EF\6536\96C6";
+        position: absolute;
+        margin-top: -4rpx;
+        font-size: 24rpx;
+        font-weight: 700;
+}
+.container .earn-container .hand-wrap .hand.data-v-c9261288 {
+        width: 80rpx;
+        position: absolute;
+        right: -6rpx;
+        top: 20rpx;
+        -webkit-animation: scale-data-v-c9261288 1s linear infinite;
+                animation: scale-data-v-c9261288 1s linear infinite;
+}
+@-webkit-keyframes scale-data-v-c9261288 {
+0%,
+  100% {
+    -webkit-transform: scale(0.9);
+            transform: scale(0.9);
+}
+50% {
+    -webkit-transform: scale(1.1);
+            transform: scale(1.1);
+}
+}
+@keyframes scale-data-v-c9261288 {
+0%,
+  100% {
+    -webkit-transform: scale(0.9);
+            transform: scale(0.9);
+}
+50% {
+    -webkit-transform: scale(1.1);
+            transform: scale(1.1);
 }
 }
 .container .invit-modal-container.data-v-c9261288 {

@@ -52,7 +52,7 @@
 					<image src="/static/image/user/b1.png" mode="widthFix"></image>
 				</view>
 
-				<view class="btn" @tap="getSonEarn(item.uid,item.earn)">
+				<view class="btn" @tap="getSonEarn(item.uid,item.earn,index)">
 					<btnComponent type="default">
 						<view class="flex-set" style="width: 130upx;height: 65upx;">领取</view>
 					</btnComponent>
@@ -98,13 +98,14 @@
 			return this.$app.commonShareAppMessage(shareType)
 		},
 		methods: {
-			getSonEarn(uid, earn) {
+			getSonEarn(uid, earn,index) {
 				if (!earn) {
 					this.$app.toast('TA的收益太少了')
 				} else {
 					this.$app.request(this.$app.API.USER_SONEARN, {
 						user_id: uid
 					}, res => {
+						this.sonList[index].earn = 0
 						this.$app.toast('获得收益+' + res.data + '能量')
 						this.getFatherInfo()
 						this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {

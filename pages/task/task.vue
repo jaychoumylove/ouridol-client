@@ -1,13 +1,15 @@
 <template>
 	<view class="container">
-		
-
-		<view class="item" v-for="(item,index) in taskList" :key="index" v-if="!(item.type==4 && $app.getData('sysInfo').system.indexOf('iOS')!=-1 && $app.getData('config').ios_switch == 0)">
+		<view class="item" v-for="(item,index) in taskList" :key="index" v-if="!(
+					(item.type==4 && ~$app.getData('sysInfo').system.indexOf('iOS') && $app.getData('config').ios_switch == 0) 
+					|| (item.type==7 && !videoAd)
+					)">
 			<view class="left-content">
 				<image class="img" :src="item.task_type.img" mode=""></image>
-				<view class="content">
-					<view class="top">{{item.name}}</view>
-					<view class="bottom" v-if="item.times">已完成({{item.doneTimes}}/{{item.times}})</view>
+				<view class="content ">
+					<view class="top text-overflow">{{item.name}}</view>
+					<view class="bottom" v-if="item.desc">{{item.desc}}</view>
+					<view class="bottom" v-else-if="item.times">已完成({{item.doneTimes}}/{{item.times}})</view>
 				</view>
 			</view>
 
@@ -27,18 +29,24 @@
 					</view>
 
 				</view>
-				<view class="btn" @tap="doTask(item)">
+				<view class="btn" @tap="doTask(item,index)">
 					<btnComponent type="default" v-if="item.status == 0">
-						<button type="primary"></button>
-
+						<!-- 分享 -->
 						<button class="btn" open-type="share" v-if="item.type == 9">
 							<view class="flex-set" style="width: 130upx;height: 65upx;">{{item.task_type.btn_text}}</view>
 						</button>
-						<button class="btn" open-type="contact" show-message-card v-else-if="$app.getData('config').ios_switch == 1 && $app.getData('sysInfo').system.indexOf('iOS')!=-1 && item.type == 4">
-							<view class="flex-set" style="width: 130upx;height: 65upx;">回复"1"</view>
+						<!-- 集结 -->
+						<button class="btn" open-type="share" data-share='2' v-else-if="item.type == 12">
+							<view class="flex-set" style="width: 130upx;height: 65upx;">{{item.task_type.btn_text}}</view>
 						</button>
-						<view v-else class="flex-set" style="width: 130upx;height: 65upx;">{{item.task_type.btn_text}}</view>
-
+						<!-- 客服 -->
+						<button class="btn" open-type="contact" v-else-if="item.type == 4 && $app.getData('config').ios_switch == 1 && ~$app.getData('sysInfo').system.indexOf('iOS') || item.type==13">
+							<view class="flex-set" style="width: 130upx;height: 65upx;">{{item.type==13?item.task_type.btn_text:'回复"1"'}}</view>
+						</button>
+						<!-- 默认 -->
+						<view v-else class="flex-set" style="width: 130upx;height: 65upx;">
+							{{item.task_type.btn_text}}
+						</view>
 					</btnComponent>
 					<btnComponent type="success" v-if="item.status == 1">
 						<view class="flex-set" style="width: 130upx;height: 65upx;">可领取</view>
@@ -63,9 +71,7 @@
 
 				<input type="text" @input="weiboUrl = $event.detail.value" placeholder="帖子链接" />
 				<btnComponent type="default">
-					<view class="flex-set" style="width: 160upx;height: 80upx;" @tap="weiboCommit">
-						提交
-					</view>
+					<view class="flex-set" style="width: 160upx;height: 80upx;" @tap="weiboCommit">提交</view>
 				</btnComponent>
 			</view>
 		</modalComponent>
@@ -85,7 +91,7 @@
 			return {
 				requestCount: 1,
 
-				taskList: [],
+				taskList: this.$app.getData('taskList') || [],
 				videoAd: null,
 				modal: '',
 				shareText: '',
@@ -94,16 +100,55 @@
 		},
 		onShow() {
 			this.getTaskList()
-			this.getShareText()
 		},
 		onLoad() {
-
-
+			// 初始化视频广告控件
+			this.initVideoAd()
+			this.getShareText()
 		},
-		onShareAppMessage() {
-			return this.$app.commonShareAppMessage()
+		onShareAppMessage(e) {
+			const shareType = e.target && e.target.dataset.share
+			return this.$app.commonShareAppMessage(shareType)
 		},
 		methods: {
+			initVideoAd() {
+				if (wx.createRewardedVideoAd) {
+					this.videoAd = wx.createRewardedVideoAd({
+						adUnitId: "adunit-9fa8b9c723fc27be"
+					})
+
+					this.videoAd.onClose(status => {
+						if (status && status.isEnded || status === undefined) {
+							for (let key in this.taskList) {
+								const value = this.taskList[key]
+
+								if (value.type == 7) {
+									this.taskList[key].status = 1
+								}
+							}
+						} else {
+							this.$app.toast('观看完视频才有奖励哦')
+						}
+					})
+
+					this.videoAd.onError(err => {
+						this.$app.toast('抱歉，暂无合适的广告')
+						console.error('视频广告播放错误', err)
+					})
+				}
+
+			},
+			/**显示视频广告*/
+			openAdver() {
+				if (this.videoAd) {
+					this.videoAd.show().catch(err => {
+						// 失败重试
+						this.videoAd.load().then(() => {
+							this.videoAd.show()
+						})
+					})
+				}
+			},
 			clipboard() {
 				uni.setClipboardData({
 					data: this.shareText,
@@ -121,21 +166,30 @@
 					this.getTaskList()
 				})
 			},
-			doTask(task) {
+			doTask(task, index) {
 				if (task.status == 0) {
-					if (task.task_type.gopage) {
-						this.$app.goPage(task.task_type.gopage)
+					// 做任务
+					if (task.task_type.id == 4 && ~this.$app.getData('sysInfo').system.indexOf('iOS')) {
+						// ios 去公众号
+						return
 					} else if (task.task_type.id == 7) {
 						// 观看广告
+						this.openAdver()
 					} else if (task.task_type.id == 8) {
 						// 微博发帖
 						this.modal = 'weibo'
-					} else if (task.task_type.id == 4 && this.$app.getData('sysInfo').system.indexOf('iOS') != -1) {
-						// ios 去公众号
-						return
+					} else if (task.task_type.id == 12) {
+						// 集结
+						this.$app.request(this.$app.API.SHARE_STARMASS, {}, res => {})
+					} else {
+						if (task.task_type.gopage) {
+							// 跳转页面
+							this.$app.goPage(task.task_type.gopage)
+						}
 					}
 
 				} else if (task.status == 1) {
+					this.taskList[index].status = 2
 					// 去领取
 					this.$app.request(this.$app.API.TASK_SETTLE, {
 						task_id: task.id
@@ -145,12 +199,12 @@
 						if (res.data.stone) toast += '，灵丹+' + res.data.stone
 						if (res.data.trumpet) toast += '，喇叭+' + res.data.trumpet
 
+						this.$app.toast(toast)
 						this.getTaskList()
 						this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
 							this.$app.setData('userCurrency', res.data)
-							this.$app.toast(toast)
 						})
-					})
+					}, 'POST', true)
 				}
 			},
 
@@ -162,8 +216,37 @@
 			},
 			getTaskList() {
 				this.$app.request(this.$app.API.TASK, {}, res => {
-					this.taskList = res.data
+					// this.taskList = res.data
 
+					const resList = []
+					this.$app.isTaskAllDone = true
+					for (let v of res.data) {
+						if (v.status == 0) {
+							// 有未完成的任务
+							this.$app.isTaskAllDone = false
+						}
+						resList.push({
+							id: v.id,
+							coin: v.coin || 0,
+							stone: v.stone || 0,
+							trumpet: v.trumpet || 0,
+							status: v.status,
+							name: v.name,
+							doneTimes: v.doneTimes,
+							times: v.times,
+							type: v.type,
+							desc: v.desc,
+							task_type: {
+								id: v.task_type.id,
+								gopage: v.task_type.gopage,
+								btn_text: v.task_type.btn_text,
+								img: v.task_type.img,
+							}
+						})
+					}
+
+					this.taskList = resList
+					this.$app.setData('taskList', this.taskList)
 					this.$app.closeLoading(this)
 				})
 			}
@@ -196,6 +279,10 @@
 					display: flex;
 					flex-direction: column;
 					justify-content: space-around;
+
+					.top {
+						max-width: 250upx;
+					}
 
 					.bottom {
 						font-size: 24upx;

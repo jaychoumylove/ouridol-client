@@ -1,0 +1,1 @@
+<view data-event-opts="{{[['tap',[['e0',['$event']]]]]}}" class="open-container data-v-3def36c6" bindtap="__e" bind:__l="__l"><image class="img data-v-3def36c6" src="{{imgUrl}}" mode="aspectFill"></image><view class="cut-time data-v-3def36c6">{{time+" 秒"}}</view></view>

@@ -1,7 +1,5 @@
 <template>
 	<view class="container">
-		
-
 		<view class="top-content-container">
 			<view class="row userinfo">
 
@@ -20,6 +18,8 @@
 					<view class="item-line middle">
 						<view class="id-content flex-set" v-if="userInfo.id" @tap="$app.copy(userInfo.id*1234)">ID:{{userInfo.id*1234}}</view>
 						<view class="mystar flex-set" v-if="userStar.id" @tap="$app.goPage('/pages/group/group')">{{userStar.name}}偶像圈</view>
+						<view class="mystar flex-set" style="background-color: #67458F;" v-if="$app.getData('userInfo').type == 1">管理员</view>
+
 						<!-- <view class="fan-level">
 							<image src="/static/image/user/h1-2.png" mode=""></image>
 							<view class="fan-text">高积分</view>
@@ -65,12 +65,12 @@
 			<view class="list-item" @tap="$app.goPage('/pages/recharge/recharge')" v-if="$app.getData('sysInfo').system.indexOf('iOS')==-1">
 				<image src="/static/image/user/r1.png" mode="widthFix"></image>
 				<view class="text">补充能量</view>
-				<view class="badge-wrapper">
+				<!-- <view class="badge-wrapper">
 					<badgeComponent></badgeComponent>
-				</view>
+				</view> -->
 			</view>
 			<block v-else>
-				<button open-type="contact" show-message-card v-if="$app.getData('config').ios_switch == 1">
+				<button open-type="contact" :session-from="$app.getData('userInfo').id" v-if="$app.getData('config').ios_switch == 1">
 					<view class="list-item">
 						<image src="/static/image/user/r1.png" mode="widthFix"></image>
 						<view class="text">补充能量 回复"1"</view>
@@ -88,25 +88,30 @@
 					<badgeComponent num="1256"></badgeComponent>
 				</view>
 			</view> -->
-			<!-- <view class="list-item" @tap="$app.toast('敬请期待')">
-				<image src="/static/image/user/s3.png" mode="widthFix"></image>
+			<view class="list-item" @tap="$app.goPage('/pages/log/log')">
+				<image src="/static/image/user/s2.png" mode="widthFix"></image>
 				<view class="text">个人明细</view>
-			</view> -->
-			<button open-type="contact" show-message-card>
+			</view>
+			<!-- <button open-type="contact" :session-from="$app.getData('userInfo').id">
 				<view class="list-item">
 					<image src="/static/image/user/r3.png" mode="widthFix"></image>
 					<view class="text">联系客服</view>
 				</view>
-			</button>
+			</button> -->
 
-			<view v-if="userStar.id" class="list-item" @tap="exitGroup">
+			<view class="list-item" @tap="copy()">
+				<image src="/static/image/user/r3.png" mode="widthFix"></image>
+				<view class="text">客服微信号：ouridol</view>
+			</view>
+
+			<view v-if="userStar.id && $app.getData('userInfo').type == 0" class="list-item" @tap="exitGroup">
 				<image src="/static/image/user/r4.png" mode="widthFix"></image>
 				<view class="text">退出偶像圈</view>
 			</view>
-			<!-- 
-			<view class="list-item">
-				<image src="/static/image/user/s6.png" mode=""></image>
-				<view class="text">参与话题</view>
+
+			<!-- <view class="list-item"  @tap="$app.goPage('/pages/msg/msg')">
+				<image src="/static/image/user/s7.png" mode=""></image>
+				<view class="text">我的消息</view>
 			</view> -->
 
 			<!-- <view class="list-item" @tap="$app.goPage('/pages/adver/adver')">
@@ -181,6 +186,14 @@
 			return this.$app.commonShareAppMessage()
 		},
 		methods: {
+			copy() {
+				uni.setClipboardData({
+					data: 'ouridol',
+					success: () => {
+						this.$app.toast("微信号已复制\n请到微信中添加客服为好友")
+					}
+				})
+			},
 			exitGroup() {
 				this.$app.modal(`只有一次机会\n并且会清除你的师徒关系\n是否退出${this.$app.getData('userStar').name}偶像圈？`, () => {
 					this.$app.request(this.$app.API.USER_EXIT, {}, res => {
@@ -215,6 +228,7 @@
 
 <style lang="scss" scoped="true">
 	.container {
+		height: 100%;
 		padding: 20upx;
 
 		.top-content-container {
@@ -373,6 +387,7 @@
 
 				image {
 					width: 50upx;
+					min-height: 50upx;
 					margin-right: 30upx;
 				}
 

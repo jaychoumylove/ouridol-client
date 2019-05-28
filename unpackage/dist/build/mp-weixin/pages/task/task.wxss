@@ -1,4 +1,4 @@
-.container .item.data-v-41048ace {
+.container .item.data-v-d4695d54 {
   margin: 20rpx;
   background-color: rgba(255, 255, 255, 0.3);
   display: -webkit-box;
@@ -16,18 +16,18 @@
           align-items: center;
   border-radius: 60rpx;
 }
-.container .item .left-content.data-v-41048ace {
+.container .item .left-content.data-v-d4695d54 {
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
 }
-.container .item .left-content .img.data-v-41048ace {
+.container .item .left-content .img.data-v-d4695d54 {
       width: 80rpx;
       height: 80rpx;
       border-radius: 50%;
 }
-.container .item .left-content .content.data-v-41048ace {
+.container .item .left-content .content.data-v-d4695d54 {
       margin-left: 20rpx;
       display: -webkit-box;
       display: -webkit-flex;
@@ -42,17 +42,20 @@
           -ms-flex-pack: distribute;
               justify-content: space-around;
 }
-.container .item .left-content .content .bottom.data-v-41048ace {
+.container .item .left-content .content .top.data-v-d4695d54 {
+        max-width: 250rpx;
+}
+.container .item .left-content .content .bottom.data-v-d4695d54 {
         font-size: 24rpx;
         color: #888;
 }
-.container .item .right-content.data-v-41048ace {
+.container .item .right-content.data-v-d4695d54 {
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
 }
-.container .item .right-content .earn.data-v-41048ace {
+.container .item .right-content .earn.data-v-d4695d54 {
       display: -webkit-box;
       display: -webkit-flex;
       display: -ms-flexbox;
@@ -72,7 +75,7 @@
       margin-right: 30rpx;
       width: 100rpx;
 }
-.container .item .right-content .earn .right-item.data-v-41048ace {
+.container .item .right-content .earn .right-item.data-v-d4695d54 {
         display: -webkit-box;
         display: -webkit-flex;
         display: -ms-flexbox;
@@ -82,10 +85,10 @@
             -ms-flex-align: center;
                 align-items: center;
 }
-.container .item .right-content .earn .right-item image.data-v-41048ace {
+.container .item .right-content .earn .right-item image.data-v-d4695d54 {
           width: 40rpx;
 }
-.container .item .right-content .btn.data-v-41048ace {
+.container .item .right-content .btn.data-v-d4695d54 {
       display: -webkit-box;
       display: -webkit-flex;
       display: -ms-flexbox;
@@ -95,7 +98,7 @@
           -ms-flex-align: center;
               align-items: center;
 }
-.container .weibo-modal-container.data-v-41048ace {
+.container .weibo-modal-container.data-v-d4695d54 {
   height: 100%;
   padding: 20rpx;
   -webkit-box-orient: vertical;
@@ -108,7 +111,7 @@
       -ms-flex-pack: start;
           justify-content: flex-start;
 }
-.container .weibo-modal-container .text-wrapper.data-v-41048ace {
+.container .weibo-modal-container .text-wrapper.data-v-d4695d54 {
     margin-top: 20rpx;
     margin-bottom: 20rpx;
     width: 100%;
@@ -117,13 +120,13 @@
     padding-bottom: 40rpx;
     position: relative;
 }
-.container .weibo-modal-container .text-wrapper .text.data-v-41048ace {
+.container .weibo-modal-container .text-wrapper .text.data-v-d4695d54 {
       position: absolute;
       right: 20rpx;
       bottom: -20rpx;
       background-color: #efccc8;
 }
-.container .weibo-modal-container input.data-v-41048ace {
+.container .weibo-modal-container input.data-v-d4695d54 {
     width: 90%;
     background-color: #eee;
     border-radius: 60rpx;
