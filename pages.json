@@ -1,6 +1,6 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-
+		// #ifndef H5
 		{
 			"path": "pages/open/open",
 			"style": {
@@ -8,6 +8,7 @@
 				"disableScroll": true
 			}
 		},
+		// #endif
 		{
 			"path": "pages/index/index",
 			"style": {
@@ -110,17 +111,7 @@
 			"style": {}
 		}
 	],
-	"globalStyle": {
-		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "我们的偶像",
-		"navigationBarBackgroundColor": "#efccc8",
-		"enablePullDownRefresh": false,
-		// #ifdef H5
-		"navigationStyle": "custom",
-		// #endif
-		"onReachBottomDistance": 100
-
-	},
+	// #ifndef H5
 	"tabBar": {
 		"color": "#b296ad",
 		"selectedColor": "#694491",
@@ -149,5 +140,18 @@
 				"text": "个人中心"
 			}
 		]
+	},
+	// #endif
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "我们的偶像",
+		"navigationBarBackgroundColor": "#efccc8",
+		"enablePullDownRefresh": false,
+		// #ifdef H5
+		// "navigationStyle": "custom",
+		// #endif
+		"onReachBottomDistance": 100
+
 	}
+	
 }

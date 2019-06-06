@@ -316,7 +316,7 @@ __webpack_require__.r(__webpack_exports__);
         function (res) {
           _this3.$app.request(_this3.$app.API.USER_INFO, {}, function (res) {
             _this3.$app.setData('userInfo', res.data);
-            _this3.userInfo = _this3.$app.getData('userInfo');
+            _this3.userInfo = res.data;
             _this3.$app.toast('更新成功');
           });
         }, 'POST', true);

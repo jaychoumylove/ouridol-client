@@ -216,7 +216,7 @@
 					}, res => {
 						this.$app.request(this.$app.API.USER_INFO, {}, res => {
 							this.$app.setData('userInfo', res.data)
-							this.userInfo = this.$app.getData('userInfo')
+							this.userInfo = res.data
 							this.$app.toast('更新成功')
 						})
 					}, 'POST', true)

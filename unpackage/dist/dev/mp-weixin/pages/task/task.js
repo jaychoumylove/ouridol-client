@@ -182,6 +182,19 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 {
   components: {
     btnComponent: btnComponent,
@@ -190,20 +203,17 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       requestCount: 1,
-
       taskList: this.$app.getData('taskList') || [],
-      videoAd: null,
       modal: '',
       shareText: '',
-      weiboUrl: '' };
+      weiboUrl: '',
+      weibo_zhuanfa: {} };
 
   },
   onShow: function onShow() {
     this.getTaskList();
   },
   onLoad: function onLoad() {
-    // 初始化视频广告控件
-    this.initVideoAd();
     this.getShareText();
   },
   onShareAppMessage: function onShareAppMessage(e) {
@@ -240,13 +250,21 @@ __webpack_require__.r(__webpack_exports__);
     },
     /**显示视频广告*/
     openAdver: function openAdver() {var _this2 = this;
+      if (!this.videoAd) {
+        // 初始化视频广告控件
+        this.initVideoAd();
+      }
       if (this.videoAd) {
         this.videoAd.show().catch(function (err) {
           // 失败重试
           _this2.videoAd.load().then(function () {
-            _this2.videoAd.show();
+            _this2.videoAd.show().catch(function (err) {
+              _this2.$app.toast('视频广告打开失败');
+            });
           });
         });
+      } else {
+        this.$app.toast('视频广告打开失败');
       }
     },
     clipboard: function clipboard() {var _this3 = this;
@@ -257,12 +275,15 @@ __webpack_require__.r(__webpack_exports__);
         } });
 
     },
-    weiboCommit: function weiboCommit() {var _this4 = this;
+    weiboCommit: function weiboCommit() {var _this4 = this;var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+      if (!this.weiboUrl) return;
       this.$app.request(this.$app.API.TASK_WEIBO, {
-        weiboUrl: this.weiboUrl },
+        weiboUrl: this.weiboUrl,
+        type: type },
       function (res) {
         _this4.$app.toast('提交成功', 'success');
         _this4.modal = '';
+        _this4.weiboUrl = '';
         _this4.getTaskList();
       });
     },
@@ -281,6 +302,9 @@ __webpack_require__.r(__webpack_exports__);
         } else if (task.task_type.id == 12) {
           // 集结
           this.$app.request(this.$app.API.SHARE_STARMASS, {}, function (res) {});
+        } else if (task.task_type.id == 14) {
+          // 微博转发
+          this.modal = 'weibo_zhuanfa';
         } else {
           if (task.task_type.gopage) {
             // 跳转页面
@@ -311,7 +335,8 @@ __webpack_require__.r(__webpack_exports__);
     //HTTP
     getShareText: function getShareText() {var _this6 = this;
       this.$app.request(this.$app.API.EXT_SHARETEXT, {}, function (res) {
-        _this6.shareText = res.data;
+        _this6.shareText = res.data.share_text;
+        _this6.weibo_zhuanfa = res.data.weibo_zhuanfa;
       });
     },
     getTaskList: function getTaskList() {var _this7 = this;
@@ -391,6 +416,14 @@ var render = function() {
     }
 
     _vm.e1 = function($event) {
+      _vm.weiboUrl = $event.detail.value
+    }
+
+    _vm.e2 = function($event) {
+      _vm.modal = ""
+    }
+
+    _vm.e3 = function($event) {
       _vm.weiboUrl = $event.detail.value
     }
   }

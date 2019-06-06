@@ -274,6 +274,62 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 {
   components: {
     modalComponent: modalComponent,
@@ -283,6 +339,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       requestCount: 1,
+      invitListPage: 1,
 
       userCurrency: this.$app.getData('userCurrency') || {
         coin: 0,
@@ -365,6 +422,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     openInvitModal: function openInvitModal() {
       this.modal = 'invit';
+      this.invitListPage = 1;
       this.getInvitList();
     },
     /**精灵技能升级*/
@@ -408,23 +466,72 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     // 被邀请好友列表
-    getInvitList: function getInvitList() {var _this5 = this;
+    // 			getInvitList() {
+    // 
+    // 				this.$app.request(this.$app.API.USER_INVITLIST, {
+    // 					type: 1
+    // 				}, res => {
+    // 					this.invitAward = res.data.award
+    // 					const resList = []
+    // 					res.data.list.forEach((e, i) => {
+    // 						resList.push({
+    // 							avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
+    // 							status: e.status,
+    // 							uid: e.user && e.user.id || 0,
+    // 							nickname: e.user && e.user.nickname || this.$app.NICKNAME,
+    // 							earn: e.sprite.earn,
+    // 						})
+    // 					})
+    // 					this.invitList = resList
+    // 				})
+    // 			},
+    settleSprite: function settleSprite(index, item) {var _this5 = this;
+      if (item.earn < 2) {
+        this.$app.toast('TA的能量太少了，稍后再来吧');
+      } else {
+        this.$app.request(this.$app.API.SPRITE_SETTLE, {
+          user_id: item.uid },
+        function (res) {
+          _this5.invitList[index].earn = 0;
 
+          _this5.$app.toast('为TA收集能量，你获得:' + res.data + '能量');
+          _this5.$app.request(_this5.$app.API.USER_CURRENCY, {}, function (res) {
+            _this5.$app.setData('userCurrency', res.data);
+          });
+        }, 'POST', true);
+      }
+    },
+    getInvitList: function getInvitList() {var _this6 = this;
       this.$app.request(this.$app.API.USER_INVITLIST, {
-        type: 1 },
+        type: 1,
+        page: this.invitListPage || 1 },
       function (res) {
-        _this5.invitAward = res.data.award;
+
+        _this6.invitAward = res.data.award;
         var resList = [];
+        _this6.spriteEarn = false;
         res.data.list.forEach(function (e, i) {
           resList.push({
-            avatar: e.user && e.user.avatarurl || _this5.$app.AVATAR,
+            avatar: e.user && e.user.avatarurl || _this6.$app.AVATAR,
             status: e.status,
             uid: e.user && e.user.id || 0,
-            nickname: e.user && e.user.nickname || _this5.$app.NICKNAME,
+            nickname: e.user && e.user.nickname || _this6.$app.NICKNAME,
             earn: e.sprite.earn });
 
+
+          if (e.sprite.earn >= 100) {
+            // 显示红点
+            _this6.spriteEarn = true;
+          }
         });
-        _this5.invitList = resList;
+        if (_this6.invitListPage == 1) {
+          _this6.invitList = resList;
+        } else {
+          _this6.invitList = _this6.invitList.concat(resList);
+        }
+
+
+        _this6.$app.closeLoading(_this6);
       });
     },
     goOther: function goOther(uid) {
@@ -432,7 +539,7 @@ __webpack_require__.r(__webpack_exports__);
       this.$app.goPage('/pages/pet/other/other?user_id=' + uid);
     },
     //HTTP
-    settle: function settle() {var _this6 = this;
+    settle: function settle() {var _this7 = this;
       if (this.spriteInfo.earn == 0) {
         this.$app.toast('能量太少了，稍后再来吧');
       } else {
@@ -440,36 +547,36 @@ __webpack_require__.r(__webpack_exports__);
           user_id: this.$app.getData('userInfo').id,
           settle: this.spriteInfo.earn },
         function (res) {
-          _this6.getSpriteInfo();
+          _this7.getSpriteInfo();
 
-          _this6.$app.toast('收集成功,能量+' + res.data);
-          _this6.$app.request(_this6.$app.API.USER_CURRENCY, {}, function (res) {
-            _this6.$app.setData('userCurrency', res.data);
-            _this6.userCurrency = _this6.$app.getData('userCurrency');
+          _this7.$app.toast('收集成功,能量+' + res.data);
+          _this7.$app.request(_this7.$app.API.USER_CURRENCY, {}, function (res) {
+            _this7.$app.setData('userCurrency', res.data);
+            _this7.userCurrency = _this7.$app.getData('userCurrency');
           });
-          _this6.earnCuttime = 0;
+          _this7.earnCuttime = 0;
 
-          _this6.initInterval();
+          _this7.initInterval();
         }, 'POST', true);
       }
 
     },
-    getSpriteInfo: function getSpriteInfo() {var _this7 = this;
+    getSpriteInfo: function getSpriteInfo() {var _this8 = this;
       this.$app.request(this.$app.API.SPRITE_INFO, {
         user_id: this.$app.getData('userInfo').id },
       function (res) {
-        _this7.spriteInfo = res.data;
+        _this8.spriteInfo = res.data;
 
         if (res.data.isFull) {
-          _this7.$app.toast('能量已满了，快点收能量吧');
-          clearInterval(_this7.$app.petTimeId);
-          _this7.earnCuttime = 100;
+          _this8.$app.toast('能量已满了，快点收能量吧');
+          clearInterval(_this8.$app.petTimeId);
+          _this8.earnCuttime = 100;
         } else {
-          _this7.initInterval();
+          _this8.initInterval();
         }
 
-        _this7.$app.setData('pet_spriteInfo', _this7.spriteInfo);
-        _this7.$app.closeLoading(_this7);
+        _this8.$app.setData('pet_spriteInfo', _this8.spriteInfo);
+        _this8.$app.closeLoading(_this8);
       });
 
     } } };exports.default = _default;
@@ -503,6 +610,8 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
+  var g0 = _vm.$app.getData("config")
+
   if (!_vm._isMounted) {
     _vm.e0 = function($event) {
       return _vm.$app.goPage("/pages/notice/notice?id=2")
@@ -517,7 +626,8 @@ var render = function() {
     }
 
     _vm.e3 = function($event) {
-      _vm.modal = ""
+      _vm.invitListPage++
+      _vm.getInvitList()
     }
 
     _vm.e4 = function($event) {
@@ -525,9 +635,22 @@ var render = function() {
     }
 
     _vm.e5 = function($event) {
+      _vm.modal = ""
+    }
+
+    _vm.e6 = function($event) {
       return _vm.$app.goPage("/pages/task/task")
     }
   }
+
+  _vm.$mp.data = Object.assign(
+    {},
+    {
+      $root: {
+        g0: g0
+      }
+    }
+  )
 }
 var staticRenderFns = []
 render._withStripped = true

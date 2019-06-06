@@ -221,10 +221,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
         type: 2 },
       function (res) {
         var resList = [];
-        var todayTotal = 0;var _iteratorNormalCompletion = true;var _didIteratorError = false;var _iteratorError = undefined;try {
-          for (var _iterator = res.data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {var v = _step.value;
-            todayTotal += v.has_earn_count;
+        _this2.todayTotal = res.data.earn;var _iteratorNormalCompletion = true;var _didIteratorError = false;var _iteratorError = undefined;try {
 
+          for (var _iterator = res.data.list[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {var v = _step.value;
             resList.push({
               uid: v.user && v.user.id,
               avatarurl: v.user && v.user.avatarurl || _this2.$app.AVATAR,
@@ -232,10 +231,8 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
               cur_contribute: v.cur_contribute,
               earn: v.user_earn });
 
-
           }} catch (err) {_didIteratorError = true;_iteratorError = err;} finally {try {if (!_iteratorNormalCompletion && _iterator.return != null) {_iterator.return();}} finally {if (_didIteratorError) {throw _iteratorError;}}}
 
-        _this2.todayTotal = todayTotal;
         _this2.sonTotal = resList.length;
         _this2.sonList = resList;
 

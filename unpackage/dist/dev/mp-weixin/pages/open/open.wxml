@@ -1,1 +1,1 @@
-<view data-event-opts="{{[['tap',[['e0',['$event']]]]]}}" class="open-container data-v-71da62ec" bindtap="__e" bind:__l="__l"><image class="img data-v-71da62ec" src="{{imgUrl}}" mode="aspectFill"></image><view class="cut-time data-v-71da62ec">{{time+" 秒"}}</view></view>
+<view data-event-opts="{{[['tap',[['goIndex',['$event']]]]]}}" class="open-container data-v-71da62ec" bindtap="__e" bind:__l="__l"><image class="img data-v-71da62ec" src="{{imgUrl}}" mode="aspectFill"></image><view class="cut-time data-v-71da62ec">{{time+" 秒"}}</view></view>

@@ -98,7 +98,16 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var bannerComponent = function bannerComponent() {return __webpack_require__.e(/*! import() | components/bannerComponent */ "components/bannerComponent").then(__webpack_require__.bind(null, /*! @/components/bannerComponent.vue */ "../../../../../Develop/uni-app/work_0420/components/bannerComponent.vue"));};var btnComponent = function btnComponent() {return __webpack_require__.e(/*! import() | components/btnComponent */ "components/btnComponent").then(__webpack_require__.bind(null, /*! @/components/btnComponent.vue */ "../../../../../Develop/uni-app/work_0420/components/btnComponent.vue"));};var listItemComponent = function listItemComponent() {return __webpack_require__.e(/*! import() | components/listItemComponent */ "components/listItemComponent").then(__webpack_require__.bind(null, /*! @/components/listItemComponent.vue */ "../../../../../Develop/uni-app/work_0420/components/listItemComponent.vue"));};var _default =
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var modalComponent = function modalComponent() {return __webpack_require__.e(/*! import() | components/modalComponent */ "components/modalComponent").then(__webpack_require__.bind(null, /*! @/components/modalComponent.vue */ "../../../../../Develop/uni-app/work_0420/components/modalComponent.vue"));};var bannerComponent = function bannerComponent() {return __webpack_require__.e(/*! import() | components/bannerComponent */ "components/bannerComponent").then(__webpack_require__.bind(null, /*! @/components/bannerComponent.vue */ "../../../../../Develop/uni-app/work_0420/components/bannerComponent.vue"));};var btnComponent = function btnComponent() {return __webpack_require__.e(/*! import() | components/btnComponent */ "components/btnComponent").then(__webpack_require__.bind(null, /*! @/components/btnComponent.vue */ "../../../../../Develop/uni-app/work_0420/components/btnComponent.vue"));};var listItemComponent = function listItemComponent() {return __webpack_require__.e(/*! import() | components/listItemComponent */ "components/listItemComponent").then(__webpack_require__.bind(null, /*! @/components/listItemComponent.vue */ "../../../../../Develop/uni-app/work_0420/components/listItemComponent.vue"));};var _default =
+
+
+
+
+
+
+
+
+
 
 
 
@@ -207,7 +216,8 @@ __webpack_require__.r(__webpack_exports__);
   components: {
     bannerComponent: bannerComponent,
     btnComponent: btnComponent,
-    listItemComponent: listItemComponent },
+    listItemComponent: listItemComponent,
+    modalComponent: modalComponent },
 
   data: function data() {
     return {
@@ -216,9 +226,8 @@ __webpack_require__.r(__webpack_exports__);
       requestCount: 1,
 
       cutOffDate: '', // 截止日期
-      searchShow: false,
+      searchHide: false,
       currentTab: 0,
-      scrollTop: 0,
 
       page: 1,
       keywords: '',
@@ -229,15 +238,18 @@ __webpack_require__.r(__webpack_exports__);
   },
 
   onLoad: function onLoad(option) {
+    // 显示精灵tab小红点
+    uni.showTabBarRedDot({
+      index: 1 });
+
+
+
+
     // 跳转到明星页
     option.starid && this.goGroup(option.starid);
     this.getSunday();
   },
   onShow: function onShow() {
-    uni.pageScrollTo({
-      scrollTop: 0,
-      duration: 0 });
-
     this.page = 1;
     this.keywords = '';
     this.getRankList();
@@ -246,7 +258,10 @@ __webpack_require__.r(__webpack_exports__);
     return this.$app.commonShareAppMessage();
   },
   onHide: function onHide() {
-    this.scrollTop = 1;
+    uni.pageScrollTo({
+      scrollTop: 0,
+      duration: 0 });
+
   },
   /**
       * 下拉刷新
@@ -265,16 +280,40 @@ __webpack_require__.r(__webpack_exports__);
 
   },
   methods: {
+    preimg: function preimg(img) {
+      uni.previewImage({
+        current: 0,
+        urls: [img.trim()],
+        success: function success(res) {
+          console.log(res);
+        } });
+
+    },
     getSunday: function getSunday() {
       var time = new Date();
       var day = time.getDay() || 7;
       time.setDate(time.getDate() - day + 7);
       this.cutOffDate = time.getMonth() + 1 + '月' + time.getDate() + '日';
     },
+    getLast: function getLast() {
+      var date = new Date();
+      var currentMonth = date.getMonth();
+      var nextMonth = ++currentMonth;
+      var nextMonthFirstDay = new Date(date.getFullYear(), nextMonth, 1);
+      var oneDay = 1000 * 60 * 60 * 24;
+      var dateTime = new Date(nextMonthFirstDay - oneDay);
+
+      this.cutOffDate = dateTime.getMonth() + 1 + '月' + dateTime.getDate() + '日';
+    },
     /**
         * 去偶像圈打榜
         */
     goGroup: function goGroup(starid) {
+
+
+
+
+
       if (this.$app.getData('userStar', true)['id'] == starid) {
         this.$app.goPage('/pages/group/group');
       } else {
@@ -291,6 +330,12 @@ __webpack_require__.r(__webpack_exports__);
       this.keywords = '';
       this.getRankList();
     },
+    changeField: function changeField(field) {
+      this.page = 1;
+      this.rankField = field;
+      this.keywords = '';
+      this.getRankList();
+    },
     searchInput: function searchInput(e) {
       if (!this.keywords || !e.detail.value) this.rankList = [];
       this.page = 1;
@@ -299,7 +344,7 @@ __webpack_require__.r(__webpack_exports__);
       this.getRankList();
     },
     searchToggle: function searchToggle() {
-      this.searchShow = !this.searchShow;
+      this.searchHide = !this.searchHide;
       if (this.keywords) {
         this.keywords = '';
         this.page = 1;
@@ -377,22 +422,44 @@ var render = function() {
   var g0 = _vm.$app.getData("config")
   var g1 = _vm.$app.getData("config")
   var g2 = _vm.$app.getData("config")
+  var g3 = _vm.$app.getData("config")
+  var g4 = _vm.$app.getData("config")
 
   if (!_vm._isMounted) {
     _vm.e0 = function($event) {
-      return _vm.$app.goPage("/pages/star/rank_history/rank_history")
+      _vm.changeField("week_hot")
+      _vm.getSunday()
     }
 
     _vm.e1 = function($event) {
-      return _vm.$app.goPage("/pages/notice/notice?id=1")
+      _vm.changeField("month_hot")
+      _vm.getLast()
     }
 
     _vm.e2 = function($event) {
+      return _vm.$app.goPage(
+        "/pages/star/rank_history/rank_history?rankField=" + _vm.rankField
+      )
+    }
+
+    _vm.e3 = function($event) {
+      return _vm.$app.goPage("/pages/notice/notice?id=1")
+    }
+
+    _vm.e4 = function($event) {
       _vm.modal = ""
       _vm.$app.goPage(_vm.$app.getData("config").index_banner.gopage)
     }
 
-    _vm.e3 = function($event) {
+    _vm.e5 = function($event) {
+      _vm.modal = ""
+    }
+
+    _vm.e6 = function($event) {
+      _vm.preimg(_vm.$app.getData("config").webmodal)
+    }
+
+    _vm.e7 = function($event) {
       _vm.modal = ""
     }
   }
@@ -403,7 +470,9 @@ var render = function() {
       $root: {
         g0: g0,
         g1: g1,
-        g2: g2
+        g2: g2,
+        g3: g3,
+        g4: g4
       }
     }
   )

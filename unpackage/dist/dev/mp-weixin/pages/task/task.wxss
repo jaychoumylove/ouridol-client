@@ -100,19 +100,18 @@
 }
 .container .weibo-modal-container.data-v-4980ab6a {
   height: 100%;
-  padding: 20rpx;
+  padding: 20rpx 40rpx;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   -webkit-flex-direction: column;
       -ms-flex-direction: column;
           flex-direction: column;
-  -webkit-box-pack: start;
-  -webkit-justify-content: flex-start;
-      -ms-flex-pack: start;
-          justify-content: flex-start;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 .container .weibo-modal-container .text-wrapper.data-v-4980ab6a {
-    margin-top: 20rpx;
     margin-bottom: 20rpx;
     width: 100%;
     border: 4rpx solid red;
@@ -134,5 +133,14 @@
     margin-top: 20rpx;
     margin-bottom: 20rpx;
     padding: 0 20rpx;
+}
+.container .weibo-modal-container.zhuanfa text.data-v-4980ab6a {
+  font-weight: 700;
+}
+.container .weibo-modal-container.zhuanfa image.data-v-4980ab6a {
+  width: 320rpx;
+  height: 240rpx;
+  border-radius: 10rpx;
+  margin: 10rpx;
 }
 

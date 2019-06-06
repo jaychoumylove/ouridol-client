@@ -1,10 +1,12 @@
 <script>
 	import Const from "@/lib/const";
+	import BaseFunc from "@/lib/base_func"
 	import Func from "@/lib/func";
 	import ExtFunc from "@/lib/ext_func"
 	export default {
 		globalData: {
 			...Const,
+			...BaseFunc,
 			...Func,
 			...ExtFunc,
 		},
@@ -23,18 +25,14 @@
 			}
 
 			this.$app.setData('sysInfo', uni.getSystemInfoSync())
-			// 显示精灵tab小红点
-			uni.showTabBarRedDot({
-				index: 1
-			})
+
 		},
 
 		onShow: function(option) {
 			console.log('option', option);
-
-			if (option.query && option.query.referrer && option.query.referrer != this.$app.getData('userInfo').id) {
+			if (option.query && option.query.referrer) {
 				// 推荐人
-				this.$app.setData('referrer', parseInt(option.query.referrer))
+				this.$app.setData('referrer', option.query.referrer)
 			} else {
 				this.$app.setData('referrer', '')
 			}
@@ -50,10 +48,15 @@
 		onHide: function() {},
 		methods: {
 			loadData() {
-
 				this.$app.request('page/app', {
 					referrer: this.$app.getData('referrer')
 				}, res => {
+					if (res.data.upSprite) {
+						setTimeout(() => {
+							this.$app.modal("精灵可以升级啦！\n提升精灵等级可获取更多能量哦")
+						}, 5000)
+
+					}
 					this.$app.setData('userInfo', res.data.userInfo)
 					this.$app.setData('userCurrency', res.data.userCurrency)
 
@@ -62,6 +65,7 @@
 
 					this.$app.setData('config', res.data.config)
 
+					if (res.data.massUser) this.$app.modal('助力' + res.data.massUser + '成功')
 					// if (this.$app.getData('referrer')) {
 					// 	// 是从分享而来
 					// 	this.$app.request(this.$app.API.SHARE_JOINMASS, {

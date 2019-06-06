@@ -4,7 +4,7 @@
     "btn-component": "/components/btnComponent",
     "list-item-component": "/components/listItemComponent",
     "badge-component": "/components/badgeComponent",
-    "count-to": "/node-modules/vue-count-to/src/vue-countTo"
+    "count-to-component": "/components/countToComponent"
   },
   "component": true
 }

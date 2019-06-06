@@ -1,4 +1,4 @@
-.container .item.data-v-d4695d54 {
+.container .item.data-v-66ae798e {
   margin: 20rpx;
   background-color: rgba(255, 255, 255, 0.3);
   display: -webkit-box;
@@ -16,18 +16,18 @@
           align-items: center;
   border-radius: 60rpx;
 }
-.container .item .left-content.data-v-d4695d54 {
+.container .item .left-content.data-v-66ae798e {
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
 }
-.container .item .left-content .img.data-v-d4695d54 {
+.container .item .left-content .img.data-v-66ae798e {
       width: 80rpx;
       height: 80rpx;
       border-radius: 50%;
 }
-.container .item .left-content .content.data-v-d4695d54 {
+.container .item .left-content .content.data-v-66ae798e {
       margin-left: 20rpx;
       display: -webkit-box;
       display: -webkit-flex;
@@ -42,20 +42,20 @@
           -ms-flex-pack: distribute;
               justify-content: space-around;
 }
-.container .item .left-content .content .top.data-v-d4695d54 {
+.container .item .left-content .content .top.data-v-66ae798e {
         max-width: 250rpx;
 }
-.container .item .left-content .content .bottom.data-v-d4695d54 {
+.container .item .left-content .content .bottom.data-v-66ae798e {
         font-size: 24rpx;
         color: #888;
 }
-.container .item .right-content.data-v-d4695d54 {
+.container .item .right-content.data-v-66ae798e {
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
 }
-.container .item .right-content .earn.data-v-d4695d54 {
+.container .item .right-content .earn.data-v-66ae798e {
       display: -webkit-box;
       display: -webkit-flex;
       display: -ms-flexbox;
@@ -75,7 +75,7 @@
       margin-right: 30rpx;
       width: 100rpx;
 }
-.container .item .right-content .earn .right-item.data-v-d4695d54 {
+.container .item .right-content .earn .right-item.data-v-66ae798e {
         display: -webkit-box;
         display: -webkit-flex;
         display: -ms-flexbox;
@@ -85,10 +85,10 @@
             -ms-flex-align: center;
                 align-items: center;
 }
-.container .item .right-content .earn .right-item image.data-v-d4695d54 {
+.container .item .right-content .earn .right-item image.data-v-66ae798e {
           width: 40rpx;
 }
-.container .item .right-content .btn.data-v-d4695d54 {
+.container .item .right-content .btn.data-v-66ae798e {
       display: -webkit-box;
       display: -webkit-flex;
       display: -ms-flexbox;
@@ -98,21 +98,20 @@
           -ms-flex-align: center;
               align-items: center;
 }
-.container .weibo-modal-container.data-v-d4695d54 {
+.container .weibo-modal-container.data-v-66ae798e {
   height: 100%;
-  padding: 20rpx;
+  padding: 20rpx 40rpx;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   -webkit-flex-direction: column;
       -ms-flex-direction: column;
           flex-direction: column;
-  -webkit-box-pack: start;
-  -webkit-justify-content: flex-start;
-      -ms-flex-pack: start;
-          justify-content: flex-start;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
-.container .weibo-modal-container .text-wrapper.data-v-d4695d54 {
-    margin-top: 20rpx;
+.container .weibo-modal-container .text-wrapper.data-v-66ae798e {
     margin-bottom: 20rpx;
     width: 100%;
     border: 4rpx solid red;
@@ -120,13 +119,13 @@
     padding-bottom: 40rpx;
     position: relative;
 }
-.container .weibo-modal-container .text-wrapper .text.data-v-d4695d54 {
+.container .weibo-modal-container .text-wrapper .text.data-v-66ae798e {
       position: absolute;
       right: 20rpx;
       bottom: -20rpx;
       background-color: #efccc8;
 }
-.container .weibo-modal-container input.data-v-d4695d54 {
+.container .weibo-modal-container input.data-v-66ae798e {
     width: 90%;
     background-color: #eee;
     border-radius: 60rpx;
@@ -134,5 +133,14 @@
     margin-top: 20rpx;
     margin-bottom: 20rpx;
     padding: 0 20rpx;
+}
+.container .weibo-modal-container.zhuanfa text.data-v-66ae798e {
+  font-weight: 700;
+}
+.container .weibo-modal-container.zhuanfa image.data-v-66ae798e {
+  width: 320rpx;
+  height: 240rpx;
+  border-radius: 10rpx;
+  margin: 10rpx;
 }
 

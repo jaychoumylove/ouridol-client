@@ -1,9 +1,11 @@
 <template>
 	<view class="star-container">
 		<guildComponent ref="guildComponent"></guildComponent>
-		<view v-if="tips" class="tips-container" @tap="tips=false">
-			<image src="/static/image/star/blank.png" mode="widthFix"></image>
-		</view>
+		<button open-type="getUserInfo" @getuserinfo="getUserInfo">
+			<view v-if="tips" class="tips-container">
+				<image src="/static/image/star/blank-3.png" mode="widthFix"></image>
+			</view>
+		</button>
 	</view>
 
 </template>
@@ -24,13 +26,13 @@
 		},
 		onLoad(option) {
 			this.starid = option.starid
-			if (this.starid == this.$app.getData('userStar', true).id) {
+			if (this.starid == this.$app.getData('userStar').id) {
 				this.$app.goPage('/pages/group/group')
 			}
 		},
 		onReady() {},
 		onShow() {
-			if (!this.$app.getData('userStar', true).id) this.tips = true
+			if (!this.$app.getData('userStar').id) this.tips = true
 			this.$refs.guildComponent.load(this.starid)
 		},
 		onUnload() {
@@ -38,8 +40,28 @@
 			this.$refs.guildComponent.modal = ''
 
 		},
-		
-		methods: {}
+
+		methods: {
+			getUserInfo(e) {
+				const userInfo = e.detail.userInfo
+				if (userInfo) {
+					this.tips = false
+					if (!this.$app.getData('userInfo').nickname) {
+
+						this.$app.request(this.$app.API.USER_SAVEINFO, {
+							iv: e.detail.iv,
+							encryptedData: e.detail.encryptedData,
+						}, res => {
+							this.$app.request(this.$app.API.USER_INFO, {}, res => {
+								this.$app.setData('userInfo', res.data, true)
+
+							})
+						}, 'POST', true)
+					}
+				}
+
+			}
+		}
 	}
 </script>
 
@@ -59,9 +81,6 @@
 
 			image {
 				width: 100%;
-				position: absolute;
-				top: -20upx;
-				right: -14upx;
 			}
 		}
 	}

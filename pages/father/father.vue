@@ -121,21 +121,18 @@
 					type: 2
 				}, res => {
 					const resList = []
-					let todayTotal = 0
-					for (let v of res.data) {
-						todayTotal += v.has_earn_count
+					this.todayTotal = res.data.earn
 
+					for (let v of res.data.list) {
 						resList.push({
 							uid: v.user && v.user.id,
 							avatarurl: v.user && v.user.avatarurl || this.$app.AVATAR,
 							nickname: v.user && v.user.nickname || this.$app.NICKNAME,
 							cur_contribute: v.cur_contribute,
 							earn: v.user_earn,
-
 						})
 					}
 
-					this.todayTotal = todayTotal
 					this.sonTotal = resList.length
 					this.sonList = resList
 

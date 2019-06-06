@@ -2,7 +2,6 @@
 	<view class="container">
 		<view class="item" v-for="(item,index) in taskList" :key="index" v-if="!(
 					(item.type==4 && ~$app.getData('sysInfo').system.indexOf('iOS') && $app.getData('config').ios_switch == 0) 
-					|| (item.type==7 && !videoAd)
 					)">
 			<view class="left-content">
 				<image class="img" :src="item.task_type.img" mode=""></image>
@@ -75,6 +74,20 @@
 				</btnComponent>
 			</view>
 		</modalComponent>
+
+		<modalComponent v-if="modal == 'weibo_zhuanfa'" title="提示" @closeModal="modal=''">
+			<view class="weibo-modal-container zhuanfa flex-set">
+				<view class="line">第一步：进入 <text>{{weibo_zhuanfa.host}}</text>主页查看 <text>{{weibo_zhuanfa.text}}</text> </view>
+				<image :src="weibo_zhuanfa.img" mode=""></image>
+				<view class="line">第二步：填写转发的微博链接</view>
+
+				<input type="text" @input="weiboUrl = $event.detail.value" placeholder="帖子链接" />
+				<btnComponent type="default">
+					<view class="flex-set" style="width: 160upx;height: 80upx;" @tap="weiboCommit(1)">提交</view>
+				</btnComponent>
+			</view>
+
+		</modalComponent>
 	</view>
 </template>
 
@@ -90,20 +103,17 @@
 		data() {
 			return {
 				requestCount: 1,
-
 				taskList: this.$app.getData('taskList') || [],
-				videoAd: null,
 				modal: '',
 				shareText: '',
 				weiboUrl: '',
+				weibo_zhuanfa: {},
 			};
 		},
 		onShow() {
 			this.getTaskList()
 		},
 		onLoad() {
-			// 初始化视频广告控件
-			this.initVideoAd()
 			this.getShareText()
 		},
 		onShareAppMessage(e) {
@@ -140,13 +150,21 @@
 			},
 			/**显示视频广告*/
 			openAdver() {
+				if (!this.videoAd) {
+					// 初始化视频广告控件
+					this.initVideoAd()
+				}
 				if (this.videoAd) {
 					this.videoAd.show().catch(err => {
 						// 失败重试
 						this.videoAd.load().then(() => {
-							this.videoAd.show()
+							this.videoAd.show().catch(err => {
+								this.$app.toast('视频广告打开失败')
+							})
 						})
 					})
+				} else {
+					this.$app.toast('视频广告打开失败')
 				}
 			},
 			clipboard() {
@@ -157,12 +175,15 @@
 					}
 				});
 			},
-			weiboCommit() {
+			weiboCommit(type = 0) {
+				if (!this.weiboUrl) return
 				this.$app.request(this.$app.API.TASK_WEIBO, {
-					weiboUrl: this.weiboUrl
+					weiboUrl: this.weiboUrl,
+					type,
 				}, res => {
 					this.$app.toast('提交成功', 'success')
 					this.modal = ''
+					this.weiboUrl = ''
 					this.getTaskList()
 				})
 			},
@@ -181,6 +202,9 @@
 					} else if (task.task_type.id == 12) {
 						// 集结
 						this.$app.request(this.$app.API.SHARE_STARMASS, {}, res => {})
+					} else if (task.task_type.id == 14) {
+						// 微博转发
+						this.modal = 'weibo_zhuanfa'
 					} else {
 						if (task.task_type.gopage) {
 							// 跳转页面
@@ -211,7 +235,8 @@
 			//HTTP
 			getShareText() {
 				this.$app.request(this.$app.API.EXT_SHARETEXT, {}, res => {
-					this.shareText = res.data
+					this.shareText = res.data.share_text
+					this.weibo_zhuanfa = res.data.weibo_zhuanfa
 				})
 			},
 			getTaskList() {
@@ -322,12 +347,11 @@
 
 		.weibo-modal-container {
 			height: 100%;
-			padding: 20upx;
+			padding: 20upx 40upx;
 			flex-direction: column;
-			justify-content: flex-start;
+			justify-content: center;
 
 			.text-wrapper {
-				margin-top: 20upx;
 				margin-bottom: 20upx;
 				width: 100%;
 				border: 4upx solid red;
@@ -352,6 +376,19 @@
 				margin-top: 20upx;
 				margin-bottom: 20upx;
 				padding: 0 20upx;
+			}
+		}
+
+		.weibo-modal-container.zhuanfa {
+			text {
+				font-weight: 700;
+			}
+
+			image {
+				width: 320upx;
+				height: 240upx;
+				border-radius: 10upx;
+				margin: 10upx;
 			}
 		}
 

@@ -45,11 +45,12 @@
 		data() {
 			return {
 				requestCount: 1,
-
+				rankField: 'week_hot',
 				history: [],
 			};
 		},
-		onLoad() {
+		onLoad(option) {
+			if (option.rankField) this.rankField = option.rankField
 			this.getRankList()
 		},
 		methods: {
@@ -64,20 +65,22 @@
 				}
 			},
 			getRankList() {
-				this.$app.request(this.$app.API.STAR_RANK_HISTORY, {}, res => {
+				this.$app.request(this.$app.API.STAR_RANK_HISTORY, {
+					rankField: this.rankField
+				}, res => {
 					const resList = []
-					res.data.forEach(weekItem => {
+					res.data.forEach(thisItem => {
 						const item = {
-							date: weekItem.date.toString().slice(0, 4) + '第' + (weekItem.date.toString().slice(4) - 19) + '期',
+							date: thisItem.date,
 							rankList: [],
 						}
 
-						weekItem.value.forEach(rankItem => {
+						thisItem.value.forEach(rankItem => {
 							item.rankList.push({
 								starid: rankItem.star.id,
 								name: rankItem.star.name,
 								avatar: rankItem.star.head_img_s ? rankItem.star.head_img_s : rankItem.star.head_img_l,
-								hot: this.$app.formatNumberRgx(rankItem['week_hot']),
+								hot: this.$app.formatNumberRgx(rankItem[this.rankField]),
 							})
 						})
 

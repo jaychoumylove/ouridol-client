@@ -144,26 +144,19 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
       signin_coin: 0 };
 
   },
-  onLoad: function onLoad() {var _this = this;
-    var timeId = setInterval(function () {
-      if (_this.$app.getData('token')) {
-        clearInterval(timeId);
-        _this.getSignin();
-      }
-
-    }, 300);
+  onLoad: function onLoad() {
+    this.getSignin();
   },
   methods: {
-    getSignin: function getSignin() {var _this2 = this;
-
+    getSignin: function getSignin() {var _this = this;
       this.$app.request(this.$app.API.USER_SIGNIN, {}, function (res) {
-        _this2.siginList = res.data.cfg;
-        _this2.signin_day = res.data.signin_day;
+        _this.siginList = res.data.cfg;
+        _this.signin_day = res.data.signin_day;
         if (res.data.coin) {
-          _this2.signin_coin = res.data.coin;
+          _this.signin_coin = res.data.coin;
 
-          _this2.$app.request(_this2.$app.API.USER_CURRENCY, {}, function (res) {
-            _this2.$app.setData('userCurrency', res.data);
+          _this.$app.request(_this.$app.API.USER_CURRENCY, {}, function (res) {
+            _this.$app.setData('userCurrency', res.data);
           });
         }
       });

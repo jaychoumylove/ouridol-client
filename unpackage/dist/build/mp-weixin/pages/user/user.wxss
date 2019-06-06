@@ -1,18 +1,18 @@
-.container.data-v-4171441d {
+.container.data-v-0c203356 {
   height: 100%;
   padding: 20rpx;
 }
-.container .top-content-container.data-v-4171441d {
+.container .top-content-container.data-v-0c203356 {
     border-radius: 10rpx;
     padding: 40rpx 30rpx;
 }
-.container .top-content-container .row.userinfo.data-v-4171441d {
+.container .top-content-container .row.userinfo.data-v-0c203356 {
       display: -webkit-box;
       display: -webkit-flex;
       display: -ms-flexbox;
       display: flex;
 }
-.container .top-content-container .row.userinfo .avatar.data-v-4171441d {
+.container .top-content-container .row.userinfo .avatar.data-v-0c203356 {
         position: relative;
         overflow: hidden;
         border-radius: 50%;
@@ -20,7 +20,7 @@
         height: 140rpx;
         z-index: 1;
 }
-.container .top-content-container .row.userinfo .avatar .tips.data-v-4171441d {
+.container .top-content-container .row.userinfo .avatar .tips.data-v-0c203356 {
           position: absolute;
           width: 100%;
           background-color: rgba(0, 0, 0, 0.3);
@@ -31,7 +31,7 @@
           text-align: center;
           line-height: 30rpx;
 }
-.container .top-content-container .row.userinfo .info-content.data-v-4171441d {
+.container .top-content-container .row.userinfo .info-content.data-v-0c203356 {
         margin: 4rpx 30rpx;
         display: -webkit-box;
         display: -webkit-flex;
@@ -46,7 +46,7 @@
             -ms-flex-direction: column;
                 flex-direction: column;
 }
-.container .top-content-container .row.userinfo .info-content .item-line.data-v-4171441d {
+.container .top-content-container .row.userinfo .info-content .item-line.data-v-0c203356 {
           display: -webkit-box;
           display: -webkit-flex;
           display: -ms-flexbox;
@@ -56,29 +56,29 @@
               -ms-flex-align: center;
                   align-items: center;
 }
-.container .top-content-container .row.userinfo .info-content .item-line .username.data-v-4171441d {
+.container .top-content-container .row.userinfo .info-content .item-line .username.data-v-0c203356 {
             font-weight: 700;
             margin-right: 8rpx;
 }
-.container .top-content-container .row.userinfo .info-content .item-line image.vip.data-v-4171441d {
+.container .top-content-container .row.userinfo .info-content .item-line image.vip.data-v-0c203356 {
             width: 38rpx;
             height: 38rpx;
             margin-top: 4rpx;
             margin-right: 6rpx;
 }
-.container .top-content-container .row.userinfo .info-content .item-line .vip-expire.data-v-4171441d {
+.container .top-content-container .row.userinfo .info-content .item-line .vip-expire.data-v-0c203356 {
             font-size: 18rpx;
             color: #999;
             margin-top: 12rpx;
 }
-.container .top-content-container .row.userinfo .info-content .item-line .id-content.data-v-4171441d {
+.container .top-content-container .row.userinfo .info-content .item-line .id-content.data-v-0c203356 {
             border-radius: 20rpx;
             font-size: 24rpx;
             background-color: #FDDE2F;
             padding: 0 10rpx;
             color: #853E1D;
 }
-.container .top-content-container .row.userinfo .info-content .item-line .mystar.data-v-4171441d {
+.container .top-content-container .row.userinfo .info-content .item-line .mystar.data-v-0c203356 {
             margin-left: 10rpx;
             border-radius: 20rpx;
             font-size: 24rpx;
@@ -86,19 +86,19 @@
             padding: 0 10rpx;
             color: #FFF;
 }
-.container .top-content-container .row.userinfo .info-content .item-line .fan-level.data-v-4171441d {
+.container .top-content-container .row.userinfo .info-content .item-line .fan-level.data-v-0c203356 {
             font-size: 24rpx;
             position: relative;
             margin-left: 10rpx;
 }
-.container .top-content-container .row.userinfo .info-content .item-line .fan-level image.data-v-4171441d {
+.container .top-content-container .row.userinfo .info-content .item-line .fan-level image.data-v-0c203356 {
               width: 44rpx;
               height: 44rpx;
               position: absolute;
               bottom: -2rpx;
               left: 0;
 }
-.container .top-content-container .row.userinfo .info-content .item-line .fan-level .fan-text.data-v-4171441d {
+.container .top-content-container .row.userinfo .info-content .item-line .fan-level .fan-text.data-v-0c203356 {
               background-color: #f1f1f1;
               color: #999;
               border-top-right-radius: 20rpx;
@@ -106,10 +106,10 @@
               padding: 0 36rpx;
               margin-left: 14rpx;
 }
-.container .top-content-container .row.userinfo .info-content .item-line.bottom.data-v-4171441d {
+.container .top-content-container .row.userinfo .info-content .item-line.bottom.data-v-0c203356 {
           font-size: 20rpx;
 }
-.container .row.currency.data-v-4171441d {
+.container .row.currency.data-v-0c203356 {
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
@@ -127,7 +127,7 @@
     margin-right: -20rpx;
     padding: 30rpx 0;
 }
-.container .row.currency .item-content.data-v-4171441d {
+.container .row.currency .item-content.data-v-0c203356 {
       width: 100%;
       -webkit-box-orient: vertical;
       -webkit-box-direction: normal;
@@ -135,7 +135,7 @@
           -ms-flex-direction: column;
               flex-direction: column;
 }
-.container .row.currency .item-content .item-content-top.data-v-4171441d {
+.container .row.currency .item-content .item-content-top.data-v-0c203356 {
         display: -webkit-box;
         display: -webkit-flex;
         display: -ms-flexbox;
@@ -146,21 +146,21 @@
                 align-items: center;
         position: relative;
 }
-.container .row.currency .item-content .item-content-top image.data-v-4171441d {
+.container .row.currency .item-content .item-content-top image.data-v-0c203356 {
           width: 50rpx;
           height: 50rpx;
           margin-right: 4rpx;
 }
-.container .row.currency .item-content .item-content-bottom.data-v-4171441d {
+.container .row.currency .item-content .item-content-bottom.data-v-0c203356 {
         font-size: 28rpx;
         margin-top: 4rpx;
 }
-.container .function-container-list.data-v-4171441d {
+.container .function-container-list.data-v-0c203356 {
     border-radius: 10rpx;
     margin-top: 20rpx;
     padding: 14rpx;
 }
-.container .function-container-list .list-item.data-v-4171441d {
+.container .function-container-list .list-item.data-v-0c203356 {
       height: 100rpx;
       display: -webkit-box;
       display: -webkit-flex;
@@ -172,12 +172,12 @@
               align-items: center;
       padding: 14rpx 30rpx;
 }
-.container .function-container-list .list-item image.data-v-4171441d {
+.container .function-container-list .list-item image.data-v-0c203356 {
         width: 50rpx;
         min-height: 50rpx;
         margin-right: 30rpx;
 }
-.container .function-container-list .list-item .badge-wrapper.data-v-4171441d {
+.container .function-container-list .list-item .badge-wrapper.data-v-0c203356 {
         position: relative;
         margin-left: 320rpx;
         margin-top: 10rpx;

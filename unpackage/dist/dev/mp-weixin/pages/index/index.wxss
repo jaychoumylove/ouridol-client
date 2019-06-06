@@ -244,5 +244,10 @@
       width: 80rpx;
       height: 80rpx;
       margin-top: 10rpx;
+      z-index: 10;
+      border-radius: 50%;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: #FFF;
+      font-size: 45rpx;
 }
 

@@ -98,7 +98,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; //
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; //
 //
 //
 //
@@ -123,6 +123,11 @@ var timeId;var _default =
     clearInterval(timeId);
   },
   methods: {
+    goIndex: function goIndex() {
+      uni.reLaunch({
+        url: '/pages/index/index' });
+
+    },
     getConfig: function getConfig() {var _this = this;
       this.$app.request(this.$app.API.CONFIG, {
         key: 'open_img' },
@@ -142,6 +147,7 @@ var timeId;var _default =
 
       });
     } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["default"]))
 
 /***/ }),
 
@@ -171,11 +177,6 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  if (!_vm._isMounted) {
-    _vm.e0 = function($event) {
-      return _vm.$app.goPage("/pages/index/index")
-    }
-  }
 }
 var staticRenderFns = []
 render._withStripped = true

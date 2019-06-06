@@ -81,11 +81,13 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 /* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
 var _const = _interopRequireDefault(__webpack_require__(/*! @/lib/const */ "../../../../../Develop/uni-app/work_0420/lib/const.js"));
+var _base_func = _interopRequireDefault(__webpack_require__(/*! @/lib/base_func */ "../../../../../Develop/uni-app/work_0420/lib/base_func.js"));
 var _func = _interopRequireDefault(__webpack_require__(/*! @/lib/func */ "../../../../../Develop/uni-app/work_0420/lib/func.js"));
 var _ext_func = _interopRequireDefault(__webpack_require__(/*! @/lib/ext_func */ "../../../../../Develop/uni-app/work_0420/lib/ext_func.js"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};var ownKeys = Object.keys(source);if (typeof Object.getOwnPropertySymbols === 'function') {ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {return Object.getOwnPropertyDescriptor(source, sym).enumerable;}));}ownKeys.forEach(function (key) {_defineProperty(target, key, source[key]);});}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var _default =
 {
   globalData: _objectSpread({},
   _const.default,
+  _base_func.default,
   _func.default,
   _ext_func.default),
 
@@ -95,18 +97,14 @@ var _ext_func = _interopRequireDefault(__webpack_require__(/*! @/lib/ext_func */
     } else {}
 
     this.$app.setData('sysInfo', uni.getSystemInfoSync());
-    // 显示精灵tab小红点
-    uni.showTabBarRedDot({
-      index: 1 });
 
   },
 
   onShow: function onShow(option) {
     console.log('option', option);
-
-    if (option.query && option.query.referrer && option.query.referrer != this.$app.getData('userInfo').id) {
+    if (option.query && option.query.referrer) {
       // 推荐人
-      this.$app.setData('referrer', parseInt(option.query.referrer));
+      this.$app.setData('referrer', option.query.referrer);
     } else {
       this.$app.setData('referrer', '');
     }
@@ -122,10 +120,15 @@ var _ext_func = _interopRequireDefault(__webpack_require__(/*! @/lib/ext_func */
   onHide: function onHide() {},
   methods: {
     loadData: function loadData() {var _this = this;
-
       this.$app.request('page/app', {
         referrer: this.$app.getData('referrer') },
       function (res) {
+        if (res.data.upSprite) {
+          setTimeout(function () {
+            _this.$app.modal("精灵可以升级啦！\n提升精灵等级可获取更多能量哦");
+          }, 5000);
+
+        }
         _this.$app.setData('userInfo', res.data.userInfo);
         _this.$app.setData('userCurrency', res.data.userCurrency);
 
@@ -134,6 +137,7 @@ var _ext_func = _interopRequireDefault(__webpack_require__(/*! @/lib/ext_func */
 
         _this.$app.setData('config', res.data.config);
 
+        if (res.data.massUser) _this.$app.modal('助力' + res.data.massUser + '成功');
         // if (this.$app.getData('referrer')) {
         // 	// 是从分享而来
         // 	this.$app.request(this.$app.API.SHARE_JOINMASS, {

@@ -110,6 +110,8 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
+
+
 {
   components: {
     guildComponent: guildComponent },
@@ -124,13 +126,13 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
   },
   onLoad: function onLoad(option) {
     this.starid = option.starid;
-    if (this.starid == this.$app.getData('userStar', true).id) {
+    if (this.starid == this.$app.getData('userStar').id) {
       this.$app.goPage('/pages/group/group');
     }
   },
   onReady: function onReady() {},
   onShow: function onShow() {
-    if (!this.$app.getData('userStar', true).id) this.tips = true;
+    if (!this.$app.getData('userStar').id) this.tips = true;
     this.$refs.guildComponent.load(this.starid);
   },
   onUnload: function onUnload() {
@@ -139,7 +141,26 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
   },
 
-  methods: {} };exports.default = _default;
+  methods: {
+    getUserInfo: function getUserInfo(e) {var _this = this;
+      var userInfo = e.detail.userInfo;
+      if (userInfo) {
+        this.tips = false;
+        if (!this.$app.getData('userInfo').nickname) {
+
+          this.$app.request(this.$app.API.USER_SAVEINFO, {
+            iv: e.detail.iv,
+            encryptedData: e.detail.encryptedData },
+          function (res) {
+            _this.$app.request(_this.$app.API.USER_INFO, {}, function (res) {
+              _this.$app.setData('userInfo', res.data, true);
+
+            });
+          }, 'POST', true);
+        }
+      }
+
+    } } };exports.default = _default;
 
 /***/ }),
 
@@ -169,11 +190,6 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  if (!_vm._isMounted) {
-    _vm.e0 = function($event) {
-      _vm.tips = false
-    }
-  }
 }
 var staticRenderFns = []
 render._withStripped = true

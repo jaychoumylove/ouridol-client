@@ -1,6 +1,6 @@
 <!-- 开屏 -->
 <template>
-	<view class="open-container" @tap="$app.goPage('/pages/index/index')">
+	<view class="open-container" @tap="goIndex">
 		<image class="img" :src="imgUrl" mode="aspectFill"></image>
 
 		<view class="cut-time">{{time}} 秒</view>
@@ -23,6 +23,11 @@
 			clearInterval(timeId)
 		},
 		methods: {
+			goIndex(){
+				uni.reLaunch({
+					url: '/pages/index/index'
+				})
+			},
 			getConfig() {
 				this.$app.request(this.$app.API.CONFIG, {
 					key: 'open_img'
@@ -57,10 +62,10 @@
 			text-align: center;
 			bottom: 40upx;
 			right: 40upx;
-			color: #EEE;
-			background-color: rgba(#FFF, 0.3);
+			color: #FFF;
+			background-color: rgba(0, 0, 0, 0.5);
 			padding: 10upx 20upx;
-			border-radius: 20upx;
+			border-radius:30upx;
 		}
 	}
 </style>

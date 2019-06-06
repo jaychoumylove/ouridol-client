@@ -66,6 +66,7 @@
     },
     "h5" : {
         "title" : "我们的偶像",
+		"template": "index.html",
         "domain" : "rank.xiaolishu.com",
         "router" : {
             "mode" : "hash"

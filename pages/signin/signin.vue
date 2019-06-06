@@ -45,17 +45,10 @@
 			};
 		},
 		onLoad() {
-			let timeId = setInterval(() => {
-				if (this.$app.getData('token')) {
-					clearInterval(timeId)
-					this.getSignin()
-				}
-
-			}, 300)
+			this.getSignin()
 		},
 		methods: {
 			getSignin() {
-
 				this.$app.request(this.$app.API.USER_SIGNIN, {}, res => {
 					this.siginList = res.data.cfg
 					this.signin_day = res.data.signin_day

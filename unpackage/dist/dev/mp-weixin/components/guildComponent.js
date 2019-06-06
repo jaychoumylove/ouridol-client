@@ -98,7 +98,66 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var modalComponent = function modalComponent() {return __webpack_require__.e(/*! import() | components/modalComponent */ "components/modalComponent").then(__webpack_require__.bind(null, /*! @/components/modalComponent.vue */ "../../../../../Develop/uni-app/work_0420/components/modalComponent.vue"));};var btnComponent = function btnComponent() {return __webpack_require__.e(/*! import() | components/btnComponent */ "components/btnComponent").then(__webpack_require__.bind(null, /*! @/components/btnComponent.vue */ "../../../../../Develop/uni-app/work_0420/components/btnComponent.vue"));};var listItemComponent = function listItemComponent() {return __webpack_require__.e(/*! import() | components/listItemComponent */ "components/listItemComponent").then(__webpack_require__.bind(null, /*! @/components/listItemComponent.vue */ "../../../../../Develop/uni-app/work_0420/components/listItemComponent.vue"));};var badgeComponent = function badgeComponent() {return __webpack_require__.e(/*! import() | components/badgeComponent */ "components/badgeComponent").then(__webpack_require__.bind(null, /*! @/components/badgeComponent.vue */ "../../../../../Develop/uni-app/work_0420/components/badgeComponent.vue"));};var countTo = function countTo() {return __webpack_require__.e(/*! import() | node-modules/vue-count-to/src/vue-countTo */ "node-modules/vue-count-to/src/vue-countTo").then(__webpack_require__.bind(null, /*! vue-count-to/src/vue-countTo.vue */ "../../../../../Develop/uni-app/work_0420/node_modules/vue-count-to/src/vue-countTo.vue"));};var _default =
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var modalComponent = function modalComponent() {return __webpack_require__.e(/*! import() | components/modalComponent */ "components/modalComponent").then(__webpack_require__.bind(null, /*! @/components/modalComponent.vue */ "../../../../../Develop/uni-app/work_0420/components/modalComponent.vue"));};var btnComponent = function btnComponent() {return __webpack_require__.e(/*! import() | components/btnComponent */ "components/btnComponent").then(__webpack_require__.bind(null, /*! @/components/btnComponent.vue */ "../../../../../Develop/uni-app/work_0420/components/btnComponent.vue"));};var listItemComponent = function listItemComponent() {return __webpack_require__.e(/*! import() | components/listItemComponent */ "components/listItemComponent").then(__webpack_require__.bind(null, /*! @/components/listItemComponent.vue */ "../../../../../Develop/uni-app/work_0420/components/listItemComponent.vue"));};var badgeComponent = function badgeComponent() {return __webpack_require__.e(/*! import() | components/badgeComponent */ "components/badgeComponent").then(__webpack_require__.bind(null, /*! @/components/badgeComponent.vue */ "../../../../../Develop/uni-app/work_0420/components/badgeComponent.vue"));};var countToComponent = function countToComponent() {return __webpack_require__.e(/*! import() | components/countToComponent */ "components/countToComponent").then(__webpack_require__.bind(null, /*! @/components/countToComponent.vue */ "../../../../../Develop/uni-app/work_0420/components/countToComponent.vue"));};var _default =
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -604,7 +663,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     btnComponent: btnComponent,
     listItemComponent: listItemComponent,
     badgeComponent: badgeComponent,
-    countTo: countTo },
+    countToComponent: countToComponent },
 
   data: function data() {
     return {
@@ -1079,6 +1138,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
       this.modal = '';
       this.$app.goPage('/pages/pet/other/other?user_id=' + uid);
     },
+    // 拉票
     getFakeInviteList: function getFakeInviteList() {var _this13 = this;
       this.$app.request(this.$app.API.USER_INVITLIST, {
         page: this.invitFakePage },
@@ -1176,7 +1236,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
         _this15.$app.request(_this15.$app.API.USER_CURRENCY, {}, function (res) {
           _this15.$app.setData('userCurrency', res.data);
         });
-        _this15.$app.toast('打榜成功');
+        _this15.$app.toast('打榜成功', 'success');
       }, 'POST', true);
     },
     /**
@@ -1216,7 +1276,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
           return;
         } else {
           if (this.$app.getData('userInfo').type == 0) {
-            this.$app.toast("\u4E0D\u80FD\u4E3A\u5176\u4ED6\u7231\u8C46\u6253\u699C\u54E6~");
+            this.$app.toast("\u4E0D\u80FD\u4E3A\u5176\u4ED6\u7231\u8C46\u6253\u699C");
             return;
           }
         }
@@ -1230,7 +1290,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
         }, function (res) {
           if (_this17.$app.getData('userInfo').type == 1) {
             // 管理员
-            _this17.$app.setData('token', '');
+            _this17.$app.setData('token', '', true);
             _this17.$app.request(_this17.$app.API.USER_INFO, {}, function (res) {
               _this17.$app.setData('userInfo', res.data, true);
               _this17.$app.request(_this17.$app.API.USER_CURRENCY, {}, function (res) {
@@ -1244,6 +1304,8 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
           } else {
             _this17.$app.request(_this17.$app.API.USER_STAR, {}, function (res) {
               _this17.$app.setData('userStar', res.data, true);
+              _this17.chartMsg = "\u5927\u5BB6\u597D\uFF0C\u6211\u662F".concat(_this17.$app.getData('userInfo').nickname, "\uFF0C\u521D\u6765\u4E4D\u5230\uFF0C\u8BF7\u591A\u5173\u7167~");
+              _this17.sendMsg();
               _this17.$app.goPage('/pages/group/group');
             });
           }
@@ -1421,19 +1483,20 @@ var render = function() {
   var g3 = _vm.app.getData("userInfo")
   var g4 = _vm.app.getData("userInfo")
   var g5 = _vm.app.getData("userInfo")
-  var g6 = _vm.app.getData("userStar")
-  var g7 = _vm.app.getData("userInfo")
+  var g6 = _vm.app.getData("userInfo")
+  var g7 = _vm.app.getData("userStar")
   var g8 = _vm.app.getData("userInfo")
-  var g9 = _vm.app.getData("userStar")
-  var g10 = _vm.app.getData("userCurrency")
-  var g11 = _vm.app.getData("sysInfo").system.indexOf("iOS")
+  var g9 = _vm.app.getData("userInfo")
+  var g10 = _vm.app.getData("userStar")
+  var g11 = _vm.app.getData("userCurrency")
   var g12 = _vm.app.getData("sysInfo").system.indexOf("iOS")
-  var g13 = _vm.$app.getData("config")
-  var g14 = _vm.$app.getData("userInfo")
-  var g15 = _vm.$app.getData("config")
-  var g16 = _vm.app.getData("config")
+  var g13 = _vm.app.getData("sysInfo").system.indexOf("iOS")
+  var g14 = _vm.$app.getData("config")
+  var g15 = _vm.$app.getData("userInfo")
+  var g16 = _vm.$app.getData("config")
   var g17 = _vm.app.getData("config")
   var g18 = _vm.app.getData("config")
+  var g19 = _vm.app.getData("config")
 
   if (!_vm._isMounted) {
     _vm.e0 = function($event) {
@@ -1449,9 +1512,8 @@ var render = function() {
     }
 
     _vm.e3 = function($event) {
-      _vm.modal = "invit"
-      _vm.invitListPage = 1
-      _vm.getInvitList()
+      _vm.getStarRank()
+      _vm.modal = "steal"
     }
 
     _vm.e4 = function($event) {
@@ -1514,6 +1576,10 @@ var render = function() {
     _vm.e17 = function($event) {
       _vm.modal = ""
     }
+
+    _vm.e18 = function($event) {
+      return _vm.$app.goPage("/pages/task/task")
+    }
   }
 
   _vm.$mp.data = Object.assign(
@@ -1538,7 +1604,8 @@ var render = function() {
         g15: g15,
         g16: g16,
         g17: g17,
-        g18: g18
+        g18: g18,
+        g19: g19
       }
     }
   )

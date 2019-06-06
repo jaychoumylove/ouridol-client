@@ -1,7 +1,5 @@
 <template>
 	<view class="pet-container">
-
-
 		<view class="top-row-container">
 			<view class="block">
 				<image src="/static/image/user/b1.png" mode="widthFix"></image>
@@ -32,7 +30,11 @@
 				<image src="/static/image/pet/help.png" mode="widthFix" @tap="$app.goPage('/pages/notice/notice?id=2')"></image>
 			</btnComponent>
 		</view>
-
+		
+		<!-- <view class="sprite-bubble">
+			<image src="/static/image/bubble-1.png" mode="widthFix"></image>
+		</view> -->
+		
 		<view class="sprite" @tap="tapSprite">
 			<view class="bounce-article">
 				<view class="sprite-level position-set">
@@ -82,7 +84,7 @@
 			</view>
 		</view>
 
-		<modalComponent v-if="modal == 'invit'" title="好友" @closeModal="modal=''">
+		<!-- <modalComponent v-if="modal == 'invit'" title="好友" @closeModal="modal=''">
 			<view class="invit-modal-container">
 
 				<scroll-view scroll-y class="list-wrapper">
@@ -123,6 +125,60 @@
 				</scroll-view>
 			</view>
 
+		</modalComponent> -->
+		
+		
+		<modalComponent v-if="modal == 'invit'" title="好友" @closeModal="modal=''">
+			<view class="invit-modal-container">
+		
+				<scroll-view scroll-y class="list-wrapper" @scrolltolower='invitListPage++; getInvitList()'>
+		
+					<!-- <view class="explain-wrapper">
+						<view class="flex-set">
+							<image src="/static/image/ic_haibao__bak.png" mode="widthFix"></image>
+							加好友一起养精灵
+						</view>
+						<btnComponent type="default">
+							<button class="btn" open-type="share" data-share="1">
+								<view class="flex-set" style="width: 160upx; height: 80upx;">邀请好友</view>
+							</button>
+						</btnComponent>
+					</view> -->
+					<button class='explain-wrapper' open-type="share" data-share="1">
+						<image style="width: 100%;" :src="$app.getData('config').zhuren_tips_img" mode="widthFix"></image>
+					</button>
+		
+					<block v-if="invitList.length > 0">
+						<view class="item" v-for="(item,index) in invitList" :key="index" @tap="goOther(item.uid)">
+							<view class="rank-num">
+								<image v-if="index<3" :src="'/static/image/guild/'+(index+1)+'.png'" mode="widthFix"></image>
+								<view v-else>{{index+1}}</view>
+							</view>
+							<view class='avatar'>
+								<image :src="item.avatar" mode="aspectFill"></image>
+							</view>
+							<view class="text-container">
+								<view class="star-name text-overflow">{{item.nickname}}</view>
+							</view>
+							<view class="egg flex-set" @tap.stop="settleSprite(index,item)">
+								<image v-if="item.earn > 2" class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
+		
+								<view class="num-wrapper position-set">{{item.earn}}</view>
+								<image class="flex-set" src="/static/image/pet/y5.png" mode="widthFix"></image>
+							</view>
+						</view>
+					</block>
+		
+					<view v-else class="nodata flex-set">
+						<view class="top">你还没有好友</view>
+						<button open-type="share" data-share="1">
+							<view class="bottom">加一位好友></view>
+						</button>
+					</view>
+		
+				</scroll-view>
+			</view>
+		
 		</modalComponent>
 		<modalComponent v-if="modal == 'skill'" :title="modalTitle" @closeModal="modal=''">
 			<view class="skill-modal-container">
@@ -183,6 +239,7 @@
 		data() {
 			return {
 				requestCount: 1,
+				invitListPage: 1,
 
 				userCurrency: this.$app.getData('userCurrency') || {
 					coin: 0,
@@ -265,6 +322,7 @@
 			},
 			openInvitModal() {
 				this.modal = 'invit'
+				this.invitListPage = 1
 				this.getInvitList()
 			},
 			/**精灵技能升级*/
@@ -308,13 +366,50 @@
 				})
 			},
 			// 被邀请好友列表
+// 			getInvitList() {
+// 
+// 				this.$app.request(this.$app.API.USER_INVITLIST, {
+// 					type: 1
+// 				}, res => {
+// 					this.invitAward = res.data.award
+// 					const resList = []
+// 					res.data.list.forEach((e, i) => {
+// 						resList.push({
+// 							avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
+// 							status: e.status,
+// 							uid: e.user && e.user.id || 0,
+// 							nickname: e.user && e.user.nickname || this.$app.NICKNAME,
+// 							earn: e.sprite.earn,
+// 						})
+// 					})
+// 					this.invitList = resList
+// 				})
+// 			},
+			settleSprite(index, item) {
+				if (item.earn < 2) {
+					this.$app.toast('TA的能量太少了，稍后再来吧')
+				} else {
+					this.$app.request(this.$app.API.SPRITE_SETTLE, {
+						user_id: item.uid
+					}, res => {
+						this.invitList[index].earn = 0
+			
+						this.$app.toast('为TA收集能量，你获得:' + res.data + '能量')
+						this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
+							this.$app.setData('userCurrency', res.data)
+						})
+					}, 'POST', true)
+				}
+			},
 			getInvitList() {
-
 				this.$app.request(this.$app.API.USER_INVITLIST, {
-					type: 1
+					type: 1,
+					page: this.invitListPage || 1
 				}, res => {
+			
 					this.invitAward = res.data.award
 					const resList = []
+					this.spriteEarn = false
 					res.data.list.forEach((e, i) => {
 						resList.push({
 							avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
@@ -323,8 +418,20 @@
 							nickname: e.user && e.user.nickname || this.$app.NICKNAME,
 							earn: e.sprite.earn,
 						})
+			
+						if (e.sprite.earn >= 100) {
+							// 显示红点
+							this.spriteEarn = true
+						}
 					})
-					this.invitList = resList
+					if (this.invitListPage == 1) {
+						this.invitList = resList
+					} else {
+						this.invitList = this.invitList.concat(resList)
+					}
+			
+			
+					this.$app.closeLoading(this)
 				})
 			},
 			goOther(uid) {
@@ -446,6 +553,11 @@
 			image {
 				width: 80upx;
 			}
+		}
+		
+		.sprite-bubble{
+			width: 400upx;
+			height: 300upx;
 		}
 
 		.sprite {
@@ -711,29 +823,31 @@
 		}
 
 		.invit-modal-container {
+		
 			width: 100%;
 			height: 100%;
 			position: absolute;
-
+		
 			display: flex;
 			flex-direction: column;
-
+		
 			.explain-wrapper {
-				padding: 10upx 20upx;
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
-
-				image {
-					width: 50upx;
-					margin: 10upx 40upx;
-				}
+		
+				// image {
+				// 	width: 50upx;
+				// 	margin: 10upx 40upx;
+				// }
 			}
-
+		
 			.list-wrapper {
 				overflow-y: auto;
 				height: 100%;
-
+				display: flex;
+				flex-direction: column;
+		
 				.item {
 					display: flex;
 					justify-content: flex-start;
@@ -742,16 +856,17 @@
 					border-radius: 60upx;
 					background-color: rgba(255, 255, 255, .3);
 					margin: 10upx;
-
+		
 					.rank-num {
 						width: 90upx;
 						text-align: center;
-
+		
 						image {
 							width: 40upx;
+							min-height: 40upx;
 						}
 					}
-
+		
 					.avatar {
 						image {
 							width: 90upx;
@@ -759,45 +874,64 @@
 							border-radius: 50%;
 						}
 					}
-
-
-
+		
+		
+		
 					.text-container {
 						width: 300upx;
 						padding: 0 30upx;
 						line-height: 44upx;
-
+		
 						.bottom-text {
 							display: flex;
 							align-items: center;
-
+		
 							.hot-count {
 								color: $color_2;
 								margin-right: 4upx;
 							}
-
+		
 							.icon-heart {
 								width: 30upx;
 								height: 30upx;
 							}
 						}
 					}
-
+		
 					.egg {
 						margin-right: 20upx;
 						position: relative;
-
+		
+						.hand {
+							position: absolute;
+							z-index: 2;
+							right: -15upx;
+							bottom: -15upx;
+						}
+		
 						.num-wrapper {
 							z-index: 1;
 							color: #FFF;
 						}
-
+		
 						image {
 							width: 60upx;
+							min-height: 60upx;
 						}
 					}
 				}
+		
+				.nodata {
+					height: 400upx;
+					flex-direction: column;
+		
+					.bottom {
+						color: $color_2;
+						font-size: 40upx;
+					}
+				}
 			}
+		
 		}
 
 		.skill-modal-container {

@@ -1,22 +1,23 @@
 <template>
-	<view class="index-container" :style="{top:scrollTop}">
+	<view class="index-container">
 		<view class="top-tab-container">
 			<view class="left-tab-group">
-				<view class="tab-item" :class="{active:sign == 0}">周榜</view>
-				<!-- <view class="tab-item" :class="{active:sign == 1}" @tap="changeSign(1)">韩星榜</view> -->
+				<view class="tab-item" :class="{active:rankField == 'week_hot'}" @tap="changeField('week_hot');getSunday()">周榜</view>
+				<view class="tab-item" v-if="$app.getData('config').show_month != 0" :class="{active:rankField == 'month_hot'}"
+				 @tap="changeField('month_hot');getLast()">月榜</view>
 				<!-- <view class="tab-item" :class="{active:sign == 2}" @tap="changeSign(2)">创造营</view> -->
 			</view>
 			<view class="right-search">
-				<input :class="{show:searchShow}" type="text" :value="keywords" @input="searchInput" placeholder="搜索爱豆名字"
+				<input :class="{show:!searchHide}" type="text" :value="keywords" @input="searchInput" placeholder="搜索爱豆名字"
 				 placeholder-class="placeholder-style" placeholder-style="color:#FFF;" />
-				<view class="iconfont flex-set" :class="[!searchShow?'icon-sousuo':'icon-icon-test1']" @tap="searchToggle()"></view>
+				<view class="iconfont flex-set" :class="[searchHide?'icon-sousuo':'icon-icon-test1']" @tap="searchToggle()"></view>
 			</view>
 		</view>
 		<bannerComponent bannerHeight="280"></bannerComponent>
 
 		<view class="middle-text-container">
-			<view class="" @tap="$app.goPage('/pages/star/rank_history/rank_history')">往期榜单</view>
-			<view class="" style='font-size: 24upx;'>本期截止：{{cutOffDate}}23:59</view>
+			<view class="" @tap="$app.goPage('/pages/star/rank_history/rank_history?rankField='+rankField)">往期榜单</view>
+			<view class="" style='font-size: 24upx;'>本{{rankField=='week_hot'?'周':'月'}}截止：{{cutOffDate}}23:59</view>
 			<view class="rule" @tap="$app.goPage('/pages/notice/notice?id=1')">打榜说明</view>
 		</view>
 		<view class="topthree-container" v-if="!keywords">
@@ -93,13 +94,21 @@
 
 		<view class="open-ad-container flex-set" v-if="modal=='indexBanner' && $app.getData('config').index_banner && $app.getData('config').index_banner.img_url">
 			<image class="main" :src="$app.getData('config').index_banner.img_url" mode="aspectFill" @tap="modal='';$app.goPage($app.getData('config').index_banner.gopage)"></image>
-			<image class='close-btn' src="/static/image/index/close.png" mode="" @tap="modal = ''"></image>
+			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
+
 		</view>
+
+		<view class="open-ad-container flex-set" v-if="modal=='qrcode'">
+			<image class="main" :src="$app.getData('config').webmodal" @tap="preimg($app.getData('config').webmodal)" mode="aspectFill"></image>
+			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
+		</view>
+
 	</view>
 
 </template>
 
 <script>
+	import modalComponent from '@/components/modalComponent.vue'
 	import bannerComponent from '@/components/bannerComponent.vue';
 	import btnComponent from '@/components/btnComponent.vue';
 	import listItemComponent from '@/components/listItemComponent.vue';
@@ -107,7 +116,8 @@
 		components: {
 			bannerComponent,
 			btnComponent,
-			listItemComponent
+			listItemComponent,
+			modalComponent,
 		},
 		data() {
 			return {
@@ -116,9 +126,8 @@
 				requestCount: 1,
 
 				cutOffDate: '', // 截止日期
-				searchShow: false,
+				searchHide: false,
 				currentTab: 0,
-				scrollTop: 0,
 
 				page: 1,
 				keywords: '',
@@ -129,15 +138,18 @@
 		},
 
 		onLoad(option) {
+			// 显示精灵tab小红点
+			uni.showTabBarRedDot({
+				index: 1
+			})
+			// #ifdef H5
+			this.modal = ''
+			// #endif
 			// 跳转到明星页
 			option.starid && this.goGroup(option.starid)
 			this.getSunday()
 		},
 		onShow() {
-			uni.pageScrollTo({
-				scrollTop: 0,
-				duration: 0,
-			})
 			this.page = 1
 			this.keywords = ''
 			this.getRankList()
@@ -146,7 +158,10 @@
 			return this.$app.commonShareAppMessage()
 		},
 		onHide() {
-			this.scrollTop = 1
+			uni.pageScrollTo({
+				scrollTop: 0,
+				duration: 0,
+			})
 		},
 		/**
 		 * 下拉刷新
@@ -165,16 +180,40 @@
 
 		},
 		methods: {
+			preimg(img) {
+				uni.previewImage({
+					current:0,
+					urls: [img.trim()],
+					success:res=>{
+						console.log(res);
+					}
+				})
+			},
 			getSunday() {
 				const time = new Date()
 				const day = time.getDay() || 7
 				time.setDate(time.getDate() - day + 7)
 				this.cutOffDate = (time.getMonth() + 1) + '月' + time.getDate() + '日'
 			},
+			getLast() {
+				var date = new Date();
+				var currentMonth = date.getMonth();
+				var nextMonth = ++currentMonth;
+				var nextMonthFirstDay = new Date(date.getFullYear(), nextMonth, 1);
+				var oneDay = 1000 * 60 * 60 * 24;
+				let dateTime = new Date(nextMonthFirstDay - oneDay);
+
+				this.cutOffDate = dateTime.getMonth() + 1 + '月' + dateTime.getDate() + '日'
+			},
 			/**
 			 * 去偶像圈打榜
 			 */
 			goGroup(starid) {
+				// #ifdef H5
+				this.modal = 'qrcode'
+				return
+				// #endif
+
 				if (this.$app.getData('userStar', true)['id'] == starid) {
 					this.$app.goPage('/pages/group/group')
 				} else {
@@ -191,6 +230,12 @@
 				this.keywords = ''
 				this.getRankList()
 			},
+			changeField(field) {
+				this.page = 1
+				this.rankField = field
+				this.keywords = ''
+				this.getRankList()
+			},
 			searchInput(e) {
 				if (!this.keywords || !e.detail.value) this.rankList = []
 				this.page = 1
@@ -199,7 +244,7 @@
 				this.getRankList()
 			},
 			searchToggle() {
-				this.searchShow = !this.searchShow
+				this.searchHide = !this.searchHide
 				if (this.keywords) {
 					this.keywords = ''
 					this.page = 1
@@ -475,6 +520,11 @@
 				width: 80upx;
 				height: 80upx;
 				margin-top: 10upx;
+				z-index: 10;
+				border-radius: 50%;
+				background-color: rgba(0, 0, 0, .5);
+				color: #FFF;
+				font-size: 45upx;
 			}
 		}
 	}

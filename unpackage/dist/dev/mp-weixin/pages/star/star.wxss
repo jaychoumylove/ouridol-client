@@ -13,8 +13,5 @@
 }
 .star-container .tips-container image.data-v-ec09d8ec {
       width: 100%;
-      position: absolute;
-      top: -20rpx;
-      right: -14rpx;
 }
 

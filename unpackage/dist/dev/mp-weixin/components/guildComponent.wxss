@@ -51,8 +51,8 @@
 .guild-container .tips-container image.data-v-22b9dcee {
       width: 100%;
       position: absolute;
-      bottom: 0rpx;
       right: -15rpx;
+      top: 0;
 }
 .guild-container .top-container .top-content.data-v-22b9dcee {
     border-top-left-radius: 10rpx;
@@ -143,15 +143,21 @@
               justify-content: space-around;
       padding-bottom: 20rpx;
 }
-.guild-container .top-container .top-content .row-info .avatar.data-v-22b9dcee {
+.guild-container .top-container .top-content .row-info .avatar-wrapper.data-v-22b9dcee {
+        text-align: center;
         position: relative;
-        overflow: hidden;
-        border-radius: 50%;
-        width: 150rpx;
-        height: 150rpx;
-        z-index: 1;
 }
-.guild-container .top-container .top-content .row-info .avatar .tips.data-v-22b9dcee {
+.guild-container .top-container .top-content .row-info .avatar-wrapper .avatar.data-v-22b9dcee {
+          position: relative;
+          overflow: hidden;
+          border-radius: 50%;
+          width: 150rpx;
+          height: 150rpx;
+          margin-bottom: 8rpx;
+          border: 6rpx solid #f7ab5f;
+          z-index: 1;
+}
+.guild-container .top-container .top-content .row-info .avatar-wrapper .tips.data-v-22b9dcee {
           position: absolute;
           width: 100%;
           background-color: rgba(0, 0, 0, 0.3);
@@ -161,6 +167,10 @@
           font-size: 26rpx;
           text-align: center;
           line-height: 40rpx;
+}
+.guild-container .top-container .top-content .row-info .avatar-wrapper .rank.data-v-22b9dcee {
+          font-weight: 700;
+          font-size: 34rpx;
 }
 .guild-container .top-container .top-content .row-info .top-text-wrapper.data-v-22b9dcee {
         color: #6b4a39;
@@ -177,9 +187,10 @@
         -webkit-justify-content: center;
             -ms-flex-pack: center;
                 justify-content: center;
+        line-height: 1.7;
 }
 .guild-container .top-container .top-content .row-info .top-text-wrapper .star-name.data-v-22b9dcee {
-          font-size: 34rpx;
+          font-size: 36rpx;
           font-weight: 700;
           display: -webkit-box;
           display: -webkit-flex;
@@ -189,27 +200,40 @@
           -webkit-align-items: center;
               -ms-flex-align: center;
                   align-items: center;
-          margin-bottom: 18rpx;
 }
 .guild-container .top-container .top-content .row-info .top-text-wrapper .star-name .star-name-wrapper.data-v-22b9dcee {
-            max-width: 200rpx;
+            background-color: #FF2C3C;
+            border-radius: 30rpx;
+            font-size: 28rpx;
+            font-weight: 700;
+            color: #FFF;
+            padding: 0rpx 30rpx;
+            line-height: 1.5;
 }
 .guild-container .top-container .top-content .row-info .top-text-wrapper .star-name .join.data-v-22b9dcee {
             background-color: #f7ab5f;
-            border-radius: 20rpx;
+            border-radius: 30rpx;
             font-size: 28rpx;
             font-weight: 300;
             color: #FFF;
-            padding: 8rpx 16rpx;
+            padding: 0rpx 16rpx;
             margin: 0 14rpx;
             -webkit-box-shadow: 0 0 2rpx rgba(0, 0, 0, 0.3);
                     box-shadow: 0 0 2rpx rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 4;
 }
 .guild-container .top-container .top-content .row-info .top-text-wrapper .bottom.data-v-22b9dcee {
+          margin-top: 5rpx;
           display: -webkit-box;
           display: -webkit-flex;
           display: -ms-flexbox;
           display: flex;
+          -webkit-box-align: center;
+          -webkit-align-items: center;
+              -ms-flex-align: center;
+                  align-items: center;
+          font-size: 34rpx;
 }
 .guild-container .top-container .top-content .row-info .top-text-wrapper .bottom .image.data-v-22b9dcee {
             width: 34rpx;
@@ -248,6 +272,59 @@
             padding: 0 10rpx;
             padding-top: 6rpx;
             color: #6b4a39;
+}
+.guild-container .top-container .top-content .row-info .send-flower-btn.data-v-22b9dcee {
+        width: 120rpx;
+        position: relative;
+        z-index: 3;
+}
+.guild-container .top-container .top-content .row-info .send-flower-btn image.data-v-22b9dcee {
+          width: 120rpx;
+          height: 120rpx;
+}
+.guild-container .top-container .top-content .row-info .send-flower-btn .bubble.data-v-22b9dcee {
+          width: 40rpx;
+          height: 40rpx;
+          position: absolute;
+          z-index: 1;
+          -webkit-animation: up-data-v-22b9dcee 8s linear infinite;
+                  animation: up-data-v-22b9dcee 8s linear infinite;
+}
+@-webkit-keyframes up-data-v-22b9dcee {
+0% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    opacity: 0;
+}
+10% {
+    -webkit-transform: translateY(-100rpx) rotate(30deg);
+            transform: translateY(-100rpx) rotate(30deg);
+    opacity: 1;
+}
+20%,
+  100% {
+    -webkit-transform: translateY(-200rpx) rotate(-30deg);
+            transform: translateY(-200rpx) rotate(-30deg);
+    opacity: 0;
+}
+}
+@keyframes up-data-v-22b9dcee {
+0% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    opacity: 0;
+}
+10% {
+    -webkit-transform: translateY(-100rpx) rotate(30deg);
+            transform: translateY(-100rpx) rotate(30deg);
+    opacity: 1;
+}
+20%,
+  100% {
+    -webkit-transform: translateY(-200rpx) rotate(-30deg);
+            transform: translateY(-200rpx) rotate(-30deg);
+    opacity: 0;
+}
 }
 .guild-container .top-container .func-container.data-v-22b9dcee {
     height: 100rpx;
@@ -630,10 +707,10 @@
         -ms-flex-align: center;
             align-items: center;
     height: 100rpx;
+    padding: 0 15rpx;
 }
 .guild-container .msg-input-container .trumpet-wrapper.data-v-22b9dcee {
       position: relative;
-      margin-left: 20rpx;
 }
 .guild-container .msg-input-container .trumpet-wrapper .trumpet.data-v-22b9dcee {
         position: absolute;
@@ -642,7 +719,7 @@
         font-size: 20rpx;
 }
 .guild-container .msg-input-container input.data-v-22b9dcee {
-      width: 450rpx;
+      width: 550rpx;
       background-color: #FFF;
       border-radius: 60rpx;
       height: 75rpx;
@@ -667,24 +744,6 @@
         z-index: 1;
         -webkit-animation: up-data-v-22b9dcee 8s linear infinite;
                 animation: up-data-v-22b9dcee 8s linear infinite;
-}
-@-webkit-keyframes up-data-v-22b9dcee {
-0% {
-    -webkit-transform: translateY(0);
-            transform: translateY(0);
-    opacity: 0;
-}
-10% {
-    -webkit-transform: translateY(-100rpx) rotate(30deg);
-            transform: translateY(-100rpx) rotate(30deg);
-    opacity: 1;
-}
-20%,
-  100% {
-    -webkit-transform: translateY(-200rpx) rotate(-30deg);
-            transform: translateY(-200rpx) rotate(-30deg);
-    opacity: 0;
-}
 }
 @keyframes up-data-v-22b9dcee {
 0% {
@@ -1136,5 +1195,20 @@
           -ms-flex-pack: distribute;
               justify-content: space-around;
       width: 100%;
+}
+.guild-container .tips-modal-container.data-v-22b9dcee {
+    height: 100%;
+    padding: 20rpx 40rpx;
+    font-size: 32rpx;
+}
+.guild-container .tips-modal-container .text-wrap.data-v-22b9dcee {
+      margin: 30rpx 0;
+}
+.guild-container .tips-modal-container .text-wrap .text.data-v-22b9dcee {
+        line-height: 2.3;
+}
+.guild-container .tips-modal-container .btn.data-v-22b9dcee {
+      width: 200rpx;
+      margin: auto;
 }
 

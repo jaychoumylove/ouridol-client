@@ -1,41 +1,43 @@
 <template>
-	<view class="number-grow-warp">
-		<text :data-time="time" class="number-grow" :data-value="value">{{count}}</text>
+	<view class="count-to-container">
+		<text>{{$app.formatNumberRgx(value)}}</text>
 	</view>
 </template>
 
 <script>
 	export default {
 		props: {
-			time: {
-				type: Number,
-				default: 2
-			},
-			value: {
-				type: Number,
+			// 传入的值
+			count: {
 				default: 0
 			}
 		},
 		data() {
 			return {
-				values: 0,
-				count:0,
+				// 显示的值
+				value: 0,
 			}
 		},
 		watch: {
-			value(val) {
-				if (val > 0) {
-					this.values = val;
-					this.numberGrow()
-				}
+			// 传入的值发生改变
+			count(val,old) {
+				val = parseInt(val.replace(/,/g, ''))
+				let step = Math.floor((val - this.value) / 30)
+				clearInterval(this.timeId)
+				this.timeId = setInterval(() => {
+					if (step >= val - this.value) {
+						clearInterval(this.timeId)
+						this.value = val
+					} else {
+						this.value += ++step
+					}
+				}, 30)
+
 			}
-		},
-		methods: {
-			
-		},
+		}
 	}
 </script>
 
 <style lang="scss" scoped>
-	
+
 </style>

@@ -119,7 +119,13 @@ var _default =
   },
   onLoad: function onLoad(option) {
     if (option.url) {
+
+
+
+
+
       this.webview = option.url;
+
     } else if (option.id) {
       this.getArticle(option.id);
     }
@@ -133,7 +139,13 @@ var _default =
         try {
           _this.article = JSON.parse(res.data.value);
         } catch (e) {
+
+
+
+
+
           _this.webview = res.data.value;
+
         }
 
         uni.setNavigationBarTitle({

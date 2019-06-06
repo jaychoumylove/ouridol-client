@@ -145,11 +145,12 @@ var _default =
   data: function data() {
     return {
       requestCount: 1,
-
+      rankField: 'week_hot',
       history: [] };
 
   },
-  onLoad: function onLoad() {
+  onLoad: function onLoad(option) {
+    if (option.rankField) this.rankField = option.rankField;
     this.getRankList();
   },
   methods: {
@@ -164,20 +165,22 @@ var _default =
       }
     },
     getRankList: function getRankList() {var _this = this;
-      this.$app.request(this.$app.API.STAR_RANK_HISTORY, {}, function (res) {
+      this.$app.request(this.$app.API.STAR_RANK_HISTORY, {
+        rankField: this.rankField },
+      function (res) {
         var resList = [];
-        res.data.forEach(function (weekItem) {
+        res.data.forEach(function (thisItem) {
           var item = {
-            date: weekItem.date.toString().slice(0, 4) + '第' + (weekItem.date.toString().slice(4) - 19) + '期',
+            date: thisItem.date,
             rankList: [] };
 
 
-          weekItem.value.forEach(function (rankItem) {
+          thisItem.value.forEach(function (rankItem) {
             item.rankList.push({
               starid: rankItem.star.id,
               name: rankItem.star.name,
               avatar: rankItem.star.head_img_s ? rankItem.star.head_img_s : rankItem.star.head_img_l,
-              hot: _this.$app.formatNumberRgx(rankItem['week_hot']) });
+              hot: _this.$app.formatNumberRgx(rankItem[_this.rankField]) });
 
           });
 

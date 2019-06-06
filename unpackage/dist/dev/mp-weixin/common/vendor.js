@@ -1,5 +1,101 @@
 (global["webpackJsonp"] = global["webpackJsonp"] || []).push([["common/vendor"],{
 
+/***/ "../../../../../Develop/uni-app/work_0420/lib/base_func.js":
+/*!*****************************************************!*\
+  !*** D:/Develop/uni-app/work_0420/lib/base_func.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  /**
+                                                                                                                      * 判空函数
+                                                                                                                      * @param {Object} value
+                                                                                                                      */
+  isEmpty: function isEmpty(value) {
+    if (!value) return true;
+    if (!Object.keys(value).length) return true;
+    return false;
+  },
+  /**
+      * 格式化时间
+      */
+  timeGethms: function timeGethms(time) {
+    var time = parseInt(time);
+
+    var day = Math.floor(time / 3600 / 24);
+    time -= day * 3600 * 24;
+    if (day < 10) day = '0' + day;
+
+    var hour = Math.floor(time / 3600);
+    time -= hour * 3600;
+    if (hour < 10) hour = '0' + hour;
+
+    var min = Math.floor(time / 60);
+    time -= min * 60;
+    if (min < 10) min = '0' + min;
+
+    var sec = time;
+    if (sec < 10) sec = '0' + sec;
+
+    return {
+      day: parseInt(day),
+      hour: parseInt(hour),
+      min: parseInt(min),
+      sec: parseInt(sec),
+      str: hour + ':' + min + ':' + sec };
+
+  },
+
+  strToTime: function strToTime(str) {
+    return Math.round(new Date(str).getTime() / 1000);
+  },
+  /** 数字千分号*/
+  formatNumberRgx: function formatNumberRgx(num) {
+    var parts = num.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
+  },
+
+  /**
+      * 数字转为万单位
+      */
+  formatWan: function formatWan(num) {var fix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    if (num / 100000000 >= 1) {
+      return (num / 100000000).toFixed(fix) + '亿';
+    } else if (num / 10000 >= 1)
+    return (num / 10000).toFixed(fix) + '万';else
+    {
+      return num;
+    }
+  },
+
+  getWeek: function getWeek() {
+    var time = new Date();
+    var Monday = time.getDate() - time.getDay() + 1;
+    var Sunday = time.setDate(time.getDate() + 6);
+    return [Monday, Sunday];
+  },
+
+  /**
+      * 获取url参数
+      */
+  getQueryString: function getQueryString(name) {
+    var queryStr = location.href.split('?')[1];
+    if (!queryStr) return;
+    var vars = queryStr.split("&");
+    for (var i = 0; i < vars.length; i++) {
+      var pair = vars[i].split("=");
+      if (pair[0] == name) {
+        return decodeURIComponent(pair[1]);
+      }
+    }
+    return;
+  } };exports.default = _default;
+
+/***/ }),
+
 /***/ "../../../../../Develop/uni-app/work_0420/lib/const.js":
 /*!*************************************************!*\
   !*** D:/Develop/uni-app/work_0420/lib/const.js ***!
@@ -118,10 +214,8 @@ var _default = {
         js_code: js_code, // 微信小程序登录
         code: code // 微信网页授权登录
       }, function (res) {
-        if (res.data.token) {
-          _this.setData('token', res.data.token);
-          callBack && callBack();
-        }
+        res.data.token && _this.setData('token', res.data.token);
+        callBack && callBack();
       });
     }.bind(this);
 
@@ -152,16 +246,11 @@ var _default = {
   checkUpdate: function checkUpdate() {
 
     var updateManager = uni.getUpdateManager();
-
-    // updateManager.onCheckForUpdate(function(res) {
-    // 	// 请求完新版本信息的回调
-    // 	console.log(res.hasUpdate);
-    // });
-
     updateManager.onUpdateReady(function (res) {
       uni.showModal({
         title: '更新提示',
-        content: '新版本已经准备好，是否重启应用？',
+        showCancel: false,
+        content: '新版本已经准备好，请重启应用',
         success: function success(res) {
           if (res.confirm) {
             // 新的版本已经下载好，调用 applyUpdate 应用新版本并重启
@@ -239,7 +328,7 @@ var _default = {
     }
   },
   /**分享*/
-  commonShareAppMessage: function commonShareAppMessage(shareType) {
+  commonShareAppMessage: function commonShareAppMessage(starid) {
     // 默认跳转到首页
     var path = "/pages/index/index?referrer=".concat(this.getData('userInfo').id);
     if (this.getData('userStar').id) {
@@ -287,21 +376,26 @@ var _default = {
                   * 基础HTTP请求
                   * @param String url 访问地址
                   * @param Object data 
-                  * @param Function success
+                  * @param Function success 回调
                   * @param String method 
                   * @param Boolean block 是否堵塞请求
                   */
   request: function request(url) {var _this = this;var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};var _success = arguments.length > 2 ? arguments[2] : undefined;var method = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'POST';var block = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
     // 堵塞请求
-    if (block && this.isBlock) {
-      this.toast('请稍后再试');
-      return;
+    if (block) {
+      if (this.isBlock) {
+        this.toast('抱歉，请稍后再试');
+        return;
+      }
+      this.isBlock = true;
     }
 
+    // data.token = 'Y1J3S2l2OGw1eVhCcjNMVmRwWHNNVFUxT1RFNU9UQTVNaVl4TVRNdU1qSXlMakU0TWk0eE56RW1Nak00'// 带上token
     data.token = this.getData('token'); // 带上token
-    this.isBlock = true;
+    // data.token = 'cRwKiv8l5yXBr3LVdpXs';
+
     uni.request({
-      url: url.indexOf('https://') != -1 ? url : this.HTTP_URL + url,
+      url: ~url.indexOf('http') ? url : this.HTTP_URL + url,
       method: method,
       data: data,
       header: {
@@ -310,7 +404,7 @@ var _default = {
       success: function success(res) {
         _this.isBlock = false;
         if (res.statusCode != 200) {
-          // 请求失败
+          // 请求报错
           _this.toast('服务器正忙，请稍后再试');
         } else if (res.data.code == 200 || res.data.code == 201) {
           // 需要登录
@@ -335,6 +429,12 @@ var _default = {
       * @param String url 
       */
   goPage: function goPage(url) {
+
+
+
+
+
+
     // let url = url+
     uni.navigateTo({
       url: url,
@@ -363,10 +463,11 @@ var _default = {
       duration: duration });
 
   },
-  modal: function modal(content, callBack) {
+  modal: function modal(content) {var callBack = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     uni.showModal({
       title: '提示',
       content: content,
+      showCancel: callBack,
       success: function success(res) {
         res.confirm && callBack && callBack();
       } });
@@ -405,68 +506,10 @@ var _default = {
   },
   getData: function getData(key) {
     var value = this[key];
-    if (!value || !value.length) value = uni.getStorageSync(key);
-    return value;
-  },
-
-  /**
-      * 格式化时间
-      */
-  timeGethms: function timeGethms(time) {
-    var time = parseInt(time);
-
-    var day = Math.floor(time / 3600 / 24);
-    time -= day * 3600 * 24;
-    if (day < 10) day = '0' + day;
-
-    var hour = Math.floor(time / 3600);
-    time -= hour * 3600;
-    if (hour < 10) hour = '0' + hour;
-
-    var min = Math.floor(time / 60);
-    time -= min * 60;
-    if (min < 10) min = '0' + min;
-
-    var sec = time;
-    if (sec < 10) sec = '0' + sec;
-
-    return {
-      day: parseInt(day),
-      hour: parseInt(hour),
-      min: parseInt(min),
-      sec: parseInt(sec),
-      str: hour + ':' + min + ':' + sec };
-
-  },
-
-  strToTime: function strToTime(str) {
-    return Math.round(new Date(str).getTime() / 1000);
-  },
-  /** 数字千分号*/
-  formatNumberRgx: function formatNumberRgx(num) {
-    var parts = num.toString().split(".");
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    return parts.join(".");
-  },
-
-  /**
-      * 数字转为万单位
-      */
-  formatWan: function formatWan(num) {var fix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-    if (num / 100000000 >= 1) {
-      return (num / 100000000).toFixed(fix) + '亿';
-    } else if (num / 10000 >= 1)
-    return (num / 10000).toFixed(fix) + '万';else
-    {
-      return num;
+    if (!value) {
+      value = uni.getStorageSync(key);
     }
-  },
-
-  getWeek: function getWeek() {
-    var time = new Date();
-    var Monday = time.getDate() - time.getDay() + 1;
-    var Sunday = time.setDate(time.getDate() + 6);
-    return [Monday, Sunday];
+    return value;
   },
 
   /**
@@ -476,21 +519,6 @@ var _default = {
     return getCurrentPages()[getCurrentPages().length - 1] && getCurrentPages()[getCurrentPages().length - 1].$vm || null;
   },
 
-  /**
-      * 获取url参数
-      */
-  getQueryString: function getQueryString(name) {
-    var queryStr = location.href.split('?')[1];
-    if (!queryStr) return;
-    var vars = queryStr.split("&");
-    for (var i = 0; i < vars.length; i++) {
-      var pair = vars[i].split("=");
-      if (pair[0] == name) {
-        return decodeURIComponent(pair[1]);
-      }
-    }
-    return;
-  },
   /**
       * 文件上传
       * @param Array file 文件路径
@@ -512,7 +540,7 @@ var _default = {
           success: function success(res) {
             realFile[i] = JSON.parse(res.data).data.url;
             if (realFile.length == file.length) {
-              // 全部上传完成
+              // 全部上传完成 返回数组
               callBack && callBack(realFile);
             }
           } });
@@ -520,6 +548,28 @@ var _default = {
       }};for (var i = 0; i < file.length; i++) {_loop(i);
     }
 
+  },
+  // 初始化视频广告
+  initVideoAd: function initVideoAd(success) {var _this3 = this;
+    if (wx.createRewardedVideoAd) {
+      this.videoAd = wx.createRewardedVideoAd({
+        adUnitId: this.adUnitId });
+
+
+      this.videoAd.onClose(function (status) {
+        if (status && status.isEnded || status === undefined) {
+          // 可领奖励
+          success && success();
+        } else {
+          _this3.toast('观看完视频才有奖励哦');
+        }
+      });
+
+      this.videoAd.onError(function (err) {
+        _this3.toast('抱歉，暂无合适的广告');
+        console.error('视频广告播放错误', err);
+      });
+    }
   } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["default"]))
 
@@ -1483,7 +1533,7 @@ function getData(vueOptions, context) {
     try {
       data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
-      if (Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
@@ -7579,7 +7629,7 @@ function type(obj) {
 
 function flushCallbacks$1(vm) {
     if (vm.__next_tick_callbacks && vm.__next_tick_callbacks.length) {
-        if (Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
+        if (Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:flushCallbacks[' + vm.__next_tick_callbacks.length + ']');
@@ -7600,14 +7650,14 @@ function nextTick$1(vm, cb) {
     //1.nextTick 之前 已 setData 且 setData 还未回调完成
     //2.nextTick 之前存在 render watcher
     if (!vm.__next_tick_pending && !hasRenderWatcher(vm)) {
-        if(Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:nextVueTick');
         }
         return nextTick(cb, vm)
     }else{
-        if(Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance$1 = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance$1.is || mpInstance$1.route) + '][' + vm._uid +
                 ']:nextMPTick');
@@ -7676,7 +7726,7 @@ var patch = function(oldVnode, vnode) {
         });
         var diffData = diff(data, mpData);
         if (Object.keys(diffData).length) {
-            if (Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
+            if (Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
                 console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + this._uid +
                     ']差量更新',
                     JSON.stringify(diffData));

@@ -1,8 +1,8 @@
-.star-container.data-v-61480f54 {
+.star-container.data-v-5cbf40e9 {
   position: relative;
   height: 100%;
 }
-.star-container .tips-container.data-v-61480f54 {
+.star-container .tips-container.data-v-5cbf40e9 {
     position: fixed;
     top: 0;
     left: 0;
@@ -11,10 +11,7 @@
     background: rgba(0, 0, 0, 0.8);
     z-index: 3;
 }
-.star-container .tips-container image.data-v-61480f54 {
+.star-container .tips-container image.data-v-5cbf40e9 {
       width: 100%;
-      position: absolute;
-      top: -20rpx;
-      right: -14rpx;
 }
 
