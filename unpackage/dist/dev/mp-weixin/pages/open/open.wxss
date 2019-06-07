@@ -1,8 +1,8 @@
-.open-container.data-v-71da62ec {
+.open-container.data-v-ee930c92 {
   height: 100%;
   position: relative;
 }
-.open-container .cut-time.data-v-71da62ec {
+.open-container .cut-time.data-v-ee930c92 {
     position: fixed;
     width: 120rpx;
     text-align: center;

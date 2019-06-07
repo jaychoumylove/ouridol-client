@@ -1,4 +1,4 @@
-.container.data-v-b3b2a542 {
+.container.data-v-00a0ddca {
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   -webkit-flex-direction: column;
@@ -6,7 +6,7 @@
           flex-direction: column;
   height: 100%;
 }
-.container .avatar.data-v-b3b2a542 {
+.container .avatar.data-v-00a0ddca {
     width: 120rpx;
     height: 120rpx;
     border-radius: 50%;

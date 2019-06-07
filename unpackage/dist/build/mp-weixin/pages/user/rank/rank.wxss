@@ -1,4 +1,4 @@
-.container .list-wrapper .item.data-v-6be01264 {
+.container .list-wrapper .item.data-v-c50f3d8a {
   margin: 20rpx 0;
   height: 130rpx;
   background: url(http://wx1.sinaimg.cn/large/0060lm7Tly1g2enrl619ng30j703n741.gif) right center no-repeat/contain;
@@ -11,21 +11,21 @@
       -ms-flex-align: center;
           align-items: center;
 }
-.container .list-wrapper .item .rank-num.data-v-6be01264 {
+.container .list-wrapper .item .rank-num.data-v-c50f3d8a {
     margin-left: 106rpx;
 }
-.container .list-wrapper .item .avatar image.data-v-6be01264 {
+.container .list-wrapper .item .avatar image.data-v-c50f3d8a {
     margin-left: 60rpx;
     width: 100rpx;
     height: 100rpx;
     border-radius: 50%;
 }
-.container .list-wrapper .item .text-container.data-v-6be01264 {
+.container .list-wrapper .item .text-container.data-v-c50f3d8a {
     margin-left: 30rpx;
     width: 250rpx;
     line-height: 44rpx;
 }
-.container .list-wrapper .item .text-container .bottom-text.data-v-6be01264 {
+.container .list-wrapper .item .text-container .bottom-text.data-v-c50f3d8a {
       display: -webkit-box;
       display: -webkit-flex;
       display: -ms-flexbox;
@@ -36,16 +36,16 @@
               align-items: center;
       color: #ce797c;
 }
-.container .list-wrapper .item .count.data-v-6be01264 {
+.container .list-wrapper .item .count.data-v-c50f3d8a {
     margin-left: 30rpx;
 }
-.container .list-wrapper .item.one.data-v-6be01264 {
+.container .list-wrapper .item.one.data-v-c50f3d8a {
   background: url(http://wx3.sinaimg.cn/large/0060lm7Tly1g2enrl4pe1g30j703n0sk.gif) right center no-repeat/contain;
 }
-.container .list-wrapper .item.two.data-v-6be01264 {
+.container .list-wrapper .item.two.data-v-c50f3d8a {
   background: url(http://wx4.sinaimg.cn/large/0060lm7Tly1g2enrl5aerg30j703ndfn.gif) right center no-repeat/contain;
 }
-.container .list-wrapper .item.three.data-v-6be01264 {
+.container .list-wrapper .item.three.data-v-c50f3d8a {
   background: url(http://wx4.sinaimg.cn/large/0060lm7Tly1g2enrl4zd6g30j703ngle.gif) right center no-repeat/contain;
 }
 
