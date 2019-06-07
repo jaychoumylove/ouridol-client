@@ -1,6 +1,0 @@
-{
-  "disableScroll": true,
-  "usingComponents": {
-    "guild-component": "/components/guildComponent"
-  }
-}

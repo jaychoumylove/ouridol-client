@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "师徒",
-  "usingComponents": {
-    "btn-component": "/components/btnComponent"
-  }
-}

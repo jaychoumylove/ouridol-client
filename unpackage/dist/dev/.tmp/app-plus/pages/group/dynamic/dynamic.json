@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "动态",
-  "usingComponents": {
-    "load-icon-component": "/components/loadIconComponent"
-  }
-}

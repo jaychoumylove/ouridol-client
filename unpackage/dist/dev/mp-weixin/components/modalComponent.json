@@ -1,6 +1,0 @@
-{
-  "usingComponents": {
-    "btn-component": "/components/btnComponent"
-  },
-  "component": true
-}

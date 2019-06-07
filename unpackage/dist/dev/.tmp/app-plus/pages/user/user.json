@@ -1,8 +1,0 @@
-{
-  "navigationBarTitleText": "个人中心",
-  "usingComponents": {
-    "load-icon-component": "/components/loadIconComponent",
-    "badge-component": "/components/badgeComponent",
-    "modal-component": "/components/modalComponent"
-  }
-}

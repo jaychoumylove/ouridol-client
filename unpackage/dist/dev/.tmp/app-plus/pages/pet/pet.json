@@ -1,9 +1,0 @@
-{
-  "navigationBarTitleText": "精灵",
-  "usingComponents": {
-    "load-icon-component": "/components/loadIconComponent",
-    "modal-component": "/components/modalComponent",
-    "btn-component": "/components/btnComponent",
-    "list-item-component": "/components/listItemComponent"
-  }
-}

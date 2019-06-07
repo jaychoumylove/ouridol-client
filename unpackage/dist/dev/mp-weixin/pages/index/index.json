@@ -1,9 +1,0 @@
-{
-  "enablePullDownRefresh": true,
-  "usingComponents": {
-    "banner-component": "/components/bannerComponent",
-    "btn-component": "/components/btnComponent",
-    "list-item-component": "/components/listItemComponent",
-    "modal-component": "/components/modalComponent"
-  }
-}

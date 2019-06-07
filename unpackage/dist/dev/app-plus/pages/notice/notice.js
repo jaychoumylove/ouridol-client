@@ -1,2 +1,0 @@
-setCssToHead([".",[1],"container.",[1],"data-v-1094a40a { padding: ",[0,20]," ",[0,40],"; }\n",],undefined,{path:"./pages/notice/notice.wxss"})();
-document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/notice/notice.wxml') } }));

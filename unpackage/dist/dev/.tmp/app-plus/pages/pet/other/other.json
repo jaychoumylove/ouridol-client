@@ -1,7 +1,0 @@
-{
-  "usingComponents": {
-    "load-icon-component": "/components/loadIconComponent",
-    "modal-component": "/components/modalComponent",
-    "btn-component": "/components/btnComponent"
-  }
-}
