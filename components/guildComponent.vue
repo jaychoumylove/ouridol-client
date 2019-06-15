@@ -18,7 +18,8 @@
 				</view>
 				<view class="row-info">
 					<view class="avatar-wrapper">
-						<image class="avatar" :src="star.avatar" mode="aspectFill"></image>
+						<image class="avatar" :class="{share:this.app.getData('userStar').id == star.id}" :src="star.avatar" mode="aspectFill"
+						 @tap="drawCanvas"></image>
 						<!-- <view class="tips">分享海报</view> -->
 						<view class="rank">{{star.name}}</view>
 					</view>
@@ -77,8 +78,6 @@
 									<image src="/static/image/guild/send-give.png" mode=""></image>
 								</button>
 							</form>
-
-
 
 						</btnComponent>
 					</view>
@@ -202,7 +201,8 @@
 
 		</view>
 		<scroll-view v-if="star.id == app.getData('userStar')['id'] || app.getData('userInfo').type == 1" class="chart-container"
-		 scroll-y scroll-with-animation :scroll-into-view="'index_'+index">
+		 scroll-y :scroll-with-animation="chartAni" :scroll-into-view="'index_'+index">
+
 			<view :id="'index_'+index" class="msg-item" :class="{right:item.uid==app.getData('userInfo')['id']}" v-for="(item,index) in chartList"
 			 :key="index">
 
@@ -218,9 +218,9 @@
 							<view class="left">
 								<view class="name text-overflow">{{item.nickname}}</view>
 								<!-- <view class="fan">
-								<image src="/static/image/guild/lv11.png" mode=""></image>
-								<view class="fan-text">中级粉</view>
-							</view> -->
+									<image :src="'/static/image/guild/level/'+ item.level +'.png'" mode=""></image>
+									<view class="level position-set">{{item.level}}</view>
+								</view> -->
 
 							</view>
 						</view>
@@ -279,79 +279,121 @@
 
 		</view>
 
+		<!-- 礼物 -->
+		<view class="item-list-wrap">
+
+			<view class="item-wrap" v-for="(item,index) in giftItemList" :key="index">
+				<image class="avatar" :src="item.avatar" mode="widthFix"></image>
+				<view class="text-wrap">
+					<view class="name">{{item.username}}</view>
+					<view class="desc">送出{{item.itemname}}</view>
+				</view>
+				<image :src="item.itemicon" class="item-content" mode="widthFix"></image>
+			</view>
+		</view>
+
+
 		<!-- MODAL -->
-		<modalComponent v-if="modal == 'send'" title="打榜" @closeModal="modal=''">
+		<modalComponent type="send" v-if="modal == 'send'" title="打榜" @closeModal="modal=''">
 			<view class="send-modal-container">
 				<!-- <view class="tab-wrapper"></view> -->
 				<!-- <view class="explain-wrapper">说明：还未确定后完全好大无穷皇帝和我去我前进的气温降低哦</view> -->
-				<view class="bottom-wrapper">
-					<view class="text">我的能量：{{app.getData('userCurrency')['coin']}}</view>
+				<view class="swiper-change flex-set">
+					<view class="item" :class="{select:current==0}" @tap="current = 0">送能量</view>
+					<view class="item" :class="{select:current==1}" @tap="current = 1">送礼物</view>
+				</view>
 
-					<view class="text flex-set" @tap="app.goPage('/pages/recharge/recharge')" v-if="app.getData('sysInfo').system.indexOf('iOS') == -1">
-						<image src="/static/image/star/4.png" mode="widthFix" style="width: 35upx;"></image>补充能量 >
-					</view>
-					<button open-type="contact" :session-from="$app.getData('userInfo').id" v-if="app.getData('sysInfo').system.indexOf('iOS') != -1 && $app.getData('config').ios_switch == 1">
-						<view class="text flex-set">
-							<image src="/static/image/star/4.png" mode="widthFix" style="width: 35upx;"></image>补充能量 回复"1"
+				<swiper @change="swiperChange" :current="current">
+					<swiper-item>
+						<view class="swiper-item">
+							<view class="wrap">
+								<!-- <image class="bg" src="/static/image/guild/send-modal-bg.png" mode="widthFix"></image> -->
+								<view class="bottom-wrapper">
+									<view class="text left flex-set">我的能量：{{app.getData('userCurrency')['coin']}}</view>
+
+									<!-- <view class="text flex-set" @tap="app.goPage('/pages/recharge/recharge')" v-if="!~app.getData('sysInfo').system.indexOf('iOS')">
+										<image src="/static/image/guild/gift/gift.png" mode="widthFix" style="width: 40upx;"></image>补充能量
+									</view>
+									<button open-type="contact" :session-from="$app.getData('userInfo').id" v-if="~app.getData('sysInfo').system.indexOf('iOS')&&$app.getData('config').ios_switch == 1">
+										<view class="text flex-set">
+											<image src="/static/image/guild/gift/gift.png" mode="widthFix" style="width: 40upx;"></image>
+											<view class="flex-set" style="flex-direction: column;margin-left: 4upx;line-height: 1.2;">
+												<view>补充能量</view>
+												<view>回复"1"</view>
+											</view>
+										</view>
+									</button> -->
+
+								</view>
+								<view class="btn-wrapper">
+									<view class="btn flex-set" @tap="sendHot(99)">
+										<image src="/static/image/user/b1.png" mode="widthFix"></image>+99
+									</view>
+									<view class="btn flex-set" @tap="sendHot(520)">
+										<image src="/static/image/user/b1.png" mode="widthFix"></image>+520
+									</view>
+									<view class="btn flex-set" @tap="sendHot(999)">
+										<image src="/static/image/user/b1.png" mode="widthFix"></image>+999
+									</view>
+									<view class="btn flex-set" @tap="sendHot(1314)">
+										<image src="/static/image/user/b1.png" mode="widthFix"></image>+1314
+									</view>
+									<view class="btn flex-set" @tap="sendHot(9999)">
+										<image src="/static/image/user/b1.png" mode="widthFix"></image>+9999
+									</view>
+									<view class="btn flex-set" @tap="sendHot(66666)">
+										<image src="/static/image/user/b1.png" mode="widthFix"></image>+66666
+									</view>
+									<view class="btn flex-set self-input">
+										<input class="" @input="sendCount = $event.detail.value" type="number" placeholder="自定义数额" />
+									</view>
+									<view class="btn flex-set pick" @tap="sendHot()">PICK</view>
+								</view>
+
+							</view>
 						</view>
-					</button>
+						<view class="gift flex-set" @tap="app.goPage('/pages/recharge/recharge')" v-if="!~app.getData('sysInfo').system.indexOf('iOS')">
+							<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+							<view class="text">补充能量</view>
 
-					<!-- <view class="text">道具>></view> -->
-				</view>
-				<view class="btn-wrapper">
-					<view class="btn" @tap="sendHot(99)">
-						<btnComponent type="big">
-							<view class="flex-set" style="width:160upx;height:110upx;">
-								<image src="/static/image/user/b1.png" mode="widthFix"></image>+99
-							</view>
-						</btnComponent>
-					</view>
-					<view class="btn" @tap="sendHot(520)">
-						<btnComponent type="big">
-							<view class="flex-set" style="width:160upx;height:110upx;">
-								<image src="/static/image/user/b1.png" mode="widthFix"></image>+520
-							</view>
-						</btnComponent>
-					</view>
-					<view class="btn" @tap="sendHot(999)">
-						<btnComponent type="big">
-							<view class="flex-set" style="width:160upx;height:110upx;">
-								<image src="/static/image/user/b1.png" mode="widthFix"></image>+999
-							</view>
-						</btnComponent>
-					</view>
-					<view class="btn" @tap="sendHot(1314)">
-						<btnComponent type="big">
-							<view class="flex-set" style="width:160upx;height:110upx;">
-								<image src="/static/image/user/b1.png" mode="widthFix"></image>+1314
-							</view>
-						</btnComponent>
-					</view>
-					<view class="btn" @tap="sendHot(9999)">
-						<btnComponent type="big">
-							<view class="flex-set" style="width:160upx;height:110upx;">
-								<image src="/static/image/user/b1.png" mode="widthFix"></image>+9999
-							</view>
-						</btnComponent>
-					</view>
-					<view class="btn" @tap="sendHot(66666)">
-						<btnComponent type="big">
-							<view class="flex-set" style="width:160upx;height:110upx;">
-								<image src="/static/image/user/b1.png" mode="widthFix"></image>+66666
-							</view>
-						</btnComponent>
-					</view>
-					<view class="btn self-input">
-						<input class="" @input="sendCount = $event.detail.value" type="number" placeholder="自定义数额" />
-					</view>
-					<view class="btn pick">
-						<btnComponent type="big" @tap="sendHot">
-							<view class="flex-set" style="width:160upx;height:110upx;">PICK</view>
-						</btnComponent>
-					</view>
-				</view>
+						</view>
+						<button open-type="contact" class="gift flex-set" v-if="~app.getData('sysInfo').system.indexOf('iOS')&&$app.getData('config').ios_switch==1">
+							<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+							<view class="text">补充能量回复"1"</view>
+						</button>
+					</swiper-item>
 
+					<swiper-item>
+						<view class="swiper-item">
+							<view class="wrap">
 
+								<view class="btn-wrapper gift-s">
+									<!-- 礼物列表 -->
+									<view v-for="(item,index) in itemList" :key="index" class="gift-item flex-set" @tap="sendHot(item.id, 1)">
+										<view class="num">
+											<image src="/static/image/user/b1.png" mode="widthFix"></image>
+											{{item.count}}
+										</view>
+										<image :src="item.icon" mode="widthFix"></image>
+										<view class="name">{{item.name}}</view>
+										<view class="self flex-set">{{item.self}}</view>
+									</view>
+
+								</view>
+
+							</view>
+
+						</view>
+						<view class="gift flex-set" @tap="app.goPage('/pages/recharge/recharge')" v-if="!~app.getData('sysInfo').system.indexOf('iOS')">
+							<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+							<view class="text">补充能量</view>
+						</view>
+						<button open-type="contact" class="gift flex-set" v-if="~app.getData('sysInfo').system.indexOf('iOS')&&$app.getData('config').ios_switch==1">
+							<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+							<view class="text">补充能量回复"1"</view>
+						</button>
+					</swiper-item>
+				</swiper>
 			</view>
 		</modalComponent>
 
@@ -547,7 +589,16 @@
 
 		</modalComponent>
 
+		<view class="canvas-container flex-set" v-if="modal == 'canvas'">
+			<canvas canvas-id='mycanvas' class="canvas"></canvas>
 
+			<view class="btn-wrap">
+				<button class='fsend-btn flex-set' open-type='share'>分享给好友</button>
+				<view class="btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
+				<view class='save-btn flex-set' @tap='saveCanvas'>保存到相册</view>
+			</view>
+
+		</view>
 	</view>
 </template>
 
@@ -610,7 +661,13 @@
 					can_card: true,
 					complete_people: 0,
 					join_people: 0,
-				}
+				},
+				current: 0,
+
+				itemList: [],
+
+				giftItemList: [],
+				chartAni:'',
 			};
 		},
 		created() {},
@@ -674,6 +731,10 @@
 						starid: this.star.id,
 						client_id: clientId,
 					}, res => {
+
+						// 礼物列表
+						this.itemList = res.data.itemList
+
 						const star = res.data.starInfo
 
 						this.star = {
@@ -682,6 +743,8 @@
 							name: star.name,
 							weekHot: this.$app.formatNumberRgx(star.star_rank.week_hot),
 							weekRank: star.star_rank.week_hot_rank,
+							share_img: star.share_img,
+							qrcode: star.qrcode,
 						}
 
 						const userRankList = []
@@ -703,6 +766,7 @@
 								nickname: e.user && e.user.nickname || this.$app.NICKNAME,
 								content: e.content,
 								captain: e.user && e.user.user_star && e.user.user_star.captain || 0,
+								level: e.level,
 								sendtimeInt: this.$app.strToTime(e.create_time),
 							}
 							const leastTime = chartList[i - 1] && chartList[i - 1].sendtimeInt || 0
@@ -716,6 +780,7 @@
 						this.chartList = chartList
 						this.$nextTick(function() {
 							this.index = this.chartList.length - 1
+							this.chartAni = '1'
 						})
 
 						this.mass = res.data.mass
@@ -773,6 +838,14 @@
 					})
 				}
 
+			},
+			swiperChange(e) {
+				if (e.detail.source === 'touch') {
+					this.current = e.detail.current
+				}
+			},
+			itemEffect(data) {
+				this.giftItemList.push(data)
 			},
 			goActive() {
 				if (this.$app.getData('userStar').id) {
@@ -875,6 +948,106 @@
 						})
 					}, 'POST', true)
 				}
+			},
+			getLocalImg(src, callback) {
+				if (~src.indexOf('http')) {
+					uni.getImageInfo({
+						src,
+						success: function(res) {
+							callback && callback(res.path)
+						}
+					})
+				} else {
+					callback && callback(src)
+				}
+			},
+			// 绘制canvas海报
+			drawCanvas() {
+				if (this.star.id != this.$app.getData('userStar').id) return
+				this.modal = 'canvas'
+				var rate = this.$app.getData('sysInfo').windowWidth / 375 / 1.78
+				var ctx = uni.createCanvasContext('mycanvas', this);
+				// 绘制文字
+				const drawText = function() {
+					ctx.setFillStyle('#FFFFFF') //文字颜色
+
+					ctx.setFontSize(18) //设置字体大小，默认10
+					ctx.setTextAlign('center')
+					ctx.fillText(this.$app.getData('config').canvas_title[0], 240 * rate, 200 * rate) //绘制文本
+					ctx.fillText(this.$app.getData('config').canvas_title[1], 240 * rate, 250 * rate) //绘制文本
+
+					ctx.fillText(this.star.name, 140 * rate, 632 * rate) //绘制文本
+
+					ctx.setFontSize(10) //设置字体大小，默认10
+					ctx.setTextAlign('left')
+					ctx.fillText(`榜单排名:NO.${this.star.weekRank}`, 270 * rate, 616 * rate) //绘制文本
+					ctx.fillText(`人气值:${this.star.weekHot}`, 270 * rate, 640 * rate) //绘制文本
+
+					ctx.fillText(`我是${this.$app.getData('userInfo').nickname}`, 130 * rate, 774 * rate) //绘制文本
+					ctx.fillText(`一起为${this.star.name}打榜`, 130 * rate, 804 * rate) //绘制文本
+				}.bind(this)
+
+				// 绘制图片
+				// 背景
+				uni.showLoading({
+					title: "生成海报中"
+				})
+				this.getLocalImg('/static/image/canvas-bg.png', src => {
+					ctx.drawImage(src, 0, 0, 480 * rate, 854 * rate);
+					// 明星 
+					this.getLocalImg(this.star.share_img || this.star.avatar, src => {
+						ctx.drawImage(src, 48 * rate, 286 * rate, 382 * rate, 305 * rate);
+						// 用户头像
+						this.getLocalImg(this.$app.getData('userInfo').avatarurl || this.$app.AVATAR, src => {
+							ctx.save() //保存当前的绘图上下文。
+							ctx.beginPath() //开始创建一个路径
+							ctx.arc(79 * rate, 784 * rate, 40 * rate, 0, 2 * Math.PI, false) //画一个圆形裁剪区域
+							ctx.clip() //裁剪
+							ctx.drawImage(src, 38 * rate, 744 * rate, 80 * rate, 80 * rate) //绘制图片
+							ctx.restore() //恢复之前保存的绘图上下文
+							// 二维码
+							this.getLocalImg(this.$app.getData('qrcode') || this.$app.QRCODE, src => {
+								ctx.save() //保存当前的绘图上下文。
+								ctx.beginPath() //开始创建一个路径
+								ctx.arc(400 * rate, 780 * rate, 50 * rate, 0, 2 * Math.PI, false) //画一个圆形裁剪区域
+								ctx.clip() //裁剪
+								ctx.drawImage(src, 350 * rate, 730 * rate, 100 * rate, 100 * rate);
+								ctx.restore() //恢复之前保存的绘图上下文
+
+								// 绘制文字
+								drawText()
+								// 绘制
+								ctx.draw()
+
+								uni.hideLoading()
+							})
+						})
+					})
+				})
+			},
+			//保存的画布
+			saveCanvas: function() {
+				// 将canvas内容生成临时图片
+				uni.canvasToTempFilePath({
+					canvasId: 'mycanvas',
+					success: res => {
+						// 保存图片到用户相册
+						uni.saveImageToPhotosAlbum({
+							filePath: res.tempFilePath,
+							success: () => {
+								this.$app.toast('保存成功', 'success')
+							},
+							fail: res => {
+								this.$app.toast('保存失败')
+							}
+						});
+
+					},
+					fail: res => {
+						this.$app.toast('将canvas内容生成临时图片失败')
+						console.error(res)
+					}
+				}, this);
 			},
 			/**获取集结信息*/
 			getMass() {
@@ -1120,23 +1293,53 @@
 			/**
 			 * 贡献人气
 			 */
-			sendHot(count) {
+			sendHot(count, type = 0) {
 				if (count) this.sendCount = count
 				if (!parseInt(this.sendCount)) {
 					this.$app.toast('数额不正确')
 					return
 				}
+
 				this.$app.request(this.$app.API.STAR_SENDHOT, {
 					starid: this.star.id,
 					hot: parseInt(this.sendCount),
+					type: type,
 				}, res => {
+					if (res.data.noItem) {
+						if (~this.$app.getData('sysInfo').system.indexOf('iOS')) {
+							this.$app.toast('礼物不足')
+						} else {
+							uni.showModal({
+								title: '提示',
+								content: '礼物不足',
+								confirmText: '去购买',
+								success: res => {
+									res.confirm && this.$app.goPage('/pages/recharge/recharge')
+								}
+							})
+						}
+						return
+					}
 					this.modal = ''
+					this.sendCount = 0
 					this.getStarInfo()
 
 					this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
 						this.$app.setData('userCurrency', res.data)
 					})
 					this.$app.toast('打榜成功', 'success')
+
+					if (type == 1) {
+						// 减礼物
+						for (let key in this.itemList) {
+							const value = this.itemList[key]
+
+							if (value.id == count) {
+								this.itemList[key].self--
+							}
+						}
+					}
+
 				}, 'POST', true)
 			},
 			/**
@@ -1190,7 +1393,7 @@
 					}, res => {
 						if (this.$app.getData('userInfo').type == 1) {
 							// 管理员
-							this.$app.setData('token', '', true)
+							this.$app.token = ''
 							this.$app.request(this.$app.API.USER_INFO, {}, res => {
 								this.$app.setData('userInfo', res.data, true)
 								this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
@@ -1227,6 +1430,8 @@
 						name: star.name,
 						weekHot: this.$app.formatNumberRgx(star.star_rank.week_hot),
 						weekRank: star.star_rank.week_hot_rank,
+						share_img: star.share_img, // 海报图片
+						qrcode: star.qrcode,
 					}
 					this.$app.closeLoading(this)
 				})
@@ -1379,7 +1584,6 @@
 		}
 
 		.tips-container {
-
 			position: fixed;
 			top: 0;
 			left: 0;
@@ -1462,8 +1666,8 @@
 					padding: 0 40upx;
 					display: flex;
 					justify-content: space-around;
-					padding-bottom: 20upx;
-
+					align-items: center;
+					height: 220upx;
 					.avatar-wrapper {
 						text-align: center;
 						position: relative;
@@ -1479,27 +1683,32 @@
 							z-index: 1;
 						}
 
-						.tips {
+						.avatar.share::after {
+							content: "召集打榜";
 							position: absolute;
 							width: 100%;
 							background-color: rgba(0, 0, 0, .3);
 							bottom: 0;
-							height: 56upx;
+							left: 0;
+							height: 40upx;
 							color: #fff;
-							font-size: 26upx;
+							font-size: 22upx;
 							text-align: center;
-							line-height: 40upx;
+							z-index: 2;
+
 						}
 
 						.rank {
 							font-weight: 700;
 							font-size: 34upx;
+							height: 50upx;
+
 						}
 					}
 
 					.top-text-wrapper {
 						color: $color_1;
-						// width: 280upx;
+						width: 280upx;
 						display: flex;
 						flex-direction: column;
 						justify-content: center;
@@ -1828,10 +2037,17 @@
 									display: flex;
 									align-items: center;
 									margin-left: 10upx;
+									position: relative;
 
 									image {
 										width: 32upx;
 										height: 32upx;
+									}
+
+									.level {
+										color: #FFF;
+										font-size: 16upx;
+										top: 40%;
 									}
 
 									.fan-text {
@@ -2038,13 +2254,83 @@
 			}
 		}
 
+		@keyframes itemAni {
+			0% {
+				transform: translate(0);
+			}
+
+			10% {
+				transform: translate(-100%);
+			}
+
+			90% {
+				transform: translate(-100%);
+				opacity: 1;
+			}
+
+			100% {
+				transform: translate(-100%, -100upx);
+				opacity: 0;
+			}
+		}
+
+		.item-list-wrap {
+			position: fixed;
+			height: 300upx;
+			width: 100%;
+			top: 50%;
+			transform: translate(100%, -50%);
+			right: 0;
+			background-color: rgba(0, 0, 0, .3);
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-end;
+
+			.item-wrap {
+				height: 60upx;
+				position: absolute;
+				left: 0;
+				display: flex;
+				align-items: center;
+				background: linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.1));
+				border-radius: 50upx;
+
+				animation: itemAni 8s ease-in-out forwards;
+
+				.avatar {
+					width: 60upx;
+					height: 60upx;
+					border-radius: 50%;
+				}
+
+				.text-wrap {
+					display: flex;
+					justify-content: space-around;
+					flex-direction: column;
+					font-size: 20upx;
+					padding: 0 10upx;
+					color: #777;
+
+					.name {
+						font-size: 26upx;
+						font-weight: 700;
+						color: $color_1;
+					}
+				}
+
+				.item-content {
+					width: 150upx;
+				}
+			}
+		}
+
 		.send-modal-container {
 			width: 100%;
 			height: 100%;
-			padding: 30upx;
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
+			align-items: center;
 
 			// .tab-wrapper{
 			// 	height: 50upx;
@@ -2053,27 +2339,121 @@
 				font-size: 24upx;
 			}
 
+			.swiper-change {
+				margin: 30upx;
+				border-radius: 30upx;
+				overflow: hidden;
+				box-shadow: 0 2upx 4upx rgba(0, 0, 0, .3);
+
+				.item {
+					width: 200upx;
+					height: 70upx;
+					line-height: 70upx;
+					background-color: #f5f5f5;
+					color: #ff648d;
+					text-align: center;
+
+				}
+
+				.item.select {
+					background-color: #ff648d;
+					color: #f5f5f5;
+
+				}
+
+			}
+
+			swiper {
+				width: 100%;
+				height: 100%;
+
+				swiper-item {
+					z-index: 2;
+				}
+
+				.swiper-item {
+					.wrap {
+						position: relative;
+						padding: 0 20upx;
+						width: 100%;
+					}
+				}
+			}
+
+
 			.btn-wrapper {
-				margin-top: 50upx;
 				display: flex;
 				flex-wrap: wrap;
-				justify-content: center;
+				justify-content: space-between;
 
 				.btn {
-					padding: 16upx 10upx;
+					border-radius: 10upx;
+					margin: 8upx 0;
+					width: 180upx;
+					height: 90upx;
+					background-color: #fac8cd;
 
 					image {
-						width: 36upx;
-						min-height: 36upx;
+						width: 40upx;
+						height: 40upx;
+					}
+				}
+
+				.gift-item {
+					padding: 10upx 20upx;
+					width: 140upx;
+					flex-direction: column;
+					position: relative;
+					font-size: 24upx;
+
+					image {
+						width: 100upx;
+						height: 100upx;
+						position: relative;
+						z-index: -1;
+					}
+
+					.num {
+						display: flex;
+						align-items: center;
+						position: absolute;
+						border-radius: 20upx;
+						right: 10upx;
+						top: 88upx;
+						font-size: 20upx;
+						background-color: rgba(250, 250, 250, .3);
+						z-index: 2;
+
+						image {
+							width: 22upx;
+							height: 22upx;
+						}
+					}
+
+					.name {
+						color: #ff648d;
+					}
+
+
+					.self {
+						position: absolute;
+						right: 10upx;
+						top: 10upx;
+						border-radius: 50%;
+						background-color: rgba(50, 50, 50, .3);
+						color: #FFF;
+						width: 30upx;
+						height: 30upx;
+						font-size: 20upx;
+						z-index: 2;
 					}
 				}
 
 				.btn.self-input {
-					flex: 1;
-					min-width: 100upx;
+					width: 372upx;
 
 					input {
-						background-color: $color_3;
+						// background-color: $color_3;
 						border-radius: 60upx;
 						width: 100%;
 						height: 110upx;
@@ -2085,15 +2465,55 @@
 				.btn.pick {
 					font-size: 34upx;
 					font-weight: 700;
+					background-color: #f8648a;
+					color: #FFF;
 				}
 			}
 
+			.btn-wrapper.gift-s {
+				padding: 0 40upx;
+			}
+
 			.bottom-wrapper {
+				padding-bottom: 20upx;
 				display: flex;
-				justify-content: space-around;
+				justify-content: space-between;
 				font-size: 28upx;
 				align-items: center;
+
+				.text {
+					border-radius: 10upx;
+					background-color: #fac8cd;
+					width: 180upx;
+					height: 90upx;
+				}
+
+				.text.left {
+					width: 100%;
+				}
+
 			}
+
+			.gift {
+				position: absolute;
+				right: 40upx;
+				bottom: 30upx;
+				font-size: 32upx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+
+				image {
+					width: 50upx;
+					height: 50upx;
+					margin-right: 10upx;
+				}
+
+				.text {
+					border-bottom: 2upx solid $color_1;
+				}
+			}
+
 		}
 
 		.steal-modal-container {
@@ -2427,6 +2847,55 @@
 			.btn {
 				width: 200upx;
 				margin: auto;
+			}
+		}
+
+		.canvas-container {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			z-index: 9;
+			background-color: rgba(0, 0, 0, .5);
+			flex-direction: column;
+
+			.canvas {
+				width: 540upx;
+				height: 960upx;
+			}
+
+			.btn-wrap {
+				margin-top: 20upx;
+				display: flex;
+				justify-content: space-around;
+				width: 100%;
+
+				.fsend-btn {
+					background-color: #0EC52F;
+					font-size: 32upx;
+					color: #FFF;
+					padding: 0 20upx;
+				}
+
+				.save-btn {
+					background-color: #FF7E00;
+					border-radius: 10upx;
+					font-size: 32upx;
+					color: #FFF;
+					padding: 0 20upx;
+				}
+
+				.btn {
+					width: 80upx;
+					height: 80upx;
+					margin-top: 10upx;
+					z-index: 10;
+					border-radius: 50%;
+					background-color: rgba(0, 0, 0, .5);
+					color: #FFF;
+					font-size: 45upx;
+				}
 			}
 		}
 	}

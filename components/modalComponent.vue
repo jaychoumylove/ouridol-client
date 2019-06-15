@@ -1,6 +1,6 @@
 <template>
 	<view class='container flex-set' :class="{show:show}" @tap="closeModal">
-		<view class="modal-container" @tap.stop="">
+		<view class="modal-container" :class="[type]" @tap.stop="">
 			<view class="top-wrapper">
 				<view class="title">{{title}}</view>
 				<image class='center-img' :src="headimg" mode=""></image>
@@ -35,12 +35,14 @@
 			headimg: {
 				default: "/static/image/guild/hart.png"
 			},
+			type: {
+				default: 'default'
+			}
 		},
 		created() {
 			this.show = true
 		},
-		mounted() {
-		},
+		mounted() {},
 		methods: {
 			closeModal() {
 				this.show = false
@@ -61,8 +63,13 @@
 		bottom: 0;
 		z-index: 99;
 		background-color: rgba(0, 0, 0, .5);
-		transition: .2s;
+		transition: .3s;
 		opacity: 0;
+
+		.modal-container.send {
+			background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g41l2jzr9wj30gp0kvq31.jpg) center no-repeat/cover;
+			height: 760upx;
+		}
 
 		.modal-container {
 			width: 600upx;
@@ -72,8 +79,6 @@
 			background: url(http://wx3.sinaimg.cn/large/0060lm7Tly1g2dpyg3vxng30gp0kk74c.gif) center no-repeat/cover;
 			display: flex;
 			flex-direction: column;
-			transition: .2s;
-			transform: scale(0.9);
 
 			.top-wrapper {
 				width: 100%;
@@ -125,8 +130,8 @@
 	.container.show {
 		opacity: 1;
 
-		.modal-container {
-			transform: scale(1);
-		}
+		// .modal-container {
+		// 	transform: scale(1);
+		// }
 	}
 </style>

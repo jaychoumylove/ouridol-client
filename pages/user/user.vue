@@ -62,8 +62,8 @@
 		</view>
 
 		<view class="function-container-list">
-			<view class="list-item" @tap="$app.goPage('/pages/recharge/recharge')" v-if="$app.getData('sysInfo').system.indexOf('iOS')==-1">
-				<image src="/static/image/user/r1.png" mode="widthFix"></image>
+			<view class="list-item" @tap="$app.goPage('/pages/recharge/recharge')" v-if="!~$app.getData('sysInfo').system.indexOf('iOS')">
+				<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
 				<view class="text">补充能量</view>
 				<!-- <view class="badge-wrapper">
 					<badgeComponent></badgeComponent>
@@ -72,11 +72,15 @@
 			<block v-else>
 				<button open-type="contact" :session-from="$app.getData('userInfo').id" v-if="$app.getData('config').ios_switch == 1">
 					<view class="list-item">
-						<image src="/static/image/user/r1.png" mode="widthFix"></image>
+						<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
 						<view class="text">补充能量 回复"1"</view>
 					</view>
 				</button>
 			</block>
+			<view class="list-item" @tap="$app.goPage('/pages/gift_package/gift_package')">
+				<image src="/static/image/user/r8.png" mode="widthFix"></image>
+				<view class="text">礼物背包</view>
+			</view>
 			<view class="list-item" @tap="$app.goPage('/pages/task/task')">
 				<image src="/static/image/user/r2.png" mode="widthFix"></image>
 				<view class="text">每日任务</view>
@@ -387,7 +391,7 @@
 
 				image {
 					width: 50upx;
-					min-height: 50upx;
+					height: 50upx;
 					margin-right: 30upx;
 				}
 

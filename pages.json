@@ -110,7 +110,11 @@
 			"path": "pages/msg/msg",
 			"style": {}
 		}
-	],
+	    ,{
+            "path" : "pages/gift_package/gift_package",
+            "style" : {"navigationBarTitleText": "我的礼物"}
+        }
+    ],
 	// #ifndef H5
 	"tabBar": {
 		"color": "#b296ad",

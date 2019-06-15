@@ -8,33 +8,39 @@
 			</view>
 		</view>
 
-		<view class="top-container flex-set">
-			<view class="top-title one">能量充值</view>
-			<view class="top-title two">我的能量：{{userCurrency.coin}}</view>
-			<view class="top-title three">我的灵丹：{{userCurrency.stone}}</view>
-			<!-- 			<view class="top-title two">我的<image src="/static/image/user/b1.png" mode="widthFix"></image>：4646</view>
-			<view class="top-title three">我的<image src="/static/image/user/b2.png" mode="widthFix"></image>：55165</view> -->
-		</view>
+		<!-- <view class="row">
+			<image class="bg" src="/static/image/recharge/top-title.png" mode="widthFix"></image>
+			<view class="">能量充值</view>
+		</view> -->
 
-		<view class="btn-wrapper">
-			<view class="" v-for="(item,index) in rechargeList" :key="index" @tap="payment(item.id)">
-				<btnComponent type="fangde">
-					<view class="btn flex-set" style="width: 240upx;height: 240upx;margin: -30upx 0 0 -30upx;">
-						<view class="line">
-							<image src="/static/image/user/b1.png" mode="widthFix"></image>
-							<view class="">{{item.coin}}</view>
-						</view>
-						<view class="line">
-							<image src="/static/image/user/b2.png" mode="widthFix"></image>
-							<view class="">{{item.stone}}</view>
-						</view>
-						<view class="line">
-							<view class="">￥{{item.fee}}</view>
-						</view>
-					</view>
-				</btnComponent>
+		<view class="count-wrap">
+			<view class="top-title">我的能量：{{userCurrency.coin}}</view>
+			<view class="top-title">我的灵丹：{{userCurrency.stone}}</view>
+			<view class="top-title flex-set"  @tap="$app.goPage('/pages/gift_package/gift_package')">
+				<view class="" style="text-decoration: underline;">礼物背包</view>
+				<view class="badge-wrap">{{giftNum}}</view>
 			</view>
-
+			
+			<image class='hand' v-if="handShow" src="/static/image/pet/hand.png" mode="widthFix"></image>
+		</view>
+		<view class="count-wrap tips">
+			购买的能量礼物不清零
+		</view>
+		<view class="btn-wrapper">
+			<view class="btn" v-for="(item,index) in rechargeList" :key="index" @tap="payment(item.id)">
+				<image class="icon" :src="item.item.icon" mode="widthFix"></image>
+				<view class="line one flex-set">
+					<image class="sicon" src="/static/image/user/b1.png" mode="widthFix"></image>{{item.item.count}}
+				</view>
+				<view class="name flex-set">{{item.item.name}}</view>
+				<view class="line two flex-set">
+					<image class="sicon" src="/static/image/user/b2.png" mode="widthFix"></image>+{{item.stone}}
+				</view>
+				
+				<view class="fee flex-set">
+					￥{{item.fee}}
+				</view>
+			</view>
 		</view>
 	</view>
 </template>
@@ -42,9 +48,10 @@
 <script>
 	var timeId;
 	import btnComponent from '@/components/btnComponent.vue'
+	import badgeComponent from "@/components/badgeComponent.vue"
 	export default {
 		components: {
-			btnComponent
+			btnComponent,badgeComponent
 		},
 		data() {
 			return {
@@ -60,6 +67,8 @@
 					trumpet: 0
 				},
 				rechargeList: this.$app.getData('goodsList') || [],
+				handShow:false,
+				giftNum:0,
 			};
 		},
 		onLoad() {
@@ -70,8 +79,12 @@
 					this.userCurrency = this.$app.getData('userCurrency')
 				}
 			}, 300)
+			
+			this.$app.request('page/gift_num', {}, res => {
+				this.giftNum = res.data || 0
+			})
 		},
-
+		
 		onUnload() {
 			clearInterval(timeId)
 		},
@@ -89,12 +102,12 @@
 						"signType": res.data.signType, //微信签名方式：     
 						"paySign": res.data.paySign //微信签名 
 					}, res => {
+						console.log(res);
 						if (res.err_msg == "get_brand_wcpay_request:ok") {
 							// 使用以上方式判断前端返回,微信团队郑重提示：
 							//res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
 
 							this.$app.toast('支付成功', 'success')
-
 							this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
 								this.$app.setData('userCurrency', res.data)
 								this.userCurrency = this.$app.getData('userCurrency')
@@ -113,7 +126,9 @@
 						paySign: res.data.paySign,
 						success: res => {
 							this.$app.toast('支付成功', 'success')
-
+							this.$app.request('page/gift_num', {}, res => {
+								this.giftNum = res.data || 0
+							})
 							this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
 								this.$app.setData('userCurrency', res.data)
 								this.userCurrency = this.$app.getData('userCurrency')
@@ -138,6 +153,7 @@
 							coin: v.coin,
 							stone: v.stone,
 							fee: v.fee,
+							item: v.item,
 						})
 					}
 					this.rechargeList = resList
@@ -152,7 +168,8 @@
 <style lang="scss" scoped>
 	.container {
 		padding-top: 100upx;
-
+		
+		
 		.user-container {
 			position: absolute;
 			height: 60upx;
@@ -173,65 +190,136 @@
 				font-size: 32upx;
 				margin-right: 30upx;
 			}
-
 		}
 
-		.top-container {
-			width: 604upx;
-			height: 321upx;
-			margin: auto;
-			flex-direction: column;
-			justify-content: flex-start;
-			background: url(http://wx4.sinaimg.cn/large/0060lm7Tly1g2jvvysgsrg30gs08xweg.gif) center no-repeat/cover;
+		.row {
+			position: relative;
+			height: 115upx;
+			margin: 0 40upx;
+			margin-top: 50upx;
+			text-align: center;
+			line-height: 115upx;
+			font-size: 40upx;
+			font-weight: 700;
 
+			.bg {
+				position: absolute;
+				z-index: -1;
+				left: 0;
+				top: 0;
+			}
+		}
+
+		.count-wrap {
+			background-color: #fac7cc;
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+			margin: 0 40upx;
+			line-height: 100upx;
+			margin-top: 20upx;
+			position: relative;
+			
 			.top-title {
-				display: flex;
-				align-items: center;
-				justify-content: center;
-
-				image {
-					width: 30upx;
-					margin: 0 4upx;
+				position: relative;
+				
+				.badge-wrap {
+					background-color: red;
+					border-radius: 30upx;
+					line-height: 1.5;
+					padding: 5upx 10upx;
+					color: #FFF;
+					font-size: 18upx;
 				}
 			}
-
-			.top-title.one {
-				margin-top: 70upx;
-				font-size: 36upx;
+			
+			.hand {
+				width: 60upx;
+				height: 60upx;
+				animation: scale 1s linear infinite;
+				position: absolute;
+				right: 40upx;
+				top: 60upx;
 			}
-
-			.top-title.two {
-				margin-top: 56upx;
+			
+			@keyframes scale {
+			
+				0%,
+				100% {
+					transform: scale(0.9);
+				}
+			
+				50% {
+					transform: scale(1.1);
+				}
+			
 			}
-
-			.top-title.three {
-				margin-top: 46upx;
-			}
-
+		}
+		
+		.count-wrap.tips {
+			margin: 0 40upx;
+			border-top: 1px dashed #EEE;
+			line-height: 1.6;
 		}
 
 		.btn-wrapper {
 			display: flex;
 			flex-wrap: wrap;
+			background-color: #FFF;
+			margin: 0 40upx;
+			margin-bottom: 40upx;
 			justify-content: center;
-			margin-top: 50upx;
-
+			padding: 8upx;
 			.btn {
-
-				margin: 10upx;
+				background-color: #fac7cc;
+				width: 200upx;
+				height: 320upx;
+				margin: 8upx;
+				position: relative;
+				padding: 8upx;
 				display: flex;
 				flex-direction: column;
+				justify-content: space-around;
 				align-items: center;
-				justify-content: center;
-
+				border-radius: 10upx;
+				.name {
+					width: 125upx;
+					color: #fa5e86;
+					border-bottom: 2upx solid #EEE;
+				}
+				.icon {
+					width: 125upx;
+					height: 125upx;
+				}
+				
 				.line {
-					display: flex;
-
-					image {
-						width: 34upx;
+					.sicon {
+						width: 30upx;
 					}
 				}
+				.line.one {
+					position: absolute;
+					right: 30upx;
+					top: 120upx;
+					
+					border-radius: 20upx;
+					background-color: rgba(255, 255, 255, .3);
+					font-size: 24upx;
+					padding: 0 4upx;
+					color: #666;
+					.sicon {
+						width: 25upx;
+					}
+				}
+				
+				.fee {
+					width: 125upx;
+					background-color: #FFF;
+					border-radius: 5upx;
+
+				}
 			}
+
 		}
 
 

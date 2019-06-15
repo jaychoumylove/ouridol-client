@@ -60,6 +60,8 @@
 
 		.banner-item-img {
 			border-radius: 10upx;
+			width: 100%;
+			height: 100%;
 		}
 
 	}

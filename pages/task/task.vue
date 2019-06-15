@@ -77,7 +77,7 @@
 
 		<modalComponent v-if="modal == 'weibo_zhuanfa'" title="提示" @closeModal="modal=''">
 			<view class="weibo-modal-container zhuanfa flex-set">
-				<view class="line">第一步：进入 <text>{{weibo_zhuanfa.host}}</text>主页查看 <text>{{weibo_zhuanfa.text}}</text> </view>
+				<view class="line">第一步：进入 <text>{{weibo_zhuanfa.host}}</text>微博主页查看 <text>{{weibo_zhuanfa.text}}</text> </view>
 				<image :src="weibo_zhuanfa.img" mode=""></image>
 				<view class="line">第二步：填写转发的微博链接</view>
 
@@ -144,6 +144,14 @@
 					this.videoAd.onError(err => {
 						this.$app.toast('抱歉，暂无合适的广告')
 						console.error('视频广告播放错误', err)
+						
+						for (let key in this.taskList) {
+							const value = this.taskList[key]
+						
+							if (value.type == 7) {
+								this.taskList[key].status = 1
+							}
+						}
 					})
 				}
 

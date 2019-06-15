@@ -47,18 +47,19 @@
 			</view> -->
 		</view>
 
-		<view class="earn-container" @tap="settle">
+		<view class="earn-container" :class="{online:!off}" @tap="settle">
 			<image class="mountain" src="/static/image/pet/y2.png" mode="widthFix"></image>
 			<view class="egg flex-set">
 				<view class="num-wrapper position-set">{{spriteInfo.earn}}</view>
-				<image class="flex-set" src="/static/image/pet/y5.png" mode="widthFix"></image>
+				<image v-if="!off" class="flex-set" src="/static/image/pet/y5.png" mode="widthFix"></image>
+				<image v-else class="flex-set" src="/static/image/pet/y5-off.png" mode="widthFix"></image>
 				<!-- <view class="progress">
 					<view class="progress-bar" :style="{width:earnCuttime + '%'}"></view>
 					{{earnCuttime}}
 				</view> -->
 			</view>
-			
-			<view class="hand-wrap position-set" v-show="spriteInfo.earn >= 2">
+
+			<view class="hand-wrap position-set" v-show="spriteInfo.earn >= 2 && !off">
 				<image class='bubble flex-set' src="/static/image/pet/bubble.png" mode="widthFix"></image>
 				<image class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
 			</view>
@@ -101,6 +102,25 @@
 			</view>
 
 		</modalComponent> -->
+		
+		<modalComponent v-if="modal == 'tips_t'" title="提示" @closeModal="modal=''">
+			<!-- this.$app.modal("好友已经很久没有打榜了\n提醒TA一起为偶像打榜\n") -->
+		
+			<view class="tips-modal-container-s">
+				<view class="text-wrap">
+					<image src="/static/image/user/blank.png" mode="widthFix"></image>
+					<view class="text">好友已经很久没有打榜了</view>
+					<view class="text">提醒TA一起为偶像打榜</view>
+					<view class="text">才能帮TA收取能量</view>
+				</view>
+				<btnComponent type="css">
+					<button open-type="share">
+					<view class="flex-set" style="padding: 20upx 40upx;">唤醒好友</view>
+					</button>
+				</btnComponent>
+			</view>
+		
+		</modalComponent>
 	</view>
 </template>
 
@@ -126,7 +146,7 @@
 				modal: '',
 				earnCuttime: 1, // 收益计时
 				skillShow: false, // 显示技能
-
+				off: false,
 				userInfo: {
 					nickname: this.$app.NICKNAME,
 
@@ -138,6 +158,10 @@
 		},
 		onLoad(option) {
 			this.user_id = option.user_id || 0
+
+			if (option.off == 'true') {
+				this.off = true
+			}
 			this.getSpriteInfo()
 			this.getUserInfo()
 		},
@@ -160,6 +184,9 @@
 			settle() {
 				if (this.spriteInfo.earn < 2) {
 					this.$app.toast('TA的能量太少了，稍后再来吧')
+				} else if (this.off) {
+					// 不能收
+					this.modal = 'tips_t'
 				} else {
 					this.$app.request(this.$app.API.SPRITE_SETTLE, {
 						user_id: this.user_id
@@ -342,7 +369,7 @@
 			}
 		}
 
-		.earn-container::before {
+		.earn-container.online::before {
 			content: "";
 			position: absolute;
 			z-index: 1;
@@ -426,7 +453,7 @@
 			}
 
 
-.hand-wrap {
+			.hand-wrap {
 				width: 100upx;
 				top: -4upx;
 				left: 134upx;
@@ -531,6 +558,36 @@
 						}
 					}
 				}
+			}
+		}
+		
+		.tips-modal-container-s {
+			height: 100%;
+			padding: 20upx 40upx;
+			font-size: 32upx;
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+			flex-direction: column;
+			.text-wrap {
+				text-align: center;
+		
+				image {
+					width: 120upx;
+					height: 120upx;
+					margin: 60upx;
+				}
+				.text {
+					font-size: 32upx;
+					font-weight: 700;
+					
+				}
+		
+			}
+		
+		
+			.btn {
+				margin: auto;
 			}
 		}
 

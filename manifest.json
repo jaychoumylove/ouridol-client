@@ -59,17 +59,20 @@
         "setting" : {
             "urlCheck" : false,
             "postcss" : true,
-            "es6" : false,
+            "es6" : true,
             "minified" : true
         },
         "usingComponents" : true
     },
     "h5" : {
         "title" : "我们的偶像",
-		"template": "index.html",
-        "domain" : "rank.xiaolishu.com",
+        "template" : "index.html",
+        "domain" : "ouridol.xiaolishu.com",
         "router" : {
             "mode" : "hash"
+        },
+        "devServer" : {
+            "https" : true
         }
     }
 }
