@@ -12,6 +12,7 @@
 		},
 		onLaunch: function(option) {
 			this.$app.setData('sysInfo', uni.getSystemInfoSync())
+			this.$app.danmakuQueue = []
 		},
 
 		onShow: function(option) {

@@ -68,12 +68,11 @@
 
 		.modal-container.send {
 			background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g41l2jzr9wj30gp0kvq31.jpg) center no-repeat/cover;
-			height: 760upx;
 		}
 
 		.modal-container {
 			width: 600upx;
-			height: 740upx;
+			height: 760upx;
 			box-shadow: 0 1px 2px rgba(#000, .3);
 			border-radius: 20upx;
 			background: url(http://wx3.sinaimg.cn/large/0060lm7Tly1g2dpyg3vxng30gp0kk74c.gif) center no-repeat/cover;

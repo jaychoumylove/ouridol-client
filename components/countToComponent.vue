@@ -20,7 +20,7 @@
 		},
 		watch: {
 			// 传入的值发生改变
-			count(val,old) {
+			count(val) {
 				val = parseInt(val.replace(/,/g, ''))
 				let step = Math.floor((val - this.value) / 30)
 				clearInterval(this.timeId)

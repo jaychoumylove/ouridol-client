@@ -67,9 +67,7 @@
 		onShow() {
 			this.starid = this.$app.getData('userStar')['id'] || null
 			if (this.starid) {
-				this.$nextTick(function() {
-					this.$refs.guildComponent.load(this.starid)
-				})
+				this.$refs.guildComponent.load(this.starid)
 			} else {
 				setTimeout(() => {
 					this.blankHide = true
@@ -104,13 +102,19 @@
 					size: 100,
 					keywords: this.keywords,
 				}, res => {
+					const resList = []
 					res.data.forEach(e => {
 						const item = {}
 						item.starid = e.star.id
 						item.name = e.star.name
 						item.avatar = e.star.head_img_s ? e.star.head_img_s : e.star.head_img_l
-						this.rankList.push(item)
+						resList.push(item)
 					})
+					if(this.page == 1) {
+						this.rankList = resList
+					} else {
+						this.rankList = this.rankList.concat(resList)
+					}
 
 					this.$app.setData('group_rankList', this.rankList)
 					this.$nextTick(function() {

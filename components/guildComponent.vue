@@ -201,7 +201,7 @@
 
 		</view>
 		<scroll-view v-if="star.id == app.getData('userStar')['id'] || app.getData('userInfo').type == 1" class="chart-container"
-		 scroll-y :scroll-with-animation="chartAni" :scroll-into-view="'index_'+index">
+		 scroll-y scroll-with-animation :scroll-into-view="'index_'+index">
 
 			<view :id="'index_'+index" class="msg-item" :class="{right:item.uid==app.getData('userInfo')['id']}" v-for="(item,index) in chartList"
 			 :key="index">
@@ -286,7 +286,7 @@
 				<image class="avatar" :src="item.avatar" mode="widthFix"></image>
 				<view class="text-wrap">
 					<view class="name">{{item.username}}</view>
-					<view class="desc">送出{{item.itemname}}</view>
+					<view class="desc">送出 <text>{{item.itemname}}</text></view>
 				</view>
 				<image :src="item.itemicon" class="item-content" mode="widthFix"></image>
 			</view>
@@ -303,15 +303,15 @@
 					<view class="item" :class="{select:current==1}" @tap="current = 1">送礼物</view>
 				</view>
 
-				<swiper @change="swiperChange" :current="current">
-					<swiper-item>
-						<view class="swiper-item">
-							<view class="wrap">
-								<!-- <image class="bg" src="/static/image/guild/send-modal-bg.png" mode="widthFix"></image> -->
-								<view class="bottom-wrapper">
-									<view class="text left flex-set">我的能量：{{app.getData('userCurrency')['coin']}}</view>
+				<!-- <swiper @change="swiperChange" :current="current"> -->
+				<!-- <swiper-item> -->
+				<view class="swiper-item" v-if="current == 0">
+					<view class="wrap">
+						<!-- <image class="bg" src="/static/image/guild/send-modal-bg.png" mode="widthFix"></image> -->
+						<view class="bottom-wrapper">
+							<view class="text left flex-set">我的能量：{{app.getData('userCurrency')['coin']}}</view>
 
-									<!-- <view class="text flex-set" @tap="app.goPage('/pages/recharge/recharge')" v-if="!~app.getData('sysInfo').system.indexOf('iOS')">
+							<!-- <view class="text flex-set" @tap="app.goPage('/pages/recharge/recharge')" v-if="!~app.getData('sysInfo').system.indexOf('iOS')">
 										<image src="/static/image/guild/gift/gift.png" mode="widthFix" style="width: 40upx;"></image>补充能量
 									</view>
 									<button open-type="contact" :session-from="$app.getData('userInfo').id" v-if="~app.getData('sysInfo').system.indexOf('iOS')&&$app.getData('config').ios_switch == 1">
@@ -324,76 +324,76 @@
 										</view>
 									</button> -->
 
-								</view>
-								<view class="btn-wrapper">
-									<view class="btn flex-set" @tap="sendHot(99)">
-										<image src="/static/image/user/b1.png" mode="widthFix"></image>+99
-									</view>
-									<view class="btn flex-set" @tap="sendHot(520)">
-										<image src="/static/image/user/b1.png" mode="widthFix"></image>+520
-									</view>
-									<view class="btn flex-set" @tap="sendHot(999)">
-										<image src="/static/image/user/b1.png" mode="widthFix"></image>+999
-									</view>
-									<view class="btn flex-set" @tap="sendHot(1314)">
-										<image src="/static/image/user/b1.png" mode="widthFix"></image>+1314
-									</view>
-									<view class="btn flex-set" @tap="sendHot(9999)">
-										<image src="/static/image/user/b1.png" mode="widthFix"></image>+9999
-									</view>
-									<view class="btn flex-set" @tap="sendHot(66666)">
-										<image src="/static/image/user/b1.png" mode="widthFix"></image>+66666
-									</view>
-									<view class="btn flex-set self-input">
-										<input class="" @input="sendCount = $event.detail.value" type="number" placeholder="自定义数额" />
-									</view>
-									<view class="btn flex-set pick" @tap="sendHot()">PICK</view>
-								</view>
-
+						</view>
+						<view class="btn-wrapper">
+							<view class="btn flex-set" @tap="sendHot(99)">
+								<image src="/static/image/user/b1.png" mode="widthFix"></image>+99
 							</view>
+							<view class="btn flex-set" @tap="sendHot(520)">
+								<image src="/static/image/user/b1.png" mode="widthFix"></image>+520
+							</view>
+							<view class="btn flex-set" @tap="sendHot(999)">
+								<image src="/static/image/user/b1.png" mode="widthFix"></image>+999
+							</view>
+							<view class="btn flex-set" @tap="sendHot(1314)">
+								<image src="/static/image/user/b1.png" mode="widthFix"></image>+1314
+							</view>
+							<view class="btn flex-set" @tap="sendHot(9999)">
+								<image src="/static/image/user/b1.png" mode="widthFix"></image>+9999
+							</view>
+							<view class="btn flex-set" @tap="sendHot(66666)">
+								<image src="/static/image/user/b1.png" mode="widthFix"></image>+66666
+							</view>
+							<view class="btn flex-set self-input">
+								<input class="" @input="sendCount = $event.detail.value" type="number" placeholder="自定义数额" />
+							</view>
+							<view class="btn flex-set pick" @tap="sendHot()">PICK</view>
 						</view>
-						<view class="gift flex-set" @tap="app.goPage('/pages/recharge/recharge')" v-if="!~app.getData('sysInfo').system.indexOf('iOS')">
-							<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-							<view class="text">补充能量</view>
 
-						</view>
-						<button open-type="contact" class="gift flex-set" v-if="~app.getData('sysInfo').system.indexOf('iOS')&&$app.getData('config').ios_switch==1">
-							<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-							<view class="text">补充能量回复"1"</view>
-						</button>
-					</swiper-item>
+					</view>
+				</view>
+				<view class="gift flex-set" @tap="app.goPage('/pages/recharge/recharge')" v-if="!~app.getData('sysInfo').system.indexOf('iOS')">
+					<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+					<view class="text">补充能量</view>
 
-					<swiper-item>
-						<view class="swiper-item">
-							<view class="wrap">
+				</view>
+				<button open-type="contact" class="gift flex-set" v-if="~app.getData('sysInfo').system.indexOf('iOS')&&$app.getData('config').ios_switch==1">
+					<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+					<view class="text">补充能量回复"1"</view>
+				</button>
+				<!-- </swiper-item> -->
 
-								<view class="btn-wrapper gift-s">
-									<!-- 礼物列表 -->
-									<view v-for="(item,index) in itemList" :key="index" class="gift-item flex-set" @tap="sendHot(item.id, 1)">
-										<view class="num">
-											<image src="/static/image/user/b1.png" mode="widthFix"></image>
-											{{item.count}}
-										</view>
-										<image :src="item.icon" mode="widthFix"></image>
-										<view class="name">{{item.name}}</view>
-										<view class="self flex-set">{{item.self}}</view>
-									</view>
+				<!-- <swiper-item> -->
+				<view class="swiper-item" v-if="current==1">
+					<view class="wrap">
 
+						<view class="btn-wrapper gift-s">
+							<!-- 礼物列表 -->
+							<view v-for="(item,index) in itemList" :key="index" class="gift-item flex-set" @tap="sendHot(item.id, 1)">
+								<view class="num">
+									<image src="/static/image/user/b1.png" mode="widthFix"></image>
+									{{item.count}}
 								</view>
-
+								<image :src="item.icon" mode="widthFix"></image>
+								<view class="name">{{item.name}}</view>
+								<view class="self flex-set">{{item.self}}</view>
 							</view>
 
 						</view>
-						<view class="gift flex-set" @tap="app.goPage('/pages/recharge/recharge')" v-if="!~app.getData('sysInfo').system.indexOf('iOS')">
-							<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-							<view class="text">补充能量</view>
-						</view>
-						<button open-type="contact" class="gift flex-set" v-if="~app.getData('sysInfo').system.indexOf('iOS')&&$app.getData('config').ios_switch==1">
-							<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-							<view class="text">补充能量回复"1"</view>
-						</button>
-					</swiper-item>
-				</swiper>
+
+					</view>
+
+				</view>
+				<view class="gift flex-set" @tap="app.goPage('/pages/recharge/recharge')" v-if="!~app.getData('sysInfo').system.indexOf('iOS')">
+					<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+					<view class="text">补充能量</view>
+				</view>
+				<button open-type="contact" class="gift flex-set" v-if="~app.getData('sysInfo').system.indexOf('iOS')&&$app.getData('config').ios_switch==1">
+					<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+					<view class="text">补充能量回复"1"</view>
+				</button>
+				<!-- </swiper-item> -->
+				<!-- </swiper> -->
 			</view>
 		</modalComponent>
 
@@ -643,7 +643,6 @@
 				spriteEarn: false,
 				rechargeList: [], // 充值商品列表
 				danmaku: null, // 当前弹幕
-				danmakuQueue: [], // 弹幕队列
 				// treasureTime: '助力', // 助力倒计时
 				// isTreasure: false,
 				article: {}, // 公告文章
@@ -667,15 +666,21 @@
 				itemList: [],
 
 				giftItemList: [],
-				chartAni:'',
+				chartAni: '',
 			};
 		},
-		created() {},
+		created() {
+			this.initDanmaku()
+		},
+		destroyed() {
+			clearInterval(this.sayworldTimeId)
+		},
 		methods: {
 			/**
 			 * 加载数据
 			 */
 			load(starid) {
+				this.current = 0
 				this.star.id = starid
 				if (!this.star.id) return
 
@@ -697,8 +702,6 @@
 				// this.getArticle()
 				// this.checkFatherEarn()
 				// this.getActiveInfo()
-				this.initDanmaku()
-
 
 				this.userCurrency = this.$app.getData('userCurrency') || {
 					coin: 0,
@@ -731,110 +734,120 @@
 						starid: this.star.id,
 						client_id: clientId,
 					}, res => {
+						// 明星信息
+						setTimeout(() => {
+							const star = res.data.starInfo
 
-						// 礼物列表
-						this.itemList = res.data.itemList
-
-						const star = res.data.starInfo
-
-						this.star = {
-							id: star.id,
-							avatar: star.head_img_s ? star.head_img_s : star.head_img_l,
-							name: star.name,
-							weekHot: this.$app.formatNumberRgx(star.star_rank.week_hot),
-							weekRank: star.star_rank.week_hot_rank,
-							share_img: star.share_img,
-							qrcode: star.qrcode,
-						}
-
-						const userRankList = []
-						res.data.userRank.forEach((e, i) => {
-							userRankList.push({
-								avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
-								nickname: e.user && e.user.nickname || this.$app.NICKNAME,
-								hot: e.thisweek_count,
+							this.star = {
+								id: star.id,
+								avatar: star.head_img_s ? star.head_img_s : star.head_img_l,
+								name: star.name,
+								weekHot: this.$app.formatNumberRgx(star.star_rank.week_hot),
+								weekRank: star.star_rank.week_hot_rank,
+								share_img: star.share_img,
+								qrcode: star.qrcode,
+							}
+						}, 0)
+						// 用户排行
+						setTimeout(() => {
+							const userRankList = []
+							res.data.userRank.forEach((e, i) => {
+								userRankList.push({
+									avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
+									nickname: e.user && e.user.nickname || this.$app.NICKNAME,
+									hot: e.thisweek_count,
+								})
 							})
-						})
-						this.userRankList = userRankList
-
-
-						const chartList = []
-						res.data.chartList.forEach((e, i) => {
-							const item = {
-								uid: e.user && e.user.id,
-								avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
-								nickname: e.user && e.user.nickname || this.$app.NICKNAME,
-								content: e.content,
-								captain: e.user && e.user.user_star && e.user.user_star.captain || 0,
-								level: e.level,
-								sendtimeInt: this.$app.strToTime(e.create_time),
-							}
-							const leastTime = chartList[i - 1] && chartList[i - 1].sendtimeInt || 0
-							if (item.sendtimeInt - leastTime > 60 * 5) {
-								item.sendtime = e.create_time.slice(11)
-							}
-
-							chartList.push(item)
-						})
-
-						this.chartList = chartList
-						this.$nextTick(function() {
-							this.index = this.chartList.length - 1
-							this.chartAni = '1'
-						})
-
-						this.mass = res.data.mass
-
-						if (res.data.mass.mass_user.length >= 3 && res.data.mass.mass_settle_time < res.data.mass.mass_start_time) {
-							// 超过3个人可结算
-							this.mass.isSettle = true
-						}
-						if (res.data.mass.lefttime) {
-							// 倒计时
-							let time = parseInt(res.data.mass.lefttime)
-							this.mass.lefttime = this.$app.timeGethms(time).str.slice(3)
-							clearInterval(this.$app.massTimeId)
-							this.$app.massTimeId = setInterval(() => {
-								this.mass.lefttime = this.$app.timeGethms(--time).str.slice(3)
-								if (time <= 0) {
-									clearInterval(this.$app.massTimeId)
-									this.getMass()
+							this.userRankList = userRankList
+						}, 100)
+						// 聊天
+						setTimeout(() => {
+							const chartList = []
+							res.data.chartList.forEach((e, i) => {
+								const item = {
+									uid: e.user && e.user.id,
+									avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
+									nickname: e.user && e.user.nickname || this.$app.NICKNAME,
+									content: e.content,
+									captain: e.user && e.user.user_star && e.user.user_star.captain || 0,
+									level: e.level,
+									sendtimeInt: this.$app.strToTime(e.create_time),
 								}
-							}, 1000)
-						}
+								const leastTime = chartList[i - 1] && chartList[i - 1].sendtimeInt || 0
+								if (item.sendtimeInt - leastTime > 60 * 5) {
+									item.sendtime = e.create_time.slice(11)
+								}
 
-						this.invitAward = res.data.invitList.award
-						const resList = []
-						this.spriteEarn = false
-						res.data.invitList.list.forEach((e, i) => {
-							resList.push({
-								avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
-								status: e.status,
-								uid: e.user && e.user.id || 0,
-								nickname: e.user && e.user.nickname || this.$app.NICKNAME,
-								earn: e.sprite.earn,
+								chartList.push(item)
 							})
 
-							if (e.sprite.earn >= 100) {
-								// 显示红点
-								this.spriteEarn = true
+							this.chartList = chartList
+							this.$nextTick(function() {
+								this.index = this.chartList.length - 1
+							})
+						}, 200)
+
+						// 公告
+						setTimeout(() => {
+							this.article.name = res.data.article.name
+							this.article.id = res.data.article.id
+						}, 300)
+
+						// 活动
+						setTimeout(() => {
+							this.activeInfo = res.data.activeInfo
+						}, 400)
+
+						// 其他
+						setTimeout(() => {
+							// 礼物列表
+							this.itemList = res.data.itemList
+
+							this.mass = res.data.mass
+
+							if (res.data.mass.mass_user.length >= 3 && res.data.mass.mass_settle_time < res.data.mass.mass_start_time) {
+								// 超过3个人可结算
+								this.mass.isSettle = true
 							}
-						})
-						if (this.invitListPage == 1) {
-							this.invitList = resList
-						} else {
-							this.invitList = this.invitList.concat(resList)
-						}
+							if (res.data.mass.lefttime) {
+								// 倒计时
+								let time = parseInt(res.data.mass.lefttime)
+								this.mass.lefttime = this.$app.timeGethms(time).str.slice(3)
+								clearInterval(this.$app.massTimeId)
+								this.$app.massTimeId = setInterval(() => {
+									this.mass.lefttime = this.$app.timeGethms(--time).str.slice(3)
+									if (time <= 0) {
+										clearInterval(this.$app.massTimeId)
+										this.getMass()
+									}
+								}, 1000)
+							}
 
+							this.invitAward = res.data.invitList.award
+							const resList = []
+							this.spriteEarn = false
+							res.data.invitList.list.forEach((e, i) => {
+								resList.push({
+									avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
+									status: e.status,
+									uid: e.user && e.user.id || 0,
+									nickname: e.user && e.user.nickname || this.$app.NICKNAME,
+									earn: e.sprite.earn,
+								})
 
-						this.article.name = res.data.article.name
-						this.article.id = res.data.article.id
+								if (e.sprite.earn >= 100) {
+									// 显示红点
+									this.spriteEarn = true
+								}
+							})
+							if (this.invitListPage == 1) {
+								this.invitList = resList
+							} else {
+								this.invitList = this.invitList.concat(resList)
+							}
 
-						this.fatherEarn = res.data.fatherEarn
-
-						this.activeInfo = res.data.activeInfo
-
-
+							this.fatherEarn = res.data.fatherEarn
+						}, 500)
 					})
 				}
 
@@ -1123,22 +1136,14 @@
 					--this.starRankList[index].steal
 				}, 1000))
 			},
-			// 初始化世界喊话弹幕
+			// 定时显示弹幕
 			initDanmaku() {
-				clearInterval(this.$app.sayworldTimeId)
-				// 定时显示弹幕
-				// this.danmakuQueue = []
-				this.danmaku = null
-				this.$app.sayworldTimeId = setInterval(() => {
-					this.danmaku = this.danmakuQueue.shift() || null
+				clearInterval(this.sayworldTimeId)
+				this.sayworldTimeId = setInterval(() => {
+					this.danmaku = this.$app.danmakuQueue.shift() || null
 				}, 10000)
 			},
 
-			// HTTP
-			// 收到socket推送，将弹幕加到danmakuQueue中
-			addDanmaku(data) {
-				this.danmakuQueue.push(data)
-			},
 			// 喊话
 			sayworld() {
 				if (!this.chartMsg.trim()) return
@@ -1305,13 +1310,13 @@
 					hot: parseInt(this.sendCount),
 					type: type,
 				}, res => {
-					if (res.data.noItem) {
+					if (res.data.nomore) {
 						if (~this.$app.getData('sysInfo').system.indexOf('iOS')) {
-							this.$app.toast('礼物不足')
+							this.$app.toast(res.msg)
 						} else {
 							uni.showModal({
 								title: '提示',
-								content: '礼物不足',
+								content: res.msg,
 								confirmText: '去购买',
 								success: res => {
 									res.confirm && this.$app.goPage('/pages/recharge/recharge')
@@ -1668,6 +1673,7 @@
 					justify-content: space-around;
 					align-items: center;
 					height: 220upx;
+
 					.avatar-wrapper {
 						text-align: center;
 						position: relative;
@@ -2292,7 +2298,7 @@
 				left: 0;
 				display: flex;
 				align-items: center;
-				background: linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.1));
+				background: linear-gradient(to right, rgba(#FEEEB2, 0.9), rgba(#FEEEB2, 0.1));
 				border-radius: 50upx;
 
 				animation: itemAni 8s ease-in-out forwards;
@@ -2307,14 +2313,16 @@
 					display: flex;
 					justify-content: space-around;
 					flex-direction: column;
-					font-size: 20upx;
+					font-size: 24upx;
 					padding: 0 10upx;
 					color: #777;
 
 					.name {
-						font-size: 26upx;
-						font-weight: 700;
-						color: $color_1;
+						color: #DC6B0C;
+					}
+
+					.desc text {
+						color: #DC6B0C;
 					}
 				}
 
@@ -2370,15 +2378,18 @@
 				swiper-item {
 					z-index: 2;
 				}
+			}
 
-				.swiper-item {
-					.wrap {
-						position: relative;
-						padding: 0 20upx;
-						width: 100%;
-					}
+			.swiper-item {
+				flex: 1;
+
+				.wrap {
+					position: relative;
+					padding: 0 20upx;
+					width: 100%;
 				}
 			}
+
 
 
 			.btn-wrapper {
@@ -2410,7 +2421,6 @@
 						width: 100upx;
 						height: 100upx;
 						position: relative;
-						z-index: -1;
 					}
 
 					.num {

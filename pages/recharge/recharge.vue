@@ -108,6 +108,9 @@
 							//res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
 
 							this.$app.toast('支付成功', 'success')
+							this.$app.request('page/gift_num', {}, res => {
+								this.giftNum = res.data || 0
+							})
 							this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
 								this.$app.setData('userCurrency', res.data)
 								this.userCurrency = this.$app.getData('userCurrency')
