@@ -102,10 +102,10 @@
 			</view>
 
 		</modalComponent> -->
-		
+
 		<modalComponent v-if="modal == 'tips_t'" title="提示" @closeModal="modal=''">
 			<!-- this.$app.modal("好友已经很久没有打榜了\n提醒TA一起为偶像打榜\n") -->
-		
+
 			<view class="tips-modal-container-s">
 				<view class="text-wrap">
 					<image src="/static/image/user/blank.png" mode="widthFix"></image>
@@ -115,11 +115,11 @@
 				</view>
 				<btnComponent type="css">
 					<button open-type="share">
-					<view class="flex-set" style="padding: 20upx 40upx;">唤醒好友</view>
+						<view class="flex-set" style="padding: 20upx 40upx;">唤醒好友</view>
 					</button>
 				</btnComponent>
 			</view>
-		
+
 		</modalComponent>
 	</view>
 </template>
@@ -560,7 +560,7 @@
 				}
 			}
 		}
-		
+
 		.tips-modal-container-s {
 			height: 100%;
 			padding: 20upx 40upx;
@@ -569,23 +569,26 @@
 			justify-content: space-around;
 			align-items: center;
 			flex-direction: column;
+
 			.text-wrap {
 				text-align: center;
-		
+				margin: 30upx;
+
 				image {
 					width: 120upx;
 					height: 120upx;
 					margin: 60upx;
 				}
+
 				.text {
 					font-size: 32upx;
 					font-weight: 700;
-					
+
 				}
-		
+
 			}
-		
-		
+
+
 			.btn {
 				margin: auto;
 			}

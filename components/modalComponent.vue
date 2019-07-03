@@ -2,6 +2,8 @@
 	<view class='container flex-set' :class="{show:show}" @tap="closeModal">
 		<view class="modal-container" :class="[type]" @tap.stop="">
 			<view class="top-wrapper">
+				<image v-if="type == 'send'" src="/static/image/guild/send-modal-bg-1_01.png" mode="widthFix" class="title-bg"></image>
+				<image v-if="type == 'default'" src="/static/image/guild/modal-bg_01.png" mode="widthFix" class="title-bg"></image>
 				<view class="title">{{title}}</view>
 				<image class='center-img' :src="headimg" mode=""></image>
 				<view class="close-btn">
@@ -65,24 +67,28 @@
 		background-color: rgba(0, 0, 0, .5);
 		transition: .3s;
 		opacity: 0;
-
+		
 		.modal-container.send {
-			background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g41l2jzr9wj30gp0kvq31.jpg) center no-repeat/cover;
+			background-color: #f7e8f1;
 		}
-
+		
 		.modal-container {
 			width: 600upx;
-			height: 760upx;
+			min-height: 730upx;
 			box-shadow: 0 1px 2px rgba(#000, .3);
 			border-radius: 20upx;
-			background: url(http://wx3.sinaimg.cn/large/0060lm7Tly1g2dpyg3vxng30gp0kk74c.gif) center no-repeat/cover;
+			background-color: #fdd6cf;
 			display: flex;
 			flex-direction: column;
 
 			.top-wrapper {
 				width: 100%;
-				height: 12.6%;
+				height: 95upx;
 				position: relative;
+
+				.title-bg {
+					position: absolute;
+				}
 
 				.title {
 					font-size: 34upx;

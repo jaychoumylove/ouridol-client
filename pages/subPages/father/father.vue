@@ -1,6 +1,6 @@
 <template>
 	<view class="father-container">
-		
+
 
 		<view class="top-container">
 			<image class="avatar" :src="userInfo.avatarurl" mode="aspectFill"></image>
@@ -8,6 +8,12 @@
 			<view class="text-wrapper text-overflow left">
 				<view class="row-wrapper flex-set">
 					{{userInfo.nickname}}
+				</view>
+				<view class="row-wrapper flex-set s">
+					<image src="/static/image/guild/ft-2.png" mode="widthFix"></image>
+					我的师傅：
+					<text v-if="father" class="text-overflow" style="text-decoration: underline;max-width: 140upx;" @tap="cancelFather()">{{father}}</text>
+					<text v-else>虚位以待</text>
 				</view>
 				<view class="row-wrapper flex-set s">
 					<image src="/static/image/guild/ft-1.png" mode="widthFix"></image> 徒弟人数：{{sonTotal}}
@@ -82,6 +88,7 @@
 
 				sonTotal: 0,
 				todayTotal: 0,
+				father: '',
 				sonList: [],
 				userInfo: {
 					avatarurl: this.$app.getData('userInfo')['avatarurl'] || this.$app.AVATAR,
@@ -98,7 +105,17 @@
 			return this.$app.commonShareAppMessage(shareType)
 		},
 		methods: {
-			getSonEarn(uid, earn,index) {
+			cancelFather() {
+				if (this.father) {
+					this.$app.modal(`是否脱离和${this.father}的师徒关系？`, () => {
+						this.$app.request('user/breakFather', {}, res => {
+							this.$app.toast('脱离成功', 'success')
+							this.father = ''
+						})
+					})
+				}
+			},
+			getSonEarn(uid, earn, index) {
 				if (!earn) {
 					this.$app.toast('TA的收益太少了')
 				} else {
@@ -122,7 +139,7 @@
 				}, res => {
 					const resList = []
 					this.todayTotal = res.data.earn
-
+					this.father = res.data.father
 					for (let v of res.data.list) {
 						resList.push({
 							uid: v.user && v.user.id,
@@ -146,7 +163,7 @@
 <style lang="scss" scoped>
 	.father-container {
 		.top-container {
-			padding: 40upx 60upx;
+			padding: 40upx;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
@@ -179,7 +196,7 @@
 			}
 
 			.text-wrapper.left {
-				margin-left: -50upx;
+				// margin-left: -50upx;
 			}
 
 			.text-wrapper.btn {

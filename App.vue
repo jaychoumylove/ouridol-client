@@ -12,6 +12,7 @@
 		},
 		onLaunch: function(option) {
 			this.$app.setData('sysInfo', uni.getSystemInfoSync())
+			// 弹幕队列
 			this.$app.danmakuQueue = []
 		},
 
@@ -23,10 +24,7 @@
 			} else {
 				this.$app.setData('referrer', '')
 			}
-			// 用户信息
 			this.loadData()
-			// 配置信息
-			// this.getConfig()
 			// 检查更新
 			this.$app.checkUpdate()
 			// #ifndef H5
@@ -62,38 +60,11 @@
 					this.$app.setData('config', res.data.config)
 
 					if (res.data.massUser) this.$app.modal('助力' + res.data.massUser + '成功')
-					// if (this.$app.getData('referrer')) {
-					// 	// 是从分享而来
-					// 	this.$app.request(this.$app.API.SHARE_JOINMASS, {
-					// 		referrer: this.$app.getData('referrer')
-					// 	})
-					// }
+					
 				})
-				// 				this.$app.request(this.$app.API.USER_INFO, {}, res => {
-				// 					this.$app.setData('userInfo', res.data)
-				// 					this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
-				// 						this.$app.setData('userCurrency', res.data)
-				// 					})
-				// 					this.$app.request(this.$app.API.USER_STAR, {}, res => {
-				// 						// 新人
-				// 						if (!res.data.id) this.$app.noob = true
-				// 
-				// 						this.$app.setData('userStar', res.data)
-				// 
-				// 					})
-				// 					if (this.$app.getData('referrer')) {
-				// 						// 是从分享而来
-				// 						this.$app.request(this.$app.API.SHARE_JOINMASS, {
-				// 							referrer: this.$app.getData('referrer')
-				// 						})
-				// 					}
-				// 				})
+				
 			},
-			// getConfig() {
-			// 	this.$app.request(this.$app.API.CONFIG, {}, res => {
-			// 		this.$app.setData('config', res.data)
-			// 	})
-			// },
+			
 		}
 	};
 </script>
@@ -160,6 +131,7 @@
 		right: 0;
 		bottom: 0;
 		background: $color_0 url(http://tva1.sinaimg.cn/large/0060lm7Tly1g41l6zxwdvj30kw1g03z4.jpg) bottom center no-repeat/cover;
+		/* background: linear-gradient(to bottom, #fbe7e0,#e5b4b0); */
 	}
 
 	/* 下拉刷新样式颜色 */

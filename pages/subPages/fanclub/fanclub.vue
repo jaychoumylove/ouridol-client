@@ -19,7 +19,7 @@
 				<view class="name">
 					后援会名称
 				</view>
-				<input type="text" name="clubname" placeholder="申请入驻后援会的名称"/>
+				<input type="text" name="clubname" placeholder="申请入驻后援会的名称" />
 			</view>
 			<view class="input-group">
 				<view class="name">负责人姓名</view>
@@ -28,12 +28,12 @@
 			<view class="input-group">
 				<view class="name">负责人职位
 				</view>
-				<input type="text" name="post" placeholder="你在后援会的职位是什么"/>
+				<input type="text" name="post" placeholder="你在后援会的职位" />
 			</view>
 			<view class="input-group">
 				<view class="name">负责人微信
 				</view>
-				<input type="text" name="wx" placeholder="你的微信帐号是什么"/>
+				<input type="text" name="wx" placeholder="你的微信帐号" />
 			</view>
 			<view class="input-group">
 				<view class="name">资质截图
@@ -46,7 +46,7 @@
 			</view>
 			<view class="input-group" style="padding-top: 40upx;">
 				<button form-type="submit" style="width: 180upx;margin: auto;">
-					<btnComponent type="default">
+					<btnComponent type="css">
 						<view class="flex-set" style="width: 180upx;height: 90upx;">提交</view>
 					</btnComponent>
 				</button>
@@ -76,18 +76,21 @@
 		},
 		onLoad(option) {
 			uni.setNavigationBarTitle({
-				title: option.starname + '后援会入驻'
+				title: option.starname || '' + '后援会入驻'
 			})
 		},
 
 		methods: {
 			formSubmit(e) {
 				const value = e.detail.value
-
+				if (!(new RegExp(/^[a-zA-Z]([-_a-zA-Z0-9]{5,19})+$/)).test(value['wx'])) {
+					this.$app.toast('请填写正确的微信号')
+					return
+				} 
 				this.$app.upload([this.tmpImg.avatar, this.tmpImg.qualify], res => {
+					value['avatar'] = res[0] || ''
+					value['qualify'] = res[1] || ''
 
-					value['avatar'] = res[0]
-					value['qualify'] = res[1]
 					this.$app.request(this.$app.API.EXT_FUNCLUB_JOIN, value, res => {
 						this.$app.toast('提交成功！')
 
@@ -110,11 +113,13 @@
 <style lang="scss">
 	.funclub-container {
 		padding: 20upx 40upx;
-		.tips{
+
+		.tips {
 			color: #888;
 			padding: 10upx;
 			font-size: 22upx;
 		}
+
 		.form-container {
 			display: flex;
 			flex-direction: column;

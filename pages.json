@@ -17,8 +17,7 @@
 		}, {
 			"path": "pages/user/user",
 			"style": {
-				"navigationBarTitleText": "个人中心",
-				"disableScroll": true
+				"navigationBarTitleText": "个人中心"
 
 			}
 		}, {
@@ -26,7 +25,6 @@
 			"style": {
 				"navigationBarTitleText": "能量精灵",
 				"disableScroll": true
-
 			}
 		}, {
 			"path": "pages/group/group",
@@ -34,57 +32,6 @@
 				"navigationBarTitleText": "偶像圈",
 				"disableScroll": true
 			}
-		}, {
-			"path": "pages/adver/adver",
-			"style": {}
-		},
-		{
-			"path": "pages/user/login/login",
-			"style": {}
-		},
-		{
-			"path": "pages/star/star",
-			"style": {
-				"disableScroll": true
-			}
-		}, {
-			"path": "pages/user/rank/rank",
-			"style": {
-				"navigationBarTitleText": "周贡献榜"
-			}
-		}, {
-			"path": "pages/star/rank_history/rank_history",
-			"style": {
-				"navigationBarTitleText": "往期榜单"
-			}
-		}, {
-			"path": "pages/group/dynamic/dynamic",
-			"style": {
-				"navigationBarTitleText": "动态"
-			}
-		}, {
-			"path": "pages/task/task",
-			"style": {
-				"navigationBarTitleText": "任务"
-			}
-		},
-		{
-			"path": "pages/notice/list/list",
-			"style": {}
-		}, {
-			"path": "pages/pet/other/other",
-			"style": {}
-		}, {
-			"path": "pages/father/father",
-			"style": {
-				"navigationBarTitleText": "师徒"
-			}
-		}, {
-			"path": "pages/active_one/active_one",
-			"style": {}
-		}, {
-			"path": "pages/fanclub/fanclub",
-			"style": {}
 		},
 		{
 			"path": "pages/notice/notice",
@@ -103,18 +50,89 @@
 			}
 		}
 
-		, {
-			"path": "pages/log/log",
-			"style": {}
-		}, {
-			"path": "pages/msg/msg",
-			"style": {}
+
+	],
+	// 分包
+	"subPackages": [{
+		"root": "pages/subPages/",
+		"pages": [{
+				"path": "adver/adver",
+				"style": {}
+			},
+			{
+				"path": "user/login/login",
+				"style": {}
+			},
+			{
+				"path": "star/star",
+				"style": {
+					"disableScroll": true
+				}
+			},
+			{
+				"path": "star/rank_history/rank_history",
+				"style": {
+					"navigationBarTitleText": "往期榜单"
+				}
+			},
+			{
+				"path": "task/task",
+				"style": {
+					"navigationBarTitleText": "任务"
+				}
+			},
+			
+			{
+				"path": "notice/list/list",
+				"style": {}
+			},
+			{
+				"path": "user/rank/rank",
+				"style": {
+					"navigationBarTitleText": "周贡献榜",
+					"enablePullDownRefresh": true
+				}
+			},
+			{
+				"path": "pet/other/other",
+				"style": {}
+			},
+			{
+				"path": "father/father",
+				"style": {
+					"navigationBarTitleText": "师徒"
+				}
+			},
+			{
+				"path": "active_one/active_one",
+				"style": {}
+			},
+
+			{
+				"path": "fanclub/fanclub",
+				"style": {}
+			},
+			{
+				"path": "log/log",
+				"style": {}
+			}, {
+				"path": "msg/msg",
+				"style": {}
+			}, {
+				"path": "gift_package/gift_package",
+				"style": {
+					"navigationBarTitleText": "我的礼物"
+				}
+			}
+		]
+	}],
+	// 分包预下载
+	"preloadRule": {
+		"pages/index/index": {
+			"packages": ["pages/subPages/"],
+			"network": "all"
 		}
-	    ,{
-            "path" : "pages/gift_package/gift_package",
-            "style" : {"navigationBarTitleText": "我的礼物"}
-        }
-    ],
+	},
 	// #ifndef H5
 	"tabBar": {
 		"color": "#b296ad",
@@ -157,5 +175,5 @@
 		"onReachBottomDistance": 100
 
 	}
-	
+
 }

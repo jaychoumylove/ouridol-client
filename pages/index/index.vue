@@ -16,7 +16,7 @@
 		<bannerComponent bannerHeight="280"></bannerComponent>
 
 		<view class="middle-text-container">
-			<view class="" @tap="$app.goPage('/pages/star/rank_history/rank_history?rankField='+rankField)">往期榜单</view>
+			<view class="" @tap="$app.goPage('/pages/subPages/star/rank_history/rank_history?rankField='+rankField)">往期榜单</view>
 			<view class="" style='font-size: 24upx;'>本{{rankField=='week_hot'?'周':'月'}}截止：{{cutOffDate}}23:59</view>
 			<view class="rule" @tap="$app.goPage('/pages/notice/notice?id=1')">打榜说明</view>
 		</view>
@@ -217,7 +217,7 @@
 				if (this.$app.getData('userStar', true)['id'] == starid) {
 					this.$app.goPage('/pages/group/group')
 				} else {
-					this.$app.goPage('/pages/star/star?starid=' + starid)
+					this.$app.goPage('/pages/subPages/star/star?starid=' + starid)
 				}
 				return
 			},

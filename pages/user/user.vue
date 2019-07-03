@@ -77,13 +77,17 @@
 					</view>
 				</button>
 			</block>
-			<view class="list-item" @tap="$app.goPage('/pages/gift_package/gift_package')">
+			<view class="list-item" @tap="$app.goPage('/pages/subPages/gift_package/gift_package')">
 				<image src="/static/image/user/r8.png" mode="widthFix"></image>
 				<view class="text">礼物背包</view>
 			</view>
-			<view class="list-item" @tap="$app.goPage('/pages/task/task')">
+			<view class="list-item" @tap="$app.goPage('/pages/subPages/task/task')">
 				<image src="/static/image/user/r2.png" mode="widthFix"></image>
 				<view class="text">每日任务</view>
+			</view>
+			<view class="list-item" @tap="$app.goPage('/pages/subPages/fanclub/fanclub')">
+				<image src="/static/image/user/s8.png" mode="widthFix"></image>
+				<view class="text">后援会入驻</view>
 			</view>
 			<!-- <view class="list-item" @tap="$app.toast('敬请期待')">
 				<image src="/static/image/user/s2.png" mode="widthFix"></image>
@@ -92,7 +96,7 @@
 					<badgeComponent num="1256"></badgeComponent>
 				</view>
 			</view> -->
-			<view class="list-item" @tap="$app.goPage('/pages/log/log')">
+			<view class="list-item" @tap="$app.goPage('/pages/subPages/log/log')">
 				<image src="/static/image/user/s2.png" mode="widthFix"></image>
 				<view class="text">个人明细</view>
 			</view>
@@ -113,12 +117,12 @@
 				<view class="text">退出偶像圈</view>
 			</view>
 
-			<!-- <view class="list-item"  @tap="$app.goPage('/pages/msg/msg')">
+			<!-- <view class="list-item"  @tap="$app.goPage('/pages/subPages/msg/msg')">
 				<image src="/static/image/user/s7.png" mode=""></image>
 				<view class="text">我的消息</view>
 			</view> -->
 
-			<!-- <view class="list-item" @tap="$app.goPage('/pages/adver/adver')">
+			<!-- <view class="list-item" @tap="$app.goPage('/pages/subPages/adver/adver')">
 				<image src="/static/image/user/s7.png" mode="widthFix"></image>
 				<view class="text">游戏试玩</view>
 			</view> -->
@@ -232,7 +236,6 @@
 
 <style lang="scss" scoped="true">
 	.container {
-		height: 100%;
 		padding: 20upx;
 
 		.top-content-container {

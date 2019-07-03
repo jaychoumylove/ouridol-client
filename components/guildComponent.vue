@@ -44,7 +44,7 @@
 							<countToComponent :count='star.weekHot'></countToComponent>
 						</view>
 
-						<view class="rank-list" @tap="app.goPage('/pages/user/rank/rank?starid='+star.id)">
+						<view class="rank-list" @tap="app.goPage('/pages/subPages/user/rank/rank?starid='+star.id)">
 							<view class="rank-list-container">
 								<view class="item" v-for="(item,index) in userRankList" :key="index" v-if="index < 3">
 									<image class="avatar-s" :src="item.avatar" mode="aspectFill"></image>
@@ -87,7 +87,7 @@
 
 			<view class="func-container">
 				<view class="func-list-wrapper">
-					<view class="func-item" @tap="app.goPage('/pages/task/task')">
+					<view class="func-item" @tap="app.goPage('/pages/subPages/task/task')">
 						<btnComponent>
 							<view class="btn-wrap">
 								<image src="/static/image/guild/t1.png" mode="widthFix"></image>
@@ -99,7 +99,7 @@
 						<view class="">任务</view>
 					</view>
 
-					<!-- <view class="func-item" @tap="modal='invit';invitListPage=1;getInvitList();">
+					<view class="func-item" @tap="modal='invit';invitListPage=1;getInvitList();">
 						<btnComponent>
 							<view class="btn-wrap">
 								<image src="/static/image/guild/t3.png" mode="widthFix"></image>
@@ -109,11 +109,11 @@
 							</view>
 						</btnComponent>
 						<view class="">好友</view>
-					</view> -->
+					</view>
 					<view class="func-item" @tap="getStarRank();modal = 'steal'">
 						<btnComponent>
 							<view class="btn-wrap">
-								<image src="/static/image/star/2.png" mode="widthFix"></image>
+								<image src="/static/image/guild/t2-1.png" mode="widthFix"></image>
 							</view>
 						</btnComponent>
 						<view class="">偷能量</view>
@@ -171,10 +171,10 @@
 					<view class="sign">【公告】</view>
 					<view class="content">{{article.name}}</view>
 				</view>
-				<view class="right" @tap.stop="app.goPage('/pages/notice/list/list')">更多>></view>
+				<view class="right" @tap.stop="app.goPage('/pages/subPages/notice/list/list')">更多>></view>
 			</view>
 		</view>
-		<view class="active-container" @tap='goActive()'>
+		<!-- <view class="active-container" @tap='goActive()'>
 			<view class="active-inner flex-set">
 
 				<view class="text">解锁应援金</view>
@@ -199,7 +199,7 @@
 				</view>
 			</view>
 
-		</view>
+		</view> -->
 		<scroll-view v-if="star.id == app.getData('userStar')['id'] || app.getData('userInfo').type == 1" class="chart-container"
 		 scroll-y scroll-with-animation :scroll-into-view="'index_'+index">
 
@@ -210,17 +210,17 @@
 					{{item.sendtime}}
 				</view>
 				<view class="main-msg-wrapper">
-					<view class="avatar" :class="{captain:item.captain == 1}">
+					<view class="avatar" :class="{captain:item.captain == 1}" @tap="tapUser(item.uid)">
 						<image class="avatar-img" :src="item.avatar" mode="aspectFill"></image>
 					</view>
 					<view class="content">
 						<view class="top">
 							<view class="left">
 								<view class="name text-overflow">{{item.nickname}}</view>
-								<!-- <view class="fan">
+								<view class="fan" v-if="item.level">
 									<image :src="'/static/image/guild/level/'+ item.level +'.png'" mode=""></image>
 									<view class="level position-set">{{item.level}}</view>
-								</view> -->
+								</view>
 
 							</view>
 						</view>
@@ -507,7 +507,6 @@
 				</view>
 			</view>
 		</modalComponent>
-
 		<modalComponent v-if="modal == 'invit'" title="好友" @closeModal="modal=''">
 			<view class="invit-modal-container">
 
@@ -525,11 +524,11 @@
 						</btnComponent>
 					</view> -->
 					<button class='explain-wrapper' open-type="share" data-share="1">
-						<image style="width: 100%;" :src="app.getData('config').zhuren_tips_img" mode="widthFix"></image>
+						<image style="width: 100%;" :src="$app.getData('config').zhuren_tips_img" mode="widthFix"></image>
 					</button>
 
 					<block v-if="invitList.length > 0">
-						<view class="item" v-for="(item,index) in invitList" :key="index" @tap="goOther(item.uid)">
+						<view class="item" v-for="(item,index) in invitList" :key="index" @tap="goOther(item)">
 							<view class="rank-num">
 								<image v-if="index<3" :src="'/static/image/guild/'+(index+1)+'.png'" mode="widthFix"></image>
 								<view v-else>{{index+1}}</view>
@@ -540,11 +539,13 @@
 							<view class="text-container">
 								<view class="star-name text-overflow">{{item.nickname}}</view>
 							</view>
-							<view class="egg flex-set" @tap.stop="settleSprite(index,item)">
-								<image v-if="item.earn > 2" class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
+							<image @tap.stop="deleteFriend(item,index)" class="del" src="/static/image/guild/del.png" mode="scaleToFill"></image>
+							<view class="egg flex-set" @tap.stop="settleSprite(index, item)">
+								<image v-if="item.earn > 2 && !item.off" class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
 
 								<view class="num-wrapper position-set">{{item.earn}}</view>
-								<image class="flex-set" src="/static/image/pet/y5.png" mode="widthFix"></image>
+								<image v-if="!item.off" class="flex-set" src="/static/image/pet/y5.png" mode="widthFix"></image>
+								<image v-else class="flex-set" src="/static/image/pet/y5-off.png" mode="widthFix"></image>
 							</view>
 						</view>
 					</block>
@@ -561,6 +562,25 @@
 
 		</modalComponent>
 
+		<modalComponent v-if="modal == 'tips_t'" title="提示" @closeModal="modal=''">
+			<!-- this.$app.modal("好友已经很久没有打榜了\n提醒TA一起为偶像打榜\n") -->
+
+			<view class="tips-modal-container-s">
+				<view class="text-wrap">
+					<image src="/static/image/user/blank.png" mode="widthFix"></image>
+					<view class="text">好友已经很久没有打榜了</view>
+					<view class="text">提醒TA一起为偶像打榜</view>
+					<view class="text">才能帮TA收取能量</view>
+				</view>
+				<btnComponent type="css">
+					<button open-type="share">
+						<view class="flex-set" style="padding: 20upx 40upx;">唤醒好友</view>
+					</button>
+				</btnComponent>
+			</view>
+
+		</modalComponent>
+
 		<modalComponent v-if="modal == 'sendOver'" title="提示" @closeModal="modal=''">
 			<view class="tips-modal-container">
 				<view class="text-wrap">
@@ -572,7 +592,7 @@
 					<view class="text">更多获取方式快去任务界面查看吧</view>
 				</view>
 				<view class="row flex-set">
-					<view class="btn" @tap="$app.goPage('/pages/task/task')">
+					<view class="btn" @tap="$app.goPage('/pages/subPages/task/task')">
 						<btnComponent type="default">
 							<view class="flex-set" style="width: 200upx;height: 100upx;">去做任务</view>
 						</btnComponent>
@@ -585,6 +605,33 @@
 						</btnComponent>
 					</view>
 				</view>
+			</view>
+
+		</modalComponent>
+		<modalComponent v-if="modal == 'userInfo'" title="提示" @closeModal="modal=''">
+			<view class="userinfo-modal-container">
+				<image class="avatar" :src="currentUser.avatarurl" mode="scaleToFill"></image>
+				<view>周贡献：{{currentUser.userStar.thisweek_count}}</view>
+				<view>月贡献：{{currentUser.userStar.thismonth_count}}</view>
+				<view>总贡献：{{currentUser.userStar.total_count}}</view>
+				<btnComponent type="css">
+					<view class="btn flex-set" @tap="addFriend(currentUser.id)">加TA好友</view>
+				</btnComponent>
+
+				<!-- <view class="row flex-set">
+					<view class="btn" @tap="$app.goPage('/pages/subPages/task/task')">
+						<btnComponent type="default">
+							<view class="flex-set" style="width: 200upx;height: 100upx;">去做任务</view>
+						</btnComponent>
+					</view>
+					<view class="btn">
+						<btnComponent type="default">
+							<button open-type="share">
+								<view class="flex-set" style="width: 200upx;height: 100upx;">邀请好友</view>
+							</button>
+						</btnComponent>
+					</view>
+				</view> -->
 			</view>
 
 		</modalComponent>
@@ -667,6 +714,9 @@
 
 				giftItemList: [],
 				chartAni: '',
+
+				// 点击聊天室头像,当前显示用户
+				currentUser: {},
 			};
 		},
 		created() {
@@ -735,21 +785,43 @@
 						client_id: clientId,
 					}, res => {
 						// 明星信息
-						setTimeout(() => {
-							const star = res.data.starInfo
+						const star = res.data.starInfo
 
-							this.star = {
-								id: star.id,
-								avatar: star.head_img_s ? star.head_img_s : star.head_img_l,
-								name: star.name,
-								weekHot: this.$app.formatNumberRgx(star.star_rank.week_hot),
-								weekRank: star.star_rank.week_hot_rank,
-								share_img: star.share_img,
-								qrcode: star.qrcode,
+						this.star = {
+							id: star.id,
+							avatar: star.head_img_s ? star.head_img_s : star.head_img_l,
+							name: star.name,
+							weekHot: this.$app.formatNumberRgx(star.star_rank.week_hot),
+							weekRank: star.star_rank.week_hot_rank,
+							share_img: star.share_img,
+							qrcode: star.qrcode,
+						}
+						// 聊天
+						const chartList = []
+						res.data.chartList.forEach((e, i) => {
+							const item = {
+								uid: e.user && e.user.id,
+								avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
+								nickname: e.user && e.user.nickname || this.$app.NICKNAME,
+								content: e.content,
+								captain: e.user && e.user.user_star && e.user.user_star.captain || 0,
+								level: e.level,
+								sendtimeInt: this.$app.strToTime(e.create_time),
 							}
-						}, 0)
-						// 用户排行
+							const leastTime = chartList[i - 1] && chartList[i - 1].sendtimeInt || 0
+							if (item.sendtimeInt - leastTime > 60 * 5) {
+								item.sendtime = e.create_time.slice(11)
+							}
+
+							chartList.push(item)
+						})
+
+						this.chartList = chartList
+						this.$nextTick(function() {
+							this.index = this.chartList.length - 1
+						})
 						setTimeout(() => {
+							// 用户排行
 							const userRankList = []
 							res.data.userRank.forEach((e, i) => {
 								userRankList.push({
@@ -759,50 +831,18 @@
 								})
 							})
 							this.userRankList = userRankList
-						}, 100)
-						// 聊天
-						setTimeout(() => {
-							const chartList = []
-							res.data.chartList.forEach((e, i) => {
-								const item = {
-									uid: e.user && e.user.id,
-									avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
-									nickname: e.user && e.user.nickname || this.$app.NICKNAME,
-									content: e.content,
-									captain: e.user && e.user.user_star && e.user.user_star.captain || 0,
-									level: e.level,
-									sendtimeInt: this.$app.strToTime(e.create_time),
-								}
-								const leastTime = chartList[i - 1] && chartList[i - 1].sendtimeInt || 0
-								if (item.sendtimeInt - leastTime > 60 * 5) {
-									item.sendtime = e.create_time.slice(11)
-								}
 
-								chartList.push(item)
-							})
-
-							this.chartList = chartList
-							this.$nextTick(function() {
-								this.index = this.chartList.length - 1
-							})
-						}, 200)
-
-						// 公告
-						setTimeout(() => {
+							// 公告
 							this.article.name = res.data.article.name
 							this.article.id = res.data.article.id
-						}, 300)
 
-						// 活动
-						setTimeout(() => {
+							// 活动
 							this.activeInfo = res.data.activeInfo
-						}, 400)
 
-						// 其他
-						setTimeout(() => {
+							// 其他
 							// 礼物列表
 							this.itemList = res.data.itemList
-
+							// 集结
 							this.mass = res.data.mass
 
 							if (res.data.mass.mass_user.length >= 3 && res.data.mass.mass_settle_time < res.data.mass.mass_start_time) {
@@ -822,32 +862,35 @@
 									}
 								}, 1000)
 							}
-
-							this.invitAward = res.data.invitList.award
-							const resList = []
-							this.spriteEarn = false
-							res.data.invitList.list.forEach((e, i) => {
-								resList.push({
-									avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
-									status: e.status,
-									uid: e.user && e.user.id || 0,
-									nickname: e.user && e.user.nickname || this.$app.NICKNAME,
-									earn: e.sprite.earn,
-								})
-
-								if (e.sprite.earn >= 100) {
-									// 显示红点
-									this.spriteEarn = true
-								}
-							})
-							if (this.invitListPage == 1) {
-								this.invitList = resList
-							} else {
-								this.invitList = this.invitList.concat(resList)
-							}
-
+							// 师徒
 							this.fatherEarn = res.data.fatherEarn
-						}, 500)
+
+							// 邀请列表
+							// 							this.invitAward = res.data.invitList.award
+							// 							const resList = []
+							// 							this.spriteEarn = false
+							// 							res.data.invitList.list.forEach((e, i) => {
+							// 								resList.push({
+							// 									avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
+							// 									status: e.status,
+							// 									uid: e.user && e.user.id || 0,
+							// 									nickname: e.user && e.user.nickname || this.$app.NICKNAME,
+							// 									earn: e.sprite.earn,
+							// 									off: e.off,
+							// 								})
+							// 
+							// 								if (e.sprite.earn >= 100) {
+							// 									// 显示红点
+							// 									this.spriteEarn = true
+							// 								}
+							// 							})
+							// 							if (this.invitListPage == 1) {
+							// 								this.invitList = resList
+							// 							} else {
+							// 								this.invitList = this.invitList.concat(resList)
+							// 							}
+
+						}, 300)
 					})
 				}
 
@@ -857,13 +900,42 @@
 					this.current = e.detail.current
 				}
 			},
+			// 删除好友
+			deleteFriend(item,index) {
+				this.$app.modal('确认删除好友【' + item.nickname + '】？', () => {
+					this.$app.request('user/delFriend', {
+						user_id: item.uid
+					}, res => {
+						this.invitList.splice(index,1)
+					})
+				})
+			},
+			// 加好友
+			addFriend(uid) {
+				this.$app.request('user/addFriend', {
+					user_id: uid
+				}, res => {
+					this.$app.toast('操作成功', 'success')
+					this.modal = ''
+				})
+			},
+			// 点击聊天室用户头像
+			tapUser(uid) {
+				this.modal = 'userInfo'
+				this.$app.request('user/info', {
+					user_id: uid
+				}, res => {
+					this.currentUser = res.data
+				})
+			},
+			// socket 送礼物
 			itemEffect(data) {
 				this.giftItemList.push(data)
 			},
 			goActive() {
 				if (this.$app.getData('userStar').id) {
 					if (this.$app.getData('userStar').id == this.star.id) {
-						this.$app.goPage("/pages/active_one/active_one?starid=" + this.star.id)
+						this.$app.goPage("/pages/subPages/active_one/active_one?starid=" + this.star.id)
 					} else {
 						this.$app.toast('请进入自己的偶像圈打卡')
 					}
@@ -873,7 +945,7 @@
 			},
 			goFather() {
 				if (this.$app.getData('userStar').id) {
-					this.$app.goPage('/pages/father/father')
+					this.$app.goPage('/pages/subPages/father/father')
 				} else {
 					this.$app.toast('请先加入偶像圈')
 				}
@@ -946,9 +1018,29 @@
 			// 					this.$app.closeLoading(this)
 			// 				})
 			// 			},
+			// 			settleSprite(index, item) {
+			// 				if (item.earn < 2) {
+			// 					this.$app.toast('TA的能量太少了，稍后再来吧')
+			// 				} else {
+			// 					this.$app.request(this.$app.API.SPRITE_SETTLE, {
+			// 						user_id: item.uid
+			// 					}, res => {
+			// 						this.invitList[index].earn = 0
+			// 
+			// 						this.$app.toast('为TA收集能量，你获得:' + res.data + '能量')
+			// 						this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
+			// 							this.$app.setData('userCurrency', res.data)
+			// 						})
+			// 					}, 'POST', true)
+			// 				}
+			// 			},
 			settleSprite(index, item) {
 				if (item.earn < 2) {
 					this.$app.toast('TA的能量太少了，稍后再来吧')
+				} else if (item.off) {
+					// 不能收
+					this.modal = 'tips_t'
+
 				} else {
 					this.$app.request(this.$app.API.SPRITE_SETTLE, {
 						user_id: item.uid
@@ -1139,6 +1231,7 @@
 			// 定时显示弹幕
 			initDanmaku() {
 				clearInterval(this.sayworldTimeId)
+				this.danmaku = this.$app.danmakuQueue.shift() || null
 				this.sayworldTimeId = setInterval(() => {
 					this.danmaku = this.$app.danmakuQueue.shift() || null
 				}, 10000)
@@ -1212,9 +1305,9 @@
 					})
 				}, 'POST', true)
 			},
-			goOther(uid) {
+			goOther(item) {
 				this.modal = ''
-				this.$app.goPage('/pages/pet/other/other?user_id=' + uid)
+				this.$app.goPage('/pages/subPages/pet/other/other?user_id=' + item.uid + '&off=' + item.off)
 			},
 			// 拉票
 			getFakeInviteList() {
@@ -1278,6 +1371,8 @@
 							uid: e.user && e.user.id || 0,
 							nickname: e.user && e.user.nickname || this.$app.NICKNAME,
 							earn: e.sprite.earn,
+							off: e.off,
+
 						})
 
 						if (e.sprite.earn >= 100) {
@@ -1351,13 +1446,13 @@
 			 * 发送留言
 			 */
 			sendMsg() {
-				if (!this.chartMsg.trim()) return
+				const chartMsg = this.chartMsg.trim()
+				this.chartMsg = ''
+				if (!chartMsg) return
 				this.$app.invokeSocket()
 				this.$app.request(this.$app.API.STAR_SENDMSG, {
 					starid: this.star.id,
-					content: this.chartMsg.trim(),
-				}, res => {
-					this.chartMsg = ''
+					content: chartMsg,
 				})
 			},
 			/**
@@ -2334,7 +2429,7 @@
 
 		.send-modal-container {
 			width: 100%;
-			height: 100%;
+			height: 680upx;
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
@@ -2599,7 +2694,6 @@
 		}
 
 		.invit-modal-container {
-
 			width: 100%;
 			height: 100%;
 			position: absolute;
@@ -2654,7 +2748,7 @@
 
 
 					.text-container {
-						width: 300upx;
+						width: 250upx;
 						padding: 0 30upx;
 						line-height: 44upx;
 
@@ -2672,6 +2766,12 @@
 								height: 30upx;
 							}
 						}
+					}
+
+					.del {
+						width: 40upx;
+						height: 40upx;
+						margin: 20upx;
 					}
 
 					.egg {
@@ -2906,6 +3006,60 @@
 					color: #FFF;
 					font-size: 45upx;
 				}
+			}
+		}
+
+		.tips-modal-container-s {
+			height: 100%;
+			padding: 20upx 40upx;
+			font-size: 32upx;
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+			flex-direction: column;
+
+			.text-wrap {
+				text-align: center;
+				margin: 30upx;
+
+				image {
+					width: 120upx;
+					height: 120upx;
+					margin: 60upx;
+				}
+
+				.text {
+					font-size: 32upx;
+					font-weight: 700;
+
+				}
+
+			}
+
+			.btn {
+				margin: 100upx auto;
+			}
+		}
+
+		.userinfo-modal-container {
+			height: 600upx;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: space-around;
+			padding: 40upx;
+
+			.avatar {
+				width: 160rpx;
+				height: 160rpx;
+				border-radius: 50%;
+			}
+
+			.btn {
+				font-size: 32upx;
+				font-weight: 700;
+				width: 300upx;
+				height: 100upx;
 			}
 		}
 	}

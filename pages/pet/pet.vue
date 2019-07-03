@@ -215,7 +215,7 @@
 					<view class="text">3.补充能量可以获得灵丹</view>
 					<view class="text">更多获取方式快去任务界面查看吧</view>
 				</view>
-				<view class="btn" @tap="$app.goPage('/pages/task/task')">
+				<view class="btn" @tap="$app.goPage('/pages/subPages/task/task')">
 					<btnComponent type="default">
 						<view class="flex-set" style="width: 200upx;height: 100upx;">去做任务</view>
 					</btnComponent>
@@ -460,7 +460,7 @@
 			},
 			goOther(item) {
 				this.modal = ''
-				this.$app.goPage('/pages/pet/other/other?user_id=' + item.uid + '&off=' + item.off)
+				this.$app.goPage('/pages/subPages/pet/other/other?user_id=' + item.uid + '&off=' + item.off)
 			},
 			//HTTP
 			settle() {
@@ -1057,7 +1057,7 @@
 			flex-direction: column;
 			.text-wrap {
 				text-align: center;
-
+				margin: 30upx;
 				image {
 					width: 120upx;
 					height: 120upx;
@@ -1068,12 +1068,11 @@
 					font-weight: 700;
 					
 				}
-
 			}
 
 
 			.btn {
-				margin: auto;
+				margin:100upx auto;
 			}
 		}
 		

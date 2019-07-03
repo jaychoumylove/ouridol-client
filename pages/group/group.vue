@@ -67,7 +67,9 @@
 		onShow() {
 			this.starid = this.$app.getData('userStar')['id'] || null
 			if (this.starid) {
-				this.$refs.guildComponent.load(this.starid)
+				this.$nextTick(function(){
+					this.$refs.guildComponent.load(this.starid)
+				})
 			} else {
 				setTimeout(() => {
 					this.blankHide = true
@@ -89,7 +91,7 @@
 		},
 		methods: {
 			goPage(id) {
-				this.$app.goPage('/pages/star/star?starid=' + id)
+				this.$app.goPage('/pages/subPages/star/star?starid=' + id)
 			},
 			searchInput(e) {
 				this.page = 1

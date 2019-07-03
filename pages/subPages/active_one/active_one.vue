@@ -8,7 +8,7 @@
 						分享
 					</view>
 				</button>
-				<view class="btn" @tap="$app.goPage('/pages/fanclub/fanclub?starname='+star.name)">
+				<view class="btn" @tap="$app.goPage('/pages/subPages/fanclub/fanclub?starname='+star.name)">
 					后援会
 				</view>
 			</view>

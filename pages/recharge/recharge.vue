@@ -16,7 +16,7 @@
 		<view class="count-wrap">
 			<view class="top-title">我的能量：{{userCurrency.coin}}</view>
 			<view class="top-title">我的灵丹：{{userCurrency.stone}}</view>
-			<view class="top-title flex-set"  @tap="$app.goPage('/pages/gift_package/gift_package')">
+			<view class="top-title flex-set"  @tap="$app.goPage('/pages/subPages/gift_package/gift_package')">
 				<view class="" style="text-decoration: underline;">礼物背包</view>
 				<view class="badge-wrap">{{giftNum}}</view>
 			</view>

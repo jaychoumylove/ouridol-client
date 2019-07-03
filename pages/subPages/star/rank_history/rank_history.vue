@@ -61,7 +61,7 @@
 				if (this.$app.getData('userStar')['id'] == starid) {
 					this.$app.goPage('/pages/group/group')
 				} else {
-					this.$app.goPage('/pages/star/star?starid=' + starid)
+					this.$app.goPage('/pages/subPages/star/star?starid=' + starid)
 				}
 			},
 			getRankList() {
