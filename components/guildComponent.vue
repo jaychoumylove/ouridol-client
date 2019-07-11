@@ -17,17 +17,17 @@
 					</view>
 				</view>
 				<view class="row-info">
-					<view class="avatar-wrapper">
-						<image class="avatar" :class="{share:this.app.getData('userStar').id == star.id}" :src="star.avatar" mode="aspectFill"
-						 @tap="drawCanvas"></image>
+					<view class="avatar-wrapper" @tap="drawCanvas">
+						<image class="avatar" :class="{share:this.app.getData('userStar').id == star.id}" :src="star.avatar" mode="aspectFill"></image>
 						<!-- <view class="tips">分享海报</view> -->
-						<view class="rank">{{star.name}}</view>
+						<!-- <view class="rank">{{star.name}}</view> -->
+						<view class="star-name-wrapper text-overflow">NO.{{star.weekRank}}</view>
 					</view>
 
-
 					<view class="top-text-wrapper">
-						<view class="star-name">
-							<view class="star-name-wrapper text-overflow">NO.{{star.weekRank}}</view>
+						<view class="star-name row">
+							<view class="rank text-overflow">{{star.name}}</view>
+							<!-- <view class="star-name-wrapper text-overflow">NO.{{star.weekRank}}</view> -->
 							<block v-if="!app.getData('userStar')['id'] || app.getData('userInfo').type == 1 && app.getData('userStar').id != star.id">
 								<button v-if="!app.getData('userInfo')['nickname']" class="join flex-set" open-type="getUserInfo" @getuserinfo="getUserInfo">
 									+加入
@@ -36,15 +36,19 @@
 									+{{app.getData('userInfo').type == 0? '加入':'切换'}}
 								</button>
 							</block>
+							<view class="mystar flex-set" style="background-color: #415236;" v-if="app.getData('userStar').id ==star.id" @tap="app.goPage('/pages/subPages/fanclub_list/fanclub_list')">
+								<image src="/static/image/user/s8.png" style="width: 30upx;" mode="widthFix"></image>
+								后援会
+							</view>
 						</view>
-						<view class='bottom'>
+						<view class='bottom row'>
 							<image class='image' src="/static/image/index/ic_hot.png" mode=""></image>
 							<!-- <view>{{star.weekHot}}</view> -->
 
 							<countToComponent :count='star.weekHot'></countToComponent>
 						</view>
 
-						<view class="rank-list" @tap="app.goPage('/pages/subPages/user/rank/rank?starid='+star.id)">
+						<view class="rank-list row" @tap="app.goPage('/pages/subPages/user/rank/rank?starid='+star.id)">
 							<view class="rank-list-container">
 								<view class="item" v-for="(item,index) in userRankList" :key="index" v-if="index < 3">
 									<image class="avatar-s" :src="item.avatar" mode="aspectFill"></image>
@@ -174,34 +178,34 @@
 				<view class="right" @tap.stop="app.goPage('/pages/subPages/notice/list/list')">更多>></view>
 			</view>
 		</view>
-		<!-- <view class="active-container" @tap='goActive()'>
+		<view class="active-container" @tap='goActive()'>
 			<view class="active-inner flex-set">
 
 				<view class="text">解锁应援金</view>
 				<image class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
 				<view class="progress-wrap">
 					<view class="progress">
-						<progress v-if="activeInfo.join_people < activeInfo.active_info.target_people" stroke-width="10" activeColor="#007eff"
-						 backgroundColor="#f8c4be" :percent="activeInfo.join_people/activeInfo.active_info.target_people*100" />
-						<progress v-else activeColor="#ff0000" backgroundColor="#f8c4be" :percent="activeInfo.complete_people/activeInfo.active_info.target_people*100" />
+						<!-- <progress v-if="activeInfo.join_people < activeInfo.active_info.target_people" stroke-width="10" activeColor="#007eff"
+						 backgroundColor="#f8c4be" :percent="activeInfo.join_people/activeInfo.active_info.target_people*100" /> -->
+						<progress activeColor="#007eff" backgroundColor="#f8c4be" :percent="activeInfo.complete_people/activeInfo.nextCount*100" />
 					</view>
 					<view class="progress-text">
-						<view class="left" v-if="activeInfo.join_people < activeInfo.active_info.target_people">
+						<!-- <view class="left" v-if="activeInfo.join_people < activeInfo.active_info.target_people">
 							参与人数：<text style="color: #007eff;">{{activeInfo.join_people}}</text>
-						</view>
-						<view class="left" v-else>
-							完成人数：<text style="color: #ff0000;">{{activeInfo.complete_people}}</text>
+						</view> -->
+						<view class="left">
+							解锁次数：<text style="color: #ff0000;">{{activeInfo.complete_people}}</text>
 						</view>
 						<view class="right">
-							目标人数：<text style="color: #ff5cf7;">{{activeInfo.active_info.target_people}}</text>
+							目标次数：<text style="color: #ff5cf7;">{{activeInfo.nextCount}}</text>
 						</view>
 					</view>
 				</view>
 			</view>
 
-		</view> -->
-		<scroll-view v-if="star.id == app.getData('userStar')['id'] || app.getData('userInfo').type == 1" class="chart-container"
-		 scroll-y scroll-with-animation :scroll-into-view="'index_'+index">
+		</view>
+		<scroll-view v-if="app.getData('config').version != app.VERSION && (star.id == app.getData('userStar').id || app.getData('userInfo').type == 1)" class="chart-container"
+		 scroll-y scroll-with-animation :scroll-into-view="'index_'+chartIndex">
 
 			<view :id="'index_'+index" class="msg-item" :class="{right:item.uid==app.getData('userInfo')['id']}" v-for="(item,index) in chartList"
 			 :key="index">
@@ -291,7 +295,6 @@
 				<image :src="item.itemicon" class="item-content" mode="widthFix"></image>
 			</view>
 		</view>
-
 
 		<!-- MODAL -->
 		<modalComponent type="send" v-if="modal == 'send'" title="打榜" @closeModal="modal=''">
@@ -400,6 +403,16 @@
 		<modalComponent v-if="modal == 'steal'" title="偷能量" @closeModal="modal=''">
 			<view class="steal-modal-container">
 				<!-- <view class="tips-wrapper">飞机为of为副将我叫非法违法</view> -->
+				<view class="explain-wrapper">
+					<view class="top">当前精灵等级为<text>{{sprite_level}}</text>级。每次可偷<text>{{steal_count}}</text>
+						<image class="icon" src="/static/image/user/b1.png"></image>
+					</view>
+					<view class="">精灵等级越高可偷能量越多<text style="text-decoration: underline;" @tap="app.goPage('/pages/pet/pet')">快去升级精灵</text></view>
+					<view class="bottom">今日已偷<text> {{steal_num}}/{{steal_num_max}} </text>
+						<image class="icon" src="/static/image/user/b1.png"></image>
+					</view>
+				</view>
+
 				<view class="list-wrapper">
 					<view class="item" v-for="(item,index) in starRankList" :key="index" v-if="index<5">
 						<view class='avatar'>
@@ -429,16 +442,28 @@
 			<view class="invit-fake-modal-container">
 
 				<view class="explain-wrapper">
-					<view class="top">已邀请<text> {{hasInvitcount}} </text>人</view>
-					<view class="bottom">被邀请人任意加入一个偶像圈即可领取奖励</view>
+					<view class="top flex-set">
+						<view class="">
+							已邀请<text> {{hasInvitcount}} </text>人
+						</view>
+
+						<btnComponent type="default">
+							<button class="btn" open-type="share">
+								<view class="flex-set" style="width: 140upx; height: 60upx;">邀请好友</view>
+							</button>
+						</btnComponent>
+					</view>
+					<view class="bottom">被邀请人任意加入一个偶像圈即可领取奖励
+
+					</view>
 				</view>
-				<scroll-view scroll-y class="list-wrapper" @scrolltolower="invitFakePage++;getFakeInviteList();">
-					<view class="item" v-for="(item,index) in fakeinvitList" :key="index">
+				<scroll-view scroll-y class="list-wrapper" @scrolltolower="invitFakePage++;getFakeInviteList();" v-if="fakeinvitList.length>0">
+					<view class="item" v-for="(item,index) in fakeinvitList" :key="index" v-if="hasEarnCount+index+1<=300">
 						<view class='avatar'>
 							<image :src="item.avatar" mode="aspectFill"></image>
 						</view>
 						<view class="text-container">
-							<view class="star-name">第{{index+1}}位好友</view>
+							<view class="star-name">第{{hasEarnCount+index+1}}位好友</view>
 							<view class="bottom-text">
 								<view class="hot-count">能量+{{invitAward.coin}}</view>
 								<view class="hot-count" v-if="invitAward.stone"> 灵丹+{{invitAward.stone}}</view>
@@ -460,15 +485,14 @@
 
 
 					</view>
-
-
-
-
 				</scroll-view>
+				<view v-else class="flex-set">
+					拉票奖励领取已达上限
+				</view>
 			</view>
 
 		</modalComponent>
-
+		<!-- 集结 -->
 		<modalComponent v-if="modal == 'mass'" title="集结" @closeModal="modal=''">
 			<view class="mass-modal-container">
 				<view class="explain-wrapper flex-set">{{$app.getData('config').share_mass.text}}</view>
@@ -512,20 +536,29 @@
 
 				<scroll-view scroll-y class="list-wrapper" @scrolltolower='invitListPage++; getInvitList()'>
 
-					<!-- <view class="explain-wrapper">
-						<view class="flex-set">
-							<image src="/static/image/ic_haibao__bak.png" mode="widthFix"></image>
-							加好友一起养精灵
+					<view class="explain-wrapper">
+						<view class="">
+							帮好友收集能量，自己额外获得<text>50%</text>能量
+							<!-- <image src="/static/image/ic_haibao__bak.png" mode="widthFix"></image> -->
+							<!-- 加好友一起养精灵 -->
 						</view>
-						<btnComponent type="default">
-							<button class="btn" open-type="share" data-share="1">
-								<view class="flex-set" style="width: 160upx; height: 80upx;">邀请好友</view>
-							</button>
-						</btnComponent>
-					</view> -->
-					<button class='explain-wrapper' open-type="share" data-share="1">
+						<view class="bottom flex-set">
+							<view>当前好友数<text>{{friendTotal}}/100</text>人</view>
+
+							<btnComponent type="default">
+								<button class="btn" open-type="share" data-share="1">
+									<view class="flex-set" style="font-weight: 700 ;width: 140upx; height: 60upx;">邀请好友</view>
+								</button>
+							</btnComponent>
+							<!-- <image src="/static/image/ic_haibao__bak.png" mode="widthFix"></image> -->
+							<!-- 加好友一起养精灵 -->
+						</view>
+
+
+					</view>
+					<!-- <button class='explain-wrapper' open-type="share" data-share="1">
 						<image style="width: 100%;" :src="$app.getData('config').zhuren_tips_img" mode="widthFix"></image>
-					</button>
+					</button> -->
 
 					<block v-if="invitList.length > 0">
 						<view class="item" v-for="(item,index) in invitList" :key="index" @tap="goOther(item)">
@@ -539,7 +572,7 @@
 							<view class="text-container">
 								<view class="star-name text-overflow">{{item.nickname}}</view>
 							</view>
-							<image @tap.stop="deleteFriend(item,index)" class="del" src="/static/image/guild/del.png" mode="scaleToFill"></image>
+							<image @tap.stop="deleteFriend(item,index)" class="del" src="/static/image/guild/del.png" mode="widthFix"></image>
 							<view class="egg flex-set" @tap.stop="settleSprite(index, item)">
 								<image v-if="item.earn > 2 && !item.off" class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
 
@@ -561,7 +594,7 @@
 			</view>
 
 		</modalComponent>
-
+		<!-- 好友很久没打榜 -->
 		<modalComponent v-if="modal == 'tips_t'" title="提示" @closeModal="modal=''">
 			<!-- this.$app.modal("好友已经很久没有打榜了\n提醒TA一起为偶像打榜\n") -->
 
@@ -608,43 +641,155 @@
 			</view>
 
 		</modalComponent>
-		<modalComponent v-if="modal == 'userInfo'" title="提示" @closeModal="modal=''">
+		<!-- 用户信息 -->
+		<modalComponent v-if="modal == 'userInfo'" title=" " @closeModal="modal=''">
 			<view class="userinfo-modal-container">
-				<image class="avatar" :src="currentUser.avatarurl" mode="scaleToFill"></image>
-				<view>周贡献：{{currentUser.userStar.thisweek_count}}</view>
-				<view>月贡献：{{currentUser.userStar.thismonth_count}}</view>
-				<view>总贡献：{{currentUser.userStar.total_count}}</view>
-				<btnComponent type="css">
+				<view class="top">
+					<image class="avatar" :src="currentUser.avatarurl" mode="scaleToFill" @tap="$app.preImg(currentUser.avatarurl)"></image>
+					<view class="nickname">{{currentUser.nickname}}</view>
+					<view class="badge-wrap flex-set" v-if="currentUser.level">
+						<view class="badge">
+							<image v-if="currentUser.level <= 5" :src="'/static/image/guild/level/1.png'" mode=""></image>
+							<image v-else-if="currentUser.level <= 10" :src="'/static/image/guild/level/2.png'" mode=""></image>
+							<image v-else-if="currentUser.level <= 15" :src="'/static/image/guild/level/3.png'" mode=""></image>
+							<image v-else-if="currentUser.level <= 20" :src="'/static/image/guild/level/4.png'" mode=""></image>
+							<image v-else-if="currentUser.level <= 25" :src="'/static/image/guild/level/5.png'" mode=""></image>
+							<image v-else :src="'/static/image/guild/level/6.png'" mode=""></image>
+
+							<view class="level position-set">{{currentUser.level}}</view>
+						</view>
+
+						<view v-if="currentUser.level <= 5" class="text i-1">精灵</view>
+						<view v-else-if="currentUser.level <= 10" class="text i-2">精灵</view>
+						<view v-else-if="currentUser.level <= 15" class="text i-3">精灵</view>
+						<view v-else-if="currentUser.level <= 20" class="text i-4">精灵</view>
+						<view v-else-if="currentUser.level <= 25" class="text i-5">精灵</view>
+						<view v-else class="text i-6">精灵</view>
+					</view>
+				</view>
+				<!-- <view class="content">
+					<view>周贡献：{{currentUser.userStar.thisweek_count}}</view>
+					<view>月贡献：{{currentUser.userStar.thismonth_count}}</view>
+					<view>总贡献：{{currentUser.userStar.total_count}}</view>
+				</view> -->
+
+				<view class="btn-list flex-set">
+					<view class="btn-item" @tap="addFriend(currentUser.id)">
+						<view class="bg flex-set">
+							<image src="/static/image/guild/card.png" mode=""></image>
+						</view>
+						<view class="text">加好友</view>
+
+					</view>
+					<view class="btn-item" @tap="modal = 'sendOther'">
+						<view class="bg flex-set">
+							<image src="/static/image/user/b2.png" mode=""></image>
+						</view>
+						<view class="text">赠送灵丹</view>
+
+					</view>
+
+					<view class="btn-item" @tap="modal = 'sendOtherItem'">
+						<view class="bg flex-set">
+							<image src="/static/image/guild/send-give-1.png" mode=""></image>
+						</view>
+						<view class="text">赠送礼物</view>
+
+					</view>
+				</view>
+
+
+				<!-- <btnComponent type="css">
 					<view class="btn flex-set" @tap="addFriend(currentUser.id)">加TA好友</view>
 				</btnComponent>
-
-				<!-- <view class="row flex-set">
-					<view class="btn" @tap="$app.goPage('/pages/subPages/task/task')">
-						<btnComponent type="default">
-							<view class="flex-set" style="width: 200upx;height: 100upx;">去做任务</view>
-						</btnComponent>
-					</view>
-					<view class="btn">
-						<btnComponent type="default">
-							<button open-type="share">
-								<view class="flex-set" style="width: 200upx;height: 100upx;">邀请好友</view>
-							</button>
-						</btnComponent>
-					</view>
+				<view class="flex-set row">
+					<btnComponent type="css">
+						<view class="btn flex-set" @tap="modal = 'sendOther'">送TA灵丹</view>
+					</btnComponent>
+					<btnComponent type="css">
+						<view class="btn flex-set" @tap="modal = 'sendOther'">送TA礼物</view>
+					</btnComponent>
 				</view> -->
 			</view>
 
 		</modalComponent>
+		<!-- 送灵丹给别人 -->
+		<modalComponent v-if="modal == 'sendOther'" title=" " @closeModal="modal=''">
+			<view class="userinfo-modal-container">
+				<view class="top">
+					<image class="avatar" :src="currentUser.avatarurl" mode="scaleToFill"></image>
+					<view class="nickname">{{currentUser.nickname}}</view>
+				</view>
+
+				<view class="send-input">
+					<input type="number" :value="sendOtherNum" @input="sendOtherNum = $event.detail.value" />
+					<image src="/static/image/user/b2.png" mode=""></image>
+				</view>
+				<btnComponent type="css">
+					<view class="btn flex-set" @tap="sendOther()">送给TA</view>
+				</btnComponent>
+			</view>
+		</modalComponent>
+		<!-- 赠送礼物给别人 -->
+		<modalComponent v-if="modal == 'sendOtherItem'" title=" " @closeModal="modal=''">
+			<view class="send-modal-container send-other">
+				<image class="avatar" :src="currentUser.avatarurl" mode="scaleToFill"></image>
+				<view class="nickname">{{currentUser.nickname}}</view>
+				<view class="wrap">
+					<view class="btn-wrapper gift-s">
+						<!-- 礼物列表 -->
+						<view v-for="(item,index) in itemList" :key="index" class="gift-item flex-set" @tap="sendItemOther(item, 1,index)">
+							<view class="num">
+								<image src="/static/image/user/b1.png" mode="widthFix"></image>
+								{{item.count}}
+							</view>
+							<image :src="item.icon" mode="widthFix"></image>
+							<view class="name">{{item.name}}</view>
+							<view class="self flex-set">{{item.self}}</view>
+						</view>
+					</view>
+
+				</view>
+			</view>
+		</modalComponent>
 
 		<view class="canvas-container flex-set" v-if="modal == 'canvas'">
+			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
+
 			<canvas canvas-id='mycanvas' class="canvas"></canvas>
 
 			<view class="btn-wrap">
-				<button class='fsend-btn flex-set' open-type='share'>分享给好友</button>
-				<view class="btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
-				<view class='save-btn flex-set' @tap='saveCanvas'>保存到相册</view>
-			</view>
+				<button class='fsend-btn flex-set' open-type='share'>
+					<image src="/static/image/wxq.png" mode="widthFix"></image>
+					<view>微信群</view>
+				</button>
+				<view class='fsend-btn flex-set' open-type='share' @tap="modal ='otherShareW'">
+					<image src="/static/image/weibo.png" mode="widthFix"></image>
+					<view>微博</view>
+				</view>
+				<view class='fsend-btn flex-set' open-type='share' @tap="modal ='otherShareP'">
+					<image src="/static/image/pyq.png" mode="widthFix"></image>
+					<view>朋友圈</view>
+				</view>
 
+				<!-- <view class='save-btn flex-set' @tap='saveCanvas'>保存到相册</view> -->
+			</view>
+		</view>
+		<view class="canvas-container flex-set" v-if="modal == 'otherShareW'">
+			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
+
+			<view class="wrapper flex-set">
+				<image src="http://tva1.sinaimg.cn/large/0060lm7Tly1g4p9rnx2f3g30ku112qc3.gif" mode="scaleToFill"></image>
+				<view class="btn flex-set" @tap="getShareText(0)">点击复制微博格式</view>
+			</view>
+		</view>
+		<view class="canvas-container flex-set" v-if="modal == 'otherShareP'">
+			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
+
+			<view class="wrapper flex-set">
+				<image src="http://tva1.sinaimg.cn/large/0060lm7Tly1g4p9r2rbokg30ku112n3f.gif" mode="scaleToFill"></image>
+				<view class="btn flex-set" @tap="getShareText(1);saveCanvas();">复制文字，保存图片到相册，发朋友圈</view>
+			</view>
 		</view>
 	</view>
 </template>
@@ -677,7 +822,7 @@
 				},
 				userRankList: [],
 				chartList: [],
-				index: -1, // 聊天窗位置
+				chartIndex: -1, // 聊天窗位置
 				modal: '', // 模态框名称
 				chartMsg: '', // 聊天输入内容
 				sendCount: 0, // 赠送人气数额
@@ -685,6 +830,7 @@
 				invitAward: {}, // 邀请奖励
 				invitList: [], // 我的邀请列表
 				invitNum: 10, // 拉票列表数量
+				hasEarnCount: 0,
 				invitListPage: 1,
 				hasInvitcount: 0,
 				spriteEarn: false,
@@ -700,14 +846,7 @@
 				invitFakePage: 1,
 				fatherEarn: 0,
 
-				activeInfo: {
-					active_info: {
-						target_people: 2000
-					},
-					can_card: true,
-					complete_people: 0,
-					join_people: 0,
-				},
+				activeInfo: null,
 				current: 0,
 
 				itemList: [],
@@ -717,6 +856,12 @@
 
 				// 点击聊天室头像,当前显示用户
 				currentUser: {},
+				sendOtherNum: 1,
+				steal_num: 0,
+				steal_count: 0,
+				sprite_level: 0,
+				steal_num_max: 0,
+				friendTotal: 0,
 			};
 		},
 		created() {
@@ -818,7 +963,7 @@
 
 						this.chartList = chartList
 						this.$nextTick(function() {
-							this.index = this.chartList.length - 1
+							this.chartIndex = this.chartList.length - 1
 						})
 						setTimeout(() => {
 							// 用户排行
@@ -900,14 +1045,55 @@
 					this.current = e.detail.current
 				}
 			},
+			sendItemOther(item, num, index) {
+				this.$app.modal(`确认将${num}个${item.name}送给${this.currentUser.nickname}？`, () => {
+					this.$app.request('user/sendItemToOther', {
+						user_id: this.currentUser.id,
+						item_id: item.id,
+						num: num
+					}, res => {
+						this.$app.toast('赠送成功', 'success')
+						this.modal = ''
+						this.itemList[index].self -= num
+					}, 'POST', true)
+				})
+
+			},
+			// 送灵丹给别人
+			sendOther() {
+				let sendOtherNum = parseInt(this.sendOtherNum)
+				this.sendOtherNum = 1
+
+				if (sendOtherNum <= 0) {
+					this.$app.toast('请输入正确的数字')
+					return
+				}
+				if (sendOtherNum > this.userCurrency.stone) {
+					this.$app.toast('你没有这么多灵丹')
+					return
+				}
+				this.$app.modal(`确认将${sendOtherNum}灵丹送给${this.currentUser.nickname}？`, () => {
+					this.$app.request('user/sendStoneToOther', {
+						user_id: this.currentUser.id,
+						num: sendOtherNum
+					}, res => {
+						this.$app.toast('赠送成功', 'success')
+						this.modal = ''
+						this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
+							this.$app.setData('userCurrency', res.data)
+							this.userCurrency = this.$app.getData('userCurrency')
+						})
+					}, 'POST', true)
+				})
+			},
 			// 删除好友
-			deleteFriend(item,index) {
+			deleteFriend(item, index) {
 				this.$app.modal('确认删除好友【' + item.nickname + '】？', () => {
 					this.$app.request('user/delFriend', {
 						user_id: item.uid
 					}, res => {
-						this.invitList.splice(index,1)
-					})
+						this.invitList.splice(index, 1)
+					}, 'POST', true)
 				})
 			},
 			// 加好友
@@ -915,17 +1101,20 @@
 				this.$app.request('user/addFriend', {
 					user_id: uid
 				}, res => {
-					this.$app.toast('操作成功', 'success')
+					this.$app.toast('加好友成功', 'success')
 					this.modal = ''
-				})
+				}, 'POST', true)
 			},
 			// 点击聊天室用户头像
 			tapUser(uid) {
+				if (uid == this.$app.getData('userInfo').id) return
+				this.currentUser = {}
 				this.modal = 'userInfo'
 				this.$app.request('user/info', {
 					user_id: uid
 				}, res => {
 					this.currentUser = res.data
+					if (!this.currentUser.avatarurl) this.currentUser.avatarurl = this.$app.AVATAR
 				})
 			},
 			// socket 送礼物
@@ -935,9 +1124,9 @@
 			goActive() {
 				if (this.$app.getData('userStar').id) {
 					if (this.$app.getData('userStar').id == this.star.id) {
-						this.$app.goPage("/pages/subPages/active_one/active_one?starid=" + this.star.id)
+						this.$app.goPage("/pages/active_one/active_one?starid=" + this.star.id)
 					} else {
-						this.$app.toast('请进入自己的偶像圈打卡')
+						this.$app.toast('请进入自己的偶像圈应援')
 					}
 				} else {
 					this.$app.toast('请先加入偶像圈')
@@ -976,9 +1165,7 @@
 			},
 			checkFatherEarn() {
 				this.$app.request(this.$app.API.USER_CHECKEARN, {}, res => {
-
 					this.fatherEarn = res.data
-
 				})
 			},
 			// 			treasure() {
@@ -1066,11 +1253,19 @@
 					callback && callback(src)
 				}
 			},
+			getShareText(type) {
+				this.$app.request(this.$app.API.EXT_SHARETEXT, {
+					type,
+				}, res => {
+					this.modal = ''
+					this.$app.copy(res.data.share_text)
+				})
+			},
 			// 绘制canvas海报
 			drawCanvas() {
 				if (this.star.id != this.$app.getData('userStar').id) return
 				this.modal = 'canvas'
-				var rate = this.$app.getData('sysInfo').windowWidth / 375 / 1.78
+				var rate = this.$app.getData('sysInfo').windowWidth / 375 / 2.0
 				var ctx = uni.createCanvasContext('mycanvas', this);
 				// 绘制文字
 				const drawText = function() {
@@ -1081,12 +1276,12 @@
 					ctx.fillText(this.$app.getData('config').canvas_title[0], 240 * rate, 200 * rate) //绘制文本
 					ctx.fillText(this.$app.getData('config').canvas_title[1], 240 * rate, 250 * rate) //绘制文本
 
-					ctx.fillText(this.star.name, 140 * rate, 632 * rate) //绘制文本
+					ctx.fillText(this.star.name, 140 * rate, 636 * rate) //绘制文本
 
-					ctx.setFontSize(10) //设置字体大小，默认10
+					ctx.setFontSize(8) //设置字体大小，默认10
 					ctx.setTextAlign('left')
-					ctx.fillText(`榜单排名:NO.${this.star.weekRank}`, 270 * rate, 616 * rate) //绘制文本
-					ctx.fillText(`人气值:${this.star.weekHot}`, 270 * rate, 640 * rate) //绘制文本
+					ctx.fillText(`榜单排名:NO.${this.star.weekRank}`, 265 * rate, 616 * rate) //绘制文本
+					ctx.fillText(`人气值:${this.star.weekHot}`, 265 * rate, 640 * rate) //绘制文本
 
 					ctx.fillText(`我是${this.$app.getData('userInfo').nickname}`, 130 * rate, 774 * rate) //绘制文本
 					ctx.fillText(`一起为${this.star.name}打榜`, 130 * rate, 804 * rate) //绘制文本
@@ -1122,7 +1317,18 @@
 								// 绘制文字
 								drawText()
 								// 绘制
-								ctx.draw()
+								ctx.draw(false, () => {
+									// 保存到临时图片
+									uni.canvasToTempFilePath({
+										canvasId: 'mycanvas',
+										success: res => {
+											this.canvasImg = res.tempFilePath
+											console.log(this.canvasImg);
+
+										}
+									}, this);
+								})
+
 
 								uni.hideLoading()
 							})
@@ -1132,27 +1338,13 @@
 			},
 			//保存的画布
 			saveCanvas: function() {
-				// 将canvas内容生成临时图片
-				uni.canvasToTempFilePath({
-					canvasId: 'mycanvas',
-					success: res => {
-						// 保存图片到用户相册
-						uni.saveImageToPhotosAlbum({
-							filePath: res.tempFilePath,
-							success: () => {
-								this.$app.toast('保存成功', 'success')
-							},
-							fail: res => {
-								this.$app.toast('保存失败')
-							}
-						});
-
-					},
-					fail: res => {
-						this.$app.toast('将canvas内容生成临时图片失败')
-						console.error(res)
+				// 保存图片到用户相册
+				uni.saveImageToPhotosAlbum({
+					filePath: this.canvasImg,
+					success: () => {
+						this.$app.toast('保存成功', 'success')
 					}
-				}, this);
+				});
 			},
 			/**获取集结信息*/
 			getMass() {
@@ -1181,7 +1373,7 @@
 				})
 			},
 			startMass() {
-				this.$app.request(this.$app.API.SHARE_STARMASS, {}, res => {})
+				this.$app.request(this.$app.API.SHARE_STARMASS, {}, res => {}, 'POST', true)
 			},
 			settleMass() {
 				this.modal = ''
@@ -1194,7 +1386,7 @@
 						this.$app.setData('userCurrency', res.data)
 						this.userCurrency = this.$app.getData('userCurrency')
 					})
-				})
+				}, 'POST', true)
 			},
 			/**
 			 * 收到推送信息
@@ -1219,7 +1411,7 @@
 				this.chartList.push(item)
 
 				this.$nextTick(function() {
-					this.index = this.chartList.length - 1
+					this.chartIndex = this.chartList.length - 1
 				})
 			},
 			// 偷花倒计时
@@ -1258,7 +1450,7 @@
 						this.userCurrency = this.$app.getData('userCurrency')
 					})
 
-				})
+				}, 'POST', true)
 			},
 			/**
 			 * 保存用户详细信息
@@ -1316,11 +1508,14 @@
 				}, res => {
 					this.invitAward = res.data.award
 					this.hasInvitcount = res.data.hasInvitcount
-
+					// 已领取人次
+					this.hasEarnCount = res.data.list.hasEarnCount
+					
 					const resList = []
-					res.data.list.forEach((e, i) => {
+					res.data.list.list.forEach((e, i) => {
 						resList.push({
 							avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
+							nickname: e.user && e.user.nickname || this.$app.NICKNAME,
 							status: e.status,
 							uid: e.ral_user_id
 						})
@@ -1331,7 +1526,8 @@
 					} else {
 						this.fakeinvitList = this.fakeinvitList.concat(resList)
 					}
-
+					
+					
 					// this.invitNum = 10
 					// clearInterval(this.$app.invitNumTimeId)
 					// this.$app.invitNumTimeId = setInterval(() => {
@@ -1343,6 +1539,7 @@
 					this.$app.closeLoading(this)
 				})
 			},
+			// 好友列表
 			getInvitList() {
 				this.$app.request(this.$app.API.USER_INVITLIST, {
 					type: 1,
@@ -1364,7 +1561,8 @@
 					this.invitAward = res.data.award
 					const resList = []
 					this.spriteEarn = false
-					res.data.list.forEach((e, i) => {
+					this.friendTotal = res.data.list.total_count
+					res.data.list.list.forEach((e, i) => {
 						resList.push({
 							avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
 							status: e.status,
@@ -1372,7 +1570,6 @@
 							nickname: e.user && e.user.nickname || this.$app.NICKNAME,
 							earn: e.sprite.earn,
 							off: e.off,
-
 						})
 
 						if (e.sprite.earn >= 100) {
@@ -1402,6 +1599,7 @@
 
 				this.$app.request(this.$app.API.STAR_SENDHOT, {
 					starid: this.star.id,
+					// 如果送的是礼物，hot为item_id
 					hot: parseInt(this.sendCount),
 					type: type,
 				}, res => {
@@ -1427,7 +1625,6 @@
 					this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
 						this.$app.setData('userCurrency', res.data)
 					})
-					this.$app.toast('打榜成功', 'success')
 
 					if (type == 1) {
 						// 减礼物
@@ -1439,6 +1636,15 @@
 							}
 						}
 					}
+					this.$app.toast('打榜成功', 'success')
+					// 弹窗
+					let sendOverTime = this.$app.getData('sendOverTime')
+					let time = Math.round(new Date().getTime() / 1000)
+					if (time - sendOverTime > 3600 * 6) {
+						this.$app.setData('sendOverTime', time)
+						this.drawCanvas()
+					}
+
 
 				}, 'POST', true)
 			},
@@ -1478,7 +1684,7 @@
 						}
 						return
 					} else {
-						if (this.$app.getData('userInfo').type == 0) {
+						if (this.$app.getData('userInfo').type != 1) {
 							this.$app.toast(`不能为其他爱豆打榜`)
 							return
 						}
@@ -1549,6 +1755,10 @@
 					type: 1
 				}, res => {
 					console.log('steal', this.$app.timeId);
+					this.steal_num = res.data.steal_num
+					this.sprite_level = res.data.sprite_level
+					this.steal_num_max = res.data.steal_num_max
+					this.steal_count = res.data.steal_count
 					// 清除steal倒计时定时器
 					if (!this.$app.timeId) this.$app.timeId = []
 					for (let v of this.$app.timeId) {
@@ -1619,7 +1829,7 @@
 
 					this.chartList = resList
 					this.$nextTick(function() {
-						this.index = this.chartList.length - 1
+						this.chartIndex = this.chartList.length - 1
 					})
 
 					this.$app.closeLoading(this)
@@ -1708,7 +1918,9 @@
 				border-top-right-radius: 10upx;
 
 				.danmaku-wrapper {
+					position: absolute;
 					height: 50upx;
+					width: 100%;
 
 					@keyframes sayworld {
 						0% {
@@ -1731,6 +1943,7 @@
 						animation: sayworld 10s linear infinite;
 						align-items: center;
 						position: relative;
+						z-index: 9;
 
 						.avatar {
 							width: 44upx;
@@ -1763,15 +1976,18 @@
 				}
 
 				.row-info {
-					padding: 0 40upx;
+					padding: 30upx 40upx;
 					display: flex;
 					justify-content: space-around;
 					align-items: center;
-					height: 220upx;
+					// height: 220upx;
 
 					.avatar-wrapper {
 						text-align: center;
 						position: relative;
+						display: flex;
+						flex-direction: column;
+						align-items: center;
 
 						.avatar {
 							position: relative;
@@ -1779,7 +1995,6 @@
 							border-radius: 50%;
 							width: 150upx;
 							height: 150upx;
-							margin-bottom: 8upx;
 							border: 6upx solid #f7ab5f;
 							z-index: 1;
 						}
@@ -1803,36 +2018,49 @@
 							font-weight: 700;
 							font-size: 34upx;
 							height: 50upx;
+						}
 
+						.star-name-wrapper {
+							background-color: #FF2C3C;
+							border-radius: 30rpx;
+							font-size: 28rpx;
+							font-weight: 700;
+							color: #FFF;
+							text-align: center;
+							padding: 0 20upx;
 						}
 					}
 
 					.top-text-wrapper {
 						color: $color_1;
-						width: 280upx;
+						width: 300upx;
 						display: flex;
 						flex-direction: column;
 						justify-content: center;
 						line-height: 1.7;
+						margin-top: 20upx;
 
 						.star-name {
 							font-size: 36upx;
 							font-weight: 700;
 							display: flex;
 							align-items: center;
+							
 
-							.star-name-wrapper {
-								background-color: #FF2C3C;
-								border-radius: 30rpx;
-								font-size: 28rpx;
-								font-weight: 700;
+							.mystar {
+								margin: 0 10upx;
+								border-radius: 20upx;
+								font-size: 22upx;
+								font-weight: normal;
+								background-color: #23aecf;
+								padding: 0 10upx;
 								color: #FFF;
-								padding: 0rpx 30rpx;
-								line-height: 1.5;
-
+								letter-spacing: 3upx;
+								white-space: nowrap;
 							}
 
 							.join {
+								white-space: nowrap;
 								background-color: #f7ab5f;
 								border-radius: 30upx;
 								font-size: 28upx;
@@ -1848,7 +2076,6 @@
 						}
 
 						.bottom {
-							margin-top: 5upx;
 							display: flex;
 							align-items: center;
 							font-size: 34upx;
@@ -2048,6 +2275,7 @@
 				border-radius: 30upx;
 				height: 100%;
 
+				padding: 0 20upx;
 
 
 				.text {
@@ -2059,7 +2287,7 @@
 
 				.progress-wrap {
 					padding: 0 20upx;
-					width: 400upx;
+					flex: 1;
 
 					.progress {
 						border-radius: 30upx;
@@ -2621,6 +2849,18 @@
 
 		}
 
+		.send-modal-container.send-other {
+			.avatar {
+				width: 100upx;
+				height: 100upx;
+				border-radius: 50%;
+			}
+
+			.nickname {
+				margin-bottom: 20upx;
+			}
+		}
+
 		.steal-modal-container {
 			width: 100%;
 			height: 100%;
@@ -2628,6 +2868,29 @@
 			flex-direction: column;
 			align-items: center;
 			justify-content: space-around;
+
+			.explain-wrapper {
+				padding: 20upx;
+				width: 100%;
+
+				text {
+					color: orange;
+				}
+
+				.icon {
+					width: 30upx;
+					height: 30upx;
+				}
+
+				// 				.top {
+				// 					font-size: 34upx;
+				// 					font-weight: 700;
+				// 				}
+				// 
+				// 				.bottom {
+				// 					font-size: 22upx;
+				// 				}
+			}
 
 			.tips-wrapper {
 				padding: 10upx 30upx;
@@ -2643,7 +2906,7 @@
 					align-items: center;
 					padding: 10upx 20upx;
 					border-radius: 60upx;
-					background-color: rgba(255, 255, 255, .3);
+					background-color: rgba($color_0, .3);
 					margin: 10upx;
 
 					.rank-num {
@@ -2702,9 +2965,12 @@
 			flex-direction: column;
 
 			.explain-wrapper {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
+				padding: 20upx 40upx;
+				width: 100%;
+
+				.bottom {
+					justify-content: space-between;
+				}
 
 				// image {
 				// 	width: 50upx;
@@ -2724,7 +2990,8 @@
 					align-items: center;
 					padding: 10upx 20upx;
 					border-radius: 60upx;
-					background-color: rgba(255, 255, 255, .3);
+					// background-color: $color_0;
+					background-color: rgba($color_0, .3);
 					margin: 10upx;
 
 					.rank-num {
@@ -2748,10 +3015,12 @@
 
 
 					.text-container {
-						width: 250upx;
 						padding: 0 30upx;
 						line-height: 44upx;
+						.star-name {
+							width: 160upx;
 
+						}
 						.bottom-text {
 							display: flex;
 							align-items: center;
@@ -2769,8 +3038,8 @@
 					}
 
 					.del {
-						width: 40upx;
-						height: 40upx;
+						width: 36.78upx;
+						height: 36upx;
 						margin: 20upx;
 					}
 
@@ -2817,9 +3086,11 @@
 			flex-direction: column;
 
 			.explain-wrapper {
-				padding: 20upx;
+				padding: 20upx 40upx;
 
 				.top {
+					justify-content: space-between;
+
 					font-size: 34upx;
 					font-weight: 700;
 
@@ -2843,7 +3114,7 @@
 					align-items: center;
 					padding: 10upx 20upx;
 					border-radius: 60upx;
-					background-color: rgba(255, 255, 255, .3);
+					background-color: rgba($color_0, .3);
 					margin: 10upx;
 
 					.rank-num {
@@ -2967,12 +3238,51 @@
 			right: 0;
 			bottom: 0;
 			z-index: 9;
-			background-color: rgba(0, 0, 0, .5);
+			background-color: rgba(0, 0, 0, .9);
 			flex-direction: column;
 
 			.canvas {
+				width: 480upx;
+				height: 854upx;
+			}
+
+			.close-btn {
+				position: absolute;
+				width: 80upx;
+				height: 80upx;
+				z-index: 99;
+				border-radius: 50%;
+				// background-color: rgba(0, 0, 0, .5);
+				color: #FFF;
+				font-size: 45upx;
+				right: 20upx;
+				top: 20upx;
+			}
+
+			.wrapper {
 				width: 540upx;
 				height: 960upx;
+				padding: 40upx;
+				flex-direction: column;
+				background-color: #FFF;
+
+				image {
+					width: 100%;
+					flex: 1;
+				}
+
+				.btn {
+					margin-top: 40upx;
+					width: 100%;
+					height: 150upx;
+					text-align: center;
+					padding: 20upx;
+					font-size: 40upx;
+					color: #FFF;
+					box-shadow: 0 1px 2px rgba(#000, 0.6);
+					background-color: #ff648c;
+					border-radius: 20upx;
+				}
 			}
 
 			.btn-wrap {
@@ -2980,12 +3290,19 @@
 				display: flex;
 				justify-content: space-around;
 				width: 100%;
+				padding: 0 60upx;
 
 				.fsend-btn {
-					background-color: #0EC52F;
+					// background-color: #0EC52F;
 					font-size: 32upx;
 					color: #FFF;
 					padding: 0 20upx;
+					flex-direction: column;
+
+					image {
+						width: 80upx;
+						height: 80upx;
+					}
 				}
 
 				.save-btn {
@@ -2994,17 +3311,6 @@
 					font-size: 32upx;
 					color: #FFF;
 					padding: 0 20upx;
-				}
-
-				.btn {
-					width: 80upx;
-					height: 80upx;
-					margin-top: 10upx;
-					z-index: 10;
-					border-radius: 50%;
-					background-color: rgba(0, 0, 0, .5);
-					color: #FFF;
-					font-size: 45upx;
 				}
 			}
 		}
@@ -3042,24 +3348,150 @@
 		}
 
 		.userinfo-modal-container {
-			height: 600upx;
+			height: 640upx;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
 			justify-content: space-around;
 			padding: 40upx;
 
-			.avatar {
-				width: 160rpx;
-				height: 160rpx;
-				border-radius: 50%;
+			.top {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				line-height: 1.6;
+
+				.avatar {
+					width: 160rpx;
+					height: 160rpx;
+					border-radius: 50%;
+				}
+
+				.nickname {
+					font-size: 36upx;
+					font-weight: 600;
+				}
+
+				.badge-wrap {
+					.badge {
+						position: relative;
+						width: 40upx;
+						height: 40upx;
+					}
+
+					.level {
+						color: #FFF;
+						font-size: 26upx;
+					}
+
+					.text {
+						margin-top: 15upx;
+						height: 70%;
+						font-size: 20upx;
+						padding-left: 38upx;
+						padding-right: 19upx;
+						border-radius: 30upx;
+						margin-left: -30upx;
+						color: #FFF;
+					}
+
+					.text.i-1 {
+						background: linear-gradient(to right, #FFF, #8d8f91);
+					}
+
+					.text.i-2 {
+						background: linear-gradient(to right, #FFF, #234232);
+					}
+
+					.text.i-3 {
+						background: linear-gradient(to right, #FFF, #860d3d);
+					}
+
+					.text.i-4 {
+						background: linear-gradient(to right, #FFF, #b51688);
+					}
+
+					.text.i-5 {
+						background: linear-gradient(to right, #FFF, #612f29);
+					}
+
+					.text.i-6 {
+						background: linear-gradient(to right, #FFF, #730056);
+					}
+				}
+			}
+
+			.btn-list {
+				width: 100%;
+				justify-content: space-around;
+
+				.btn-item {
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+
+					.bg {
+						background-color: #EEE;
+						border-radius: 20upx;
+						width: 100upx;
+						height: 100upx;
+
+						image {
+							width: 60upx;
+							height: 60upx;
+						}
+					}
+
+					.text {
+						margin-top: 10upx;
+					}
+				}
+			}
+
+
+
+			.content {
+				line-height: 1.6;
 			}
 
 			.btn {
 				font-size: 32upx;
 				font-weight: 700;
 				width: 300upx;
-				height: 100upx;
+				height: 80upx;
+			}
+
+			.row {
+				width: 100%;
+				justify-content: space-around;
+
+				.btn {
+					width: 200upx;
+				}
+			}
+
+			.send-input {
+				position: relative;
+
+				input {
+					border: 1px solid #CCC;
+					background-color: #EEE;
+					border-radius: 60upx;
+					text-align: center;
+					width: 300upx;
+					height: 80upx;
+					font-size: 32upx;
+					font-weight: 700;
+				}
+
+				image {
+					position: absolute;
+					width: 50upx;
+					height: 50upx;
+					right: 20upx;
+					top: 50%;
+					transform: translateY(-50%);
+				}
 			}
 		}
 	}

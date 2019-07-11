@@ -1,13 +1,21 @@
 <template>
 	<view class="container">
+		<view class="top-row">
 
-		<view class="user-container">
-			<image :src="userInfo.avatarurl" mode="widthFix"></image>
-			<view class="nickname">
-				{{userInfo.nickname}}
+			<view class="user-container">
+				<image :src="userInfo.avatarurl" mode="widthFix"></image>
+				<view class="nickname">
+					{{userInfo.nickname}}
+				</view>
 			</view>
-		</view>
+			<btnComponent type="css" @tap="modal='proxyRecharge'">
+				<view class="proxy flex-set">
+					<image src="/static/image/recharge/proxy.png" mode=""></image>
+					<text>代充值</text>
+				</view>
+			</btnComponent>
 
+		</view>
 		<!-- <view class="row">
 			<image class="bg" src="/static/image/recharge/top-title.png" mode="widthFix"></image>
 			<view class="">能量充值</view>
@@ -16,11 +24,11 @@
 		<view class="count-wrap">
 			<view class="top-title">我的能量：{{userCurrency.coin}}</view>
 			<view class="top-title">我的灵丹：{{userCurrency.stone}}</view>
-			<view class="top-title flex-set"  @tap="$app.goPage('/pages/subPages/gift_package/gift_package')">
+			<view class="top-title flex-set" @tap="$app.goPage('/pages/subPages/gift_package/gift_package')">
 				<view class="" style="text-decoration: underline;">礼物背包</view>
 				<view class="badge-wrap">{{giftNum}}</view>
 			</view>
-			
+
 			<image class='hand' v-if="handShow" src="/static/image/pet/hand.png" mode="widthFix"></image>
 		</view>
 		<view class="count-wrap tips">
@@ -36,12 +44,33 @@
 				<view class="line two flex-set">
 					<image class="sicon" src="/static/image/user/b2.png" mode="widthFix"></image>+{{item.stone}}
 				</view>
-				
+
 				<view class="fee flex-set">
 					￥{{item.fee}}
 				</view>
 			</view>
 		</view>
+
+		<!-- 代充值 -->
+		<modalComponent v-if="modal == 'proxyRecharge'" title="代充值" @closeModal="modal=''">
+			<view class="userinfo-modal-container">
+				<view class="top">
+					<image class="avatar" :src="currentUser.avatarurl" mode="scaleToFill"></image>
+					<view class="nickname">{{currentUser.nickname}}</view>
+				</view>
+
+				<view class="send-input">
+					<input type="number" confirm-type="search" @confirm="searchUser()" :value="currentUserid" @input="currentUserid = $event.detail.value"
+					 placeholder="请输入对方的ID" />
+				</view>
+				<btnComponent type="css">
+					<view class="btn flex-set" @tap="searchUser()">查找用户</view>
+				</btnComponent>
+				<btnComponent type="css">
+					<view class="btn flex-set" @tap="confirm()">为TA充值</view>
+				</btnComponent>
+			</view>
+		</modalComponent>
 	</view>
 </template>
 
@@ -49,12 +78,16 @@
 	var timeId;
 	import btnComponent from '@/components/btnComponent.vue'
 	import badgeComponent from "@/components/badgeComponent.vue"
+	import modalComponent from "@/components/modalComponent.vue"
 	export default {
 		components: {
-			btnComponent,badgeComponent
+			btnComponent,
+			badgeComponent,
+			modalComponent,
 		},
 		data() {
 			return {
+				modal: '',
 				requestCount: 1,
 				userInfo: {
 					avatarurl: this.$app.getData('userInfo')['avatarurl'] || this.$app.AVATAR,
@@ -67,31 +100,59 @@
 					trumpet: 0
 				},
 				rechargeList: this.$app.getData('goodsList') || [],
-				handShow:false,
-				giftNum:0,
+				handShow: false,
+				giftNum: 0,
+				currentUser: {
+					avatarurl: this.$app.AVATAR,
+				},
+				currentUserid: '',
 			};
 		},
 		onLoad() {
 			this.getGoodsList()
 			let timeId = setInterval(() => {
 				if (this.$app.getData('userInfo').nickname) {
+					clearInterval(timeId)
 					this.userInfo = this.$app.getData('userInfo')
 					this.userCurrency = this.$app.getData('userCurrency')
 				}
 			}, 300)
-			
+
 			this.$app.request('page/gift_num', {}, res => {
 				this.giftNum = res.data || 0
 			})
 		},
-		
+
 		onUnload() {
 			clearInterval(timeId)
 		},
 		methods: {
+			// 确认代充
+			confirm() {
+				if (this.currentUser.nickname) {
+					this.userInfo = this.currentUser
+					this.modal = ''
+				} else {
+					this.$app.toast('请先查找用户')
+				}
+			},
+			searchUser() {
+				if (!this.currentUserid) return
+				const uid = this.currentUserid / 1234
+				this.$app.request('user/info', {
+					user_id: uid
+				}, res => {
+					if (res.data.nickname) {
+						this.currentUser = res.data
+					} else {
+						this.$app.toast('未找到用户')
+					}
+				}, 'POST', true)
+			},
 			payment(goods_id) {
 				this.$app.request(this.$app.API.PAY_ORDER, {
-					goods_id
+					goods_id,
+					user_id: this.userInfo.id
 				}, res => {
 					// #ifdef H5
 					WeixinJSBridge.invoke('getBrandWCPayRequest', {
@@ -143,7 +204,7 @@
 						}
 					});
 					// #endif
-				});
+				}, 'POST', true);
 
 			},
 			// HTTP
@@ -170,36 +231,50 @@
 
 <style lang="scss" scoped>
 	.container {
-		padding-top: 100upx;
-		
-		
-		.user-container {
-			position: absolute;
-			height: 60upx;
-			top: 40upx;
-			left: 40upx;
-			background-color: rgba(255, 255, 255, .3);
+		padding: 40upx;
+
+		.top-row {
 			display: flex;
 			align-items: center;
-			border-radius: 30upx;
+			justify-content: space-between;
+			margin-bottom: 40upx;
 
-			image {
-				width: 60upx;
-				border-radius: 50%;
-				margin-right: 20upx;
+			.user-container {
+				height: 70upx;
+				background-color: rgba(255, 255, 255, .3);
+				display: flex;
+				align-items: center;
+				border-radius: 30upx;
+
+				image {
+					width: 70upx;
+					height: 70upx;
+					border-radius: 50%;
+					margin-right: 20upx;
+				}
+
+				.nickname {
+					font-size: 32upx;
+					margin-right: 30upx;
+				}
 			}
 
-			.nickname {
-				font-size: 32upx;
-				margin-right: 30upx;
+			.proxy {
+				padding: 10upx 20upx;
+				height: 70upx;
+
+				image {
+					width: 50upx;
+					height: 50upx;
+					margin: 0 10upx;
+				}
 			}
 		}
+
 
 		.row {
 			position: relative;
 			height: 115upx;
-			margin: 0 40upx;
-			margin-top: 50upx;
 			text-align: center;
 			line-height: 115upx;
 			font-size: 40upx;
@@ -218,14 +293,12 @@
 			display: flex;
 			justify-content: space-around;
 			align-items: center;
-			margin: 0 40upx;
 			line-height: 100upx;
-			margin-top: 20upx;
 			position: relative;
-			
+
 			.top-title {
 				position: relative;
-				
+
 				.badge-wrap {
 					background-color: red;
 					border-radius: 30upx;
@@ -235,7 +308,7 @@
 					font-size: 18upx;
 				}
 			}
-			
+
 			.hand {
 				width: 60upx;
 				height: 60upx;
@@ -244,23 +317,22 @@
 				right: 40upx;
 				top: 60upx;
 			}
-			
+
 			@keyframes scale {
-			
+
 				0%,
 				100% {
 					transform: scale(0.9);
 				}
-			
+
 				50% {
 					transform: scale(1.1);
 				}
-			
+
 			}
 		}
-		
+
 		.count-wrap.tips {
-			margin: 0 40upx;
 			border-top: 1px dashed #EEE;
 			line-height: 1.6;
 		}
@@ -269,10 +341,8 @@
 			display: flex;
 			flex-wrap: wrap;
 			background-color: #FFF;
-			margin: 0 40upx;
-			margin-bottom: 40upx;
-			justify-content: center;
 			padding: 8upx;
+
 			.btn {
 				background-color: #fac7cc;
 				width: 200upx;
@@ -285,36 +355,40 @@
 				justify-content: space-around;
 				align-items: center;
 				border-radius: 10upx;
+
 				.name {
 					width: 125upx;
 					color: #fa5e86;
 					border-bottom: 2upx solid #EEE;
 				}
+
 				.icon {
 					width: 125upx;
 					height: 125upx;
 				}
-				
+
 				.line {
 					.sicon {
 						width: 30upx;
 					}
 				}
+
 				.line.one {
 					position: absolute;
 					right: 30upx;
 					top: 120upx;
-					
+
 					border-radius: 20upx;
 					background-color: rgba(255, 255, 255, .3);
 					font-size: 24upx;
 					padding: 0 4upx;
 					color: #666;
+
 					.sicon {
 						width: 25upx;
 					}
 				}
-				
+
 				.fee {
 					width: 125upx;
 					background-color: #FFF;
@@ -325,6 +399,104 @@
 
 		}
 
+		.userinfo-modal-container {
+			height: 640upx;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: space-around;
+			padding: 40upx;
 
+			.top {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				line-height: 1.6;
+
+				.avatar {
+					width: 160rpx;
+					height: 160rpx;
+					border-radius: 50%;
+				}
+
+				.nickname {
+					font-size: 36upx;
+					font-weight: 600;
+					height: 80upx;
+				}
+			}
+
+			.btn-list {
+				width: 100%;
+				justify-content: space-around;
+
+				.btn-item {
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+
+					.bg {
+						background-color: #FFF;
+						border-radius: 20upx;
+						width: 100upx;
+						height: 100upx;
+
+						image {
+							width: 60upx;
+							height: 60upx;
+						}
+					}
+
+					.text {
+						margin-top: 10upx;
+					}
+				}
+			}
+
+
+
+			.content {
+				line-height: 1.6;
+			}
+
+			.btn {
+				font-size: 32upx;
+				font-weight: 700;
+				width: 300upx;
+				height: 80upx;
+			}
+
+			.row {
+				width: 100%;
+				justify-content: space-around;
+
+				.btn {
+					width: 200upx;
+				}
+			}
+
+			.send-input {
+				position: relative;
+
+				input {
+					background-color: #FFF;
+					border-radius: 60upx;
+					text-align: center;
+					width: 300upx;
+					height: 80upx;
+					font-size: 32upx;
+					font-weight: 700;
+				}
+
+				image {
+					position: absolute;
+					width: 50upx;
+					height: 50upx;
+					right: 20upx;
+					top: 50%;
+					transform: translateY(-50%);
+				}
+			}
+		}
 	}
 </style>

@@ -1,20 +1,21 @@
 <template>
 	<view class='container flex-set' :class="{show:show}" @tap="closeModal">
 		<view class="modal-container" :class="[type]" @tap.stop="">
-			<view class="top-wrapper">
+			<view class="top-wrapper" v-if="headimg!='false'">
 				<image v-if="type == 'send'" src="/static/image/guild/send-modal-bg-1_01.png" mode="widthFix" class="title-bg"></image>
-				<image v-if="type == 'default'" src="/static/image/guild/modal-bg_01.png" mode="widthFix" class="title-bg"></image>
+				<view v-if="type == 'default'" class="title-bg linear"></view>
 				<view class="title">{{title}}</view>
 				<image class='center-img' :src="headimg" mode=""></image>
-				<view class="close-btn">
-					<btnComponent>
-						<image @tap="closeModal" src="/static/image/guild/close-btn.png" mode=""></image>
-					</btnComponent>
-				</view>
+
 			</view>
 			<view class="content">
 				<slot></slot>
 			</view>
+		</view>
+		<view class="close-btn flex-set iconfont icon-icon-test1" @tap="closeModal">
+			<!-- <btnComponent>
+				<image @tap="closeModal" src="/static/image/guild/close-btn.png" mode=""></image>
+			</btnComponent> -->
 		</view>
 	</view>
 </template>
@@ -64,23 +65,25 @@
 		right: 0;
 		bottom: 0;
 		z-index: 99;
-		background-color: rgba(0, 0, 0, .5);
-		transition: .3s;
+		background-color: rgba(0, 0, 0, .8);
+		transition: .1s;
 		opacity: 0;
-		
+		flex-direction: column;
+
 		.modal-container.send {
 			background-color: #f7e8f1;
 		}
-		
+
 		.modal-container {
+			margin-top: 90upx;
 			width: 600upx;
 			min-height: 730upx;
 			box-shadow: 0 1px 2px rgba(#000, .3);
 			border-radius: 20upx;
-			background-color: #fdd6cf;
+			// background-color: #fdd6cf;
+			background-color: #fff;
 			display: flex;
 			flex-direction: column;
-
 			.top-wrapper {
 				width: 100%;
 				height: 95upx;
@@ -88,6 +91,15 @@
 
 				.title-bg {
 					position: absolute;
+					height: 100%;
+					width: 100%;
+					border-top-left-radius: 20upx;
+					border-top-right-radius: 20upx;
+				}
+				
+				.title-bg.linear {
+					
+					background: linear-gradient(to bottom, #e5b4b0, #f6e3df);
 				}
 
 				.title {
@@ -108,17 +120,7 @@
 					top: -30%;
 				}
 
-				.close-btn {
-					position: absolute;
-					right: 0upx;
-					top: 0upx;
 
-					image {
-						width: 56upx;
-						height: 56upx;
-					}
-
-				}
 			}
 
 			.content {
@@ -126,6 +128,19 @@
 				flex: 1;
 				position: relative;
 			}
+
+		}
+
+		.close-btn {
+
+			width: 80upx;
+			height: 80upx;
+			margin-top: 10upx;
+			z-index: 10;
+			border-radius: 50%;
+			background-color: rgba(0, 0, 0, .3);
+			color: #FFF;
+			font-size: 45upx;
 
 		}
 

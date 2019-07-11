@@ -48,6 +48,10 @@
 			"style": {
 				"navigationBarTitleText": "充值"
 			}
+		},
+		{
+			"path": "pages/active_one/active_one",
+			"style": {}
 		}
 
 
@@ -103,10 +107,6 @@
 					"navigationBarTitleText": "师徒"
 				}
 			},
-			{
-				"path": "active_one/active_one",
-				"style": {}
-			},
 
 			{
 				"path": "fanclub/fanclub",
@@ -124,7 +124,11 @@
 					"navigationBarTitleText": "我的礼物"
 				}
 			}
-		]
+		    ,{
+				"path" : "fanclub_list/fanclub_list",
+				"style" : {}
+             }
+           ]
 	}],
 	// 分包预下载
 	"preloadRule": {
@@ -155,6 +159,11 @@
 				"iconPath": "/static/image/tab/group.png",
 				"selectedIconPath": "/static/image/tab/group-tap.png",
 				"text": "偶像圈"
+			},{
+				"pagePath": "pages/active_one/active_one",
+				"iconPath": "/static/image/tab/yingyuan.png",
+				"selectedIconPath": "/static/image/tab/yingyuan-tap.png",
+				"text": "应援"
 			}, {
 				"pagePath": "pages/user/user",
 				"iconPath": "/static/image/tab/user.png",

@@ -35,7 +35,6 @@
 				this.$app.request(this.$app.API.ARTICLE, {
 					id
 				}, res => {
-
 					try {
 						this.article = JSON.parse(res.data.value)
 					} catch (e) {

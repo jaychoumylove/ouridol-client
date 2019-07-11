@@ -1,7 +1,5 @@
 <template>
 	<view class="container">
-
-
 		<view class="user-container">
 			<image :src="userInfo.avatarurl" mode="widthFix"></image>
 			<view class="nickname">
@@ -206,7 +204,6 @@
 					user_id: this.user_id
 				}, res => {
 					this.spriteInfo = res.data
-
 
 					this.$app.closeLoading(this)
 				})

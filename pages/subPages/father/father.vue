@@ -1,7 +1,5 @@
 <template>
 	<view class="father-container">
-
-
 		<view class="top-container">
 			<image class="avatar" :src="userInfo.avatarurl" mode="aspectFill"></image>
 
@@ -89,7 +87,7 @@
 				sonTotal: 0,
 				todayTotal: 0,
 				father: '',
-				sonList: [],
+				sonList: this.$app.getData('sonList') || [],
 				userInfo: {
 					avatarurl: this.$app.getData('userInfo')['avatarurl'] || this.$app.AVATAR,
 					nickname: this.$app.getData('userInfo')['nickname'] || this.$app.NICKNAME,
@@ -152,6 +150,7 @@
 
 					this.sonTotal = resList.length
 					this.sonList = resList
+					this.$app.setData('sonList', this.sonList)
 
 					this.$app.closeLoading(this)
 				})

@@ -57,4 +57,9 @@
 		border-radius: 60upx;
 		box-shadow: 0 2upx 4upx rgba(#000, 0.3),inset 0 0 4upx rgba(#000, 0.3);
 	}
+	.button.color{
+		background-color: $color_0;
+		border-radius: 60upx;
+		box-shadow: 0 2upx 4upx rgba(#000, 0.3),inset 0 0 4upx rgba(#000, 0.3);
+	}
 </style>

@@ -20,7 +20,8 @@
 			</btnComponent>
 
 			<view class="friend-wrapper">
-				<image @tap="goOther(item)" v-for="(item,index) in invitList" :key="index" v-if="index<3" :src="item.avatar" mode="widthFix"></image>
+				<image @tap="openInvitModal" v-for="(item,index) in invitList" :key="index" v-if="index<3" :src="item.avatar" mode="aspectFill"></image>
+<!-- 				<image @tap="goOther(item)" v-for="(item,index) in invitList" :key="index" v-if="index<3" :src="item.avatar" mode="widthFix"></image> -->
 			</view>
 		</view>
 
@@ -129,24 +130,33 @@
 
 		<modalComponent v-if="modal == 'invit'" title="好友" @closeModal="modal=''">
 			<view class="invit-modal-container">
-
+		
 				<scroll-view scroll-y class="list-wrapper" @scrolltolower='invitListPage++; getInvitList()'>
-
-					<!-- <view class="explain-wrapper">
-						<view class="flex-set">
-							<image src="/static/image/ic_haibao__bak.png" mode="widthFix"></image>
-							加好友一起养精灵
+		
+					<view class="explain-wrapper">
+						<view class="">
+							帮好友收集能量，自己额外获得<text>50%</text>能量
+							<!-- <image src="/static/image/ic_haibao__bak.png" mode="widthFix"></image> -->
+							<!-- 加好友一起养精灵 -->
 						</view>
-						<btnComponent type="default">
-							<button class="btn" open-type="share" data-share="1">
-								<view class="flex-set" style="width: 160upx; height: 80upx;">邀请好友</view>
-							</button>
-						</btnComponent>
-					</view> -->
-					<button class='explain-wrapper' open-type="share" data-share="1">
+						<view class="bottom flex-set">
+							<view>当前好友数<text>{{friendTotal}}/100</text>人</view>
+		
+							<btnComponent type="default">
+								<button class="btn" open-type="share" data-share="1">
+									<view class="flex-set" style="font-weight: 700 ;width: 140upx; height: 60upx;">邀请好友</view>
+								</button>
+							</btnComponent>
+							<!-- <image src="/static/image/ic_haibao__bak.png" mode="widthFix"></image> -->
+							<!-- 加好友一起养精灵 -->
+						</view>
+		
+		
+					</view>
+					<!-- <button class='explain-wrapper' open-type="share" data-share="1">
 						<image style="width: 100%;" :src="$app.getData('config').zhuren_tips_img" mode="widthFix"></image>
-					</button>
-
+					</button> -->
+		
 					<block v-if="invitList.length > 0">
 						<view class="item" v-for="(item,index) in invitList" :key="index" @tap="goOther(item)">
 							<view class="rank-num">
@@ -159,26 +169,27 @@
 							<view class="text-container">
 								<view class="star-name text-overflow">{{item.nickname}}</view>
 							</view>
-							<view class="egg flex-set" @tap.stop="settleSprite(index,item)">
+							<image @tap.stop="deleteFriend(item,index)" class="del" src="/static/image/guild/del.png" mode="widthFix"></image>
+							<view class="egg flex-set" @tap.stop="settleSprite(index, item)">
 								<image v-if="item.earn > 2 && !item.off" class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
-
+		
 								<view class="num-wrapper position-set">{{item.earn}}</view>
 								<image v-if="!item.off" class="flex-set" src="/static/image/pet/y5.png" mode="widthFix"></image>
 								<image v-else class="flex-set" src="/static/image/pet/y5-off.png" mode="widthFix"></image>
 							</view>
 						</view>
 					</block>
-
+		
 					<view v-else class="nodata flex-set">
 						<view class="top">你还没有好友</view>
 						<button open-type="share" data-share="1">
 							<view class="bottom">加一位好友></view>
 						</button>
 					</view>
-
+		
 				</scroll-view>
 			</view>
-
+		
 		</modalComponent>
 		<modalComponent v-if="modal == 'skill'" :title="modalTitle" @closeModal="modal=''">
 			<view class="skill-modal-container">
@@ -259,6 +270,8 @@
 			return {
 				requestCount: 1,
 				invitListPage: 1,
+				friendTotal: 0,
+
 
 				userCurrency: this.$app.getData('userCurrency') || {
 					coin: 0,
@@ -314,6 +327,16 @@
 				}, 1000)
 
 			},
+			// 删除好友
+			deleteFriend(item, index) {
+				this.$app.modal('确认删除好友【' + item.nickname + '】？', () => {
+					this.$app.request('user/delFriend', {
+						user_id: item.uid
+					}, res => {
+						this.invitList.splice(index, 1)
+					}, 'POST', true)
+				})
+			},
 			tapSprite() {
 				if (this.spriteInfo.need_stone && this.userCurrency.stone >= this.spriteInfo.need_stone) {
 					// 精灵升级
@@ -321,7 +344,6 @@
 						this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
 							this.$app.setData('userCurrency', res.data)
 							this.userCurrency = this.$app.getData('userCurrency')
-
 						})
 						this.getSpriteInfo()
 
@@ -429,11 +451,24 @@
 					type: 1,
 					page: this.invitListPage || 1
 				}, res => {
-
+					// this.invitAward = res.data.award
+					// const resList = []
+					// res.data.list.forEach((e, i) => {
+					// 	// resList.push({
+					// 	// 	avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
+					// 	// 	status: e.status,
+					// 	// 	uid: e.ral_user_id
+					// 	// })
+					// 	
+					// 	
+					// })
+					// this.invitList = resList
+			
 					this.invitAward = res.data.award
 					const resList = []
 					this.spriteEarn = false
-					res.data.list.forEach((e, i) => {
+					this.friendTotal = res.data.list.total_count
+					res.data.list.list.forEach((e, i) => {
 						resList.push({
 							avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
 							status: e.status,
@@ -442,7 +477,7 @@
 							earn: e.sprite.earn,
 							off: e.off,
 						})
-
+			
 						if (e.sprite.earn >= 100) {
 							// 显示红点
 							this.spriteEarn = true
@@ -453,8 +488,8 @@
 					} else {
 						this.invitList = this.invitList.concat(resList)
 					}
-
-
+			
+			
 					this.$app.closeLoading(this)
 				})
 			},
@@ -562,6 +597,7 @@
 
 				image {
 					width: 60upx;
+					height: 60upx;
 					margin: 10upx 0;
 					border-radius: 50%;
 				}
@@ -847,50 +883,53 @@
 		}
 
 		.invit-modal-container {
-
 			width: 100%;
 			height: 100%;
 			position: absolute;
-
+		
 			display: flex;
 			flex-direction: column;
-
+		
 			.explain-wrapper {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-
+				padding: 20upx 40upx;
+				width: 100%;
+		
+				.bottom {
+					justify-content: space-between;
+				}
+		
 				// image {
 				// 	width: 50upx;
 				// 	margin: 10upx 40upx;
 				// }
 			}
-
+		
 			.list-wrapper {
 				overflow-y: auto;
 				height: 100%;
 				display: flex;
 				flex-direction: column;
-
+		
 				.item {
 					display: flex;
 					justify-content: flex-start;
 					align-items: center;
 					padding: 10upx 20upx;
 					border-radius: 60upx;
-					background-color: rgba(255, 255, 255, .3);
+					// background-color: $color_0;
+					background-color: rgba($color_0, .3);
 					margin: 10upx;
-
+		
 					.rank-num {
 						width: 90upx;
 						text-align: center;
-
+		
 						image {
 							width: 40upx;
 							min-height: 40upx;
 						}
 					}
-
+		
 					.avatar {
 						image {
 							width: 90upx;
@@ -898,64 +937,72 @@
 							border-radius: 50%;
 						}
 					}
-
-
-
+		
+		
+		
 					.text-container {
-						width: 300upx;
 						padding: 0 30upx;
 						line-height: 44upx;
-
+						.star-name {
+							width: 160upx;
+		
+						}
 						.bottom-text {
 							display: flex;
 							align-items: center;
-
+		
 							.hot-count {
 								color: $color_2;
 								margin-right: 4upx;
 							}
-
+		
 							.icon-heart {
 								width: 30upx;
 								height: 30upx;
 							}
 						}
 					}
-
+		
+					.del {
+						width: 36.78upx;
+						height: 36upx;
+						margin: 20upx;
+					}
+		
 					.egg {
 						margin-right: 20upx;
 						position: relative;
-
+		
 						.hand {
 							position: absolute;
 							z-index: 2;
 							right: -15upx;
 							bottom: -15upx;
 						}
-
+		
 						.num-wrapper {
 							z-index: 1;
 							color: #FFF;
 						}
-
+		
 						image {
 							width: 60upx;
 							min-height: 60upx;
 						}
 					}
 				}
-
+		
 				.nodata {
 					height: 400upx;
 					flex-direction: column;
-
+		
 					.bottom {
 						color: $color_2;
 						font-size: 40upx;
 					}
 				}
 			}
-
+		
 		}
 
 		.skill-modal-container {

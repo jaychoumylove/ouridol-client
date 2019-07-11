@@ -79,7 +79,7 @@
 						}, res => {
 							this.$app.toast('兑换成功', 'success')
 							this.getGoodsList()
-						})
+						},'POST',true)
 					})
 				}
 			},

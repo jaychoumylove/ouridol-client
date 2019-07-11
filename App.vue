@@ -60,11 +60,9 @@
 					this.$app.setData('config', res.data.config)
 
 					if (res.data.massUser) this.$app.modal('助力' + res.data.massUser + '成功')
-					
 				})
-				
 			},
-			
+
 		}
 	};
 </script>
@@ -131,7 +129,6 @@
 		right: 0;
 		bottom: 0;
 		background: $color_0 url(http://tva1.sinaimg.cn/large/0060lm7Tly1g41l6zxwdvj30kw1g03z4.jpg) bottom center no-repeat/cover;
-		/* background: linear-gradient(to bottom, #fbe7e0,#e5b4b0); */
 	}
 
 	/* 下拉刷新样式颜色 */

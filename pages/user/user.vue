@@ -14,11 +14,19 @@
 						<view class="username">{{userInfo.nickname}}</view>
 						<!-- <image class='vip' src="/static/image/user/h2-1.png" mode=""></image>
 						<view class="vip-expire">(2019年6月18日到期)</view> -->
+						<view class="id-content flex-set" v-if="userInfo.id" @tap="$app.copy(userInfo.id*1234)">ID:{{userInfo.id*1234}}</view>
 					</view>
 					<view class="item-line middle">
-						<view class="id-content flex-set" v-if="userInfo.id" @tap="$app.copy(userInfo.id*1234)">ID:{{userInfo.id*1234}}</view>
 						<view class="mystar flex-set" v-if="userStar.id" @tap="$app.goPage('/pages/group/group')">{{userStar.name}}偶像圈</view>
-						<view class="mystar flex-set" style="background-color: #67458F;" v-if="$app.getData('userInfo').type == 1">管理员</view>
+						<view class="mystar flex-set" style="background-color: #415236;" 
+							v-if="userStar.id"
+						 @tap="$app.goPage('/pages/subPages/fanclub_list/fanclub_list')">
+							<image src="/static/image/user/s8.png" style="width: 30upx;height: 30upx;" mode="widthFix"></image>
+							后援会
+						</view>
+						<view class="mystar flex-set" style="background-color: #67458F;" v-if="$app.getData('userInfo').type==1">
+							管理员
+						</view>
 
 						<!-- <view class="fan-level">
 							<image src="/static/image/user/h1-2.png" mode=""></image>
@@ -85,10 +93,10 @@
 				<image src="/static/image/user/r2.png" mode="widthFix"></image>
 				<view class="text">每日任务</view>
 			</view>
-			<view class="list-item" @tap="$app.goPage('/pages/subPages/fanclub/fanclub')">
+			<!-- <view class="list-item" @tap="$app.goPage('/pages/subPages/fanclub_list/fanclub_list')">
 				<image src="/static/image/user/s8.png" mode="widthFix"></image>
-				<view class="text">后援会入驻</view>
-			</view>
+				<view class="text">后援会</view>
+			</view> -->
 			<!-- <view class="list-item" @tap="$app.toast('敬请期待')">
 				<image src="/static/image/user/s2.png" mode="widthFix"></image>
 				<view class="text">消息通知</view>
@@ -275,13 +283,15 @@
 					display: flex;
 					justify-content: space-around;
 					flex-direction: column;
-
+					font-size: 26upx;
+					
 					.item-line {
 						display: flex;
 						align-items: center;
 
 						.username {
 							font-weight: 700;
+							font-size: 30upx;
 							margin-right: 8upx;
 						}
 
@@ -300,19 +310,22 @@
 
 						.id-content {
 							border-radius: 20upx;
-							font-size: 24upx;
+							// font-size: 24upx;
 							background-color: #FDDE2F;
 							padding: 0 10upx;
 							color: #853E1D;
+							margin: 0 10upx;
 						}
 
 						.mystar {
-							margin-left: 10upx;
+							margin: 0 10upx;
 							border-radius: 20upx;
-							font-size: 24upx;
+							// font-size: 24upx;
 							background-color: #23aecf;
 							padding: 0 10upx;
 							color: #FFF;
+							letter-spacing: 3upx;
+							white-space: nowrap;
 						}
 
 						.fan-level {

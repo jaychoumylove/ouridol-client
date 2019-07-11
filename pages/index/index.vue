@@ -82,7 +82,6 @@
 								<view class="flex-set" style="width: 130upx;height: 65upx;">打榜</view>
 							</btnComponent>
 						</view>
-
 					</template>
 				</listItemComponent>
 
@@ -95,7 +94,6 @@
 		<view class="open-ad-container flex-set" v-if="modal=='indexBanner' && $app.getData('config').index_banner && $app.getData('config').index_banner.img_url">
 			<image class="main" :src="$app.getData('config').index_banner.img_url" mode="aspectFill" @tap="modal='';$app.goPage($app.getData('config').index_banner.gopage)"></image>
 			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
-
 		</view>
 
 		<view class="open-ad-container flex-set" v-if="modal=='qrcode'">
@@ -146,7 +144,14 @@
 			this.modal = ''
 			// #endif
 			// 跳转到明星页
-			option.starid && this.goGroup(option.starid)
+			if (option.starid) {
+				this.starid = option.starid
+				if (option.path) {
+					this.$app.goPage(option.path + '?starid=' + this.starid)
+				} else {
+					this.goGroup(this.starid)
+				}
+			}
 			this.getSunday()
 		},
 		onShow() {
@@ -182,9 +187,9 @@
 		methods: {
 			preimg(img) {
 				uni.previewImage({
-					current:0,
+					current: 0,
 					urls: [img.trim()],
-					success:res=>{
+					success: res => {
 						console.log(res);
 					}
 				})
@@ -506,7 +511,7 @@
 			right: 0;
 			bottom: 0;
 			z-index: 9;
-			background-color: rgba(0, 0, 0, .5);
+			background-color: rgba(0, 0, 0, .6);
 			flex-direction: column;
 
 			.main {
