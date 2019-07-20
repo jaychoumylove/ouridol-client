@@ -85,7 +85,7 @@
 					</view>
 				</button>
 			</block>
-			<view class="list-item" @tap="$app.goPage('/pages/subPages/gift_package/gift_package')">
+			<view class="list-item" @tap="$app.goPage('/pages/gift_package/gift_package')">
 				<image src="/static/image/user/r8.png" mode="widthFix"></image>
 				<view class="text">礼物背包</view>
 			</view>

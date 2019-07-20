@@ -1,0 +1,168 @@
+view,
+scroll-view,
+swiper,
+swiper-item,
+movable-area,
+movable-view,
+cover-view,
+cover-image,
+icon,
+text,
+rich-text,
+progress,
+button,
+checkbox-group,
+checkbox,
+form,
+input,
+label,
+picker,
+picker-view,
+radio-group,
+radio,
+slider,
+switch,
+textarea,
+navigator,
+functional-page-navigator,
+image,
+video,
+camera,
+live-player,
+live-pusher,
+map,
+canvas,
+open-data,
+web-view,
+ad {
+	box-sizing: border-box;
+}
+
+/* 清除button样式 */
+button {
+	margin: 0;
+	padding: 0;
+	background-color: transparent;
+	font-size: 28upx;
+	line-height: 1.5;
+	border-radius: 0;
+	color: $color_1;
+}
+
+button::after {
+	border: none;
+}
+
+.button-hover {
+	background-color: transparent;
+}
+
+// 不显示scroll-view的滚动条
+::-webkit-scrollbar {
+	width: 0;
+	height: 0;
+	color: transparent;
+}
+// form
+.uni-input-form {
+	height: 100%;
+}
+
+image {
+	width: 100%;
+	height: 100%;
+	vertical-align: middle;
+	will-change: transform;
+}
+
+/* 子元素居中 */
+.flex-set {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* 元素居中,父元素需加定位 */
+.position-set {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+/* 单行文字,超出隐藏 */
+.text-overflow {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+/* 点击效果 */
+.hover {
+	background-color: rgba(200, 200, 200, .3);
+}
+
+.placeholder-style {
+	color: #FFF;
+}
+
+/* 颜色 */
+.red {
+	color: #F00;
+}
+
+.main-color {
+	color: $color_1;
+}
+
+/* 图标大小 */
+.xs {
+	width: 16upx;
+	height: 16upx;
+	margin: 2upx;
+}
+
+.s {
+	width: 32upx;
+	height: 32upx;
+	margin: 4upx;
+
+}
+
+.m {
+	width: 48upx;
+	height: 48upx;
+	margin: 6upx;
+
+}
+
+.l {
+	width: 64upx;
+	height: 64upx;
+	margin: 8upx;
+
+}
+
+.xl {
+	width: 128upx;
+	height: 128upx;
+	margin: 16upx;
+
+}
+
+/* 字体大小 */
+.f-s {
+	font-size: 22upx;
+}
+
+.f-m {
+	font-size: 28upx;
+}
+
+.f-l {
+	font-size: 34upx;
+}
+
+.f-xl {
+	font-size: 40upx;
+}

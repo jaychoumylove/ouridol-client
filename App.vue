@@ -70,47 +70,7 @@
 <style lang='scss'>
 	@import '/lib/css/iconfont.css';
 	@import '/lib/css/article.css';
-
-	/*每个页面公共css */
-	view,
-	scroll-view,
-	swiper,
-	swiper-item,
-	movable-area,
-	movable-view,
-	cover-view,
-	cover-image,
-	icon,
-	text,
-	rich-text,
-	progress,
-	button,
-	checkbox-group,
-	checkbox,
-	form,
-	input,
-	label,
-	picker,
-	picker-view,
-	radio-group,
-	radio,
-	slider,
-	switch,
-	textarea,
-	navigator,
-	functional-page-navigator,
-	image,
-	video,
-	camera,
-	live-player,
-	live-pusher,
-	map,
-	canvas,
-	open-data,
-	web-view,
-	ad {
-		box-sizing: border-box;
-	}
+	@import '/lib/css/base.scss';
 
 	page {
 		color: $color_1;
@@ -138,51 +98,6 @@
 
 	.uni-page-refresh__path {
 		stroke: $color_0;
-	}
-
-	image {
-		width: 100%;
-		height: 100%;
-		vertical-align: middle;
-		will-change: transform;
-	}
-
-	/* button */
-	button {
-		margin: 0;
-		padding: 0;
-		background-color: transparent;
-		font-size: 28upx;
-		line-height: 1.5;
-		color: $color_1;
-	}
-
-	button::after {
-		border: none;
-	}
-
-	.button-hover {
-		background-color: transparent;
-	}
-
-	.flex-set {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.position-set {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-	}
-
-	/* 单行文字,超出隐藏 */
-	.text-overflow {
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		overflow: hidden;
 	}
 
 	.placeholder-style {

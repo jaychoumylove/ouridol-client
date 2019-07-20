@@ -31,14 +31,14 @@
 						</view>
 					</view>
 					<view class="img-row">
-						<input type="number" :value="val" @input="setVal" />
+						<input type="number" @tap="kickBack()" :value="val" @input="setVal" />
 						<input disabled type="text" :value="val * item.count" />
 					</view>
 				</view>
 
 				<view class="mid">→ </view>
-				<btnComponent type="css" @tap="recharge()">
-					<view class="flex-set" style="width: 180upx;height: 80upx;">兑换</view>
+				<btnComponent type="css">
+					<view class="flex-set" style="width: 180upx;height: 80upx;" @tap="recharge()">兑换</view>
 				</btnComponent>
 			</view>
 
@@ -67,6 +67,14 @@
 			this.getGoodsList()
 		},
 		methods: {
+			kickBack() {
+				// #ifdef H5
+				setTimeout(() => {
+					window.scrollTo(0, document.body.scrollTop + 1);
+					document.body.scrollTop >= 1 && window.scrollTo(0, document.body.scrollTop - 1);
+				}, 10)
+				// #endif
+			},
 			recharge() {
 				if (!this.val || this.val <= 0 || this.val > this.item.self) {
 					this.$app.toast('请输入正确数额')
@@ -259,9 +267,9 @@
 					}
 
 					input {
-						background-color: #FFF;
+						background-color: #EEE;
 						margin: 20upx 40upx;
-						border-radius: 10upx;
+						border-radius: 20upx;
 						height: 36upx;
 						line-height: 36upx;
 						font-size: 36upx;

@@ -8,7 +8,6 @@
 				"disableScroll": true
 			}
 		},
-		// #endif
 		{
 			"path": "pages/index/index",
 			"style": {
@@ -37,6 +36,7 @@
 			"path": "pages/notice/notice",
 			"style": {}
 		},
+		// #endif
 		{
 			"path": "pages/signin/signin",
 			"style": {
@@ -50,12 +50,21 @@
 			}
 		},
 		{
+			"path": "pages/gift_package/gift_package",
+			"style": {
+				"navigationBarTitleText": "我的礼物"
+			}
+		},
+		{
 			"path": "pages/active_one/active_one",
+			"style": {}
+		},{
+			"path": "pages/prop/prop",
 			"style": {}
 		}
 
-
 	],
+	// #ifndef H5
 	// 分包
 	"subPackages": [{
 		"root": "pages/subPages/",
@@ -118,13 +127,7 @@
 			}, {
 				"path": "msg/msg",
 				"style": {}
-			}, {
-				"path": "gift_package/gift_package",
-				"style": {
-					"navigationBarTitleText": "我的礼物"
-				}
-			}
-		    ,{
+			},{
 				"path" : "fanclub_list/fanclub_list",
 				"style" : {}
              }
@@ -137,7 +140,6 @@
 			"network": "all"
 		}
 	},
-	// #ifndef H5
 	"tabBar": {
 		"color": "#b296ad",
 		"selectedColor": "#694491",
@@ -179,7 +181,7 @@
 		"navigationBarBackgroundColor": "#efccc8",
 		"enablePullDownRefresh": false,
 		// #ifdef H5
-		// "navigationStyle": "custom",
+		"navigationStyle": "custom",
 		// #endif
 		"onReachBottomDistance": 100
 

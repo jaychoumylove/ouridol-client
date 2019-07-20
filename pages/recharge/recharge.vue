@@ -1,5 +1,5 @@
 <template>
-	<view class="container">
+	<view class="recharge-container">
 		<view class="top-row">
 
 			<view class="user-container">
@@ -8,8 +8,8 @@
 					{{userInfo.nickname}}
 				</view>
 			</view>
-			<btnComponent type="css" @tap="modal='proxyRecharge'">
-				<view class="proxy flex-set">
+			<btnComponent type="css">
+				<view class="proxy flex-set" @tap="modal='proxyRecharge'">
 					<image src="/static/image/recharge/proxy.png" mode=""></image>
 					<text>代充值</text>
 				</view>
@@ -24,7 +24,7 @@
 		<view class="count-wrap">
 			<view class="top-title">我的能量：{{userCurrency.coin}}</view>
 			<view class="top-title">我的灵丹：{{userCurrency.stone}}</view>
-			<view class="top-title flex-set" @tap="$app.goPage('/pages/subPages/gift_package/gift_package')">
+			<view class="top-title flex-set" @tap="$app.goPage('/pages/gift_package/gift_package')">
 				<view class="" style="text-decoration: underline;">礼物背包</view>
 				<view class="badge-wrap">{{giftNum}}</view>
 			</view>
@@ -60,7 +60,7 @@
 				</view>
 
 				<view class="send-input">
-					<input type="number" confirm-type="search" @confirm="searchUser()" :value="currentUserid" @input="currentUserid = $event.detail.value"
+					<input type="number" confirm-type="search" @blur="kickBack()" @confirm="searchUser()" :value="currentUserid" @input="currentUserid = $event.detail.value"
 					 placeholder="请输入对方的ID" />
 				</view>
 				<btnComponent type="css">
@@ -127,6 +127,14 @@
 			clearInterval(timeId)
 		},
 		methods: {
+			kickBack() {
+				// #ifdef H5
+				setTimeout(() => {
+					window.scrollTo(0, document.body.scrollTop + 1);
+					document.body.scrollTop >= 1 && window.scrollTo(0, document.body.scrollTop - 1);
+				}, 10)
+				// #endif
+			},
 			// 确认代充
 			confirm() {
 				if (this.currentUser.nickname) {
@@ -230,7 +238,7 @@
 </script>
 
 <style lang="scss" scoped>
-	.container {
+	.recharge-container {
 		padding: 40upx;
 
 		.top-row {
@@ -479,7 +487,7 @@
 				position: relative;
 
 				input {
-					background-color: #FFF;
+					background-color: #EEE;
 					border-radius: 60upx;
 					text-align: center;
 					width: 300upx;
