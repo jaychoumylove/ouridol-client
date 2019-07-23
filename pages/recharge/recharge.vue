@@ -1,5 +1,8 @@
 <template>
-	<view class="recharge-container">
+	<view v-if="~$app.getData('sysInfo').system.indexOf('iOS') && $app.getData('config').ios_switch == '0'" class="recharge-container flex-set">
+		由于相关规范，iOS功能暂不可用
+	</view>
+	<view v-else class="recharge-container">
 		<view class="top-row">
 
 			<view class="user-container">
@@ -72,6 +75,7 @@
 			</view>
 		</modalComponent>
 	</view>
+	
 </template>
 
 <script>
@@ -109,6 +113,7 @@
 			};
 		},
 		onLoad() {
+			
 			this.getGoodsList()
 			let timeId = setInterval(() => {
 				if (this.$app.getData('userInfo').nickname) {

@@ -36,7 +36,8 @@
 									+{{app.getData('userInfo').type == 0? '加入':'切换'}}
 								</button>
 							</block>
-							<view class="mystar flex-set" style="background-color: #415236;" v-if="app.getData('userStar').id ==star.id" @tap="app.goPage('/pages/subPages/fanclub_list/fanclub_list')">
+							<view class="mystar flex-set" style="background-color: #415236;" v-if="app.getData('userStar').id ==star.id"
+							 @tap="app.goPage('/pages/subPages/fanclub_list/fanclub_list')">
 								<image src="/static/image/user/s8.png" style="width: 30upx;" mode="widthFix"></image>
 								后援会
 							</view>
@@ -88,7 +89,7 @@
 
 				</view>
 			</view>
-
+			<!-- 按钮组 -->
 			<view class="func-container">
 				<view class="func-list-wrapper">
 					<view class="func-item" @tap="app.goPage('/pages/subPages/task/task')">
@@ -178,6 +179,7 @@
 				<view class="right" @tap.stop="app.goPage('/pages/subPages/notice/list/list')">更多>></view>
 			</view>
 		</view>
+		<!-- 解锁活动 -->
 		<view class="active-container" @tap='goActive()'>
 			<view class="active-inner flex-set">
 
@@ -204,8 +206,9 @@
 			</view>
 
 		</view>
-		<scroll-view v-if="app.getData('config').version != app.VERSION && (star.id == app.getData('userStar').id || app.getData('userInfo').type == 1)" class="chart-container"
-		 scroll-y scroll-with-animation :scroll-into-view="'index_'+chartIndex">
+		<!-- 聊天区域 -->
+		<scroll-view v-if="app.getData('config').version != app.VERSION && (star.id == app.getData('userStar').id || app.getData('userInfo').type == 1)"
+		 class="chart-container" scroll-y scroll-with-animation :scroll-into-view="'index_'+chartIndex">
 
 			<view :id="'index_'+index" class="msg-item" :class="{right:item.uid==app.getData('userInfo')['id']}" v-for="(item,index) in chartList"
 			 :key="index">
@@ -254,33 +257,44 @@
 
 			</view>
 		</view>
-		<!-- <image v-if="star.id == app.getData('userStar')['id']" class="msg-button" @tap="msgModal = true" src="/static/image/guild/write-btn.png"
-		 mode=""></image> -->
 
-		<view class="msg-input-container" v-if="star.id == app.getData('userStar')['id']">
-			<btnComponent>
-				<view class="trumpet-wrapper">
-					<image src="/static/image/guild/sayworld.png" mode="" @tap="sayworld"></image>
-					<view class="trumpet">{{userCurrency.trumpet}}</view>
-				</view>
-			</btnComponent>
-			<input type="text" :value="chartMsg" confirm-type="send" @confirm="sendMsg" @input="chartMsg = $event.detail.value"
-			 placeholder="快来和小伙伴们聊天吧" />
-			<btnComponent>
-				<image src="/static/image/guild/sendmsg.png" mode="" @tap="sendMsg"></image>
-			</btnComponent>
-			<!-- <view class="send-btn-wrapper flex-set">
-				<image class="bubble" src="/static/image/guild/hart.png" mode=""></image>
-
+		<!-- 聊天输入 -->
+		<block v-if="app.getData('config').version != app.VERSION && (star.id == app.getData('userStar').id || app.getData('userInfo').type == 1)">
+			<view class="msg-input-container" v-if="app.getData('config').chart_type == '0'">
 				<btnComponent>
-					<form report-submit @submit="sendOrFollow">
-						<button form-type="submit">
-							<image src="/static/image/guild/send-give.png" mode=""></image>
-						</button>
-					</form>
+					<view class="trumpet-wrapper">
+						<image src="/static/image/guild/sayworld.png" mode="" @tap="sayworld"></image>
+						<view class="trumpet">{{userCurrency.trumpet}}</view>
+					</view>
 				</btnComponent>
-			</view> -->
+				<input type="text" :value="chartMsg" confirm-type="send" @confirm="sendMsg" @input="chartMsg = $event.detail.value"
+				 placeholder="快来和小伙伴们聊天吧" />
+				<btnComponent>
+					<image src="/static/image/guild/sendmsg.png" mode="" @tap="sendMsg"></image>
+				</btnComponent>
+			</view>
+			<image v-else class="msg-button" @tap="modal='say'" src="/static/image/guild/biaobai.png" mode=""></image>
+		</block>
+		<!-- 改版聊天 -->
+		<view class="say-modal-container" v-if="modal == 'say'">
+			<view class="container">
+				<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal=''"></view>
 
+				<input class="textarea" :focus="true" type="text" :value="chartMsg" confirm-type="send" @confirm="sendMsg" @input="chartMsg = $event.detail.value"
+				 placeholder="快来和小伙伴们聊天吧" />
+
+				<view class="bottom">
+					<view class="left flex-set">
+						<image src="/static/image/user/b3.png" mode=""></image>x{{userCurrency.trumpet}}
+					</view>
+
+					<view class="right flex-set">
+						<view class="btn one flex-set" :class="{active:chartMsg}" @tap="sayworld">全服喊话<image src="/static/image/user/b3.png"
+							 mode=""></image>x1</view>
+						<view class="btn two flex-set" :class="{active:chartMsg}" @tap="sendMsg">发言</view>
+					</view>
+				</view>
+			</view>
 		</view>
 
 		<!-- 礼物 -->
@@ -1436,6 +1450,7 @@
 					this.$app.toast('内容过长')
 					return
 				}
+				this.modal = ''
 				this.$app.request(this.$app.API.USER_SAYWORLD, {
 					content: this.chartMsg.trim()
 				}, res => {
@@ -1510,7 +1525,7 @@
 					this.hasInvitcount = res.data.hasInvitcount
 					// 已领取人次
 					this.hasEarnCount = res.data.list.hasEarnCount
-					
+
 					const resList = []
 					res.data.list.list.forEach((e, i) => {
 						resList.push({
@@ -1526,8 +1541,8 @@
 					} else {
 						this.fakeinvitList = this.fakeinvitList.concat(resList)
 					}
-					
-					
+
+
 					// this.invitNum = 10
 					// clearInterval(this.$app.invitNumTimeId)
 					// this.$app.invitNumTimeId = setInterval(() => {
@@ -1655,6 +1670,7 @@
 				const chartMsg = this.chartMsg.trim()
 				this.chartMsg = ''
 				if (!chartMsg) return
+				this.modal = ''
 				this.$app.invokeSocket()
 				this.$app.request(this.$app.API.STAR_SENDMSG, {
 					starid: this.star.id,
@@ -2045,7 +2061,7 @@
 							font-weight: 700;
 							display: flex;
 							align-items: center;
-							
+
 
 							.mystar {
 								margin: 0 10upx;
@@ -2501,10 +2517,12 @@
 
 		.msg-button {
 			position: fixed;
-			right: 30upx;
-			bottom: 30upx;
-			width: 83upx;
-			height: 81upx;
+			right: 40upx;
+			bottom: 40upx;
+			width: 100upx;
+			height: 100upx;
+			border-radius: 50%;
+			box-shadow: 0upx 4upx 32upx rgba(#000, .3);
 		}
 
 		.msg-input-container {
@@ -2578,6 +2596,80 @@
 						transform: translateY(-200upx) rotate(-30deg);
 						opacity: 0;
 
+					}
+				}
+			}
+		}
+
+		.say-modal-container {
+			padding: 20upx;
+			margin-top: -80upx;
+
+			.container {
+
+				.close-btn {
+					position: absolute;
+					top: 10upx;
+					right: 10upx;
+
+					width: 80upx;
+					height: 80upx;
+					color: #999;
+					font-size: 45upx;
+					z-index: 9;
+				}
+
+				background-color: #FFF;
+
+				height: 200upx;
+				width: 100%;
+				border-radius: 10upx;
+				box-shadow: 0 4upx 16upx rgba(#000, .3);
+				position: relative;
+
+				.textarea {
+					width: 600upx;
+					height: 120upx;
+					color: #333;
+					padding: 30upx;
+					margin-bottom: 130upx;
+				}
+
+				.bottom {
+					position: absolute;
+					width: 100%;
+					bottom: 0;
+					display: flex;
+					justify-content: space-between;
+					padding: 20upx;
+					align-items: center;
+
+					image {
+						width: 40upx;
+						height: 40upx;
+					}
+
+					.left {
+						color: #000;
+					}
+
+
+					.btn {
+						background-color: #666;
+						color: #FFF;
+						border-radius: 30upx;
+						padding: 10upx 30upx;
+						margin: 0 10upx;
+
+					}
+
+
+					.btn.active.one {
+						background-color: #FF2C3C;
+					}
+
+					.btn.active.two {
+						background-color: #62cbb8;
 					}
 				}
 			}
@@ -3017,10 +3109,12 @@
 					.text-container {
 						padding: 0 30upx;
 						line-height: 44upx;
+
 						.star-name {
 							width: 160upx;
 
 						}
+
 						.bottom-text {
 							display: flex;
 							align-items: center;

@@ -8,13 +8,13 @@
 		<view class="article-title">申请资料</view>
 
 		<form class="form-container" @submit="formSubmit">
-			<!-- <view class="input-group">
+			<view class="input-group">
 				<view class="name">后援会头像</view>
 				<view class="img-input flex-set" @tap="uploadImg('avatar')">
 					<image v-if="tmpImg.avatar" :src="tmpImg.avatar" mode="aspectFill"></image>
 					<view v-else>+</view>
 				</view>
-			</view> -->
+			</view>
 			<view class="input-group">
 				<view class="name">
 					后援会名称
@@ -88,19 +88,19 @@
 					return
 				} 
 				
-				this.$app.request(this.$app.API.EXT_FANCLUB_JOIN, value, res => {
-					this.$app.toast('提交成功！')
-				},'POST',true)
+				// this.$app.request(this.$app.API.EXT_FANCLUB_JOIN, value, res => {
+				// 	this.$app.toast('提交成功！')
+				// },'POST',true)
 				
-// 				this.$app.upload([this.tmpImg.avatar, this.tmpImg.qualify], res => {
-// 					value['avatar'] = res[0] || ''
-// 					value['qualify'] = res[1] || ''
-// 
-// 					this.$app.request(this.$app.API.EXT_FANCLUB_JOIN, value, res => {
-// 						this.$app.toast('提交成功！')
-// 
-// 					})
-// 				})
+				this.$app.upload([this.tmpImg.avatar, this.tmpImg.qualify], res => {
+					value['avatar'] = res[0] || ''
+					value['qualify'] = res[1] || ''
+
+					this.$app.request(this.$app.API.EXT_FANCLUB_JOIN, value, res => {
+						this.$app.toast('提交成功！')
+
+					})
+				})
 			},
 			uploadImg(name) {
 				uni.chooseImage({

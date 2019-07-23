@@ -63,7 +63,11 @@
 			"style": {}
 		}
 
-	],
+	    ,{
+            "path" : "pages/prop/buy/buy",
+            "style" : {}
+        }
+    ],
 	// #ifndef H5
 	// 分包
 	"subPackages": [{

@@ -68,9 +68,9 @@
 </script>
 
 <style lang='scss'>
+	@import '/lib/css/base.scss';
 	@import '/lib/css/iconfont.css';
 	@import '/lib/css/article.css';
-	@import '/lib/css/base.scss';
 
 	page {
 		color: $color_1;
