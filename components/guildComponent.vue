@@ -781,9 +781,13 @@
 					<image src="/static/image/weibo.png" mode="widthFix"></image>
 					<view>微博</view>
 				</view>
-				<view class='fsend-btn flex-set' open-type='share' @tap="modal ='otherShareP'">
+				<view v-if="app.getData('config').pyq_switch == '1'" class='fsend-btn flex-set' @tap="modal ='otherShareP'">
 					<image src="/static/image/pyq.png" mode="widthFix"></image>
 					<view>朋友圈</view>
+				</view>
+				<view v-if="app.getData('config').pyq_switch == '0'" class='fsend-btn flex-set' @tap="saveCanvas();">
+					<image src="/static/image/icon/save.png" mode="widthFix"></image>
+					<view>保存</view>
 				</view>
 
 				<!-- <view class='save-btn flex-set' @tap='saveCanvas'>保存到相册</view> -->
@@ -881,9 +885,9 @@
 		created() {
 			this.initDanmaku()
 		},
-		destroyed() {
-			clearInterval(this.sayworldTimeId)
-		},
+		// destroyed() {
+		// 	clearInterval(this.sayworldTimeId)
+		// },
 		methods: {
 			/**
 			 * 加载数据
@@ -1734,7 +1738,6 @@
 								this.$app.goPage('/pages/group/group')
 							})
 						}
-
 
 					}, 'POST', true)
 				})

@@ -70,7 +70,7 @@
 
 				<input type="text" @input="weiboUrl = $event.detail.value" placeholder="帖子链接" />
 				<btnComponent type="default">
-					<view class="flex-set" style="width: 160upx;height: 80upx;" @tap="weiboCommit">提交</view>
+					<view class="flex-set" style="width: 160upx;height: 80upx;" @tap="weiboCommit()">提交</view>
 				</btnComponent>
 			</view>
 		</modalComponent>

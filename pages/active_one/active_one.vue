@@ -174,9 +174,13 @@
 						<image src="/static/image/weibo.png" mode="widthFix"></image>
 						<view>微博</view>
 					</view>
-					<view class='fsend-btn flex-set' open-type='share' @tap="drawCanvas();modal ='otherShareP'">
+					<view v-if="$app.getData('config').pyq_switch == '1'" class='fsend-btn flex-set' open-type='share' @tap="drawCanvas();modal ='otherShareP'">
 						<image src="/static/image/pyq.png" mode="widthFix"></image>
 						<view>朋友圈</view>
+					</view>
+					<view v-if="$app.getData('config').pyq_switch == '0'" class='fsend-btn flex-set' @tap="drawCanvas();saveCanvas();">
+						<image src="/static/image/icon/save.png" mode="widthFix"></image>
+						<view>保存</view>
 					</view>
 
 					<!-- <view class='save-btn flex-set' @tap='saveCanvas'>保存到相册</view> -->

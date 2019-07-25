@@ -7,16 +7,16 @@
 				<view class="row-wrapper flex-set">
 					{{userInfo.nickname}}
 				</view>
-				<view class="row-wrapper flex-set s">
+				<view class="row-wrapper flex-set s-f">
 					<image src="/static/image/guild/ft-2.png" mode="widthFix"></image>
 					我的师傅：
 					<text v-if="father" class="text-overflow" style="text-decoration: underline;max-width: 140upx;" @tap="cancelFather()">{{father}}</text>
 					<text v-else>虚位以待</text>
 				</view>
-				<view class="row-wrapper flex-set s">
+				<view class="row-wrapper flex-set s-f">
 					<image src="/static/image/guild/ft-1.png" mode="widthFix"></image> 徒弟人数：{{sonTotal}}
 				</view>
-				<view class="row-wrapper flex-set s">
+				<view class="row-wrapper flex-set s-f">
 					<image src="/static/image/guild/ft-2.png" mode="widthFix"></image> 今日收益：{{todayTotal}}
 				</view>
 			</view>
@@ -188,7 +188,7 @@
 					}
 				}
 
-				.row-wrapper.s {
+				.row-wrapper.s-f {
 					font-size: 26upx;
 				}
 
