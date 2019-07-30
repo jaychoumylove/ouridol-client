@@ -75,6 +75,10 @@ image {
 	will-change: transform;
 }
 
+input {
+	min-height: auto;
+}
+
 /* 子元素居中 */
 .flex-set {
 	display: flex;

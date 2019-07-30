@@ -100,7 +100,11 @@
 			<image class="main" :src="$app.getData('config').webmodal" @tap="preimg($app.getData('config').webmodal)" mode="aspectFill"></image>
 			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
 		</view>
-
+		
+		<!-- <view class="">
+			
+		</view> -->
+		
 	</view>
 
 </template>

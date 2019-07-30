@@ -36,7 +36,21 @@
 			"path": "pages/notice/notice",
 			"style": {}
 		},
+		{
+			"path": "pages/active_one/active_one",
+			"style": {}
+		},
 		// #endif
+
+		{
+			"path": "pages/prop/prop",
+			"style": {}
+		}
+		
+		,{
+		    "path" : "pages/prop/buy/buy",
+		    "style" : {}
+		},
 		{
 			"path": "pages/signin/signin",
 			"style": {
@@ -54,19 +68,8 @@
 			"style": {
 				"navigationBarTitleText": "我的礼物"
 			}
-		},
-		{
-			"path": "pages/active_one/active_one",
-			"style": {}
-		},{
-			"path": "pages/prop/prop",
-			"style": {}
 		}
-
-	    ,{
-            "path" : "pages/prop/buy/buy",
-            "style" : {}
-        }
+		
     ],
 	// #ifndef H5
 	// 分包

@@ -3,7 +3,9 @@
 		<view class="top-row-container">
 			<view class="block">
 				<image src="/static/image/user/b1.png" mode="widthFix"></image>
-				{{userCurrency.coin}}
+				<text v-if="blockScale" class="top-num">+{{spriteInfo.earnPer}}</text>
+				<text class="block-text" :class="{active:blockScale}">{{userCurrency.coin}}</text>
+				<image v-if="useCard" class="icon m" src="/static/image/prop/2.png" mode="widthFix"></image>
 			</view>
 			<view class="block">
 				<image src="/static/image/user/b2.png" mode="widthFix"></image>
@@ -21,7 +23,7 @@
 
 			<view class="friend-wrapper">
 				<image @tap="openInvitModal" v-for="(item,index) in invitList" :key="index" v-if="index<3" :src="item.avatar" mode="aspectFill"></image>
-<!-- 				<image @tap="goOther(item)" v-for="(item,index) in invitList" :key="index" v-if="index<3" :src="item.avatar" mode="widthFix"></image> -->
+				<!-- 				<image @tap="goOther(item)" v-for="(item,index) in invitList" :key="index" v-if="index<3" :src="item.avatar" mode="widthFix"></image> -->
 			</view>
 		</view>
 
@@ -130,9 +132,9 @@
 
 		<modalComponent v-if="modal == 'invit'" title="好友" @closeModal="modal=''">
 			<view class="invit-modal-container">
-		
+
 				<scroll-view scroll-y class="list-wrapper" @scrolltolower='invitListPage++; getInvitList()'>
-		
+
 					<view class="explain-wrapper">
 						<view class="">
 							帮好友收集能量，自己额外获得<text>50%</text>能量
@@ -141,7 +143,7 @@
 						</view>
 						<view class="bottom flex-set">
 							<view>当前好友数<text>{{friendTotal}}/100</text>人</view>
-		
+
 							<btnComponent type="default">
 								<button class="btn" open-type="share" data-share="1">
 									<view class="flex-set" style="font-weight: 700 ;width: 140upx; height: 60upx;">邀请好友</view>
@@ -150,13 +152,11 @@
 							<!-- <image src="/static/image/ic_haibao__bak.png" mode="widthFix"></image> -->
 							<!-- 加好友一起养精灵 -->
 						</view>
-		
-		
 					</view>
 					<!-- <button class='explain-wrapper' open-type="share" data-share="1">
 						<image style="width: 100%;" :src="$app.getData('config').zhuren_tips_img" mode="widthFix"></image>
 					</button> -->
-		
+
 					<block v-if="invitList.length > 0">
 						<view class="item" v-for="(item,index) in invitList" :key="index" @tap="goOther(item)">
 							<view class="rank-num">
@@ -172,24 +172,24 @@
 							<image @tap.stop="deleteFriend(item,index)" class="del" src="/static/image/guild/del.png" mode="widthFix"></image>
 							<view class="egg flex-set" @tap.stop="settleSprite(index, item)">
 								<image v-if="item.earn > 2 && !item.off" class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
-		
+
 								<view class="num-wrapper position-set">{{item.earn}}</view>
 								<image v-if="!item.off" class="flex-set" src="/static/image/pet/y5.png" mode="widthFix"></image>
 								<image v-else class="flex-set" src="/static/image/pet/y5-off.png" mode="widthFix"></image>
 							</view>
 						</view>
 					</block>
-		
+
 					<view v-else class="nodata flex-set">
 						<view class="top">你还没有好友</view>
 						<button open-type="share" data-share="1">
 							<view class="bottom">加一位好友></view>
 						</button>
 					</view>
-		
+
 				</scroll-view>
 			</view>
-		
+
 		</modalComponent>
 		<modalComponent v-if="modal == 'skill'" :title="modalTitle" @closeModal="modal=''">
 			<view class="skill-modal-container">
@@ -247,7 +247,7 @@
 				</view>
 				<btnComponent type="css">
 					<button open-type="share">
-					<view class="flex-set" style="padding: 20upx 40upx;">唤醒好友</view>
+						<view class="flex-set" style="padding: 20upx 40upx;">唤醒好友</view>
 					</button>
 				</btnComponent>
 			</view>
@@ -271,7 +271,7 @@
 				requestCount: 1,
 				invitListPage: 1,
 				friendTotal: 0,
-
+				blockScale: false,
 
 				userCurrency: this.$app.getData('userCurrency') || {
 					coin: 0,
@@ -290,6 +290,7 @@
 				skillShow: false, // 显示技能
 				skillList: [], // 技能升级列表
 				currentSkillType: 1,
+				useCard: false,
 			};
 		},
 		onShareAppMessage(e) {
@@ -323,6 +324,13 @@
 					if (this.earnCuttime > 100) {
 						this.earnCuttime = 1
 						this.getSpriteInfo()
+					}
+					if (this.earnCuttime % 10 == 0 && this.useCard) {
+						// 收卡
+						this.getShortEarn()
+						this.blockScale = true
+					} else {
+						this.blockScale = false
 					}
 				}, 1000)
 
@@ -463,7 +471,7 @@
 					// 	
 					// })
 					// this.invitList = resList
-			
+
 					this.invitAward = res.data.award
 					const resList = []
 					this.spriteEarn = false
@@ -477,7 +485,7 @@
 							earn: e.sprite.earn,
 							off: e.off,
 						})
-			
+
 						if (e.sprite.earn >= 100) {
 							// 显示红点
 							this.spriteEarn = true
@@ -488,8 +496,8 @@
 					} else {
 						this.invitList = this.invitList.concat(resList)
 					}
-			
-			
+
+
 					this.$app.closeLoading(this)
 				})
 			},
@@ -520,6 +528,16 @@
 				}
 
 			},
+			// 使用道具卡
+			getShortEarn() {
+				this.$app.request('sprite/shortEarn', {}, res => {
+					this.useCard = res.data.isUseCard || false
+					this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
+						this.$app.setData('userCurrency', res.data)
+						this.userCurrency = this.$app.getData('userCurrency')
+					})
+				})
+			},
 			getSpriteInfo() {
 				this.$app.request(this.$app.API.SPRITE_INFO, {
 					user_id: this.$app.getData('userInfo').id
@@ -536,6 +554,8 @@
 
 					this.$app.setData('pet_spriteInfo', this.spriteInfo)
 					this.$app.closeLoading(this)
+
+					this.useCard = res.data.isUseCard || false
 				})
 
 			}
@@ -560,17 +580,44 @@
 				align-items: center;
 				margin: 0 20upx;
 				font-size: 36upx;
-
+				position: relative; 
+				
 				image {
 					width: 40upx;
 					margin: 0 10upx;
+				}
+
+				// .block-text {
+				// 	transition: 0.3s;
+				// }
+
+				.block-text.active {
+					// transform: scale(1.2);
+					
+					animation: scaleA 0.8s linear;
+				}
+				
+				@keyframes scaleA {
+					0%,100% {
+						transform: scale(1);
+					}
+					60% {
+						transform: scale(2);
+					}
+				}
+				
+				.top-num {
+					position: absolute;
+					display: inline-block;
+					top: -30upx;
+					font-size: 24upx;
+					right: 12upx;
 				}
 
 			}
 
 			.text-content {
 				margin: 0 20upx;
-
 				font-size: 24upx;
 			}
 		}
@@ -886,30 +933,30 @@
 			width: 100%;
 			height: 100%;
 			position: absolute;
-		
+
 			display: flex;
 			flex-direction: column;
-		
+
 			.explain-wrapper {
 				padding: 20upx 40upx;
 				width: 100%;
-		
+
 				.bottom {
 					justify-content: space-between;
 				}
-		
+
 				// image {
 				// 	width: 50upx;
 				// 	margin: 10upx 40upx;
 				// }
 			}
-		
+
 			.list-wrapper {
 				overflow-y: auto;
 				height: 100%;
 				display: flex;
 				flex-direction: column;
-		
+
 				.item {
 					display: flex;
 					justify-content: flex-start;
@@ -919,17 +966,17 @@
 					// background-color: $color_0;
 					background-color: rgba($color_0, .3);
 					margin: 10upx;
-		
+
 					.rank-num {
 						width: 90upx;
 						text-align: center;
-		
+
 						image {
 							width: 40upx;
 							min-height: 40upx;
 						}
 					}
-		
+
 					.avatar {
 						image {
 							width: 90upx;
@@ -937,72 +984,74 @@
 							border-radius: 50%;
 						}
 					}
-		
-		
-		
+
+
+
 					.text-container {
 						padding: 0 30upx;
 						line-height: 44upx;
+
 						.star-name {
 							width: 160upx;
-		
+
 						}
+
 						.bottom-text {
 							display: flex;
 							align-items: center;
-		
+
 							.hot-count {
 								color: $color_2;
 								margin-right: 4upx;
 							}
-		
+
 							.icon-heart {
 								width: 30upx;
 								height: 30upx;
 							}
 						}
 					}
-		
+
 					.del {
 						width: 36.78upx;
 						height: 36upx;
 						margin: 20upx;
 					}
-		
+
 					.egg {
 						margin-right: 20upx;
 						position: relative;
-		
+
 						.hand {
 							position: absolute;
 							z-index: 2;
 							right: -15upx;
 							bottom: -15upx;
 						}
-		
+
 						.num-wrapper {
 							z-index: 1;
 							color: #FFF;
 						}
-		
+
 						image {
 							width: 60upx;
 							min-height: 60upx;
 						}
 					}
 				}
-		
+
 				.nodata {
 					height: 400upx;
 					flex-direction: column;
-		
+
 					.bottom {
 						color: $color_2;
 						font-size: 40upx;
 					}
 				}
 			}
-		
+
 		}
 
 		.skill-modal-container {
@@ -1075,14 +1124,15 @@
 			height: 100%;
 			padding: 20upx 40upx;
 			font-size: 32upx;
-			
+
 			.text-wrap {
-				
+
 				.text {
-					
+
 					line-height: 2.3;
-					
+
 				}
+
 				margin: 30upx 0;
 
 			}
@@ -1093,7 +1143,7 @@
 				margin: auto;
 			}
 		}
-		
+
 		.tips-modal-container-s {
 			height: 100%;
 			padding: 20upx 40upx;
@@ -1102,27 +1152,30 @@
 			justify-content: space-around;
 			align-items: center;
 			flex-direction: column;
+
 			.text-wrap {
 				text-align: center;
 				margin: 30upx;
+
 				image {
 					width: 120upx;
 					height: 120upx;
 					margin: 60upx;
 				}
+
 				.text {
 					font-size: 32upx;
 					font-weight: 700;
-					
+
 				}
 			}
 
 
 			.btn {
-				margin:100upx auto;
+				margin: 100upx auto;
 			}
 		}
-		
-		
+
+
 	}
 </style>

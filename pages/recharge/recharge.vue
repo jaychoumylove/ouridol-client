@@ -1,8 +1,15 @@
 <template>
+	<!-- #ifdef MP -->
 	<view v-if="~$app.getData('sysInfo').system.indexOf('iOS') && $app.getData('config').ios_switch == '0'" class="recharge-container flex-set">
 		由于相关规范，iOS功能暂不可用
 	</view>
 	<view v-else class="recharge-container">
+	<!-- #endif -->
+	
+	<!-- #ifdef H5 -->
+	<view class="recharge-container">
+	<!-- #endif -->
+	
 		<view class="top-row">
 
 			<view class="user-container">
@@ -35,11 +42,14 @@
 			<image class='hand' v-if="handShow" src="/static/image/pet/hand.png" mode="widthFix"></image>
 		</view>
 		<view class="count-wrap tips">
-			购买的能量礼物不清零
+			<view>购买的能量礼物不清零</view>
+			<view>能量礼物可点击“打榜”直接送出，增加爱豆能量</view>
 		</view>
+		<!-- 礼物列表 -->
 		<view class="btn-wrapper">
 			<view class="btn" v-for="(item,index) in rechargeList" :key="index" @tap="payment(item.id)">
 				<image class="icon" :src="item.item.icon" mode="widthFix"></image>
+				<view class="icon-top flex-set" v-if="item_double">生日翻倍</view>
 				<view class="line one flex-set">
 					<image class="sicon" src="/static/image/user/b1.png" mode="widthFix"></image>{{item.item.count}}
 				</view>
@@ -63,8 +73,8 @@
 				</view>
 
 				<view class="send-input">
-					<input type="number" confirm-type="search" @blur="kickBack()" @confirm="searchUser()" :value="currentUserid" @input="currentUserid = $event.detail.value"
-					 placeholder="请输入对方的ID" />
+					<input type="number" confirm-type="search" @blur="kickBack()" @confirm="searchUser()" :value="currentUserid"
+					 @input="currentUserid = $event.detail.value" placeholder="请输入对方的ID" />
 				</view>
 				<btnComponent type="css">
 					<view class="btn flex-set" @tap="searchUser()">查找用户</view>
@@ -75,7 +85,7 @@
 			</view>
 		</modalComponent>
 	</view>
-	
+
 </template>
 
 <script>
@@ -110,10 +120,11 @@
 					avatarurl: this.$app.AVATAR,
 				},
 				currentUserid: '',
+				item_double: false, // 礼物购买是否双倍
 			};
 		},
 		onLoad() {
-			
+
 			this.getGoodsList()
 			let timeId = setInterval(() => {
 				if (this.$app.getData('userInfo').nickname) {
@@ -224,7 +235,7 @@
 			getGoodsList() {
 				this.$app.request(this.$app.API.PAY_GOODS, {}, res => {
 					const resList = []
-					for (let v of res.data) {
+					for (let v of res.data.list) {
 						resList.push({
 							id: v.id,
 							coin: v.coin,
@@ -234,8 +245,9 @@
 						})
 					}
 					this.rechargeList = resList
+					this.item_double = res.data.item_double
 					this.$app.setData('goodsList', this.rechargeList)
-					this.$app.closeLoading(this)
+					// this.$app.closeLoading(this)
 				})
 			},
 		}
@@ -348,6 +360,7 @@
 		.count-wrap.tips {
 			border-top: 1px dashed #EEE;
 			line-height: 1.6;
+			flex-direction: column;
 		}
 
 		.btn-wrapper {
@@ -379,6 +392,17 @@
 					width: 125upx;
 					height: 125upx;
 				}
+				
+				.icon-top {
+					position: absolute;
+					background-color: #F00;
+					border-radius: 20upx;
+					top: 20upx;
+					right: 30upx;
+					font-size: 24upx;
+					color: #FFF;
+					padding: 0 8upx;
+				}
 
 				.line {
 					.sicon {
@@ -388,20 +412,21 @@
 
 				.line.one {
 					position: absolute;
+
 					right: 30upx;
 					top: 120upx;
 
 					border-radius: 20upx;
 					background-color: rgba(255, 255, 255, .3);
 					font-size: 24upx;
-					padding: 0 4upx;
+					padding: 0 8upx;
 					color: #666;
 
 					.sicon {
 						width: 25upx;
 					}
 				}
-
+				
 				.fee {
 					width: 125upx;
 					background-color: #FFF;

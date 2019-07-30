@@ -89,10 +89,10 @@
 				<image src="/static/image/user/r8.png" mode="widthFix"></image>
 				<view class="text">礼物背包</view>
 			</view>
-			<!-- <view class="list-item" @tap="$app.goPage('/pages/prop/prop')">
-				<image src="/static/image/user/r8.png" mode="widthFix"></image>
+			<view class="list-item" @tap="$app.goPage('/pages/prop/prop')">
+				<image src="/static/image/icon/magic-wand.png" mode="widthFix"></image>
 				<view class="text">我的道具</view>
-			</view> -->
+			</view>
 			<view class="list-item" @tap="$app.goPage('/pages/subPages/task/task')">
 				<image src="/static/image/user/r2.png" mode="widthFix"></image>
 				<view class="text">每日任务</view>
@@ -201,6 +201,11 @@
 				trumpet: 0
 			}
 			this.userStar = this.$app.getData('userStar') || {}
+			
+			this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
+				this.$app.setData('userCurrency', res.data)
+				this.userCurrency = this.$app.getData('userCurrency')
+			})
 		},
 		onShareAppMessage() {
 			return this.$app.commonShareAppMessage()

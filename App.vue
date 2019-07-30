@@ -11,6 +11,17 @@
 			...ExtFunc,
 		},
 		onLaunch: function(option) {
+			// 微信小程序
+			this.$app.platform = 'MP-WEIXIN'
+			// QQ小程序
+			if(uni.getSystemInfoSync().AppPlatform == 'qq') {
+				this.$app.platform = 'MP-QQ'
+			}
+			// 微信H5
+			// #ifdef H5
+			this.$app.platform = 'H5'
+			// #endif
+			
 			this.$app.setData('sysInfo', uni.getSystemInfoSync())
 			// 弹幕队列
 			this.$app.danmakuQueue = []

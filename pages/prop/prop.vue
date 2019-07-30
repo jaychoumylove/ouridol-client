@@ -1,34 +1,52 @@
 <template>
 	<view class="prop-container">
-		<view class="top-enter-wrapper" @tap="$app.goPage('/pages/prop/buy/buy')">
-			<image src="/static/image/prop/top-enter.png" mode=""></image>
+		<view class="top-enter-wrapper">
+			<view class="explain-wrapper flex-set">
+				<!-- <image src=""></image> -->
+				<view class="text-wrapper">
+					<view class="top flex-set">道具商店</view>
+					<view class="bottom flex-set">稀有道具，每日限量抢购</view>
+				</view>
+				<btnComponent type="default">
+					<button v-if="~$app.getData('sysInfo').system.indexOf('iOS') && $app.getData('config').ios_switch != 0" open-type="contact">回复"1"</button>
+					<view v-if="!~$app.getData('sysInfo').system.indexOf('iOS')" @tap="$app.goPage('/pages/prop/buy/buy')" class="flex-set" style="font-weight: 700 ;width: 140upx; height: 60upx;">进入</view>
+				</btnComponent>
+			</view>
 		</view>
 
-		<view class="list-wrapper">
-			<view class="list-item">
+		<view class="list-wrapper" v-if="list && list.length > 0">
+			<view class="list-item" v-for="(item,index) in list" :key="index">
 				<view class="row row-1">
 					<view class="left flex-set">
-						<image src="/static/image/guild/card-c.png" class="icon" mode="aspectFill"></image>
+						<image :src="item.prop.img" class="icon" mode="aspectFill"></image>
 
 						<view class="content">
-							<view class="top">123</view>
-							<view class="bottom">123</view>
+							<view class="top">{{item.prop.name}}</view>
+							<view class="bottom">过期时间：{{item.create_time.slice(0,11) + "24:00:00"}}</view>
 						</view>
 					</view>
 
 					<view class="right">
-						<btnComponent type="css">
-							<view class="flex-set" style="width: 140upx;height:70upx;">使用</view>
+						<btnComponent v-if="item.status == 0" type="css">
+							<view @tap="useProp(item)" class="flex-set" style="width: 140upx;height:70upx;">使用</view>
+						</btnComponent>
+						<btnComponent v-if="item.status == 1" type="disable">
+							<view class="flex-set" style="width: 140upx;height:70upx;">已使用</view>
+						</btnComponent>
+						<btnComponent v-if="item.status == 2" type="disable">
+							<view class="flex-set" style="width: 140upx;height:70upx;">已过期</view>
 						</btnComponent>
 					</view>
 				</view>
 
-				<view class="row row-2">
-					dwqdqwd
-				</view>
+				<view class="row row-2">{{item.prop.desc}}</view>
 
 			</view>
-
+		</view>
+		<view v-else class="nodata">
+			<image src="/static/image/user/blank.png" mode="widthFix" class="img"></image>
+			<view class="text">还没有道具</view>
+			
 		</view>
 	</view>
 </template>
@@ -42,16 +60,36 @@
 		},
 		data() {
 			return {
-
+				list: [],
+				page: 1,
 			};
 		},
-		onShow(){
+		onShow() {
 			this.loadData()
 		},
-		methods:{
-			loadData(){
-				this.$app.request('page/myprop', {}, res => {
-					
+		methods: {
+			useProp(item) {
+				this.$app.request('prop/use', {
+					id: item.id
+				}, res => {
+					if (res.data.awards) {
+						this.$app.modal(`恭喜,抽到${res.data.awards}能量!`)
+					} else {
+						this.$app.toast('使用成功', 'success')
+					}
+					this.loadData()
+				}, 'POST', true)
+			},
+			loadData() {
+				this.$app.request('page/myprop', {
+					page: this.page
+				}, res => {
+					if (this.page == 1) {
+						this.list = res.data.list
+					} else {
+						this.list = this.list.concat(res.data.list)
+					}
+
 				})
 			},
 		}
@@ -60,15 +98,43 @@
 
 <style lang="scss" scoped>
 	.prop-container {
+		.nodata {
+			margin-top: 30%;
+			color: $color_1;
+			text-align: center;
+			image {
+				width: 150upx;
+				margin: 20upx;
+			}
+		}
 		.top-enter-wrapper {
-			height: 173upx;
+
+			.explain-wrapper {
+				padding: 10upx 20upx;
+				margin: 20upx;
+				// box-shadow: 0upx 2upx 4upx rgba(#000, .3);
+				border-radius: 30upx;
+				background-color: rgba(#FFF, .3);
+				justify-content: space-around;
+				text {
+					color: orange;
+				}
+
+				.icon {
+					width: 30upx;
+					height: 30upx;
+				}
+
+				
+			}
 		}
 
 		// 列表
 		.list-item {
 			padding: 10upx 20upx;
 			background-color: rgba(#FFF, .3);
-			margin-bottom: 20upx;
+			margin: 20upx 0;
+
 			.row {
 				padding: 10upx 20upx;
 
@@ -78,7 +144,7 @@
 			}
 
 			.row-1 {
-				border-bottom: 1px solid #EEE;
+				border-bottom: 1px solid #FFF;
 
 				.left {
 					.icon {
@@ -88,16 +154,30 @@
 					}
 
 					.content {
+						line-height: 1.7;
 						margin: 0 40upx;
 
 						.top {}
 
 						.bottom {
+							justify-content: flex-start;
 							font-size: 22upx;
-							color: $color_0;
+							color: $color_1;
+
+							.price {
+								color: red;
+								font-size: 30upx;
+								margin-right: 10upx;
+							}
+
+							.remain {}
 						}
 					}
 				}
+			}
+
+			.row-2 {
+				font-size: 24upx;
 			}
 		}
 	}

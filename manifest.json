@@ -57,7 +57,7 @@
         /* 小程序特有相关 */
         "appid" : "wx7dc912994c80d9ac",
         "setting" : {
-            "urlCheck" : false,
+            "urlCheck" : true,
             "postcss" : true,
             "es6" : true,
             "minified" : true
@@ -67,7 +67,7 @@
     "h5" : {
         "title" : "我们的偶像",
         "template" : "index.html",
-        "domain" : "ouridol.xiaolishu.com",
+        "domain" : "ouridol.anaculture.com",
         "router" : {
             "mode" : "hash"
         },

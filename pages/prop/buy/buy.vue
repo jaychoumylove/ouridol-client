@@ -5,30 +5,32 @@
 				<view class="row row-1">
 					<view class="left flex-set">
 						<image :src="item.img" class="icon" mode="aspectFill"></image>
-		
+
 						<view class="content">
-							<view class="top">{{item.name}}</view>
+							<view class="top text-overflow">{{item.name}}</view>
 							<view class="bottom flex-set">
 								<view class="price">￥{{item.fee}}</view>
 								<view class="remain">剩余{{item.remain}}</view>
 							</view>
 						</view>
 					</view>
-					
-					<view class="right">
-						<view class="num-wrapper">
-							
+
+					<view class="right flex-set">
+						<view class="num-wrapper flex-set">
+							<view class="btn flex-set" @tap="numChange(index, 0)">-</view>
+							<input class="flex-set" type="number" :value="item.num" @input="numChange(index, $event)" />
+							<view class="btn flex-set" @tap="numChange(index, 1)">+</view>
 						</view>
 						<btnComponent type="css">
-							<view class="flex-set" style="width: 140upx;height:70upx;" @tap="payment(item.id)">购买</view>
+							<view class="flex-set" style="width: 140upx;height:70upx;" @tap="payment(item)">购买</view>
 						</btnComponent>
 					</view>
 				</view>
-		
+
 				<view class="row row-2">{{item.desc}}</view>
-		
+
 			</view>
-		
+
 		</view>
 	</view>
 </template>
@@ -42,16 +44,29 @@
 		},
 		data() {
 			return {
-				list:[],
+				list: [],
+				num: 1
 			};
 		},
-		onShow(){
+		onShow() {
 			this.loadData()
 		},
-		methods:{
-			payment(goods_id) {
+		methods: {
+			numChange(index, plus) {
+				if (plus.detail) {
+					this.list[index].num = plus.detail.value
+				} else {
+					if (plus) this.list[index].num++
+					else this.list[index].num--
+				}
+
+				if (this.list[index].num < 1) this.list[index].num = 1
+			},
+			// 支付
+			payment(item) {
 				this.$app.request(this.$app.API.PAY_ORDER, {
-					goods_id,
+					goods_id: item.id,
+					goods_num: item.num,
 					user_id: this.$app.getData('userInfo').id,
 					type: 1,
 				}, res => {
@@ -59,7 +74,7 @@
 					WeixinJSBridge.invoke('getBrandWCPayRequest', {
 						"appId": res.data.appId, //公众号名称，由商户传入     
 						"timeStamp": res.data.timeStamp, //时间戳，自1970年以来的秒数     
-						"nonceStr": res.data.nonceStr, //随机串     
+						"nonceStr": res.data.nonceStr, //随机串
 						"package": res.data.package,
 						"signType": res.data.signType, //微信签名方式：     
 						"paySign": res.data.paySign //微信签名 
@@ -68,7 +83,7 @@
 						if (res.err_msg == "get_brand_wcpay_request:ok") {
 							// 使用以上方式判断前端返回,微信团队郑重提示：
 							//res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
-			
+
 							this.$app.toast('支付成功', 'success')
 							this.$app.request('page/gift_num', {}, res => {
 								this.giftNum = res.data || 0
@@ -106,10 +121,14 @@
 					});
 					// #endif
 				}, 'POST', true);
-			
+
 			},
-			loadData(){
+			loadData() {
 				this.$app.request('page/prop', {}, res => {
+
+					for (let key in res.data) {
+						res.data[key].num = 1
+					}
 					this.list = res.data
 				})
 			}
@@ -123,49 +142,76 @@
 			padding: 10upx 20upx;
 			background-color: rgba(#FFF, .3);
 			margin: 20upx 0;
-			
+
 			.row {
 				padding: 10upx 20upx;
-		
+
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
 			}
-		
+
 			.row-1 {
 				border-bottom: 1px solid #FFF;
-		
+
 				.left {
 					.icon {
 						width: 100upx;
 						height: 100upx;
-		
+
 					}
-		
+
 					.content {
 						line-height: 1.7;
 						margin: 0 40upx;
-		
-						.top {}
-		
+
+						.top {
+							width: 200upx;
+						}
+
 						.bottom {
 							justify-content: flex-start;
 							font-size: 22upx;
 							color: $color_1;
-							
+
 							.price {
 								color: red;
 								font-size: 30upx;
 								margin-right: 10upx;
 							}
-							
-							.remain {
-							}
+
+							.remain {}
+						}
+					}
+				}
+
+				.right {
+
+					.num-wrapper {
+
+						margin: 0 20upx;
+
+						.btn {
+							width: 30upx;
+							height: 30upx;
+							background-color: $color_0;
+							border-radius: 50%;
+							box-shadow: 0upx 2upx 4upx rgba(#000, .3);
+						}
+
+						input {
+							width: 60upx;
+							height: 30upx;
+							line-height: 30upx;
+							border-radius: 30upx;
+							margin: 0 10upx;
+							background-color: #FFF;
+							text-align: center;
 						}
 					}
 				}
 			}
-			
+
 			.row-2 {
 				font-size: 24upx;
 			}

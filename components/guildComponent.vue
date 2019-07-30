@@ -233,7 +233,7 @@
 						</view>
 
 						<view class="bottom">
-							<view class="msg-content">{{item.content}}</view>
+							<view class="msg-content" @longpress="copy(item.content)">{{item.content}}</view>
 						</view>
 					</view>
 				</view>
@@ -395,7 +395,6 @@
 								<view class="name">{{item.name}}</view>
 								<view class="self flex-set">{{item.self}}</view>
 							</view>
-
 						</view>
 
 					</view>
@@ -422,8 +421,11 @@
 						<image class="icon" src="/static/image/user/b1.png"></image>
 					</view>
 					<view class="">精灵等级越高可偷能量越多<text style="text-decoration: underline;" @tap="app.goPage('/pages/pet/pet')">快去升级精灵</text></view>
-					<view class="bottom">今日已偷<text> {{steal_num}}/{{steal_num_max}} </text>
+					<view class="bottom">
+						今日已偷<text> {{steal_num}}/{{steal_num_max}} </text>
 						<image class="icon" src="/static/image/user/b1.png"></image>
+
+						<text> {{steal_times}}/{{steal_times_max}} </text>次
 					</view>
 				</view>
 
@@ -693,14 +695,12 @@
 							<image src="/static/image/guild/card.png" mode=""></image>
 						</view>
 						<view class="text">加好友</view>
-
 					</view>
 					<view class="btn-item" @tap="modal = 'sendOther'">
 						<view class="bg flex-set">
 							<image src="/static/image/user/b2.png" mode=""></image>
 						</view>
 						<view class="text">赠送灵丹</view>
-
 					</view>
 
 					<view class="btn-item" @tap="modal = 'sendOtherItem'">
@@ -708,7 +708,12 @@
 							<image src="/static/image/guild/send-give-1.png" mode=""></image>
 						</view>
 						<view class="text">赠送礼物</view>
-
+					</view>
+					<view v-if="captain" class="btn-item" @tap="forbidden">
+						<view class="bg flex-set">
+							<image src="/static/image/icon/forbidden.png" mode=""></image>
+						</view>
+						<view class="text">{{currentUser.type==2?'已':''}}禁言</view>
 					</view>
 				</view>
 
@@ -876,10 +881,13 @@
 				currentUser: {},
 				sendOtherNum: 1,
 				steal_num: 0,
+				steal_num_max: 0,
+				steal_times: 0,
+				steal_times_max: 0,
 				steal_count: 0,
 				sprite_level: 0,
-				steal_num_max: 0,
 				friendTotal: 0,
+				captain: 0, // 团长
 			};
 		},
 		created() {
@@ -984,6 +992,7 @@
 							this.chartIndex = this.chartList.length - 1
 						})
 						setTimeout(() => {
+							this.captain = res.data.captain
 							// 用户排行
 							const userRankList = []
 							res.data.userRank.forEach((e, i) => {
@@ -1058,6 +1067,17 @@
 				}
 
 			},
+			// 禁言
+			forbidden() {
+				this.$app.modal(`确认将${this.currentUser.nickname}禁言？`, () => {
+					this.$app.request('user/forbidden', {
+						user_id: this.currentUser.id,
+					}, res => {
+						this.$app.toast('操作成功', 'success')
+						this.modal = ''
+					}, 'POST', true)
+				})
+			},
 			swiperChange(e) {
 				if (e.detail.source === 'touch') {
 					this.current = e.detail.current
@@ -1075,7 +1095,9 @@
 						this.itemList[index].self -= num
 					}, 'POST', true)
 				})
-
+			},
+			copy(text) {
+				this.$app.copy(text)
 			},
 			// 送灵丹给别人
 			sendOther() {
@@ -1735,7 +1757,9 @@
 								this.$app.setData('userStar', res.data, true)
 								this.chartMsg = `大家好，我是${this.$app.getData('userInfo').nickname}，初来乍到，请多关照~`
 								this.sendMsg()
-								this.$app.goPage('/pages/group/group')
+								setTimeout(() => {
+									this.$app.goPage('/pages/group/group')
+								}, 200)
 							})
 						}
 
@@ -1773,11 +1797,12 @@
 				this.$app.request(this.$app.API.STAR_RANK, {
 					type: 1
 				}, res => {
-					console.log('steal', this.$app.timeId);
 					this.steal_num = res.data.steal_num
 					this.sprite_level = res.data.sprite_level
 					this.steal_num_max = res.data.steal_num_max
 					this.steal_count = res.data.steal_count
+					this.steal_times = res.data.steal_times
+					this.steal_times_max = res.data.steal_times_max
 					// 清除steal倒计时定时器
 					if (!this.$app.timeId) this.$app.timeId = []
 					for (let v of this.$app.timeId) {
@@ -2982,9 +3007,10 @@
 				// 					font-weight: 700;
 				// 				}
 				// 
-				// 				.bottom {
-				// 					font-size: 22upx;
-				// 				}
+				.bottom {
+					display: flex;
+					align-items: center;
+				}
 			}
 
 			.tips-wrapper {
