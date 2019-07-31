@@ -527,7 +527,7 @@
 						let left_time = this.$app.timeGethms(res.data.active_end)
 						res.data.left_time = left_time.day + '天' + left_time.hour + '小时' + left_time.min + '分'
 					} else {
-						res.data.left_time = '已结束'
+						res.data.left_time = '活动已结束'
 					}
 
 					this.activeInfo = res.data

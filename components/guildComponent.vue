@@ -317,7 +317,7 @@
 				<!-- <view class="explain-wrapper">说明：还未确定后完全好大无穷皇帝和我去我前进的气温降低哦</view> -->
 				<view class="swiper-change flex-set">
 					<view class="item" :class="{select:current==0}" @tap="current = 0">送能量</view>
-					<view class="item" :class="{select:current==1}" @tap="current = 1">送礼物</view>
+					<view class="item" :class="{select:current==1}" @tap="current = 1">送能量礼物</view>
 				</view>
 
 				<!-- <swiper @change="swiperChange" :current="current"> -->
@@ -371,12 +371,12 @@
 				</view>
 				<view class="gift flex-set" @tap="app.goPage('/pages/recharge/recharge')" v-if="!~app.getData('sysInfo').system.indexOf('iOS')">
 					<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-					<view class="text">补充能量</view>
+					<view class="text">购买礼物补充能量</view>
 
 				</view>
 				<button open-type="contact" class="gift flex-set" v-if="~app.getData('sysInfo').system.indexOf('iOS')&&$app.getData('config').ios_switch==1">
 					<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-					<view class="text">补充能量回复"1"</view>
+					<view class="text">购买礼物补充能量回复"1"</view>
 				</button>
 				<!-- </swiper-item> -->
 
@@ -393,7 +393,7 @@
 								</view>
 								<image :src="item.icon" mode="widthFix"></image>
 								<view class="name">{{item.name}}</view>
-								<view class="self flex-set">{{item.self}}</view>
+								<view class="self flex-set" :class="{red:item.self>0}">{{item.self}}</view>
 							</view>
 						</view>
 
@@ -402,11 +402,11 @@
 				</view>
 				<view class="gift flex-set" @tap="app.goPage('/pages/recharge/recharge')" v-if="!~app.getData('sysInfo').system.indexOf('iOS')">
 					<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-					<view class="text">补充能量</view>
+					<view class="text">购买礼物补充能量</view>
 				</view>
 				<button open-type="contact" class="gift flex-set" v-if="~app.getData('sysInfo').system.indexOf('iOS')&&$app.getData('config').ios_switch==1">
 					<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-					<view class="text">补充能量回复"1"</view>
+					<view class="text">购买礼物补充能量回复"1"</view>
 				</button>
 				<!-- </swiper-item> -->
 				<!-- </swiper> -->
@@ -2895,10 +2895,14 @@
 						border-radius: 50%;
 						background-color: rgba(50, 50, 50, .3);
 						color: #FFF;
-						width: 30upx;
-						height: 30upx;
-						font-size: 20upx;
+						width: 34upx;
+						height: 34upx;
+						font-size: 22upx;
 						z-index: 2;
+					}
+					
+					.self.red {
+						background-color: #F00;
 					}
 				}
 

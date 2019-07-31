@@ -1,38 +1,48 @@
 <template>
-	<view class="buy-container">
-		<view class="list-wrapper">
-			<view class="list-item" v-for="(item,index) in list" :key="index">
-				<view class="row row-1">
-					<view class="left flex-set">
-						<image :src="item.img" class="icon" mode="aspectFill"></image>
 
-						<view class="content">
-							<view class="top text-overflow">{{item.name}}</view>
-							<view class="bottom flex-set">
-								<view class="price">￥{{item.fee}}</view>
-								<view class="remain">剩余{{item.remain}}</view>
+	<!-- #ifdef MP -->
+	<view v-if="~$app.getData('sysInfo').system.indexOf('iOS')" class="buy-container flex-set">
+		由于相关规范，iOS功能暂不可用
+	</view>
+	<view v-else class="buy-container">
+	<!-- #endif -->
+
+	<!-- #ifdef H5 -->
+	<view class="buy-container">
+	<!-- #endif -->
+
+			<view class="list-wrapper">
+				<view class="list-item" v-for="(item,index) in list" :key="index">
+					<view class="row row-1">
+						<view class="left flex-set">
+							<image :src="item.img" class="icon" mode="aspectFill"></image>
+
+							<view class="content">
+								<view class="top text-overflow">{{item.name}}</view>
+								<view class="bottom flex-set">
+									<view class="price">￥{{item.fee}}</view>
+									<view class="remain">剩余{{item.remain}}</view>
+								</view>
 							</view>
 						</view>
-					</view>
 
-					<view class="right flex-set">
-						<view class="num-wrapper flex-set">
-							<view class="btn flex-set" @tap="numChange(index, 0)">-</view>
-							<input class="flex-set" type="number" :value="item.num" @input="numChange(index, $event)" />
-							<view class="btn flex-set" @tap="numChange(index, 1)">+</view>
+						<view class="right flex-set">
+							<view class="num-wrapper flex-set">
+								<view class="btn flex-set" @tap="numChange(index, 0)">-</view>
+								<input class="flex-set" type="number" :value="item.num" @input="numChange(index, $event)" />
+								<view class="btn flex-set" @tap="numChange(index, 1)">+</view>
+							</view>
+							<btnComponent type="css">
+								<view class="flex-set" style="width: 140upx;height:70upx;" @tap="payment(item)">购买</view>
+							</btnComponent>
 						</view>
-						<btnComponent type="css">
-							<view class="flex-set" style="width: 140upx;height:70upx;" @tap="payment(item)">购买</view>
-						</btnComponent>
 					</view>
+
+					<view class="row row-2">{{item.desc}}</view>
+
 				</view>
-
-				<view class="row row-2">{{item.desc}}</view>
-
 			</view>
-
 		</view>
-	</view>
 </template>
 
 <script>

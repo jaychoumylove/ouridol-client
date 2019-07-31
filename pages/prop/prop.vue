@@ -7,9 +7,11 @@
 					<view class="top flex-set">道具商店</view>
 					<view class="bottom flex-set">稀有道具，每日限量抢购</view>
 				</view>
-				<btnComponent type="default">
-					<button v-if="~$app.getData('sysInfo').system.indexOf('iOS') && $app.getData('config').ios_switch != 0" open-type="contact">回复"1"</button>
-					<view v-if="!~$app.getData('sysInfo').system.indexOf('iOS')" @tap="$app.goPage('/pages/prop/buy/buy')" class="flex-set" style="font-weight: 700 ;width: 140upx; height: 60upx;">进入</view>
+				<btnComponent type="default" v-if="~$app.getData('sysInfo').system.indexOf('iOS') && $app.getData('config').ios_switch != 0">
+					<button class="flex-set" style="font-weight: 700 ;width: 140upx; height: 60upx;" open-type="contact">回复"1"</button>
+				</btnComponent>
+				<btnComponent type="default" v-if="!~$app.getData('sysInfo').system.indexOf('iOS')">
+					<view @tap="$app.goPage('/pages/prop/buy/buy')" class="flex-set" style="font-weight: 700 ;width: 140upx; height: 60upx;">进入</view>
 				</btnComponent>
 			</view>
 		</view>
@@ -45,8 +47,8 @@
 		</view>
 		<view v-else class="nodata">
 			<image src="/static/image/user/blank.png" mode="widthFix" class="img"></image>
-			<view class="text">还没有道具</view>
-			
+			<view class="text">你还没有道具</view>
+
 		</view>
 	</view>
 </template>
@@ -102,11 +104,13 @@
 			margin-top: 30%;
 			color: $color_1;
 			text-align: center;
+
 			image {
 				width: 150upx;
 				margin: 20upx;
 			}
 		}
+
 		.top-enter-wrapper {
 
 			.explain-wrapper {
@@ -116,6 +120,7 @@
 				border-radius: 30upx;
 				background-color: rgba(#FFF, .3);
 				justify-content: space-around;
+
 				text {
 					color: orange;
 				}
@@ -125,7 +130,7 @@
 					height: 30upx;
 				}
 
-				
+
 			}
 		}
 

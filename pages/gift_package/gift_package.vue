@@ -6,7 +6,7 @@
 		<view class="btn-wrapper">
 			<view class="btn" v-for="(item,index) in giftList" :key="index" @tap="change(item)">
 				<image class="icon" :src="item.icon" mode="widthFix"></image>
-				<view class="self flex-set">{{item.self}}</view>
+				<view class="self flex-set" :class="{red:item.self}">{{item.self}}</view>
 				<view class="line one flex-set">
 					<image class="sicon" src="/static/image/user/b1.png" mode="widthFix"></image>{{item.count}}
 				</view>
@@ -185,6 +185,10 @@
 					background-color: rgba(120, 120, 120, .3);
 					z-index: 2;
 
+				}
+				
+				.self.red {
+					background-color: #F00;
 				}
 
 				.name {
