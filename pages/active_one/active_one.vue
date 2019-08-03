@@ -199,7 +199,7 @@
 			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
 
 			<view class="wrapper flex-set">
-				<image src="http://tva1.sinaimg.cn/large/0060lm7Tly1g4p9rnx2f3g30ku112qc3.gif" mode="scaleToFill"></image>
+				<image src="http://tva1.sinaimg.cn/large/0060lm7Tly1g5k6xgs6fqg30bv0h4wg4.gif" mode="scaleToFill"></image>
 				<view class="btn flex-set" @tap="getShareText(2)">点击复制微博格式</view>
 			</view>
 		</view>
@@ -207,7 +207,7 @@
 			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
 
 			<view class="wrapper flex-set">
-				<image src="http://tva1.sinaimg.cn/large/0060lm7Tly1g4p9r2rbokg30ku112n3f.gif" mode="scaleToFill"></image>
+				<image src="http://tva1.sinaimg.cn/large/0060lm7Tly1g5k70tvqe8g30bv0h4407.gif" mode="scaleToFill"></image>
 				<view class="btn flex-set" @tap="getShareText(3);saveCanvas();">复制文字，保存图片到相册，发朋友圈</view>
 			</view>
 		</view>
@@ -322,6 +322,7 @@
 				uni.showLoading({
 					title: "生成海报中"
 				})
+				// 背景
 				this.getLocalImg('/static/image/canvas-bg.png', src => {
 					ctx.drawImage(src, 0, 0, 480 * rate, 854 * rate);
 					// 明星 

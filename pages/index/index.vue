@@ -89,9 +89,8 @@
 			<loadIconComponent v-if="showBottomLoading"></loadIconComponent>
 
 		</view>
-
-
-		<view class="open-ad-container flex-set" v-if="modal=='indexBanner' && $app.getData('config').index_banner && $app.getData('config').index_banner.img_url">
+		<view class="open-ad-container flex-set" v-if="modal=='indexBanner' && $app.getData('config').index_banner && $app.getData('config').index_banner.img_url 
+						&& $app.getData('config').version != $app.VERSION">
 			<image class="main" :src="$app.getData('config').index_banner.img_url" mode="aspectFill" @tap="modal='';$app.goPage($app.getData('config').index_banner.gopage)"></image>
 			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
 		</view>
@@ -100,11 +99,11 @@
 			<image class="main" :src="$app.getData('config').webmodal" @tap="preimg($app.getData('config').webmodal)" mode="aspectFill"></image>
 			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
 		</view>
-		
+
 		<!-- <view class="">
 			
 		</view> -->
-		
+
 	</view>
 
 </template>
@@ -123,6 +122,7 @@
 		},
 		data() {
 			return {
+				$app: this.$app,
 				modal: 'indexBanner',
 				showBottomLoading: true,
 				requestCount: 1,

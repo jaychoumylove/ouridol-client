@@ -91,7 +91,7 @@
 			.item {
 				margin: 20upx 0;
 				height: 130upx;
-				background: url(http://wx1.sinaimg.cn/large/0060lm7Tly1g2enrl619ng30j703n741.gif) right center no-repeat/contain;
+				background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2enrl619ng30j703n741.gif) right center no-repeat/contain;
 				display: flex;
 				align-items: center;
 
@@ -130,15 +130,15 @@
 			}
 
 			.item.one {
-				background: url(http://wx3.sinaimg.cn/large/0060lm7Tly1g2enrl4pe1g30j703n0sk.gif) right center no-repeat/contain;
+				background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2enrl4pe1g30j703n0sk.gif) right center no-repeat/contain;
 			}
 
 			.item.two {
-				background: url(http://wx4.sinaimg.cn/large/0060lm7Tly1g2enrl5aerg30j703ndfn.gif) right center no-repeat/contain;
+				background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2enrl5aerg30j703ndfn.gif) right center no-repeat/contain;
 			}
 
 			.item.three {
-				background: url(http://wx4.sinaimg.cn/large/0060lm7Tly1g2enrl4zd6g30j703ngle.gif) right center no-repeat/contain;
+				background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2enrl4zd6g30j703ngle.gif) right center no-repeat/contain;
 			}
 		}
 

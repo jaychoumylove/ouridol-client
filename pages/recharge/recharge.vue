@@ -4,87 +4,89 @@
 		由于相关规范，iOS功能暂不可用
 	</view>
 	<view v-else class="recharge-container">
-	<!-- #endif -->
-	
-	<!-- #ifdef H5 -->
-	<view class="recharge-container">
-	<!-- #endif -->
-	
-		<view class="top-row">
+		<!-- #endif -->
 
-			<view class="user-container">
-				<image :src="userInfo.avatarurl" mode="widthFix"></image>
-				<view class="nickname">
-					{{userInfo.nickname}}
+		<!-- #ifdef H5 -->
+		<view class="recharge-container">
+			<!-- #endif -->
+
+			<view class="top-row">
+
+				<view class="user-container">
+					<image :src="userInfo.avatarurl" mode="widthFix"></image>
+					<view class="nickname">
+						{{userInfo.nickname}}
+					</view>
 				</view>
+				<btnComponent type="css">
+					<view class="proxy flex-set" @tap="modal='proxyRecharge'">
+						<image src="/static/image/recharge/proxy.png" mode=""></image>
+						<text>代充值</text>
+					</view>
+				</btnComponent>
+
 			</view>
-			<btnComponent type="css">
-				<view class="proxy flex-set" @tap="modal='proxyRecharge'">
-					<image src="/static/image/recharge/proxy.png" mode=""></image>
-					<text>代充值</text>
-				</view>
-			</btnComponent>
-
-		</view>
-		<!-- <view class="row">
+			<!-- <view class="row">
 			<image class="bg" src="/static/image/recharge/top-title.png" mode="widthFix"></image>
 			<view class="">能量充值</view>
 		</view> -->
 
-		<view class="count-wrap">
-			<view class="top-title">我的能量：{{userCurrency.coin}}</view>
-			<view class="top-title">我的灵丹：{{userCurrency.stone}}</view>
-			<view class="top-title flex-set" @tap="$app.goPage('/pages/gift_package/gift_package')">
-				<view class="" style="text-decoration: underline;">礼物背包</view>
-				<view class="badge-wrap">{{giftNum}}</view>
+			<view class="count-wrap">
+				<view class="top-title">我的能量：{{userCurrency.coin}}</view>
+				<view class="top-title">我的灵丹：{{userCurrency.stone}}</view>
+				<view class="top-title flex-set" @tap="$app.goPage('/pages/gift_package/gift_package')">
+					<view class="" style="text-decoration: underline;">礼物背包</view>
+					<view class="badge-wrap">{{giftNum}}</view>
+				</view>
+
+				<image class='hand' v-if="handShow" src="/static/image/pet/hand.png" mode="widthFix"></image>
+			</view>
+			<view class="count-wrap tips">
+				<view>购买的能量礼物不清零</view>
+				<view>能量礼物可点击“打榜”直接送出，增加爱豆能量</view>
+			</view>
+			<view class="count-wrap middle">{{$app.getData('config').recharge_title}}</view>
+			<!-- 礼物列表 -->
+			<view class="btn-wrapper">
+				<view class="btn" v-for="(item,index) in rechargeList" :key="index" @tap="payment(item.id)">
+					<image class="icon" :src="item.item.icon" mode="widthFix"></image>
+					<view class="icon-top flex-set" v-if="item_double">生日翻倍</view>
+					<view class="line one flex-set">
+						<image class="sicon" src="/static/image/user/b1.png" mode="widthFix"></image>{{item.item.count}}
+					</view>
+					<view class="name flex-set">{{item.item.name}}</view>
+					<view class="line two flex-set">
+						<image class="sicon" src="/static/image/user/b2.png" mode="widthFix"></image>+{{item.stone}}
+					</view>
+
+					<view class="fee flex-set">
+						<text class="off-fee" v-if="item.off_fee">￥{{item.off_fee}}</text>
+						<text class="cur-fee">￥{{item.fee}}</text>
+					</view>
+				</view>
 			</view>
 
-			<image class='hand' v-if="handShow" src="/static/image/pet/hand.png" mode="widthFix"></image>
-		</view>
-		<view class="count-wrap tips">
-			<view>购买的能量礼物不清零</view>
-			<view>能量礼物可点击“打榜”直接送出，增加爱豆能量</view>
-		</view>
-		<!-- 礼物列表 -->
-		<view class="btn-wrapper">
-			<view class="btn" v-for="(item,index) in rechargeList" :key="index" @tap="payment(item.id)">
-				<image class="icon" :src="item.item.icon" mode="widthFix"></image>
-				<view class="icon-top flex-set" v-if="item_double">生日翻倍</view>
-				<view class="line one flex-set">
-					<image class="sicon" src="/static/image/user/b1.png" mode="widthFix"></image>{{item.item.count}}
-				</view>
-				<view class="name flex-set">{{item.item.name}}</view>
-				<view class="line two flex-set">
-					<image class="sicon" src="/static/image/user/b2.png" mode="widthFix"></image>+{{item.stone}}
-				</view>
+			<!-- 代充值 -->
+			<modalComponent v-if="modal == 'proxyRecharge'" title="代充值" @closeModal="modal=''">
+				<view class="userinfo-modal-container">
+					<view class="top">
+						<image class="avatar" :src="currentUser.avatarurl" mode="scaleToFill"></image>
+						<view class="nickname">{{currentUser.nickname}}</view>
+					</view>
 
-				<view class="fee flex-set">
-					￥{{item.fee}}
+					<view class="send-input">
+						<input type="number" confirm-type="search" @blur="kickBack()" @confirm="searchUser()" :value="currentUserid"
+						 @input="currentUserid = $event.detail.value" placeholder="请输入对方的ID" />
+					</view>
+					<btnComponent type="css">
+						<view class="btn flex-set" @tap="searchUser()">查找用户</view>
+					</btnComponent>
+					<btnComponent type="css">
+						<view class="btn flex-set" @tap="confirm()">为TA充值</view>
+					</btnComponent>
 				</view>
-			</view>
+			</modalComponent>
 		</view>
-
-		<!-- 代充值 -->
-		<modalComponent v-if="modal == 'proxyRecharge'" title="代充值" @closeModal="modal=''">
-			<view class="userinfo-modal-container">
-				<view class="top">
-					<image class="avatar" :src="currentUser.avatarurl" mode="scaleToFill"></image>
-					<view class="nickname">{{currentUser.nickname}}</view>
-				</view>
-
-				<view class="send-input">
-					<input type="number" confirm-type="search" @blur="kickBack()" @confirm="searchUser()" :value="currentUserid"
-					 @input="currentUserid = $event.detail.value" placeholder="请输入对方的ID" />
-				</view>
-				<btnComponent type="css">
-					<view class="btn flex-set" @tap="searchUser()">查找用户</view>
-				</btnComponent>
-				<btnComponent type="css">
-					<view class="btn flex-set" @tap="confirm()">为TA充值</view>
-				</btnComponent>
-			</view>
-		</modalComponent>
-	</view>
 
 </template>
 
@@ -101,6 +103,7 @@
 		},
 		data() {
 			return {
+				$app: this.$app,
 				modal: '',
 				requestCount: 1,
 				userInfo: {
@@ -241,6 +244,7 @@
 							coin: v.coin,
 							stone: v.stone,
 							fee: v.fee,
+							off_fee: v.off_fee,
 							item: v.item,
 						})
 					}
@@ -363,6 +367,12 @@
 			flex-direction: column;
 		}
 
+		.count-wrap.middle {
+			color: #F00;
+			font-weight: 700;
+			font-size: 46upx;
+		}
+
 		.btn-wrapper {
 			display: flex;
 			flex-wrap: wrap;
@@ -392,7 +402,7 @@
 					width: 125upx;
 					height: 125upx;
 				}
-				
+
 				.icon-top {
 					position: absolute;
 					background-color: #F00;
@@ -426,12 +436,21 @@
 						width: 25upx;
 					}
 				}
-				
+
 				.fee {
-					width: 125upx;
+					width: 160upx;
 					background-color: #FFF;
 					border-radius: 5upx;
 
+					.off-fee {
+						text-decoration: line-through;
+						font-size: 24upx;
+						color: #666;
+					}
+
+					.cur-fee {
+						font-weight: 700;
+					}
 				}
 			}
 

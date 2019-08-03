@@ -57,7 +57,7 @@
 	.container {
 
 		.item-wrapper {
-			background: url(http://wx4.sinaimg.cn/large/0060lm7Tly1g2qaiukofkg30kc02t744.gif) left center no-repeat/contain;
+			background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2qaiukofkg30kc02t744.gif) left center no-repeat/contain;
 			padding: 15upx 0;
 			margin: 10upx 0;
 			display: flex;
@@ -84,7 +84,7 @@
 		}
 		
 		.item-wrapper.top{
-			background: url(http://wx3.sinaimg.cn/large/0060lm7Tly1g2smboymitg30f002twea.gif) left center no-repeat/contain;
+			background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2smboymitg30f002twea.gif) left center no-repeat/contain;
 		}
 	}
 </style>

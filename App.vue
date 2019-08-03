@@ -1,14 +1,8 @@
 <script>
-	import Const from "@/lib/const";
-	import BaseFunc from "@/lib/base_func"
-	import Func from "@/lib/func";
-	import ExtFunc from "@/lib/ext_func"
+	import lib from "@/lib/lib"
 	export default {
 		globalData: {
-			...Const,
-			...BaseFunc,
-			...Func,
-			...ExtFunc,
+			...lib
 		},
 		onLaunch: function(option) {
 			// 微信小程序

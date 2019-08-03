@@ -75,7 +75,7 @@
 		.item {
 			height: 120upx;
 			margin: 20upx 0;
-			background: url(http://wx1.sinaimg.cn/large/0060lm7Tly1g2h8p2voudg30k203d3ya.gif) right center no-repeat/contain;
+			background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2h8p2voudg30k203d3ya.gif) right center no-repeat/contain;
 			display: flex;
 			align-items: center;
 
@@ -136,7 +136,7 @@
 		}
 
 		.item.send {
-			background: url(http://wx3.sinaimg.cn/large/0060lm7Tly1g2hf1do6hwg30k203d3ya.gif) right center no-repeat/contain;
+			background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2hf1do6hwg30k203d3ya.gif) right center no-repeat/contain;
 
 			.left-content {
 				.starname {

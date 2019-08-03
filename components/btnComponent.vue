@@ -32,24 +32,24 @@
 	}
 
 	.button.default {
-		background: url(http://wx2.sinaimg.cn/large/0060lm7Tly1g2coigwh4sg303s01p741.gif) center no-repeat/100% 100%;
+		background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2coigwh4sg303s01p741.gif) center no-repeat/100% 100%;
 	}
 
 	.button.big {
-		background: url(http://wx4.sinaimg.cn/large/0060lm7Tly1g2dxu4igebg303v02cgld.gif) center no-repeat/100% 100%;
+		background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2dxu4igebg303v02cgld.gif) center no-repeat/100% 100%;
 	}
 
 	.button.success {
-		background: url(http://wx4.sinaimg.cn/large/0060lm7Tly1g2ey5oz2oag303s01p741.gif) center no-repeat/100% 100%;
+		background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2ey5oz2oag303s01p741.gif) center no-repeat/100% 100%;
 		color:#FFF;
 	}
 
 	.button.disable {
-		background: url(http://wx1.sinaimg.cn/large/0060lm7Tly1g2ey5nkm77g303s01p741.gif) center no-repeat/100% 100%;
+		background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2ey5nkm77g303s01p741.gif) center no-repeat/100% 100%;
 	}
 
 	.button.fangde {
-		background: url(http://wx2.sinaimg.cn/large/0060lm7Tly1g2jwmn4sshg305v05vwea.gif) center no-repeat/100% 100%;
+		background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2jwmn4sshg305v05vwea.gif) center no-repeat/100% 100%;
 	}
 	
 	.button.css{

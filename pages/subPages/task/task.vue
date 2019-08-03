@@ -1,8 +1,12 @@
 <template>
 	<view class="container">
 		<view class="item" v-for="(item,index) in taskList" :key="index" v-if="!(
+		
 					(item.type==4 && ~$app.getData('sysInfo').system.indexOf('iOS') && $app.getData('config').ios_switch == 0) 
+					|| (item.id == 24 && $app.getData('config').version == $app.VERSION)
+					
 					)">
+			<!-- 有些任务不显示 -->
 			<view class="left-content">
 				<image class="img" :src="item.task_type.img" mode=""></image>
 				<view class="content ">
@@ -102,6 +106,7 @@
 		},
 		data() {
 			return {
+				$app: this.$app,
 				requestCount: 1,
 				taskList: this.$app.getData('taskList') || [],
 				modal: '',
@@ -144,10 +149,10 @@
 					this.videoAd.onError(err => {
 						this.$app.toast('抱歉，暂无合适的广告')
 						console.error('视频广告播放错误', err)
-						
+
 						for (let key in this.taskList) {
 							const value = this.taskList[key]
-						
+
 							if (value.type == 7) {
 								this.taskList[key].status = 1
 							}

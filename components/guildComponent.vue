@@ -180,21 +180,18 @@
 			</view>
 		</view>
 		<!-- 解锁活动 -->
-		<view class="active-container" @tap='goActive()'>
+		<!-- <view class="active-container" @tap='goActive()'>
 			<view class="active-inner flex-set">
 
 				<view class="text">解锁应援金</view>
 				<image class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
 				<view class="progress-wrap">
 					<view class="progress">
-						<!-- <progress v-if="activeInfo.join_people < activeInfo.active_info.target_people" stroke-width="10" activeColor="#007eff"
-						 backgroundColor="#f8c4be" :percent="activeInfo.join_people/activeInfo.active_info.target_people*100" /> -->
+						
 						<progress activeColor="#007eff" backgroundColor="#f8c4be" :percent="activeInfo.complete_people/activeInfo.nextCount*100" />
 					</view>
 					<view class="progress-text">
-						<!-- <view class="left" v-if="activeInfo.join_people < activeInfo.active_info.target_people">
-							参与人数：<text style="color: #007eff;">{{activeInfo.join_people}}</text>
-						</view> -->
+					
 						<view class="left">
 							解锁次数：<text style="color: #ff0000;">{{activeInfo.complete_people}}</text>
 						</view>
@@ -205,7 +202,7 @@
 				</view>
 			</view>
 
-		</view>
+		</view> -->
 		<!-- 聊天区域 -->
 		<scroll-view v-if="app.getData('config').version != app.VERSION && (star.id == app.getData('userStar').id || app.getData('userInfo').type == 1)"
 		 class="chart-container" scroll-y scroll-with-animation :scroll-into-view="'index_'+chartIndex">
@@ -2498,7 +2495,7 @@
 			.item {
 				margin: 20upx 0;
 				height: 130upx;
-				background: url(http://wx1.sinaimg.cn/large/0060lm7Tly1g2enrl619ng30j703n741.gif) right center no-repeat/contain;
+				background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2enrl619ng30j703n741.gif) right center no-repeat/contain;
 				display: flex;
 				align-items: center;
 

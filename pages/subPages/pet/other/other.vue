@@ -217,7 +217,7 @@
 		height: 100%;
 		overflow: hidden;
 		position: relative;
-		background: url(http://wx4.sinaimg.cn/large/0060lm7Tly1g2h7ro3ehvj30kv15pdig.jpg) center no-repeat/cover;
+		background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2h7ro3ehvj30kv15pdig.jpg) center no-repeat/cover;
 
 
 		.user-container {
