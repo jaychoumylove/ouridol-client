@@ -169,12 +169,12 @@
 				"text": "偶像圈"
 			},
 			
-			// {
-			// 	"pagePath": "pages/active_one/active_one",
-			// 	"iconPath": "/static/image/tab/yingyuan.png",
-			// 	"selectedIconPath": "/static/image/tab/yingyuan-tap.png",
-			// 	"text": "应援"
-			// }, 
+			{
+				"pagePath": "pages/active_one/active_one",
+				"iconPath": "/static/image/tab/yingyuan.png",
+				"selectedIconPath": "/static/image/tab/yingyuan-tap.png",
+				"text": "应援"
+			}, 
 			
 			{
 				"pagePath": "pages/user/user",

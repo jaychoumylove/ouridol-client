@@ -365,12 +365,15 @@
 			border-top: 1px dashed #EEE;
 			line-height: 1.6;
 			flex-direction: column;
+			border-bottom: 1px dashed #EEE;
+
 		}
 
 		.count-wrap.middle {
 			color: #F00;
 			font-weight: 700;
 			font-size: 46upx;
+			text-shadow: 0 2upx 4upx rgba(#000, .6);
 		}
 
 		.btn-wrapper {

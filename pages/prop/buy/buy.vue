@@ -217,6 +217,7 @@
 							margin: 0 10upx;
 							background-color: #FFF;
 							text-align: center;
+							font-size: 22upx;
 						}
 					}
 				}

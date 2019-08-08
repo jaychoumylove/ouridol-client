@@ -1,13 +1,20 @@
 <template>
-	<view class="active_one-container">
+	<view class="active_one-container" v-if="starid">
 
 		<view class="top-container">
 			<view class="top-btn-wrap">
-				<button open-type="share" data-share='4'>
+				<!-- <button open-type="share" data-share='4'>
 					<view class="btn">分享</view>
-				</button>
-				<view class="btn" @tap="$app.goPage('/pages/subPages/fanclub_list/fanclub_list?starname='+star.name)">
-					后援会
+				</button> -->
+				<view class="left-wrap flex-set">
+					<switch class="switch" :checked="activeInfo.active_subscribe == '2'" @change="subScribe" />
+					<text>订阅进度</text>
+					<image v-if="subscriibeShow" @tap="subscriibeShow = false" class="s-over" src="/static/image/guild/t-23.png" mode="widthFix"></image>
+				</view>
+
+				<view class="btn flex-set" @tap="$app.goPage('/pages/subPages/fanclub_list/fanclub_list?starname='+star.name)">
+					<image src="/static/image/user/s8.png" mode="widthFix"></image>
+					<text>后援会</text>
 				</view>
 			</view>
 			<image class="avatar" :src="star.avatar" mode="aspectFill"></image>
@@ -15,10 +22,10 @@
 		</view>
 
 		<view class="cardday">
-			解锁千元应援金活动
+			你已累计解锁<text>{{activeInfo.my_card_days}}</text>次
 		</view>
-		<view class="cardday">
-			你已累计打卡<text>{{activeInfo.my_card_days}}</text>天
+		<view class="cardday newbie">
+			好友助力<text>{{activeInfo.my_newbie_cards}}</text>次
 		</view>
 		<view class="active-center-container">
 			<view class="top-wrap">
@@ -26,38 +33,62 @@
 					<view class="left-1">为爱解锁</view>
 					<view class="left-2">剩余：{{activeInfo.left_time}}</view>
 				</view>
+				<button v-if="activeInfo.can_card" open-type="getUserInfo" @getuserinfo="getUserInfo">
+					<view class="right">
+						<image src="/static/image/guild/card-o.png" mode=""></image>
+						<view class="text">
+							<view class="t">解锁 <text style="color: #DC6B0C;">{{activeInfo.can_card}}</text>次</view>
+						</view>
+					</view>
+				</button>
+				<form v-else report-submit @submit="card">
+					<button class="right" form-type="submit">
+						<image src="/static/image/ic_haibao__bak.png" mode=""></image>
+						<view class="text">
+							<view class="t">增加次数</view>
+						</view>
+					</button>
+				</form>
 
-				<view v-if="activeInfo.can_card" class="right" @tap="card()">
-					<image src="/static/image/guild/card.png" mode=""></image>
-					<view class="text">
-						<view class="t">打卡</view>
-						<view class="t" style="font-size: 24upx;">{{activeInfo.my_card_days}}/7天</view>
-					</view>
-				</view>
-				<view v-else class="right" @tap="card()">
-					<image src="/static/image/guild/card-c.png" mode=""></image>
-					<view class="text">
-						<view class="t">已打卡</view>
-						<view class="t" style="font-size: 24upx;">{{activeInfo.my_card_days}}/7天</view>
-					</view>
-				</view>
 			</view>
-
 			<view class="progress-wrap">
-				<view class="progress">
+				<view class="bottom-text">
+					<!-- <view>已参与人数：<text style="color:#007EFF;">{{activeInfo.join_people}}</text></view> -->
+					<view v-if="activeInfo.finishedFee">已解锁：<text style="color:#ff0000;">{{activeInfo.finishedFee}}元</text></view>
+					<view v-else>解锁中</view>
+					<view>目标预计所需人数：<text style="color:#ff5cf7;">{{activeInfo.remainPeople}}人/天</text></view>
+				</view>
+
+				<!-- 里程碑进度条 -->
+				<view class="milestone-wrap" v-if="activeInfo.active_info">
+					<view class="dot finished"></view>
+
+					<view class="item-box" v-for="(item,index) in activeInfo.active_info" :key="index">
+						<view class="progress">
+							<view class="progress-finished" :style="{width:item.progress+'%'}"></view>
+						</view>
+						<view class="dot" :class="{finished:item.progress==100}">
+							<view class="name">￥{{item.fee}}</view>
+							<view class="value">{{item.count}}次</view>
+						</view>
+					</view>
+
+
+				</view>
+
+				<view class="bottom-text">
+					<view>已解锁次数：<text style="color:#007EFF;">{{activeInfo.complete_people}}</text></view>
+					<view>目标次数：<text style="color:#ff5cf7;">{{activeInfo.nextCount}}</text></view>
+				</view>
+
+				<!-- <view class="progress">
 					<progress activeColor="#007EFF" stroke-width="15" backgroundColor="#f8c4be" :percent="activeInfo.join_people/activeInfo.active_info.target_people*100" />
 					<text style="background-color:#007EFF;">{{(activeInfo.join_people/activeInfo.active_info.target_people*100).toFixed(1)}}%</text>
 				</view>
 				<view class="progress" style="color:#ff0000;">
 					<progress activeColor="#ff0000" stroke-width="15" backgroundColor="#f8c4be" :percent="activeInfo.complete_people/activeInfo.active_info.target_people*100" />
 					<text style="background-color:#ff0000;">{{(activeInfo.complete_people/activeInfo.active_info.target_people*100).toFixed(1)}}%</text>
-				</view>
-				<view class="bottom-text">
-					<view>已参与人数：<text style="color:#007EFF;">{{activeInfo.join_people}}</text></view>
-					<view>已完成人数：<text style="color:#ff0000;">{{activeInfo.complete_people}}</text></view>
-					<view>目标人数：<text style="color:#ff5cf7;">{{activeInfo.active_info.target_people}}</text></view>
-				</view>
-
+				</view> -->
 			</view>
 
 			<view class="notice-container">
@@ -66,7 +97,9 @@
 				<block v-for="(item,index) in article" :key="index">
 					<view class="article-group">
 						<view class="article-title" v-if="item.title">{{item.title}}</view>
-						<text class="article-content" decode v-if="item.content.length>0" v-for="(item1,index1) in item.content" :key="index1">{{item1}}</text>
+						<view class="article-row">
+							<text class="article-content" decode v-if="item.content.length>0" v-for="(item1,index1) in item.content" :key="index1">{{item1}}</text>
+						</view>
 					</view>
 				</block>
 			</view>
@@ -80,13 +113,16 @@
 					<image class='avatar' :src="item.user.avatarurl" mode="aspectFill"></image>
 					<view class="text-wrap">
 						<view class="name">{{item.user.nickname}}</view>
-						<view class="card">累计打卡天数：{{item.active_card_days}}天</view>
+						<view class="card">累计解锁次数：{{item.active_card_days}}次</view>
+						<!-- <view class="progress">
+							<progress activeColor="#007EFF" backgroundColor="#f8c4be" :percent="item.active_card_days/activeInfo.active_info.total_days*100" />
+						</view> -->
 					</view>
 
 					<view class="rank flex-set">{{index+1}}</view>
 				</view>
 				<view class="item-wrap flex-set" v-if="userRank.length == 0">
-					还没有人来打卡
+					还没有人来解锁
 				</view>
 			</view>
 		</view>
@@ -95,34 +131,19 @@
 			<view class="modal-container flex-set">
 				<view class="top-wrap">
 					<image class="avatar" :src="star.avatar" mode=""></image>
-					<view>解锁千元应援金活动</view>
-					<block v-if="activeInfo.join_people < activeInfo.active_info.target_people">
-						<view class="">已有<text style="color: #F00;">{{activeInfo.join_people}}</text>人参与</view>
+					<block v-if="activeInfo.finishedFee">
+						<view class="">已获得<text style="color: #F00;">{{activeInfo.finishedFee}}</text>元应援金</view>
+						<view class="">后援会入驻免费领取</view>
 					</block>
 					<block v-else>
-						<view class="">已有<text style="color: #007EFF;">{{activeInfo.complete_people}}</text>人完成,还差<text style="color: #F00;">{{activeInfo.active_info.target_people-activeInfo.complete_people}}</text>人完成</view>
+						<view class="">已解锁<text style="color: #007EFF;">{{activeInfo.complete_people}}</text>次，还差<text style="color: #F00;">{{activeInfo.nextCount - activeInfo.complete_people}}</text>次</view>
+						<view class="">后援会入驻免费领取</view>
 					</block>
 				</view>
-				<view class="progress-wrap">
-					<view class="progress">
-						<progress activeColor="#007EFF" stroke-width="15" backgroundColor="#f8c4be" :percent="activeInfo.join_people/activeInfo.active_info.target_people*100" />
-						<text style="background-color:#007EFF;">{{(activeInfo.join_people/activeInfo.active_info.target_people*100).toFixed(1)}}%</text>
-					</view>
-					<view class="progress" style="color:#ff0000;">
-						<progress activeColor="#ff0000" stroke-width="15" backgroundColor="#f8c4be" :percent="activeInfo.complete_people/activeInfo.active_info.target_people*100" />
-						<text style="background-color:#ff0000;">{{(activeInfo.complete_people/activeInfo.active_info.target_people*100).toFixed(1)}}%</text>
-					</view>
-					<view class="bottom-text">
-						<view>已参与人数：<text style="color:#007EFF;">{{activeInfo.join_people}}</text></view>
-						<view>已完成人数：<text style="color:#ff0000;">{{activeInfo.complete_people}}</text></view>
-						<view>目标人数：<text style="color:#ff5cf7;">{{activeInfo.active_info.target_people}}</text></view>
-					</view>
-
-				</view>
-				<!-- <view class="milestone-container">
+				<view class="milestone-container">
 					<view class="milestone-wrap" v-if="activeInfo.active_info">
 						<view class="dot finished"></view>
-		
+
 						<view class="item-box" v-for="(item,index) in activeInfo.active_info" :key="index">
 							<view class="progress">
 								<view class="progress-finished" :style="{width:item.progress+'%'}"></view>
@@ -142,7 +163,7 @@
 						</button>
 					</block>
 				</view>
-				<view>——每邀请1位新人立即解锁10次——</view> -->
+				<view>——每邀请1位新人立即解锁10次——</view>
 
 				<view class="btn-wrap">
 					<button class='fsend-btn flex-set' open-type='share'>
@@ -157,9 +178,9 @@
 						<image src="/static/image/pyq.png" mode="widthFix"></image>
 						<view>朋友圈</view>
 					</view>
-					<view v-if="$app.getData('config').pyq_switch == '0'" class='fsend-btn flex-set' @tap="drawCanvas();">
+					<view v-if="$app.getData('config').pyq_switch == '0'" class='fsend-btn flex-set' @tap="drawCanvas();saveCanvas();">
 						<image src="/static/image/icon/save.png" mode="widthFix"></image>
-						<view>保存海报</view>
+						<view>保存</view>
 					</view>
 
 					<!-- <view class='save-btn flex-set' @tap='saveCanvas'>保存到相册</view> -->
@@ -203,31 +224,48 @@
 		},
 		data() {
 			return {
-				$app: this.$app,
+				starid:0,
 				star: {},
 				activeInfo: {
-					active_info: {
-						target_people: 2000
-					},
-					can_card: true,
+					can_card: 1,
 					complete_people: 0,
 					join_people: 0,
 					left_time: '0天0小时0分',
 					my_card_days: 0,
+					active_subscribe: 1,
+					remainPeople: 0,
 				},
 				userRank: [],
 				modal: '',
 				cardOverContent: '',
 				article: this.$app.getData('config').active_notice,
-
+				mileList: [],
+				invitList: [],
+				subscriibeShow: false,
 			};
 		},
 		onShareAppMessage(e) {
 			const shareType = e.target && e.target.dataset.share
 			return this.$app.commonShareAppMessage(5)
 		},
-		onShow(option) {
-			this.starid = this.$app.getData('userStar').id
+		onLoad(option) {
+			
+		},
+		onShow(){
+			if (this.$app.getData('userStar').id) {
+				this.starid = this.$app.getData('userStar').id
+			} else {
+				uni.showModal({
+					title: '提示',
+					content: '请先加入一个圈子',
+					showCancel: false,
+					confirmText: '确定',
+					success: res => {
+						res.confirm && this.$app.goPage('/pages/index/index')
+					}
+				});
+				return
+			}
 			this.getActiveInfo()
 			this.getStarInfo()
 			this.getActiveUserRank()
@@ -265,8 +303,8 @@
 
 					ctx.setFontSize(18) //设置字体大小，默认10
 					ctx.setTextAlign('center')
-					this.canvas_title[0] && ctx.fillText(this.canvas_title[0], 240 * rate, 200 * rate) //绘制文本
-					this.canvas_title[1] && ctx.fillText(this.canvas_title[1], 240 * rate, 250 * rate) //绘制文本
+					ctx.fillText(this.canvas_title[0], 240 * rate, 200 * rate) //绘制文本
+					ctx.fillText(this.canvas_title[1], 240 * rate, 250 * rate) //绘制文本
 
 					ctx.fillText(this.star.name, 140 * rate, 632 * rate) //绘制文本
 
@@ -317,7 +355,6 @@
 										success: res => {
 											this.canvasImg = res.tempFilePath
 											console.log(this.canvasImg);
-											this.saveCanvas()
 										}
 									}, this);
 								})
@@ -341,6 +378,17 @@
 					}
 				});
 			},
+			subScribe(e) {
+				this.$app.request('subscribe', {
+					sub_type: 'active_card',
+					flag: e.detail.value ? "2" : "1"
+				}, res => {
+					this.activeInfo.active_subscribe = res.data
+					if (res.data == "2") {
+						this.$app.toast('订阅成功', 'success')
+					}
+				}, 'POST', true)
+			},
 			getStarInfo() {
 				this.$app.request(this.$app.API.STAR_INFO, {
 					starid: this.starid
@@ -352,32 +400,88 @@
 						name: star.name,
 						weekHot: this.$app.formatNumberRgx(star.star_rank.week_hot),
 						weekRank: star.star_rank.week_hot_rank,
-						share_img: star.share_img,
 					}
 
 					this.$app.closeLoading(this)
 				})
 			},
-			card() {
-				if (this.$app.getData('userStar').id == this.starid) {
 
-					this.modal = 'cardOver'
-					if (this.activeInfo.can_card) {
-						this.$app.request(this.$app.API.EXT_ACTIVECARD, {}, res => {
-							this.getActiveInfo()
-							this.getActiveUserRank()
-							this.$app.toast('今日打卡成功', 'success')
+			// 加入圈子
+			join() {
+				this.$app.modal(`每个人只能加入一个偶像圈\n是否加入${this.star.name}的偶像圈？`, () => {
+					// 加入圈子
+					this.$app.request(this.$app.API.STAR_FOLLOW, {
+						starid: this.starid,
+						rer_user_id: this.$app.getData('referrer'), // 推荐人
+					}, res => {
+						this.$app.request(this.$app.API.USER_STAR, {}, res => {
+							this.$app.setData('userStar', res.data, true)
+							this.card()
+						})
+					})
+				})
+			},
+			// 用户授权
+			getUserInfo(e) {
+				const userInfo = e.detail.userInfo
+				if (userInfo) {
+					if (!this.$app.getData('userInfo').nickname) {
+						// 保存用户信息
+						this.$app.request(this.$app.API.USER_SAVEINFO, {
+							iv: e.detail.iv,
+							encryptedData: e.detail.encryptedData,
+						}, res => {
+							this.$app.request(this.$app.API.USER_INFO, {}, res => {
+								this.$app.setData('userInfo', res.data, true)
+							})
+							if (!this.$app.getData('userStar').id) {
+								this.join()
+							}
 						}, 'POST', true)
 					} else {
-						this.cardOverContent = '今日已打卡'
+						if (!this.$app.getData('userStar').id) {
+							this.join()
+						} else {
+							this.card()
+						}
+					}
+
+				}
+			},
+			// 打卡
+			card(e) {
+				// 保存formId
+				const formId = e && e.detail && e.detail.formId || null
+
+				if (formId && formId != 'the formId is a mock one') {
+					this.$app.request(this.$app.API.EXT_SAVEFORMID, {
+						formId
+					})
+				}
+				if (this.$app.getData('userStar').id == this.starid) {
+					this.modal = 'cardOver'
+					this.getInvitList()
+					if (this.activeInfo.can_card) {
+						this.$app.request(this.$app.API.EXT_ACTIVECARD, {}, res => {
+							if (res.data.subscribe) this.subscriibeShow = true
+							this.getActiveInfo()
+							this.getActiveUserRank()
+							this.$app.toast('今日解锁成功', 'success')
+						}, 'POST', true)
 					}
 
 				} else {
-					this.$app.toast('你怎么能为别的爱豆打卡呢')
+					this.$app.toast('你怎么能为别的爱豆应援呢')
 				}
 
 			},
-
+			getInvitList() {
+				this.$app.request('user/invitlist', {
+					type: 3
+				}, res => {
+					this.invitList = res.data.list
+				})
+			},
 			getActiveUserRank() {
 				this.$app.request(this.$app.API.EXT_ACTIVE_USERRANK, {
 					starid: this.starid
@@ -386,7 +490,7 @@
 					const resList = []
 
 					for (let v of res.data) {
-						if (v.user.nickname) {
+						if (v.user && v.user.nickname) {
 							resList.push({
 								active_card_days: v.active_card_days,
 								user: v.user,
@@ -395,23 +499,44 @@
 					}
 
 					this.userRank = resList
+
 				})
 			},
 			getActiveInfo() {
 				this.$app.request(this.$app.API.EXT_ACTIVEINFO, {
-					starid: this.starid,
+					starid: this.starid
 				}, res => {
 					this.canvas_title = res.data.canvas_title
+					// 里程碑信息
+					let activeInfo = res.data.active_info
+					// 已解锁次数
+					let finished = res.data.complete_people
+					// 进度条百分比
+					for (let key in activeInfo) {
+						if (activeInfo[key]['count'] <= finished) {
+							// 该阶段已完成
+							activeInfo[key]['progress'] = 100
+						} else {
+							let lastCount = activeInfo[key - 1] && activeInfo[key - 1]['count'] || 0
+							let percent = (finished - lastCount) / (activeInfo[key]['count'] - lastCount) * 100
+							if (percent < 0) percent = 0
+							activeInfo[key]['progress'] = percent
+						}
+					}
+					res.data.active_info = activeInfo
+					if (res.data.active_end > 0) {
+						let left_time = this.$app.timeGethms(res.data.active_end)
+						res.data.left_time = left_time.day + '天' + left_time.hour + '小时' + left_time.min + '分'
+					} else {
+						res.data.left_time = '活动已结束'
+					}
 
-					let left_time = this.$app.timeGethms(res.data.active_end)
-
-					res.data.left_time = left_time.day + '天' + left_time.hour + '小时' + left_time.min + '分'
 					this.activeInfo = res.data
 
 					// if (this.activeInfo.my_card_days > 7) {
-					// 	this.cardOverContent = `打卡成功，已成功为爱豆助力解锁福利。`
+					this.cardOverContent = `解锁成功，已成功为爱豆助力解锁福利。`
 					// } else {
-					// 	this.cardOverContent = `打卡成功，打卡进度${this.activeInfo.my_card_days}/7天，请继续保持。`
+					this.cardOverContent = `解锁成功，解锁进度${this.activeInfo.my_card_days}/7天，请继续保持。`
 					// }
 				})
 			},
@@ -423,39 +548,65 @@
 	.active_one-container {
 		padding: 20upx;
 
-		.progress-wrap {
-			padding: 30upx;
-			background-color: #F5EBE6;
+		.milestone-wrap {
+			width: 100%;
+			display: flex;
+			align-items: center;
+			padding: 50upx 20upx;
+			margin-top: 20upx;
+			margin-bottom: 20upx;
 
-			.progress {
-				margin: 14upx 0;
+			.dot {
+				background-color: #dcdcdc;
+				border-radius: 50%;
+				width: 40upx;
+				height: 40upx;
+				z-index: 1;
+				position: relative;
+
+				.name {
+					position: absolute;
+					top: -40upx;
+					left: 50%;
+					transform: translateX(-50%);
+					font-size: 22upx;
+					white-space: nowrap;
+				}
+
+				.value {
+					position: absolute;
+					bottom: -40rpx;
+					left: 50%;
+					transform: translateX(-50%);
+					font-size: 22upx;
+					white-space: nowrap;
+				}
+			}
+
+			.dot.finished {
+				background-color: #007EFF;
+			}
+
+			.item-box {
+				flex: 1;
 				display: flex;
 				align-items: center;
 
-				progress {
-					width: 100%;
-					border-radius: 60upx;
-					overflow: hidden;
-					margin-right: 20upx;
+				.progress {
+					margin: 0 -5upx;
+					flex: 1;
+					height: 20upx;
+					background-color: #dcdcdc;
+
+					.progress-finished {
+						width: 0%;
+						height: 100%;
+						background-color: #007EFF;
+					}
 				}
 
-				text {
-					border-radius: 30upx;
-					padding: 0 20upx;
-					color: #FFF;
-					width: 120upx;
-					text-align: center;
-				}
 			}
 
-			.bottom-text {
-				display: flex;
-				justify-content: space-between;
-			}
-		}
-		
-		.progress-wrap.small {
-			transform: scale(0.8);
 		}
 
 		.top-container {
@@ -463,15 +614,36 @@
 			flex-direction: column;
 			align-items: center;
 
+			.switch {
+				transform: scale(0.7);
+				margin: 0 -20upx;
+			}
+
 			.top-btn-wrap {
 				display: flex;
 				width: 100%;
 				justify-content: space-between;
 				padding: 0 10upx;
+				align-items: center;
+
+				.left-wrap {
+					position: relative;
+
+					.s-over {
+						width: 150upx;
+						position: absolute;
+						left: 70upx;
+						top: 56upx;
+					}
+				}
 
 				.btn {
-					font-size: 32upx;
-					font-weight: 700;
+
+					image {
+						margin: 0 10upx;
+						width: 40upx;
+						// height: 60upx;
+					}
 				}
 			}
 
@@ -497,17 +669,22 @@
 				background-color: $color_1;
 				border-radius: 10upx;
 				color: #FFF;
-				width: 40upx;
 				display: inline-block;
 				margin: 0 2upx;
+				padding: 0 10upx;
+			}
+		}
+
+		.cardday.newbie {
+			text {
+				// background-color: #f7d11e;	
 			}
 		}
 
 		.active-center-container {
-			border-radius: 30upx;
-			overflow: hidden;
-
 			.top-wrap {
+				border-top-left-radius: 30upx;
+				border-top-right-radius: 30upx;
 				background-color: #c0ebe9;
 				height: 90upx;
 				display: flex;
@@ -535,11 +712,16 @@
 				.right {
 					color: $color_1;
 					background-color: #ffd1b2;
+					z-index: 2;
 					display: flex;
 					align-items: center;
-
 					border-top-left-radius: 50upx;
 					border-bottom-left-radius: 50upx;
+
+					// margin-bottom: 30upx;
+					// margin-right: 30upx;
+					// height: 120upx;
+					// width: 120upx;
 
 					image {
 						height: 90upx;
@@ -553,7 +735,36 @@
 				}
 			}
 
+			.progress-wrap {
+				padding: 30upx;
+				background-color: #F5EBE6;
 
+				// 				.progress {
+				// 					margin: 14upx 0;
+				// 					display: flex;
+				// 					align-items: center;
+				// 
+				// 					progress {
+				// 						width: 100%;
+				// 						border-radius: 60upx;
+				// 						overflow: hidden;
+				// 						margin-right: 20upx;
+				// 					}
+				// 
+				// 					text {
+				// 						border-radius: 30upx;
+				// 						padding: 0 20upx;
+				// 						color: #FFF;
+				// 						width: 120upx;
+				// 						text-align: center;
+				// 					}
+				// 				}
+
+				.bottom-text {
+					display: flex;
+					justify-content: space-between;
+				}
+			}
 
 			.notice-container {
 				color: #FFF;
@@ -566,7 +777,6 @@
 					font-weight: 700;
 					text-shadow: 0 4upx 6upx rgba(#000, 0.3);
 					padding: 5upx 10upx;
-
 				}
 
 				.article-group {
@@ -583,18 +793,21 @@
 						width: 150upx;
 					}
 
-					.article-content {
+					.article-row {
 						flex: 1;
-						text-indent: 0;
-						font-size: 28upx;
-						font-weight: 300;
-						margin: 0;
+
+						.article-content {
+							flex: 1;
+							text-indent: 0;
+							font-size: 28upx;
+							font-weight: 300;
+							margin: 0;
+						}
+
 					}
 				}
-
 			}
 		}
-
 
 		.rank-list-container {
 			margin-top: 40upx;
@@ -656,32 +869,8 @@
 						color: #FFF;
 						background-color: #b90504;
 						font-size: 32upx;
-
 					}
 				}
-			}
-		}
-
-		.modal-container {
-			flex-direction: column;
-			height: 100%;
-
-			.complete {
-				width: 120upx;
-				height: 120upx;
-			}
-
-			.title {
-				font-weight: 700;
-				margin-top: 30upx;
-				font-size: 34upx;
-			}
-
-			.text {
-				padding: 60upx;
-				font-size: 32upx;
-				line-height: 1.6;
-
 			}
 		}
 
@@ -758,7 +947,7 @@
 			}
 
 		}
-		
+
 		.canvas-container {
 			position: fixed;
 			top: 0;
@@ -768,12 +957,12 @@
 			z-index: 9;
 			background-color: rgba(0, 0, 0, .9);
 			flex-direction: column;
-		
+
 			.canvas {
 				width: 480upx;
 				height: 854upx;
 			}
-		
+
 			.close-btn {
 				position: absolute;
 				width: 80upx;
@@ -786,19 +975,19 @@
 				right: 20upx;
 				top: 20upx;
 			}
-		
+
 			.wrapper {
 				width: 540upx;
 				height: 960upx;
 				padding: 40upx;
 				flex-direction: column;
 				background-color: #FFF;
-		
+
 				image {
 					width: 100%;
 					flex: 1;
 				}
-		
+
 				.btn {
 					margin-top: 40upx;
 					width: 100%;
@@ -812,27 +1001,27 @@
 					border-radius: 20upx;
 				}
 			}
-		
+
 			.btn-wrap {
 				margin-top: 20upx;
 				display: flex;
 				justify-content: space-around;
 				width: 100%;
 				padding: 0 60upx;
-		
+
 				.fsend-btn {
 					// background-color: #0EC52F;
 					font-size: 32upx;
 					color: #FFF;
 					padding: 0 20upx;
 					flex-direction: column;
-		
+
 					image {
 						width: 80upx;
 						height: 80upx;
 					}
 				}
-		
+
 				.save-btn {
 					background-color: #FF7E00;
 					border-radius: 10upx;
@@ -842,7 +1031,7 @@
 				}
 			}
 		}
-		
+
 		.canvas {
 			width: 480upx;
 			height: 854upx;

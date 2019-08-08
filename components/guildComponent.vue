@@ -10,10 +10,13 @@
 			<view class="top-content">
 				<view class="danmaku-wrapper flex-set">
 
-					<view class="danmaku" v-if="danmaku">
+					<view class="danmaku" v-if="danmaku" :class="{gift:danmaku.starname}">
 						<image class="avatar" :src="danmaku.avatarurl"></image>
-						<view class="content">{{danmaku.content}}</view>
-						<image class='tail' src='/static/image/guild/tail.png' />
+						
+						<view class="content" v-if="danmaku.content">{{danmaku.content}}</view>
+						<view class="content" v-else>给<text style="color: #DC6B0C;">{{danmaku.starname}}</text>赠送</view>
+						
+						<image class="icon" v-if="danmaku.icon" :src="danmaku.icon"></image>
 					</view>
 				</view>
 				<view class="row-info">
@@ -201,8 +204,33 @@
 					</view>
 				</view>
 			</view>
-
 		</view> -->
+		<view class="active-container" @tap='goActive()'>
+			<view class="active-inner flex-set">
+
+				<view class="text">解锁应援金</view>
+				<image class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
+				<view class="progress-wrap">
+					<view class="progress">
+						<progress v-if="activeInfo.join_people < activeInfo.active_info.target_people" stroke-width="10" activeColor="#007eff"
+						 backgroundColor="#f8c4be" :percent="activeInfo.join_people/activeInfo.active_info.target_people*100" />
+						<progress v-else activeColor="#ff0000" backgroundColor="#f8c4be" :percent="activeInfo.complete_people/activeInfo.active_info.target_people*100" />
+					</view>
+					<view class="progress-text">
+						<view class="left" v-if="activeInfo.join_people < activeInfo.active_info.target_people">
+							参与人数：<text style="color: #007eff;">{{activeInfo.join_people}}</text>
+						</view>
+						<view class="left" v-else>
+							完成人数：<text style="color: #ff0000;">{{activeInfo.complete_people}}</text>
+						</view>
+						<view class="right">
+							目标人数：<text style="color: #ff5cf7;">{{activeInfo.active_info.target_people}}</text>
+						</view>
+					</view>
+				</view>
+			</view>
+
+		</view>
 		<!-- 聊天区域 -->
 		<scroll-view v-if="app.getData('config').version != app.VERSION && (star.id == app.getData('userStar').id || app.getData('userInfo').type == 1)"
 		 class="chart-container" scroll-y scroll-with-animation :scroll-into-view="'index_'+chartIndex">
@@ -300,14 +328,43 @@
 			<view class="item-wrap" v-for="(item,index) in giftItemList" :key="index">
 				<image class="avatar" :src="item.avatar" mode="widthFix"></image>
 				<view class="text-wrap">
-					<view class="name">{{item.username}}</view>
-					<view class="desc">送出 <text>{{item.itemname}}</text></view>
+					<view class="name"><text>{{item.username}}</text></view>
+					<view class="desc">给<text>{{item.starname}}</text>赠送了</view>
 				</view>
 				<image :src="item.itemicon" class="item-content" mode="widthFix"></image>
 			</view>
 		</view>
 
 		<!-- MODAL -->
+		<modalComponent v-if="modal == 'signin'" title="签到" @closeModal="modal=''">
+			<view class="signin-modal-container">
+				<view class="top-container flex-set">
+					<image class="top-img" src="/static/image/guild/card-c.png" mode=""></image>
+					<view class="text">{{signin_coin?'签到成功':'今日已签到'}}</view>
+					<view v-if="signin_coin" class="coin flex-set">+{{signin_coin}}
+						<image src="/static/image/user/b1.png" mode="widthFix"></image>
+					</view>
+				</view>
+
+				<view class="section-container">
+					<view class="row r-1">
+						<view v-for="(item,index) in siginList" :key="index">+{{item.coin}}</view>
+					</view>
+					<view class="row line">
+						<view class="ball" v-for="(item,index) in siginList" :key="index" :class="{active:index+1<=signin_day}"></view>
+					</view>
+
+					<view class="row r-3">
+						<view v-for="(item,index) in siginList" :key="index">{{item.days}}天</view>
+					</view>
+				</view>
+				<view class="tips">您已累计连续签到{{signin_day}}天，坚持累计签到可获得更多能量</view>
+				<btnComponent type="css" v-if="!~$app.getData('sysInfo').system.indexOf('iOS')">
+					<view class="flex-set" @tap="$app.goPage('/pages/recharge/recharge')" style="width: 160upx;height: 80upx;">更多能量</view>
+				</btnComponent>
+			</view>
+		</modalComponent>
+
 		<modalComponent type="send" v-if="modal == 'send'" title="打榜" @closeModal="modal=''">
 			<view class="send-modal-container">
 				<!-- <view class="tab-wrapper"></view> -->
@@ -885,14 +942,18 @@
 				sprite_level: 0,
 				friendTotal: 0,
 				captain: 0, // 团长
+
+				siginList: [],
+				signin_day: 1,
+				signin_coin: 0,
 			};
 		},
 		created() {
 			this.initDanmaku()
 		},
-		// destroyed() {
-		// 	clearInterval(this.sayworldTimeId)
-		// },
+		destroyed() {
+			clearInterval(this.sayworldTimeId)
+		},
 		methods: {
 			/**
 			 * 加载数据
@@ -902,10 +963,17 @@
 				this.star.id = starid
 				if (!this.star.id) return
 
-				if (this.$app.getData('userStar').id == this.star.id && this.$app.noob) {
+				if (this.$app.getData('userStar').id == this.star.id) {
 					// 新手指引
-					this.tips = true
-					this.$app.noob = false
+					if (this.$app.noob) {
+						// 新手指引
+						this.tips = true
+						this.$app.noob = false
+					}
+					// 7日签到
+					if (new Date().getDate() != this.$app.getData('modal_signin')) {
+						this.getSignin()
+					}
 				}
 
 				this.loadData()
@@ -1063,6 +1131,22 @@
 					})
 				}
 
+			},
+			// 签到
+			getSignin() {
+				this.modal = 'signin'
+				this.$app.request(this.$app.API.USER_SIGNIN, {}, res => {
+					this.$app.setData('modal_signin', new Date().getDate())
+					this.siginList = res.data.cfg
+					this.signin_day = res.data.signin_day
+					if (res.data.coin) {
+						this.signin_coin = res.data.coin
+
+						this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
+							this.$app.setData('userCurrency', res.data)
+						})
+					}
+				})
 			},
 			// 禁言
 			forbidden() {
@@ -1979,30 +2063,37 @@
 					}
 
 					.danmaku {
+						height: 44upx;
 						margin-top: 10upx;
 						display: flex;
 						animation: sayworld 10s linear infinite;
 						align-items: center;
 						position: relative;
 						z-index: 9;
+						border-radius: 50upx;
+						background: linear-gradient(to right, rgba(#7299F7, 0.9), rgba(#7299F7, 0.1));
+						// background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAAA5CAYAAACvbxAVAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAK5JREFUeNrs1rEJhQAQRMFTLtDYhmzVKgxFfqaFGIiJWIAN/Fg4mClhecE2se1LQC1TDn032oFi1rzuxwyUkyFcCmpNgHBBuCBchAvCBeEiXBAuCBeEi3BBuCBchAvCBeEiXBAuCBeEi3BBuCBchAvCBeEiXBAuCBeEi3BBuCBchAvCBeEiXBAuCBeEi3BBuCBchAvCBeEiXBAuCBf+yPjNVqBguOdhBVwF+MIrwAClLQyb1cy8aQAAAABJRU5ErkJggg==);
+						// background-size: 100% 100%;
 
 						.avatar {
 							width: 44upx;
 							height: 44upx;
 							border-radius: 50%;
-							position: absolute;
-							left: -20upx;
 						}
 
 						.content {
-							background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAAA5CAYAAACvbxAVAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAK5JREFUeNrs1rEJhQAQRMFTLtDYhmzVKgxFfqaFGIiJWIAN/Fg4mClhecE2se1LQC1TDn032oFi1rzuxwyUkyFcCmpNgHBBuCBchAvCBeEiXBAuCBeEi3BBuCBchAvCBeEiXBAuCBeEi3BBuCBchAvCBeEiXBAuCBeEi3BBuCBchAvCBeEiXBAuCBeEi3BBuCBchAvCBeEiXBAuCBf+yPjNVqBguOdhBVwF+MIrwAClLQyb1cy8aQAAAABJRU5ErkJggg==);
-							background-size: 100% 100%;
-							padding-left: 30upx;
+							padding-left: 10upx;
 							padding-right: 10upx;
 							font-size: 26upx;
 							color: #FFF;
 							height: 38upx;
 							line-height: 38upx;
+						}
+
+						.icon {
+							width: 80upx;
+							height: 80upx;
+							border-radius: 50%;
 						}
 
 						.tail {
@@ -2012,6 +2103,15 @@
 							top: 50%;
 							transform: translateY(-50%);
 							right: -39upx;
+						}
+
+					}
+
+					.danmaku.gift {
+						background: linear-gradient(to right, rgba(#FEEEB2, 0.9), rgba(#FEEEB2, 0.1));
+
+						.content {
+							color: #777;
 						}
 					}
 				}
@@ -2758,10 +2858,10 @@
 					color: #777;
 
 					.name {
-						color: #DC6B0C;
+						font-size: 30upx;
 					}
 
-					.desc text {
+					text {
 						color: #DC6B0C;
 					}
 				}
@@ -2897,7 +2997,7 @@
 						font-size: 22upx;
 						z-index: 2;
 					}
-					
+
 					.self.red {
 						background-color: #F00;
 					}
@@ -3616,6 +3716,104 @@
 					top: 50%;
 					transform: translateY(-50%);
 				}
+			}
+		}
+
+		.signin-modal-container {
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin: auto;
+			background-color: #FFF;
+
+			.top-container {
+				width: 100%;
+				height: 260upx;
+				background-color: rgba(#ffd1b2, 0.3);
+				text-align: center;
+				flex-direction: column;
+				justify-content: space-around;
+				padding: 30upx;
+
+				.top-img {
+					width: 80upx;
+					height: 80upx;
+				}
+
+				.text {
+					font-size: 32upx;
+					font-weight: 700;
+				}
+
+				.coin {
+					image {
+						width: 30upx;
+						min-height: 30upx;
+					}
+				}
+			}
+
+			.section-container {
+				margin: 20upx 0;
+				width: 100%;
+
+				.row {
+					position: relative;
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					margin: 10upx 60upx;
+
+					.ball {
+						width: 16upx;
+						height: 16upx;
+						border-radius: 50%;
+						background-color: #DDD;
+					}
+
+					.ball.active {
+						position: relative;
+						background-color: #ece3e4;
+						width: 30upx;
+						height: 30upx;
+					}
+
+					.ball.active::before {
+						content: "";
+						position: absolute;
+						border-radius: 50%;
+						background-color: #FF9700;
+						top: 50%;
+						left: 50%;
+						transform: translate(-50%, -50%);
+						width: 16upx;
+						height: 16upx;
+					}
+				}
+
+				.row.r-1 {
+					margin: 10upx 30upx;
+				}
+
+				.row.r-3 {
+					margin: 10upx 40upx;
+				}
+
+				.row.line::before {
+					content: "";
+					position: absolute;
+					width: 100%;
+					border-top: 1px solid #DDD;
+					top: 50%;
+					transform: translateY(-50%);
+				}
+			}
+
+			.tips {
+				font-size: 22upx;
+				color: #888;
+				margin-bottom: 20upx;
 			}
 		}
 	}
