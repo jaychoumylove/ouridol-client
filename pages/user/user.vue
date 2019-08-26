@@ -18,9 +18,7 @@
 					</view>
 					<view class="item-line middle">
 						<view class="mystar flex-set" v-if="userStar.id" @tap="$app.goPage('/pages/group/group')">{{userStar.name}}偶像圈</view>
-						<view class="mystar flex-set" style="background-color: #415236;" 
-							v-if="userStar.id"
-						 @tap="$app.goPage('/pages/subPages/fanclub_list/fanclub_list')">
+						<view class="mystar flex-set" style="background-color: #415236;" v-if="userStar.id" @tap="$app.goPage('/pages/subPages/fanclub_list/fanclub_list')">
 							<image src="/static/image/user/s8.png" style="width: 30upx;height: 30upx;" mode="widthFix"></image>
 							后援会
 						</view>
@@ -123,6 +121,10 @@
 				<image src="/static/image/user/r3.png" mode="widthFix"></image>
 				<view class="text">客服微信号：ouridol</view>
 			</view>
+			<view class="list-item" @tap="$app.goPage('/pages/game/game?type=1')">
+				<image src="/static/image/icon/task-game.png" mode="widthFix"></image>
+				<view class="text">游戏试玩</view>
+			</view>
 
 			<view v-if="userStar.id && $app.getData('userInfo').type == 0" class="list-item" @tap="exitGroup">
 				<image src="/static/image/user/r4.png" mode="widthFix"></image>
@@ -201,11 +203,13 @@
 				trumpet: 0
 			}
 			this.userStar = this.$app.getData('userStar') || {}
-			
+
 			this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
 				this.$app.setData('userCurrency', res.data)
 				this.userCurrency = this.$app.getData('userCurrency')
 			})
+
+			this.$app.openInterstitialAd()
 		},
 		onShareAppMessage() {
 			return this.$app.commonShareAppMessage()
@@ -293,7 +297,7 @@
 					justify-content: space-around;
 					flex-direction: column;
 					font-size: 26upx;
-					
+
 					.item-line {
 						display: flex;
 						align-items: center;

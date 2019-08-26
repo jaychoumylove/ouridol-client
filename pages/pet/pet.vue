@@ -171,8 +171,8 @@
 							</view>
 							<image @tap.stop="deleteFriend(item,index)" class="del" src="/static/image/guild/del.png" mode="widthFix"></image>
 							<view class="egg flex-set" @tap.stop="settleSprite(index, item)">
-								<image v-if="item.earn > 2 && !item.off" class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
-
+								<image v-if="item.earn >= 200 && !item.off" class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
+								
 								<view class="num-wrapper position-set">{{item.earn}}</view>
 								<image v-if="!item.off" class="flex-set" src="/static/image/pet/y5.png" mode="widthFix"></image>
 								<image v-else class="flex-set" src="/static/image/pet/y5-off.png" mode="widthFix"></image>
@@ -435,8 +435,8 @@
 			// 				})
 			// 			},
 			settleSprite(index, item) {
-				if (item.earn < 2) {
-					this.$app.toast('TA的能量太少了，稍后再来吧')
+				if (item.earn < 200) {
+					this.$app.toast('能量太少，请达到200能量再来帮TA收吧')
 				} else if (item.off) {
 					// 不能收
 					this.modal = 'tips_t'

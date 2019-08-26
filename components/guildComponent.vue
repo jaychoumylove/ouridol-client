@@ -12,10 +12,10 @@
 
 					<view class="danmaku" v-if="danmaku" :class="{gift:danmaku.starname}">
 						<image class="avatar" :src="danmaku.avatarurl"></image>
-						
+
 						<view class="content" v-if="danmaku.content">{{danmaku.content}}</view>
 						<view class="content" v-else>给<text style="color: #DC6B0C;">{{danmaku.starname}}</text>赠送</view>
-						
+
 						<image class="icon" v-if="danmaku.icon" :src="danmaku.icon"></image>
 					</view>
 				</view>
@@ -644,7 +644,7 @@
 							</view>
 							<image @tap.stop="deleteFriend(item,index)" class="del" src="/static/image/guild/del.png" mode="widthFix"></image>
 							<view class="egg flex-set" @tap.stop="settleSprite(index, item)">
-								<image v-if="item.earn > 2 && !item.off" class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
+								<image v-if="item.earn >= 200 && !item.off" class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
 
 								<view class="num-wrapper position-set">{{item.earn}}</view>
 								<image v-if="!item.off" class="flex-set" src="/static/image/pet/y5.png" mode="widthFix"></image>
@@ -1343,8 +1343,8 @@
 			// 				}
 			// 			},
 			settleSprite(index, item) {
-				if (item.earn < 2) {
-					this.$app.toast('TA的能量太少了，稍后再来吧')
+				if (item.earn < 200) {
+					this.$app.toast('能量太少，请达到200能量再来帮TA收吧')
 				} else if (item.off) {
 					// 不能收
 					this.modal = 'tips_t'
@@ -1599,6 +1599,7 @@
 					starid,
 					index
 				}, res => {
+					this.starRankList[index].steal = 60
 					this.$app.toast(`偷到了${res.data.count}能量`)
 
 					this.getStarRank()
@@ -1760,12 +1761,12 @@
 					}
 					this.$app.toast('打榜成功', 'success')
 					// 弹窗
-					let sendOverTime = this.$app.getData('sendOverTime')
-					let time = Math.round(new Date().getTime() / 1000)
-					if (time - sendOverTime > 3600 * 6) {
-						this.$app.setData('sendOverTime', time)
-						this.drawCanvas()
-					}
+					// let sendOverTime = this.$app.getData('sendOverTime')
+					// let time = Math.round(new Date().getTime() / 1000)
+					// if (time - sendOverTime > 3600 * 6) {
+					// 	this.$app.setData('sendOverTime', time)
+					// 	this.drawCanvas()
+					// }
 
 
 				}, 'POST', true)
@@ -1838,6 +1839,7 @@
 								this.$app.setData('userStar', res.data, true)
 								this.chartMsg = `大家好，我是${this.$app.getData('userInfo').nickname}，初来乍到，请多关照~`
 								this.sendMsg()
+								this.$app.toast('加入成功')
 								setTimeout(() => {
 									this.$app.goPage('/pages/group/group')
 								}, 200)

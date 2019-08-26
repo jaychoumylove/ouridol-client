@@ -57,7 +57,7 @@
 				</view> -->
 			</view>
 
-			<view class="hand-wrap position-set" v-show="spriteInfo.earn >= 2 && !off">
+			<view class="hand-wrap position-set" v-show="spriteInfo.earn >= 200 && !off">
 				<image class='bubble flex-set' src="/static/image/pet/bubble.png" mode="widthFix"></image>
 				<image class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
 			</view>
@@ -180,8 +180,8 @@
 				})
 			},
 			settle() {
-				if (this.spriteInfo.earn < 2) {
-					this.$app.toast('TA的能量太少了，稍后再来吧')
+				if (this.spriteInfo.earn < 200) {
+					this.$app.toast('能量太少，请达到200能量再来帮TA收吧')
 				} else if (this.off) {
 					// 不能收
 					this.modal = 'tips_t'

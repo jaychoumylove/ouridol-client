@@ -5,6 +5,7 @@
 				<view class="tab-item" :class="{active:rankField == 'week_hot'}" @tap="changeField('week_hot');getSunday()">周榜</view>
 				<view class="tab-item" v-if="$app.getData('config').show_month != 0" :class="{active:rankField == 'month_hot'}"
 				 @tap="changeField('month_hot');getLast()">月榜</view>
+				 <view class="tab-item" @tap="$app.goPage('/pages/open/rank/rank')">开屏备选</view>
 				<!-- <view class="tab-item" :class="{active:sign == 2}" @tap="changeSign(2)">创造营</view> -->
 			</view>
 			<view class="right-search">
@@ -147,6 +148,9 @@
 			// #ifdef H5
 			this.modal = ''
 			// #endif
+			if (option.path) {
+				this.$app.goPage(option.path)
+			}
 			// 跳转到明星页
 			if (option.starid) {
 				this.starid = option.starid

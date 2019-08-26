@@ -1,7 +1,6 @@
 <template>
 	<view class="container">
 		<view class="item" v-for="(item,index) in taskList" :key="index" v-if="!(
-		
 					(item.type==4 && ~$app.getData('sysInfo').system.indexOf('iOS') && $app.getData('config').ios_switch == 0) 
 					|| (item.id == 24 && $app.getData('config').version == $app.VERSION)
 					
@@ -258,7 +257,9 @@
 
 					const resList = []
 					this.$app.isTaskAllDone = true
-					for (let v of res.data) {
+					for (let key in res.data) {
+						const v = res.data[key]
+
 						if (v.status == 0) {
 							// 有未完成的任务
 							this.$app.isTaskAllDone = false
@@ -282,7 +283,6 @@
 							}
 						})
 					}
-
 					this.taskList = resList
 					this.$app.setData('taskList', this.taskList)
 					this.$app.closeLoading(this)

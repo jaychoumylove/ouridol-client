@@ -231,6 +231,7 @@
 			this.getActiveInfo()
 			this.getStarInfo()
 			this.getActiveUserRank()
+			this.$app.openInterstitialAd()
 		},
 		methods: {
 			getLocalImg(src, callback) {
@@ -257,75 +258,25 @@
 			// 绘制canvas
 			drawCanvas() {
 				// this.modal = 'canvas'
-				var rate = this.$app.getData('sysInfo').windowWidth / 375 / 2
-				var ctx = uni.createCanvasContext('mycanvas', this);
-				// 绘制文字
-				const drawText = function() {
-					ctx.setFillStyle('#FFFFFF') //文字颜色
 
-					ctx.setFontSize(18) //设置字体大小，默认10
-					ctx.setTextAlign('center')
-					this.canvas_title[0] && ctx.fillText(this.canvas_title[0], 240 * rate, 200 * rate) //绘制文本
-					this.canvas_title[1] && ctx.fillText(this.canvas_title[1], 240 * rate, 250 * rate) //绘制文本
-
-					ctx.fillText(this.star.name, 140 * rate, 632 * rate) //绘制文本
-
-					ctx.setFontSize(10) //设置字体大小，默认10
-					ctx.setTextAlign('left')
-					ctx.fillText(`榜单排名:NO.${this.star.weekRank}`, 270 * rate, 616 * rate) //绘制文本
-					ctx.fillText(`人气值:${this.star.weekHot}`, 270 * rate, 640 * rate) //绘制文本
-
-					ctx.fillText(`我是${this.$app.getData('userInfo').nickname}`, 130 * rate, 774 * rate) //绘制文本
-					ctx.fillText(`一起为${this.star.name}打榜`, 130 * rate, 804 * rate) //绘制文本
-				}.bind(this)
-
-				// 绘制图片
-				// 背景
-				uni.showLoading({
-					title: "生成海报中"
-				})
-				// 背景
-				this.getLocalImg('/static/image/canvas-bg.png', src => {
-					ctx.drawImage(src, 0, 0, 480 * rate, 854 * rate);
-					// 明星 
-					this.getLocalImg(this.star.share_img || this.star.avatar, src => {
-						ctx.drawImage(src, 48 * rate, 286 * rate, 382 * rate, 305 * rate);
-						// 用户头像
-						this.getLocalImg(this.$app.getData('userInfo').avatarurl || this.$app.AVATAR, src => {
-							ctx.save() //保存当前的绘图上下文。
-							ctx.beginPath() //开始创建一个路径
-							ctx.arc(79 * rate, 784 * rate, 40 * rate, 0, 2 * Math.PI, false) //画一个圆形裁剪区域
-							ctx.clip() //裁剪
-							ctx.drawImage(src, 38 * rate, 744 * rate, 80 * rate, 80 * rate) //绘制图片
-							ctx.restore() //恢复之前保存的绘图上下文
-							// 二维码
-							this.getLocalImg(this.$app.getData('qrcode') || this.$app.QRCODE, src => {
-								ctx.save() //保存当前的绘图上下文。
-								ctx.beginPath() //开始创建一个路径
-								ctx.arc(400 * rate, 780 * rate, 50 * rate, 0, 2 * Math.PI, false) //画一个圆形裁剪区域
-								ctx.clip() //裁剪
-								ctx.drawImage(src, 350 * rate, 730 * rate, 100 * rate, 100 * rate);
-								ctx.restore() //恢复之前保存的绘图上下文
-
-								// 绘制文字
-								drawText()
-								// 绘制
-								ctx.draw(false, () => {
-									// 保存到临时图片
-									uni.canvasToTempFilePath({
-										canvasId: 'mycanvas',
-										success: res => {
-											this.canvasImg = res.tempFilePath
-											console.log(this.canvasImg);
-											this.saveCanvas()
-										}
-									}, this);
-								})
-
-								uni.hideLoading()
-							})
-						})
-					})
+				var data = {
+					img: {
+						bg: '/static/image/canvas-bg.png',
+						star: this.star.share_img || this.star.avatar,
+						avatar: this.$app.getData('userInfo').avatarurl || this.$app.AVATAR,
+						qrcode: this.$app.getData('qrcode') || this.$app.QRCODE
+					},
+					text: {
+						title: this.canvas_title,
+						starname: this.star.name,
+						weekRank: this.star.weekRank,
+						weekHot: this.star.weekHot,
+						myname: this.$app.getData('userInfo').nickname
+					}
+				}
+				this.$app.getCanvasImg('mycanvas', data, imgPath => {
+					this.canvasImg = imgPath
+					this.saveCanvas()
 				})
 			},
 			//保存的画布
@@ -453,7 +404,7 @@
 				justify-content: space-between;
 			}
 		}
-		
+
 		.progress-wrap.small {
 			transform: scale(0.8);
 		}
@@ -758,7 +709,7 @@
 			}
 
 		}
-		
+
 		.canvas-container {
 			position: fixed;
 			top: 0;
@@ -768,12 +719,12 @@
 			z-index: 9;
 			background-color: rgba(0, 0, 0, .9);
 			flex-direction: column;
-		
+
 			.canvas {
 				width: 480upx;
 				height: 854upx;
 			}
-		
+
 			.close-btn {
 				position: absolute;
 				width: 80upx;
@@ -786,19 +737,19 @@
 				right: 20upx;
 				top: 20upx;
 			}
-		
+
 			.wrapper {
 				width: 540upx;
 				height: 960upx;
 				padding: 40upx;
 				flex-direction: column;
 				background-color: #FFF;
-		
+
 				image {
 					width: 100%;
 					flex: 1;
 				}
-		
+
 				.btn {
 					margin-top: 40upx;
 					width: 100%;
@@ -812,27 +763,27 @@
 					border-radius: 20upx;
 				}
 			}
-		
+
 			.btn-wrap {
 				margin-top: 20upx;
 				display: flex;
 				justify-content: space-around;
 				width: 100%;
 				padding: 0 60upx;
-		
+
 				.fsend-btn {
 					// background-color: #0EC52F;
 					font-size: 32upx;
 					color: #FFF;
 					padding: 0 20upx;
 					flex-direction: column;
-		
+
 					image {
 						width: 80upx;
 						height: 80upx;
 					}
 				}
-		
+
 				.save-btn {
 					background-color: #FF7E00;
 					border-radius: 10upx;
@@ -842,7 +793,7 @@
 				}
 			}
 		}
-		
+
 		.canvas {
 			width: 480upx;
 			height: 854upx;

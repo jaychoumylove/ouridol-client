@@ -38,6 +38,9 @@
 		{
 			"path": "pages/active_one/active_one",
 			"style": {}
+		},	{
+			"path": "pages/game/game",
+			"style": {}
 		},
 		// #endif
 
@@ -69,6 +72,18 @@
 			}
 		}
 		
+        ,{
+            "path" : "pages/open/rank/rank",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/open/upload/upload",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/open/userRank/userRank",
+            "style" : {}
+        }
     ],
 	// #ifndef H5
 	// 分包

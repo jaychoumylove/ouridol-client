@@ -62,7 +62,19 @@
             "es6" : true,
             "minified" : true
         },
-        "usingComponents" : true
+        "usingComponents" : true,
+		"navigateToMiniProgramAppIdList": [
+			"wx7dc912994c80d9ac",
+			"wx3a69eb5e1b2a7fa9",
+			"wxb90a2375e2c7b52a",
+			"wxb34a8a040639df9f",
+			"wx1859f4784dd5b629",
+			"wx0f567ae09209c9c2",
+			// "wxe6a05f3db7c78ae3",
+			"wx99ab9c8b254c48d4",// 全民赏钱
+			"wx3d73912e8bde3ebf",// 轻灵运动
+			"wx0c2bf8c9dc374519" // 一起玩电商
+		]
     },
     "h5" : {
         "title" : "我们的偶像",
