@@ -121,7 +121,7 @@
 				<image src="/static/image/user/r3.png" mode="widthFix"></image>
 				<view class="text">客服微信号：ouridol</view>
 			</view>
-			<view class="list-item" @tap="$app.goPage('/pages/game/game?type=1')">
+			<view class="list-item" @tap="$app.goPage('/pages/game/game?type=1')" v-if="!~$app.getData('sysInfo').system.indexOf('iOS')">
 				<image src="/static/image/icon/task-game.png" mode="widthFix"></image>
 				<view class="text">游戏试玩</view>
 			</view>
