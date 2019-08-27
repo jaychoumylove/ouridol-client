@@ -64,17 +64,15 @@
         },
         "usingComponents" : true,
 		"navigateToMiniProgramAppIdList": [
-			"wx7dc912994c80d9ac",
-			"wx3a69eb5e1b2a7fa9",
-			"wxb90a2375e2c7b52a",
-			"wxb34a8a040639df9f",
-			"wx1859f4784dd5b629",
-			"wx0f567ae09209c9c2",
-			// "wxe6a05f3db7c78ae3",
+			"wx3a69eb5e1b2a7fa9",//爱豆圈子
+			"wxb90a2375e2c7b52a",//超级明星榜
+			"wxb34a8a040639df9f",//童话村lite
+			"wx0f567ae09209c9c2",//爱豆庄园
 			"wx99ab9c8b254c48d4",// 全民赏钱
 			"wx3d73912e8bde3ebf",// 轻灵运动
 			"wx0c2bf8c9dc374519", // 一起玩电商
-			"wx18b75705b93bd908"//财税问诊
+			"wx18b75705b93bd908",//财税问诊
+			"wxd949b04824167683"//小麦圈商城
 		]
     },
     "h5" : {
