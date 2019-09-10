@@ -2579,14 +2579,14 @@
 									position: relative;
 
 									.level {
-										width: 103upx;
+										width: 100upx;
 										height: 38upx;
 										margin-top: 10upx;
 									}
 
 									.badge {
 										width: 112upx;
-										height: 38upx;
+										height: 33upx;
 									}
 
 									// .level {

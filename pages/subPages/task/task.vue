@@ -414,7 +414,7 @@
 			.left-content.badge-type {
 				.img {
 					width: 169upx;
-					height: 57upx;
+					height: 51upx;
 					border-radius: 0;
 				}
 			}
