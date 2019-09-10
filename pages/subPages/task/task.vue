@@ -1,17 +1,29 @@
 <template>
 	<view class="container">
+		<view class="swiper-change flex-set">
+			<!-- <view class="swiper-item" :class="{select:current==0}" @tap="current = 0;getTaskList();">新手任务</view> -->
+			<view class="swiper-item" :class="{select:current==1}" @tap="current = 1;getTaskList();">每日任务</view>
+			<view class="swiper-item" :class="{select:current==2}" @tap="current = 2;getTaskList();">徽章任务</view>
+		</view>
 		<view class="item" v-for="(item,index) in taskList" :key="index" v-if="!(
 					(item.type==4 && ~$app.getData('sysInfo').system.indexOf('iOS') && $app.getData('config').ios_switch == 0) 
 					|| (item.id == 24 && $app.getData('config').version == $app.VERSION)
 					
 					)">
 			<!-- 有些任务不显示 -->
-			<view class="left-content">
+			<view v-if="current != 2" class="left-content">
 				<image class="img" :src="item.task_type.img" mode=""></image>
 				<view class="content ">
 					<view class="top text-overflow">{{item.name}}</view>
 					<view class="bottom" v-if="item.desc">{{item.desc}}</view>
 					<view class="bottom" v-else-if="item.times">已完成({{item.doneTimes}}/{{item.times}})</view>
+				</view>
+			</view>
+			<view v-else class="left-content badge-type">
+				<image class="img" :src="item.icon" mode=""></image>
+				<view class="content">
+					<view class="top text-overflow">{{item.name}}</view>
+					<view class="bottom" v-if="item.desc">{{item.desc}}({{item.doneTimes}}/{{item.count}})</view>
 				</view>
 			</view>
 
@@ -31,15 +43,15 @@
 					</view>
 
 				</view>
-				<view class="btn" @tap="doTask(item,index)">
+				<view v-if="current!=2" class="btn" @tap="doTask(item,index)">
 					<btnComponent type="default" v-if="item.status == 0">
 						<!-- 分享 -->
 						<button class="btn" open-type="share" v-if="item.type == 9">
-							<view class="flex-set" style="width: 130upx;height: 65upx;">{{item.task_type.btn_text}}</view>
+							<view class="flex-set" style="width: 130upx;height: 65upx;">{{item.task_type.btn_text||'去完成'}}</view>
 						</button>
 						<!-- 集结 -->
 						<button class="btn" open-type="share" data-share='2' v-else-if="item.type == 12">
-							<view class="flex-set" style="width: 130upx;height: 65upx;">{{item.task_type.btn_text}}</view>
+							<view class="flex-set" style="width: 130upx;height: 65upx;">{{item.task_type.btn_text||'去完成'}}</view>
 						</button>
 						<!-- 客服 -->
 						<button class="btn" open-type="contact" v-else-if="item.type == 4 && $app.getData('config').ios_switch == 1 && ~$app.getData('sysInfo').system.indexOf('iOS') || item.type==13">
@@ -47,7 +59,7 @@
 						</button>
 						<!-- 默认 -->
 						<view v-else class="flex-set" style="width: 130upx;height: 65upx;">
-							{{item.task_type.btn_text}}
+							{{item.task_type.btn_text||'去完成'}}
 						</view>
 					</btnComponent>
 					<btnComponent type="success" v-if="item.status == 1">
@@ -55,6 +67,26 @@
 					</btnComponent>
 					<btnComponent type="disable" v-if="item.status == 2">
 						<view class="flex-set" style="width: 130upx;height: 65upx;">已完成</view>
+					</btnComponent>
+				</view>
+				<view v-else class="btn" @tap="useBadge(item,index)">
+					<btnComponent type="default" v-if="item.status == 0">
+						<!-- 分享 -->
+						<button class="btn" open-type="share" v-if="item.type == 1">
+							<view class="flex-set" style="width: 130upx;height: 65upx;">{{item.btn_text||'去完成'}}</view>
+						</button>
+
+						<!-- 默认 -->
+						<view v-else class="flex-set" style="width: 130upx;height: 65upx;">
+							{{item.btn_text||'去完成'}}
+						</view>
+					</btnComponent>
+
+					<btnComponent type="success" v-if="item.status == 1">
+						<view class="flex-set" style="width: 130upx;height: 65upx;">佩戴</view>
+					</btnComponent>
+					<btnComponent type="disable" v-if="item.status == 2">
+						<view class="flex-set" style="width: 130upx;height: 65upx;">卸下</view>
 					</btnComponent>
 				</view>
 			</view>
@@ -112,6 +144,8 @@
 				shareText: '',
 				weiboUrl: '',
 				weibo_zhuanfa: {},
+
+				current: 1, // 任务类别
 			};
 		},
 		onShow() {
@@ -199,6 +233,22 @@
 					this.getTaskList()
 				})
 			},
+			// 佩戴/卸下徽章
+			useBadge(item) {
+				if (item.status == 0) {
+					if (item.type == 1) {
+						// 拉新
+						return
+					}
+				} else {
+					this.$app.request('badge/use', {
+						badge_id: item.id
+					}, res => {
+						this.getTaskList()
+					}, 'POST', true)
+
+				}
+			},
 			doTask(task, index) {
 				if (task.status == 0) {
 					// 做任务
@@ -252,40 +302,47 @@
 				})
 			},
 			getTaskList() {
-				this.$app.request(this.$app.API.TASK, {}, res => {
+				this.$app.request(this.$app.API.TASK, {
+					category: this.current
+				}, res => {
 					// this.taskList = res.data
+					if (this.current == 2) {
+						// 徽章
+						this.taskList = res.data
+					} else {
+						const resList = []
+						this.$app.isTaskAllDone = true
+						for (let key in res.data) {
+							const v = res.data[key]
 
-					const resList = []
-					this.$app.isTaskAllDone = true
-					for (let key in res.data) {
-						const v = res.data[key]
-
-						if (v.status == 0) {
-							// 有未完成的任务
-							this.$app.isTaskAllDone = false
-						}
-						resList.push({
-							id: v.id,
-							coin: v.coin || 0,
-							stone: v.stone || 0,
-							trumpet: v.trumpet || 0,
-							status: v.status,
-							name: v.name,
-							doneTimes: v.doneTimes,
-							times: v.times,
-							type: v.type,
-							desc: v.desc,
-							task_type: {
-								id: v.task_type.id,
-								gopage: v.task_type.gopage,
-								btn_text: v.task_type.btn_text,
-								img: v.task_type.img,
+							if (v.status == 0) {
+								// 有未完成的任务
+								this.$app.isTaskAllDone = false
 							}
-						})
+							resList.push({
+								id: v.id,
+								coin: v.coin || 0,
+								stone: v.stone || 0,
+								trumpet: v.trumpet || 0,
+								status: v.status,
+								name: v.name,
+								doneTimes: v.doneTimes,
+								times: v.times,
+								type: v.type,
+								desc: v.desc,
+								task_type: {
+									id: v.task_type.id,
+									gopage: v.task_type.gopage,
+									btn_text: v.task_type.btn_text,
+									img: v.task_type.img,
+								}
+							})
+						}
+						this.taskList = resList
+						this.$app.setData('taskList', this.taskList)
+						this.$app.closeLoading(this)
 					}
-					this.taskList = resList
-					this.$app.setData('taskList', this.taskList)
-					this.$app.closeLoading(this)
+
 				})
 			}
 		}
@@ -294,6 +351,30 @@
 
 <style lang="scss" scoped>
 	.container {
+		.swiper-change {
+			margin: 30upx;
+			border-radius: 30upx;
+			overflow: hidden;
+			box-shadow: 0 2upx 4upx rgba(0, 0, 0, .3);
+
+			.swiper-item {
+				flex: 1;
+				height: 70upx;
+				line-height: 70upx;
+				background-color: #f5f5f5;
+				color: #ff648d;
+				text-align: center;
+
+			}
+
+			.swiper-item.select {
+				background-color: #ff648d;
+				color: #f5f5f5;
+			}
+
+		}
+
+
 		.item {
 			margin: 20upx;
 			background-color: rgba(#FFF, 0.3);
@@ -305,6 +386,7 @@
 
 			.left-content {
 				display: flex;
+				align-items: center;
 
 				.img {
 					width: 80upx;
@@ -329,6 +411,14 @@
 				}
 			}
 
+			.left-content.badge-type {
+				.img {
+					width: 169upx;
+					height: 57upx;
+					border-radius: 0;
+				}
+			}
+
 			.right-content {
 				display: flex;
 
@@ -338,7 +428,7 @@
 					justify-content: space-around;
 					align-items: flex-start;
 					margin-right: 30upx;
-					width: 100upx;
+					// width: 100upx;
 
 					.right-item {
 						display: flex;

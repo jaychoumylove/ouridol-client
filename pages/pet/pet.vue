@@ -1,19 +1,48 @@
 <template>
 	<view class="pet-container">
 		<view class="top-row-container">
-			<view class="block">
+
+			<!-- <view class="block">
 				<image src="/static/image/user/b1.png" mode="widthFix"></image>
 				<text v-if="blockScale" class="top-num">+{{spriteInfo.earnPer}}</text>
 				<text class="block-text" :class="{active:blockScale}">{{userCurrency.coin}}</text>
 				<image v-if="useCard" class="icon m" src="/static/image/prop/2.png" mode="widthFix"></image>
-			</view>
-			<view class="block">
+			</view> -->
+
+			<!-- <view class="block">
 				<image src="/static/image/user/b2.png" mode="widthFix"></image>
 				{{userCurrency.stone}}
-			</view>
-			<view class="text-content">
+			</view> -->
+
+			<!-- <view class="text-content">
 				<text style="font-size: 36upx;">{{spriteInfo.earnPer}}</text>能量/100秒
+			</view> -->
+
+			<view class="left-wrap">
+				<view class="row flex-set">
+					<image class="coin-img" src="/static/image/user/b1.png" mode="widthFix"></image>
+					<view class="">
+						<view class="">累计获得：</view>
+						<view class="count flex-set">
+							<view class="num" :class="{active:blockScale}">{{spriteInfo.total_coin}}</view>
+							<image v-if="useCard" class="icon m" src="/static/image/prop/2.png" mode="widthFix"></image>
+							<text v-if="blockScale" class="top-num">+{{addCount}}</text>
+						</view>
+					</view>
+				</view>
+				<view class="row bottom">产能：<text style="color:#F00;">{{spriteInfo.earnPer}}</text>能量/<text style="color:#F00;">100</text>秒</view>
 			</view>
+			<view class="btn-wrap flex-set">
+				<view class="button-wrap flex-set" @tap="$app.goPage('/pages/prop/prop')">
+					<image src="/static/image/pet/btn.png" mode="widthFix"></image>
+					<view class="text">精灵加速2小时</view>
+				</view>
+				<view class="button-wrap flex-set" @tap="tapSprite">
+					<image src="/static/image/pet/btn.png" mode="widthFix"></image>
+					<view class="text">提高精灵等级</view>
+				</view>
+			</view>
+
 		</view>
 
 		<view class="left-container">
@@ -56,7 +85,7 @@
 				<view class="progress-bar" :style="{width:'100%'}"></view>
 				已经是最高级了
 			</view>
-			<view class="bottom-tips" @tap="modal = 'tips'">如何获得灵丹升级</view>
+			<view class="bottom-tips" @tap.stop="modal = 'tips'">如何获得灵丹升级</view>
 
 			<view class="skill-container position-set" :class="{show:skillShow}">
 				<btnComponent>
@@ -172,7 +201,7 @@
 							<image @tap.stop="deleteFriend(item,index)" class="del" src="/static/image/guild/del.png" mode="widthFix"></image>
 							<view class="egg flex-set" @tap.stop="settleSprite(index, item)">
 								<image v-if="item.earn >= 200 && !item.off" class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
-								
+
 								<view class="num-wrapper position-set">{{item.earn}}</view>
 								<image v-if="!item.off" class="flex-set" src="/static/image/pet/y5.png" mode="widthFix"></image>
 								<image v-else class="flex-set" src="/static/image/pet/y5-off.png" mode="widthFix"></image>
@@ -186,10 +215,8 @@
 							<view class="bottom">加一位好友></view>
 						</button>
 					</view>
-
 				</scroll-view>
 			</view>
-
 		</modalComponent>
 		<modalComponent v-if="modal == 'skill'" :title="modalTitle" @closeModal="modal=''">
 			<view class="skill-modal-container">
@@ -226,10 +253,17 @@
 					<view class="text">3.补充能量可以获得灵丹</view>
 					<view class="text">更多获取方式快去任务界面查看吧</view>
 				</view>
-				<view class="btn" @tap="$app.goPage('/pages/subPages/task/task')">
-					<btnComponent type="default">
-						<view class="flex-set" style="width: 200upx;height: 100upx;">去做任务</view>
-					</btnComponent>
+				<view class="flex-set">
+					<view class="btn" @tap="$app.goPage('/pages/subPages/task/task')">
+						<btnComponent type="default">
+							<view class="flex-set" style="width: 200upx;height: 100upx;">去做任务</view>
+						</btnComponent>
+					</view>
+					<view class="btn" v-if="!~$app.getData('sysInfo').system.indexOf('iOS')" @tap="$app.goPage('/pages/recharge/recharge')">
+						<btnComponent type="default">
+							<view class="flex-set" style="width: 200upx;height: 100upx;">补充能量</view>
+						</btnComponent>
+					</view>
 				</view>
 			</view>
 
@@ -291,6 +325,7 @@
 				skillList: [], // 技能升级列表
 				currentSkillType: 1,
 				useCard: false,
+				addCount: 0,
 			};
 		},
 		onShareAppMessage(e) {
@@ -326,11 +361,8 @@
 						this.getSpriteInfo()
 					}
 					if (this.earnCuttime % 10 == 0 && this.useCard) {
-						// 收卡
+						// 加速卡
 						this.getShortEarn()
-						this.blockScale = true
-					} else {
-						this.blockScale = false
 					}
 				}, 1000)
 
@@ -361,6 +393,7 @@
 				} else {
 					// 显示技能
 					// this.skillShow = !this.skillShow
+					this.$app.toast('灵丹不足')
 				}
 
 			},
@@ -514,6 +547,8 @@
 						user_id: this.$app.getData('userInfo').id,
 						settle: this.spriteInfo.earn
 					}, res => {
+						// 文字跳动
+						this.showCoinAddAnime(res.data)
 						this.getSpriteInfo()
 
 						this.$app.toast('收集成功,能量+' + res.data)
@@ -522,16 +557,25 @@
 							this.userCurrency = this.$app.getData('userCurrency')
 						})
 						this.earnCuttime = 0
-
-						this.initInterval()
 					}, 'POST', true)
 				}
 
+			},
+			/**显示能量增加的动画*/
+			showCoinAddAnime(addCoin) {
+				this.addCount = addCoin
+				this.spriteInfo.total_coin += addCoin
+				this.blockScale = true
+				setTimeout(() => {
+					this.blockScale = false
+				}, 1000)
 			},
 			// 使用道具卡
 			getShortEarn() {
 				this.$app.request('sprite/shortEarn', {}, res => {
 					this.useCard = res.data.isUseCard || false
+					this.showCoinAddAnime(res.data.earn)
+
 					this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
 						this.$app.setData('userCurrency', res.data)
 						this.userCurrency = this.$app.getData('userCurrency')
@@ -547,14 +591,16 @@
 					if (res.data.isFull) {
 						this.$app.toast('能量已满了，快点收能量吧')
 						clearInterval(this.$app.petTimeId)
+						// 倒计时已满
 						this.earnCuttime = 100
 					} else {
+						// 开始计时
 						this.initInterval()
 					}
 
 					this.$app.setData('pet_spriteInfo', this.spriteInfo)
 					this.$app.closeLoading(this)
-
+					// 是否使用加速卡
 					this.useCard = res.data.isUseCard || false
 				})
 
@@ -566,22 +612,86 @@
 <style lang="scss" scoped>
 	.pet-container {
 		height: 100%;
-		background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g41l8g35szj30kv15pdig.jpg) center no-repeat/cover;
+		background: url(http://tva1.sinaimg.cn/large/007X8olVly1g6mic95w72j30ku15ot9n.jpg) center no-repeat/cover;
 
 		.top-row-container {
 			display: flex;
 			align-items: center;
-			justify-content: space-around;
-			padding: 40upx 20upx;
+			justify-content: space-between;
+			padding: 20upx;
 			color: #aa877d;
+			color: #000;
+
+			.left-wrap {
+				font-size: 20upx;
+				color: #000;
+				margin-left: 10upx;
+
+				.row {
+					justify-content: flex-start;
+
+					.coin-img {
+						width: 70upx;
+						height: 70upx;
+						margin-right: 20upx;
+					}
+
+					.count {
+						font-size: 32upx;
+						color: #ff5b5c;
+						justify-content: flex-start;
+
+						.num {
+							font-weight: 700;
+						}
+
+						.num.active {
+							animation: scaleA 0.8s linear;
+						}
+
+						.icon {
+							width: 30upx;
+							height: 30upx;
+						}
+					}
+
+
+				}
+
+				.row.bottom {
+					margin-top: 10upx;
+					background-color: rgba(#FFF, .3);
+					border-radius: 50upx;
+					padding: 5upx 20upx;
+				}
+
+			}
+
+			.button-wrap {
+				font-size: 24upx;
+				margin: 0 10upx;
+				width: 188upx;
+				height: 74upx;
+				position: relative;
+
+				image {
+					position: absolute;
+				}
+
+				.text {
+					position: absolute;
+					z-index: 2;
+				}
+
+			}
 
 			.block {
 				display: flex;
 				align-items: center;
 				margin: 0 20upx;
 				font-size: 36upx;
-				position: relative; 
-				
+				position: relative;
+
 				image {
 					width: 40upx;
 					margin: 0 10upx;
@@ -593,19 +703,22 @@
 
 				.block-text.active {
 					// transform: scale(1.2);
-					
+
 					animation: scaleA 0.8s linear;
 				}
-				
+
 				@keyframes scaleA {
-					0%,100% {
+
+					0%,
+					100% {
 						transform: scale(1);
 					}
+
 					60% {
 						transform: scale(2);
 					}
 				}
-				
+
 				.top-num {
 					position: absolute;
 					display: inline-block;
@@ -689,17 +802,17 @@
 			}
 
 			.bounce-article {
-				animation: bounce 0.8s ease-in-out infinite;
+				animation: bounce 3s ease-in-out infinite;
 
 			}
 
 			.sprite-main {
-				width: 230upx;
+				width: 290upx;
 			}
 
 			.sprite-level {
 				top: -60upx;
-				color: #FFF;
+				color: #111;
 				font-size: 28upx;
 
 				image {
@@ -719,7 +832,7 @@
 				border-radius: 50%;
 				background: #37a45b;
 				box-shadow: 0 0 5upx #37a45b;
-				animation: shadow 0.8s ease-in-out infinite;
+				animation: shadow 3s ease-in-out infinite;
 			}
 
 			@keyframes shadow {
@@ -735,10 +848,10 @@
 			}
 
 			.progress {
+				width: 250upx;
 				height: 40upx;
 				z-index: 1;
-				margin-top: 20upx;
-				width: 100%;
+				margin-top: 40upx;
 				border-radius: 20upx;
 				color: #FFF;
 				background-color: #97cee3;

@@ -8,6 +8,7 @@
 
 		<view class="top-container">
 			<view class="top-content">
+				<!-- 弹幕 -->
 				<view class="danmaku-wrapper flex-set">
 
 					<view class="danmaku" v-if="danmaku" :class="{gift:danmaku.starname}">
@@ -46,10 +47,14 @@
 							</view>
 						</view>
 						<view class='bottom row'>
-							<image class='image' src="/static/image/index/ic_hot.png" mode=""></image>
 							<!-- <view>{{star.weekHot}}</view> -->
-
+							本周
 							<countToComponent :count='star.weekHot'></countToComponent>
+
+							<image class='image' src="/static/image/index/ic_hot.png" mode=""></image>
+						</view>
+						<view v-if="disLeastCount" class="tips flex-set">距离上一名还差{{disLeastCount}}
+							<image src="/static/image/index/ic_hot.png" class="s" mode=""></image>
 						</view>
 
 						<view class="rank-list row" @tap="app.goPage('/pages/subPages/user/rank/rank?starid='+star.id)">
@@ -205,19 +210,19 @@
 				</view>
 			</view>
 		</view> -->
-		<view class="active-container" @tap='goActive()'>
+		<!-- <view class="active-container" @tap='goActive()'>
 			<view class="active-inner flex-set">
 
 				<view class="text">解锁应援金</view>
 				<image class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
 				<view class="progress-wrap">
 					<view class="progress">
-						<progress v-if="activeInfo.join_people < activeInfo.active_info.target_people" stroke-width="10" activeColor="#007eff"
-						 backgroundColor="#f8c4be" :percent="activeInfo.join_people/activeInfo.active_info.target_people*100" />
+						<progress v-if="activeInfo.complete_people==0" stroke-width="10" activeColor="#007eff" backgroundColor="#f8c4be"
+						 :percent="activeInfo.join_people/activeInfo.active_info.target_people*100" />
 						<progress v-else activeColor="#ff0000" backgroundColor="#f8c4be" :percent="activeInfo.complete_people/activeInfo.active_info.target_people*100" />
 					</view>
 					<view class="progress-text">
-						<view class="left" v-if="activeInfo.join_people < activeInfo.active_info.target_people">
+						<view class="left" v-if="activeInfo.complete_people==0">
 							参与人数：<text style="color: #007eff;">{{activeInfo.join_people}}</text>
 						</view>
 						<view class="left" v-else>
@@ -230,10 +235,11 @@
 				</view>
 			</view>
 
-		</view>
+		</view> -->
 		<!-- 聊天区域 -->
 		<scroll-view v-if="app.getData('config').version != app.VERSION && (star.id == app.getData('userStar').id || app.getData('userInfo').type == 1)"
-		 class="chart-container" scroll-y scroll-with-animation :scroll-into-view="'index_'+chartIndex">
+		 class="chart-container" scroll-y scroll-with-animation :scroll-into-view="'index_'+chartIndex" @touchstart="sideBtnOpacity=false;modal=''"
+		 @touchend="sideBtnOpacity=true">
 
 			<view :id="'index_'+index" class="msg-item" :class="{right:item.uid==app.getData('userInfo')['id']}" v-for="(item,index) in chartList"
 			 :key="index">
@@ -249,9 +255,13 @@
 						<view class="top">
 							<view class="left">
 								<view class="name text-overflow">{{item.nickname}}</view>
+								<!-- 粉丝等级 -->
 								<view class="fan" v-if="item.level">
-									<image :src="'/static/image/guild/level/'+ item.level +'.png'" mode=""></image>
-									<view class="level position-set">{{item.level}}</view>
+									<image class="level" :src="'/static/image/icon/level/lv'+ item.level +'.png'" mode=""></image>
+								</view>
+								<!-- 徽章 -->
+								<view class="fan" v-if="item.badgeId">
+									<image class="badge" :src="'/static/image/icon/badge/icon'+item.badgeId+'.png'" mode=""></image>
 								</view>
 
 							</view>
@@ -282,6 +292,12 @@
 
 			</view>
 		</view>
+		<!-- 侧边按钮组 -->
+		<view class='side-btn-group' :class="{chartbottom:app.getData('config').chart_type == '1', show:sideBtnOpacity}">
+			<view class="btn" @tap="app.goPage('/pages/open/rank/rank')">
+				<image class="img" src="/static/image/guild/open.png" mode=""></image>
+			</view>
+		</view>
 
 		<!-- 聊天输入 -->
 		<block v-if="app.getData('config').version != app.VERSION && (star.id == app.getData('userStar').id || app.getData('userInfo').type == 1)">
@@ -298,6 +314,7 @@
 					<image src="/static/image/guild/sendmsg.png" mode="" @tap="sendMsg"></image>
 				</btnComponent>
 			</view>
+			<!-- 聊天按钮 -->
 			<image v-else class="msg-button" @tap="modal='say'" src="/static/image/guild/biaobai.png" mode=""></image>
 		</block>
 		<!-- 改版聊天 -->
@@ -321,6 +338,24 @@
 				</view>
 			</view>
 		</view>
+
+		<!-- 催用户打榜 -->
+		<view class="urge-modal-container" :class="{show:modal=='urgeSend'}">
+			<view class="left-wrap flex-set">
+				<image class="avatar" :src="star.avatar" mode=""></image>
+				<view class="text-content">
+					<view class="top">@{{app.getData('userInfo').nickname}}</view>
+					<view class="bottom">{{urgeSendTips}}</view>
+				</view>
+			</view>
+			<view class="right-wrap">
+				<btnComponent type="default">
+					<view @tap="sendOrFollow" class="flex-set" style="width: 160upx; height: 70upx;">立即打榜</view>
+				</btnComponent>
+			</view>
+
+		</view>
+
 
 		<!-- 礼物 -->
 		<view class="item-list-wrap">
@@ -683,27 +718,26 @@
 			</view>
 
 		</modalComponent>
-
+		<!-- 送礼物成功弹框 -->
 		<modalComponent v-if="modal == 'sendOver'" title="提示" @closeModal="modal=''">
 			<view class="tips-modal-container">
 				<view class="text-wrap">
 
-					<view class="text" style="font-size: 40upx;font-weight: 700;text-align: center;">打榜成功</view>
-					<view class="text">1.做任务可以获得灵丹</view>
-					<view class="text">2.邀请好友加入偶像圈可以获得灵丹</view>
-					<view class="text">3.补充能量可以获得灵丹</view>
-					<view class="text">更多获取方式快去任务界面查看吧</view>
+					<view class="title">打榜成功</view>
+					<image class="avatar" :src="star.avatar" mode=""></image>
+					<view class="text flex-set">你已为{{star.name}}贡献了<text class="red" style="font-weight:700;">{{myTotalCount}}</text>
+						<image src="/static/image/index/ic_hot.png" class="s" mode=""></image>
+					</view>
+					<view class="text flex-set">邓伦目前排名<text class="red" style="font-weight:700;">NO.{{star.weekRank}}</text></view>
+					<view v-if="disLeastCount" class="text flex-set">距离上一名还差<text style="color:red;font-weight:700;">{{disLeastCount}}</text>
+						<image src="/static/image/index/ic_hot.png" class="s" mode=""></image>
+					</view>
 				</view>
 				<view class="row flex-set">
-					<view class="btn" @tap="$app.goPage('/pages/subPages/task/task')">
-						<btnComponent type="default">
-							<view class="flex-set" style="width: 200upx;height: 100upx;">去做任务</view>
-						</btnComponent>
-					</view>
 					<view class="btn">
 						<btnComponent type="default">
 							<button open-type="share">
-								<view class="flex-set" style="width: 200upx;height: 100upx;">邀请好友</view>
+								<view class="flex-set" style="width:300upx;height: 100upx;">召集好友一起打榜</view>
 							</button>
 						</btnComponent>
 					</view>
@@ -946,6 +980,12 @@
 				siginList: [],
 				signin_day: 1,
 				signin_coin: 0,
+
+				disLeastCount: 0, // 距离上一名差距数额
+				myTotalCount: 0, // 我的总贡献
+
+				sideBtnOpacity: 1, // 侧边按钮组显示
+				urgeSendTips: '', // 催促打榜tips
 			};
 		},
 		created() {
@@ -974,8 +1014,22 @@
 					if (new Date().getDate() != this.$app.getData('modal_signin')) {
 						this.getSignin()
 					}
-				}
 
+					// 打榜提醒
+					let urgeSendModal = this.$app.getData('urgeSendModal')
+					let time = Math.round(new Date().getTime() / 1000)
+					if (time - urgeSendModal > 3600 * 12) {
+						let tipsArr = this.$app.getData('config').urge_send_tips
+						let tipsIndex = this.$app.getRandom(0, tipsArr.length - 1)
+						this.urgeSendTips = tipsArr[tipsIndex]
+						
+						this.$app.setData('urgeSendModal', time)
+						setTimeout(() => {
+							this.modal = 'urgeSend'
+						}, 3000)
+					}
+				}
+				// 请求数据
 				this.loadData()
 
 				// this.getStarInfo()
@@ -1041,7 +1095,8 @@
 								nickname: e.user && e.user.nickname || this.$app.NICKNAME,
 								content: e.content,
 								captain: e.user && e.user.user_star && e.user.user_star.captain || 0,
-								level: e.level,
+								level: e.user && e.user.level,
+								badgeId: e.user && e.user.user_ext.badge_id,
 								sendtimeInt: this.$app.strToTime(e.create_time),
 							}
 							const leastTime = chartList[i - 1] && chartList[i - 1].sendtimeInt || 0
@@ -1051,11 +1106,12 @@
 
 							chartList.push(item)
 						})
-
+						this.disLeastCount = res.data.disLeastCount
 						this.chartList = chartList
 						this.$nextTick(function() {
 							this.chartIndex = this.chartList.length - 1
 						})
+						// 延迟渲染
 						setTimeout(() => {
 							this.captain = res.data.captain
 							// 用户排行
@@ -1177,6 +1233,7 @@
 					}, 'POST', true)
 				})
 			},
+
 			copy(text) {
 				this.$app.copy(text)
 			},
@@ -1520,7 +1577,8 @@
 					nickname: data.user && data.user.nickname || this.$app.NICKNAME,
 					content: data.content,
 					captain: data.user && data.user.user_star && data.user.user_star.captain || 0,
-
+					level: data.user && data.user.level,
+					badgeId: data.user && data.user.user_ext.badge_id,
 					sendtimeInt: this.$app.strToTime(data.create_time),
 				}
 				const leastTime = this.chartList[this.chartList.length - 1] && this.chartList[this.chartList.length - 1].sendtimeInt ||
@@ -1727,6 +1785,7 @@
 					type: type,
 				}, res => {
 					if (res.data.nomore) {
+						// 礼物不足
 						if (~this.$app.getData('sysInfo').system.indexOf('iOS')) {
 							this.$app.toast(res.msg)
 						} else {
@@ -1761,13 +1820,14 @@
 					}
 					this.$app.toast('打榜成功', 'success')
 					// 弹窗
-					// let sendOverTime = this.$app.getData('sendOverTime')
-					// let time = Math.round(new Date().getTime() / 1000)
-					// if (time - sendOverTime > 3600 * 6) {
-					// 	this.$app.setData('sendOverTime', time)
-					// 	this.drawCanvas()
-					// }
-
+					let sendOverTime = this.$app.getData('sendOverTime')
+					let time = Math.round(new Date().getTime() / 1000)
+					if (time - sendOverTime > 3600 * 6) {
+						this.modal = 'sendOver'
+						this.disLeastCount = res.data.disLeastCount
+						this.myTotalCount = res.data.totalCount
+						this.$app.setData('sendOverTime', time)
+					}
 
 				}, 'POST', true)
 			},
@@ -2119,7 +2179,7 @@
 				}
 
 				.row-info {
-					padding: 30upx 40upx;
+					padding: 40upx 20upx 20upx;
 					display: flex;
 					justify-content: space-around;
 					align-items: center;
@@ -2181,7 +2241,6 @@
 						flex-direction: column;
 						justify-content: center;
 						line-height: 1.7;
-						margin-top: 20upx;
 
 						.star-name {
 							font-size: 36upx;
@@ -2228,6 +2287,13 @@
 								height: 34upx;
 								margin-right: 10upx;
 							}
+
+						}
+
+						.tips {
+							color: #345;
+							font-size: 22upx;
+							justify-content: flex-start;
 						}
 
 						.rank-list {
@@ -2272,13 +2338,13 @@
 					}
 
 					.send-flower-btn {
-						width: 120upx;
+						width: 140upx;
 						position: relative;
 						z-index: 3;
 
 						image {
-							width: 120upx;
-							height: 120upx;
+							width: 140upx;
+							height: 140upx;
 						}
 
 						.bubble {
@@ -2505,34 +2571,40 @@
 									max-width: 250upx;
 								}
 
+
 								.fan {
 									display: flex;
 									align-items: center;
-									margin-left: 10upx;
+									margin:0 5upx;
 									position: relative;
 
-									image {
-										width: 32upx;
-										height: 32upx;
-									}
-
 									.level {
-										color: #FFF;
-										font-size: 16upx;
-										top: 40%;
+										width: 103upx;
+										height: 38upx;
+										margin-top: 10upx;
 									}
 
-									.fan-text {
-										background: linear-gradient(to right, #FFF, #ffcccc);
-										border-radius: 20upx;
-										color: #fd9176;
-										font-size: 24upx;
-										padding: 2upx 12upx;
-										margin-left: -12upx;
+									.badge {
+										width: 112upx;
+										height: 38upx;
 									}
+
+									// .level {
+									// 	color: #FFF;
+									// 	font-size: 16upx;
+									// 	top: 40%;
+									// }
+
+									// .fan-text {
+									// 	background: linear-gradient(to right, #FFF, #ffcccc);
+									// 	border-radius: 20upx;
+									// 	color: #fd9176;
+									// 	font-size: 24upx;
+									// 	padding: 2upx 12upx;
+									// 	margin-left: -12upx;
+									// }
 
 								}
-
 							}
 
 							.right {
@@ -2548,11 +2620,13 @@
 								margin-top: 2upx;
 								background-color: #f0f0f0;
 								color: #979797;
-								border-radius: 14upx;
+								border-radius: 8upx;
 								padding: 10upx 30upx;
-								max-width: 470upx;
+								max-width: 520upx;
 								word-break: break-all;
 								display: block;
+								
+								min-width: 320upx;
 							}
 						}
 					}
@@ -2560,26 +2634,26 @@
 				}
 			}
 
-			.msg-item.right {
-				.main-msg-wrapper {
-					flex-direction: row-reverse;
-
-					.top {
-						flex-direction: row-reverse;
-					}
-
-					.bottom {
-						flex-direction: row-reverse;
-
-						.msg-content {
-							background-color: #97c7db;
-							color: #FFF;
-
-						}
-					}
-				}
-
-			}
+// 			.msg-item.right {
+// 				.main-msg-wrapper {
+// 					flex-direction: row-reverse;
+// 
+// 					.top {
+// 						flex-direction: row-reverse;
+// 					}
+// 
+// 					.bottom {
+// 						flex-direction: row-reverse;
+// 
+// 						.msg-content {
+// 							background-color: #97c7db;
+// 							color: #FFF;
+// 
+// 						}
+// 					}
+// 				}
+// 
+// 			}
 
 			.msg-item:first-of-type {
 				padding-top: 32upx;
@@ -3173,8 +3247,6 @@
 							min-height: 40upx;
 						}
 					}
-
-
 				}
 
 			}
@@ -3374,9 +3446,6 @@
 							}
 						}
 					}
-
-
-
 				}
 
 			}
@@ -3443,17 +3512,26 @@
 			font-size: 32upx;
 
 			.text-wrap {
-				.text {
-					line-height: 2.3;
+				text-align: center;
+				margin: 30upx;
+
+				.title {
+					font-size: 40upx;
+					font-weight: 700;
+					text-align: center;
+					margin: 20upx;
 				}
 
-				margin: 30upx 0;
-			}
+				.text {
+					line-height: 1.7;
+				}
 
-
-			.btn {
-				width: 200upx;
-				margin: auto;
+				.avatar {
+					width: 140upx;
+					height: 140upx;
+					border-radius: 50%;
+					margin: 20upx;
+				}
 			}
 		}
 
@@ -3817,6 +3895,67 @@
 				color: #888;
 				margin-bottom: 20upx;
 			}
+		}
+
+		.side-btn-group {
+			opacity: .3;
+			transition: opacity .3s;
+			position: fixed;
+			bottom: 130upx;
+			right: 30upx;
+
+			.btn {
+				.img {
+					width: 120upx;
+					height: 120upx;
+				}
+			}
+		}
+
+		.side-btn-group.chartbottom {
+			bottom: 160upx;
+		}
+
+		.side-btn-group.show {
+			opacity: 1;
+		}
+
+		.urge-modal-container {
+			padding: 20upx 40upx;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			position: fixed;
+			bottom: 0;
+			width: 100%;
+			background-color: #FFF;
+			border-radius: 30upx 30upx 0 0;
+			z-index: 3;
+			transition: transform .3s;
+			transform: translateY(100%);
+
+			.avatar {
+				width: 100upx;
+				height: 100upx;
+				border-radius: 50%;
+				margin: 10upx;
+			}
+
+			.text-content {
+				line-height: 1.6;
+
+				.top {
+					font-weight: 700;
+				}
+
+				.bottom {
+					color: #666;
+				}
+			}
+		}
+
+		.urge-modal-container.show {
+			transform: translateY(0);
 		}
 	}
 </style>

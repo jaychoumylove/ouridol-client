@@ -82,7 +82,7 @@
 				}, res => {
 					// #ifdef H5
 					WeixinJSBridge.invoke('getBrandWCPayRequest', {
-						"appId": res.data.appId, //公众号名称，由商户传入     
+						"appId": res.data.appId, //公众号名称，由商户传入
 						"timeStamp": res.data.timeStamp, //时间戳，自1970年以来的秒数     
 						"nonceStr": res.data.nonceStr, //随机串
 						"package": res.data.package,
@@ -95,13 +95,10 @@
 							//res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
 
 							this.$app.toast('支付成功', 'success')
-							this.$app.request('page/gift_num', {}, res => {
-								this.giftNum = res.data || 0
-							})
+							this.loadData()
 							this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
 								this.$app.setData('userCurrency', res.data)
 								this.userCurrency = this.$app.getData('userCurrency')
-								this.modal = ''
 							})
 						}
 					});
@@ -116,13 +113,10 @@
 						paySign: res.data.paySign,
 						success: res => {
 							this.$app.toast('支付成功', 'success')
-							this.$app.request('page/gift_num', {}, res => {
-								this.giftNum = res.data || 0
-							})
+							this.loadData()
 							this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
 								this.$app.setData('userCurrency', res.data)
 								this.userCurrency = this.$app.getData('userCurrency')
-								this.modal = ''
 							})
 						},
 						fail: err => {
