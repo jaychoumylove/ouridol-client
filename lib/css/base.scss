@@ -46,7 +46,7 @@ button {
 	font-size: 28upx;
 	line-height: 1.5;
 	border-radius: 0;
-	color: $color_1;
+	color: inherit;
 }
 
 button::after {
@@ -55,6 +55,7 @@ button::after {
 
 .button-hover {
 	background-color: transparent;
+	color: inherit;
 }
 
 // 不显示scroll-view的滚动条
@@ -117,7 +118,7 @@ input {
 }
 
 .main-color {
-	color: $color_1;
+	color: $text-color-2;
 }
 
 /* 图标大小 */

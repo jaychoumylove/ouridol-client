@@ -75,7 +75,7 @@
 			.big {
 				font-size: 60upx;
 				padding: 20upx;
-				color: $color_1;
+				color: $text-color-2;
 			}
 		}
 	}

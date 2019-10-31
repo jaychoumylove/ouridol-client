@@ -5,7 +5,7 @@
 				<view class="tab-item" :class="{active:rankField == 'week_hot'}" @tap="changeField('week_hot');getSunday()">周榜</view>
 				<view class="tab-item" v-if="$app.getData('config').show_month != 0" :class="{active:rankField == 'month_hot'}"
 				 @tap="changeField('month_hot');getLast()">月榜</view>
-				 <view class="tab-item" @tap="$app.goPage('/pages/open/rank/rank')">开屏备选</view>
+				<view class="tab-item" @tap="$app.goPage('/pages/open/rank/rank')">开屏备选</view>
 				<!-- <view class="tab-item" :class="{active:sign == 2}" @tap="changeSign(2)">创造营</view> -->
 			</view>
 			<view class="right-search">
@@ -14,7 +14,7 @@
 				<view class="iconfont flex-set" :class="[searchHide?'icon-sousuo':'icon-icon-test1']" @tap="searchToggle()"></view>
 			</view>
 		</view>
-		<bannerComponent bannerHeight="280"></bannerComponent>
+		<bannerComponent :bannerList="bannerList" :sList="sList" :muti="muti" bannerHeight="280"></bannerComponent>
 
 		<view class="middle-text-container">
 			<view class="" @tap="$app.goPage('/pages/subPages/star/rank_history/rank_history?rankField='+rankField)">往期榜单</view>
@@ -101,9 +101,6 @@
 			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
 		</view>
 
-		<!-- <view class="">
-			
-		</view> -->
 
 	</view>
 
@@ -137,6 +134,10 @@
 				rankField: 'week_hot',
 				sign: 0,
 				rankList: this.$app.getData('index_rankList') || [],
+				
+				bannerList:[],
+				sList:[],
+				muti: false,
 			};
 		},
 
@@ -148,24 +149,22 @@
 			// #ifdef H5
 			this.modal = ''
 			// #endif
+			this.getSunday()
+
 			if (option.path) {
-				this.$app.goPage(option.path)
+				return this.$app.goPage(option.path)
 			}
 			// 跳转到明星页
 			if (option.starid) {
 				this.starid = option.starid
-				if (option.path) {
-					this.$app.goPage(option.path + '?starid=' + this.starid)
-				} else {
-					this.goGroup(this.starid)
-				}
+				return this.goGroup(this.starid)
 			}
-			this.getSunday()
 		},
 		onShow() {
 			this.page = 1
 			this.keywords = ''
 			this.getRankList()
+			this.getBannerList()
 		},
 		onShareAppMessage() {
 			return this.$app.commonShareAppMessage()
@@ -190,7 +189,6 @@
 		onReachBottom() {
 			this.page++
 			this.getRankList()
-
 		},
 		methods: {
 			preimg(img) {
@@ -267,6 +265,25 @@
 			},
 
 			// HTTP
+			getBannerList() {
+				this.$app.request(this.$app.API.BANNER_LIST, {}, res => {
+					// 底部小banner
+					this.sList = res.data.smallList
+					
+					const bannerList = []
+					for (let v of res.data.bannerList) {
+						bannerList.push({
+							img: v.img_url,
+							url: v.gopage,
+						})
+					}
+					
+					this.bannerList = bannerList
+					if (this.bannerList.length > 2) {
+						this.muti = true
+					}
+				})
+			},
 			getRankList() {
 				this.showBottomLoading = true
 				this.$app.request(this.$app.API.STAR_RANK, {
@@ -317,7 +334,7 @@
 		/* #endif */
 		.top-tab-container {
 			height: 70upx;
-			color: $color_1;
+			color: $text-color-2;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
@@ -327,7 +344,7 @@
 			margin-top: -90upx;
 			z-index: 6;
 			padding: 0 20upx;
-			background-color: $color_0;
+			background-color: $text-color-1;
 
 			.left-tab-group {
 				font-size: 26upx;
@@ -352,7 +369,7 @@
 					bottom: -10upx;
 					left: 50%;
 					transform: translateX(-50%);
-					background-color: $color_1;
+					background-color: $text-color-2;
 
 				}
 			}
@@ -457,7 +474,7 @@
 					margin-bottom: 10upx;
 					display: flex;
 					align-items: center;
-					color: $color_1;
+					color: $text-color-2;
 
 					image {
 						width: 30upx;

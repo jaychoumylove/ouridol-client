@@ -10,8 +10,7 @@
 		},
 		{
 			"path": "pages/index/index",
-			"style": {
-			}
+			"style": {}
 		}, {
 			"path": "pages/user/user",
 			"style": {
@@ -38,7 +37,12 @@
 		{
 			"path": "pages/active_one/active_one",
 			"style": {}
-		},	{
+		}, {
+			"path": "pages/active_one/active_one_list",
+			"style": {}
+		},
+
+		{
 			"path": "pages/game/game",
 			"style": {}
 		},
@@ -48,10 +52,10 @@
 			"path": "pages/prop/prop",
 			"style": {}
 		}
-		
-		,{
-		    "path" : "pages/prop/buy/buy",
-		    "style" : {}
+
+		, {
+			"path": "pages/prop/buy/buy",
+			"style": {}
 		},
 		{
 			"path": "pages/signin/signin",
@@ -71,20 +75,29 @@
 				"navigationBarTitleText": "我的礼物"
 			}
 		}
-		
-        ,{
-            "path" : "pages/open/rank/rank",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/open/upload/upload",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/open/userRank/userRank",
-            "style" : {}
-        }
-    ],
+
+		, {
+			"path": "pages/open/rank/rank",
+			"style": {}
+		}, {
+			"path": "pages/open/upload/upload",
+			"style": {}
+		}, {
+			"path": "pages/open/userRank/userRank",
+			"style": {}
+		}, {
+			"path": "pages/signin/group_award",
+			"style": {}
+		}, {
+			"path": "pages/signin/group_mass",
+			"style": {
+				"navigationBarTitleText": "群集结"
+			}
+		}, {
+			"path": "pages/signin/group",
+			"style": {}
+		}
+	],
 	// #ifndef H5
 	// 分包
 	"subPackages": [{
@@ -115,7 +128,7 @@
 					"navigationBarTitleText": "任务"
 				}
 			},
-			
+
 			{
 				"path": "notice/list/list",
 				"style": {}
@@ -137,7 +150,6 @@
 					"navigationBarTitleText": "师徒"
 				}
 			},
-
 			{
 				"path": "fanclub/fanclub",
 				"style": {}
@@ -148,11 +160,11 @@
 			}, {
 				"path": "msg/msg",
 				"style": {}
-			},{
-				"path" : "fanclub_list/fanclub_list",
-				"style" : {}
-             }
-           ]
+			}, {
+				"path": "fanclub_list/fanclub_list",
+				"style": {}
+			}
+		]
 	}],
 	// 分包预下载
 	"preloadRule": {
@@ -183,14 +195,14 @@
 				"selectedIconPath": "/static/image/tab/group-tap.png",
 				"text": "偶像圈"
 			},
-			
+
 			{
-				"pagePath": "pages/active_one/active_one",
+				"pagePath": "pages/active_one/active_one_list",
 				"iconPath": "/static/image/tab/yingyuan.png",
 				"selectedIconPath": "/static/image/tab/yingyuan-tap.png",
 				"text": "应援"
-			}, 
-			
+			},
+
 			{
 				"pagePath": "pages/user/user",
 				"iconPath": "/static/image/tab/user.png",

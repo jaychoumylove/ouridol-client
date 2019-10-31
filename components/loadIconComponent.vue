@@ -70,14 +70,14 @@
 		left: 0;
 		bottom: 0;
 		right: 0;
-		background-color: $color_0;
+		background-color: $text-color-1;
 		z-index: 9;
 	}
 
 	@keyframes lineWave {
 		from {
 			transform: scaleY(1);
-			background-color: $color_0;
+			background-color: $text-color-1;
 		}
 
 		to {

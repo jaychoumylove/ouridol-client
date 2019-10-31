@@ -12,7 +12,6 @@
 
 			<view v-else class="select-container">
 
-
 				<view class="search-wrapper">
 					<input type="text" value="" placeholder="搜索爱豆" @input="searchInput" />
 				</view>
@@ -162,7 +161,7 @@
 					input {
 						height: 70upx;
 						width: 400upx;
-						background-color: $color_0;
+						background-color: $text-color-1;
 						border-radius: 60upx;
 						padding: 10upx 20upx;
 						margin: 20upx;
@@ -184,7 +183,7 @@
 
 				scroll-view {
 					width: 100%;
-					border-bottom: 1px solid $color_0;
+					border-bottom: 1px solid $text-color-1;
 				}
 
 				.starlist-wrapper {

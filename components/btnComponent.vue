@@ -23,16 +23,21 @@
 
 <style lang="scss" scoped>
 	.button {
-		color: $color_1;
+		color: $text-color-2;
 		transition: 0.3s;
+		
+		border-radius: 20upx;
 	}
-
+	
 	.button.scale {
 		transform: scale(0.7);
 	}
 
 	.button.default {
-		background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2coigwh4sg303s01p741.gif) center no-repeat/100% 100%;
+		// background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2coigwh4sg303s01p741.gif) center no-repeat/100% 100%;
+		color: #FFF;
+		background: linear-gradient(to right bottom, #f8648a, #F00);
+		box-shadow: 0 2upx 4upx rgba(#000, 0.3), inset 0 0 4upx rgba(#000, 0.3);
 	}
 
 	.button.big {
@@ -40,26 +45,32 @@
 	}
 
 	.button.success {
-		background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2ey5oz2oag303s01p741.gif) center no-repeat/100% 100%;
-		color:#FFF;
+		// background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2ey5oz2oag303s01p741.gif) center no-repeat/100% 100%;
+		color: #FFF;
+		box-shadow: 0 2upx 4upx rgba(#000, 0.3), inset 0 0 4upx rgba(#000, 0.3);
+		background: linear-gradient(to right bottom, #28a745, #70c183);
 	}
 
 	.button.disable {
-		background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2ey5nkm77g303s01p741.gif) center no-repeat/100% 100%;
+		// background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2ey5nkm77g303s01p741.gif) center no-repeat/100% 100%;
+		color: #FFF;
+		background: linear-gradient(to right bottom, #aaa, #666);
+		box-shadow: 0 2upx 4upx rgba(#000, 0.3), inset 0 0 4upx rgba(#000, 0.3);
 	}
 
 	.button.fangde {
 		background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2jwmn4sshg305v05vwea.gif) center no-repeat/100% 100%;
 	}
-	
-	.button.css{
-		background-color: #ffd1b2;
-		border-radius: 60upx;
-		box-shadow: 0 2upx 4upx rgba(#000, 0.3),inset 0 0 4upx rgba(#000, 0.3);
+
+	.button.css {
+		color: #FFF;
+		background: linear-gradient(to right bottom, #f8648a, #F00);
+		box-shadow: 0 2upx 4upx rgba(#000, 0.3), inset 0 0 4upx rgba(#000, 0.3);
 	}
-	.button.color{
-		background-color: $color_0;
+
+	.button.color {
+		background-color: $text-color-1;
 		border-radius: 60upx;
-		box-shadow: 0 2upx 4upx rgba(#000, 0.3),inset 0 0 4upx rgba(#000, 0.3);
+		box-shadow: 0 2upx 4upx rgba(#000, 0.3), inset 0 0 4upx rgba(#000, 0.3);
 	}
 </style>

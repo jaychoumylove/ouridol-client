@@ -157,7 +157,7 @@
 						margin-bottom: 10upx;
 						display: flex;
 						align-items: center;
-						color: $color_1;
+						color: $text-color-2;
 
 						image {
 							width: 30upx;

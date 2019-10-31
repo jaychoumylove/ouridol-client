@@ -102,7 +102,7 @@
 	.prop-container {
 		.nodata {
 			margin-top: 30%;
-			color: $color_1;
+			color: $text-color-2;
 			text-align: center;
 
 			image {
@@ -167,7 +167,7 @@
 						.bottom {
 							justify-content: flex-start;
 							font-size: 22upx;
-							color: $color_1;
+							color: $text-color-2;
 
 							.price {
 								color: red;

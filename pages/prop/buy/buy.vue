@@ -176,7 +176,7 @@
 						.bottom {
 							justify-content: flex-start;
 							font-size: 22upx;
-							color: $color_1;
+							color: $text-color-2;
 
 							.price {
 								color: red;
@@ -198,7 +198,7 @@
 						.btn {
 							width: 30upx;
 							height: 30upx;
-							background-color: $color_0;
+							background-color: $text-color-1;
 							border-radius: 50%;
 							box-shadow: 0upx 2upx 4upx rgba(#000, .3);
 						}

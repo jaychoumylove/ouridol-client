@@ -1,9 +1,9 @@
 <template>
 	<view class="container">
 		<view class="swiper-change flex-set">
-			<!-- <view class="swiper-item" :class="{select:current==0}" @tap="current = 0;getTaskList();">新手任务</view> -->
+			<view class="swiper-item" :class="{select:current==0}" @tap="current = 0;getTaskList();">新手任务</view>
 			<view class="swiper-item" :class="{select:current==1}" @tap="current = 1;getTaskList();">每日任务</view>
-			<view class="swiper-item" :class="{select:current==2}" @tap="current = 2;getTaskList();">徽章任务</view>
+			<!-- <view class="swiper-item" :class="{select:current==2}" @tap="current = 2;getTaskList();">徽章任务</view> -->
 		</view>
 		<view class="item" v-for="(item,index) in taskList" :key="index" v-if="!(
 					(item.type==4 && ~$app.getData('sysInfo').system.indexOf('iOS') && $app.getData('config').ios_switch == 0) 
@@ -159,59 +159,17 @@
 			return this.$app.commonShareAppMessage(shareType)
 		},
 		methods: {
-			initVideoAd() {
-				if (wx.createRewardedVideoAd) {
-					this.videoAd = wx.createRewardedVideoAd({
-						adUnitId: "adunit-9fa8b9c723fc27be"
-					})
-
-					this.videoAd.onClose(status => {
-						if (status && status.isEnded || status === undefined) {
-							for (let key in this.taskList) {
-								const value = this.taskList[key]
-
-								if (value.type == 7) {
-									this.taskList[key].status = 1
-								}
-							}
-						} else {
-							this.$app.toast('观看完视频才有奖励哦')
-						}
-					})
-
-					this.videoAd.onError(err => {
-						this.$app.toast('抱歉，暂无合适的广告')
-						console.error('视频广告播放错误', err)
-
-						for (let key in this.taskList) {
-							const value = this.taskList[key]
-
-							if (value.type == 7) {
-								this.taskList[key].status = 1
-							}
-						}
-					})
-				}
-
-			},
 			/**显示视频广告*/
 			openAdver() {
-				if (!this.videoAd) {
-					// 初始化视频广告控件
-					this.initVideoAd()
-				}
-				if (this.videoAd) {
-					this.videoAd.show().catch(err => {
-						// 失败重试
-						this.videoAd.load().then(() => {
-							this.videoAd.show().catch(err => {
-								this.$app.toast('视频广告打开失败')
-							})
-						})
-					})
-				} else {
-					this.$app.toast('视频广告打开失败')
-				}
+				this.$app.openVideoAd(() => {
+					for (let key in this.taskList) {
+						const value = this.taskList[key]
+
+						if (value.type == 7) {
+							this.taskList[key].status = 1
+						}
+					}
+				})
 			},
 			clipboard() {
 				uni.setClipboardData({
@@ -310,6 +268,7 @@
 						// 徽章
 						this.taskList = res.data
 					} else {
+						// 任务
 						const resList = []
 						this.$app.isTaskAllDone = true
 						for (let key in res.data) {
@@ -466,7 +425,7 @@
 					position: absolute;
 					right: 20upx;
 					bottom: -20upx;
-					background-color: $color_0;
+					background-color: $text-color-1;
 				}
 
 			}

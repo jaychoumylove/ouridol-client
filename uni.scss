@@ -1,7 +1,7 @@
 
 
-$color_0: #efccc8;// 主题基调
-$color_1: #6b4a39;// 字体颜色
+$text-color-1: #efccc8;// 主题基调
+$text-color-2: #6b4a39;// 字体颜色
 $color_2: #ce797c;
 $color_3: #e5b4b0; 
 $color_4: #fae6e7; 
@@ -10,7 +10,7 @@ $color_4: #fae6e7;
 
 
 // 背景色
-$background-color: linear-gradient(to bottom, $color_0, $color_1);
+$background-color: linear-gradient(to bottom, $text-color-1, $text-color-2);
 $background-color-rgba: rgba(243,243,243,0.5);
 
 

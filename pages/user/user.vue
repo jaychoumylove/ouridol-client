@@ -95,31 +95,30 @@
 				<image src="/static/image/user/r2.png" mode="widthFix"></image>
 				<view class="text">每日任务</view>
 			</view>
-			<!-- <view class="list-item" @tap="$app.goPage('/pages/subPages/fanclub_list/fanclub_list')">
-				<image src="/static/image/user/s8.png" mode="widthFix"></image>
-				<view class="text">后援会</view>
-			</view> -->
-			<!-- <view class="list-item" @tap="$app.toast('敬请期待')">
-				<image src="/static/image/user/s2.png" mode="widthFix"></image>
-				<view class="text">消息通知</view>
-				<view class="badge-wrapper">
-					<badgeComponent num="1256"></badgeComponent>
-				</view>
-			</view> -->
+			
 			<view class="list-item" @tap="$app.goPage('/pages/subPages/log/log')">
 				<image src="/static/image/user/s2.png" mode="widthFix"></image>
 				<view class="text">个人明细</view>
 			</view>
+			<button v-if="$app.getData('config').kefu_uid==$app.getData('userInfo').id" open-type="share" data-share="6">
+				<view class="list-item" @tap="$app.goPage('/pages/subPages/log/log')">
+					<image src="/static/image/user/s2.png" mode="widthFix"></image>
+					<view class="text">【客服】发群红包</view>
+				</view>
+			</button>
 			<!-- <button open-type="contact" :session-from="$app.getData('userInfo').id">
 				<view class="list-item">
 					<image src="/static/image/user/r3.png" mode="widthFix"></image>
 					<view class="text">联系客服</view>
 				</view>
 			</button> -->
-
+			<view v-if="$app.getData('userExt').is_join_wxgroup == 0" class="list-item" @tap="modal='joinGroup'">
+				<image src="/static/image/wxq.png" mode="widthFix"></image>
+				<view class="text">加入{{$app.getData('userStar').name}}的官方群</view>
+			</view>
 			<view class="list-item" @tap="copy()">
 				<image src="/static/image/user/r3.png" mode="widthFix"></image>
-				<view class="text">客服微信号：ouridol</view>
+				<view class="text">客服微信号：{{$app.getData('config').kefu}}</view>
 			</view>
 			<view class="list-item" @tap="$app.goPage('/pages/game/game?type=1')" v-if="!~$app.getData('sysInfo').system.indexOf('iOS')">
 				<image src="/static/image/icon/task-game.png" mode="widthFix"></image>
@@ -142,6 +141,26 @@
 			</view> -->
 
 		</view>
+
+		<modalComponent v-if="modal == 'joinGroup'" title=" " @closeModal="modal=''">
+			<view class="tips-modal-container">
+				<view class="text-wrap">
+
+					<!-- <view class="title">加群领福利</view> -->
+					<image class="avatar" :src="$app.getData('userStar').head_img_s" mode=""></image>
+					<view class="text flex-set">加入<text style="color:#F00;">{{$app.getData('userStar').name}}</text>官方打榜群</view>
+					<view class="text">加群需要注明爱豆名字</view>
+
+				</view>
+				<view class="row flex-set">
+					<view class="btn" @tap="$app.copy($app.getData('config').kefu)">
+						<btnComponent type="css">
+							<view class="flex-set" style="width:400upx;height: 100upx;font-weight: 700;font-size: 34upx;">点击复制微信号加群</view>
+						</btnComponent>
+					</view>
+				</view>
+			</view>
+		</modalComponent>
 
 		<!-- <modalComponent v-if="modal == 'recharge'" title="充值" @closeModal="modal=''">
 			<view class="recharge-modal-container">
@@ -173,11 +192,13 @@
 
 <script>
 	import badgeComponent from "@/components/badgeComponent.vue"
+	import btnComponent from "@/components/btnComponent.vue"
 	import modalComponent from "@/components/modalComponent.vue"
 	export default {
 		components: {
 			badgeComponent,
-			modalComponent
+			modalComponent,
+			btnComponent
 		},
 		data() {
 			return {
@@ -209,10 +230,11 @@
 				this.userCurrency = this.$app.getData('userCurrency')
 			})
 
-			this.$app.openInterstitialAd()
+			// this.$app.openInterstitialAd()
 		},
-		onShareAppMessage() {
-			return this.$app.commonShareAppMessage()
+		onShareAppMessage(e) {
+			const shareType = e.target && e.target.dataset.share
+			return this.$app.commonShareAppMessage(shareType)
 		},
 		methods: {
 			copy() {
@@ -255,7 +277,7 @@
 	}
 </script>
 
-<style lang="scss" scoped="true">
+<style lang="scss" scoped>
 	.container {
 		padding: 20upx;
 
@@ -430,6 +452,35 @@
 					margin-top: 10upx;
 					height: 10upx;
 					width: 60upx;
+				}
+			}
+		}
+
+		.tips-modal-container {
+			height: 100%;
+			padding: 20upx 40upx;
+			font-size: 32upx;
+
+			.text-wrap {
+				text-align: center;
+				margin: 50upx;
+
+				.title {
+					font-size: 40upx;
+					font-weight: 700;
+					text-align: center;
+					margin: 20upx;
+				}
+
+				.text {
+					line-height: 1.7;
+				}
+
+				.avatar {
+					width: 140upx;
+					height: 140upx;
+					border-radius: 50%;
+					margin: 20upx;
 				}
 			}
 		}

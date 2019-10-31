@@ -2,22 +2,6 @@
 	<view class="pet-container">
 		<view class="top-row-container">
 
-			<!-- <view class="block">
-				<image src="/static/image/user/b1.png" mode="widthFix"></image>
-				<text v-if="blockScale" class="top-num">+{{spriteInfo.earnPer}}</text>
-				<text class="block-text" :class="{active:blockScale}">{{userCurrency.coin}}</text>
-				<image v-if="useCard" class="icon m" src="/static/image/prop/2.png" mode="widthFix"></image>
-			</view> -->
-
-			<!-- <view class="block">
-				<image src="/static/image/user/b2.png" mode="widthFix"></image>
-				{{userCurrency.stone}}
-			</view> -->
-
-			<!-- <view class="text-content">
-				<text style="font-size: 36upx;">{{spriteInfo.earnPer}}</text>能量/100秒
-			</view> -->
-
 			<view class="left-wrap">
 				<view class="row flex-set">
 					<image class="coin-img" src="/static/image/user/b1.png" mode="widthFix"></image>
@@ -54,12 +38,15 @@
 				<image @tap="openInvitModal" v-for="(item,index) in invitList" :key="index" v-if="index<3" :src="item.avatar" mode="aspectFill"></image>
 				<!-- 				<image @tap="goOther(item)" v-for="(item,index) in invitList" :key="index" v-if="index<3" :src="item.avatar" mode="widthFix"></image> -->
 			</view>
-		</view>
 
-		<view class="right-container">
+			<!-- <view class="level">Lv.{{spriteInfo.sprite_level}}</view> -->
 			<btnComponent>
 				<image src="/static/image/pet/help.png" mode="widthFix" @tap="$app.goPage('/pages/notice/notice?id=2')"></image>
 			</btnComponent>
+		</view>
+
+		<view class="right-container">
+
 		</view>
 
 		<!-- <view class="sprite-bubble">
@@ -68,15 +55,15 @@
 
 		<view class="sprite" @tap="tapSprite">
 			<view class="bounce-article">
-				<view class="sprite-level position-set">
+				<image class="sprite-main" :src="spriteInfo.sprite_img" mode="widthFix"></image>
+				<!-- <view class="sprite-level">
 					<image src="/static/image/pet/fly.png" mode="widthFix"></image>
 					<view class="text position-set">LV{{spriteInfo.sprite_level}}</view>
-				</view>
-				<image class="sprite-main" src="/static/image/pet/sprite.png" mode="widthFix"></image>
+				</view> -->
 			</view>
-			<view class="shadow"></view>
+			<!-- <view class="shadow"></view> -->
 
-			<view class="progress flex-set" v-if="spriteInfo.need_stone">
+			<!-- <view class="progress flex-set" v-if="spriteInfo.need_stone">
 				<view class="progress-bar" :style="{width:userCurrency.stone / spriteInfo.need_stone * 100 + '%'}"></view>
 				<image src="/static/image/user/b2.png" mode="widthFix" style="width: 30upx;"></image>
 				{{userCurrency.stone}}/{{spriteInfo.need_stone}} {{userCurrency.stone>=spriteInfo.need_stone?'可升级！':''}}
@@ -84,6 +71,18 @@
 			<view class="progress flex-set" v-else>
 				<view class="progress-bar" :style="{width:'100%'}"></view>
 				已经是最高级了
+			</view> -->
+
+			<view class="progress-wrap">
+				<view class="lv">Lv.{{spriteInfo.sprite_level}}</view>
+
+				<view class="progress">
+					<view class="progress-bar" :style="{width:userCurrency.stone / spriteInfo.need_stone * 100 + '%'}"></view>
+					<view class="text position-set">
+						{{userCurrency.stone>=spriteInfo.need_stone?'可升级！':userCurrency.stone +'/'+ spriteInfo.need_stone}}
+					</view>
+				</view>
+
 			</view>
 			<view class="bottom-tips" @tap.stop="modal = 'tips'">如何获得灵丹升级</view>
 
@@ -234,7 +233,7 @@
 							<view class="star-name">{{item.desc}}</view>
 							<view class="bottom">{{item.need_stone}}</view>
 						</view>
-						<btnComponent type="default" v-if="item.status != 1">
+						<btnComponent type="css" v-if="item.status != 1">
 							<view class="flex-set" style="width: 130upx;height: 65upx;" @tap="skillUpgrade">升级</view>
 						</btnComponent>
 					</view>
@@ -255,12 +254,12 @@
 				</view>
 				<view class="flex-set">
 					<view class="btn" @tap="$app.goPage('/pages/subPages/task/task')">
-						<btnComponent type="default">
+						<btnComponent type="css">
 							<view class="flex-set" style="width: 200upx;height: 100upx;">去做任务</view>
 						</btnComponent>
 					</view>
 					<view class="btn" v-if="!~$app.getData('sysInfo').system.indexOf('iOS')" @tap="$app.goPage('/pages/recharge/recharge')">
-						<btnComponent type="default">
+						<btnComponent type="css">
 							<view class="flex-set" style="width: 200upx;height: 100upx;">补充能量</view>
 						</btnComponent>
 					</view>
@@ -361,7 +360,7 @@
 						this.getSpriteInfo()
 					}
 					if (this.earnCuttime % 10 == 0 && this.useCard) {
-						// 加速卡
+						// 获得加速卡收益
 						this.getShortEarn()
 					}
 				}, 1000)
@@ -570,7 +569,7 @@
 					this.blockScale = false
 				}, 1000)
 			},
-			// 使用道具卡
+			// 获得道具卡收益
 			getShortEarn() {
 				this.$app.request('sprite/shortEarn', {}, res => {
 					this.useCard = res.data.isUseCard || false
@@ -599,7 +598,6 @@
 					}
 
 					this.$app.setData('pet_spriteInfo', this.spriteInfo)
-					this.$app.closeLoading(this)
 					// 是否使用加速卡
 					this.useCard = res.data.isUseCard || false
 				})
@@ -612,7 +610,7 @@
 <style lang="scss" scoped>
 	.pet-container {
 		height: 100%;
-		background: url(http://tva1.sinaimg.cn/large/007X8olVly1g6mic95w72j30ku15ot9n.jpg) center no-repeat/cover;
+		background: url(http://mmbiz.qpic.cn/mmbiz_jpg/iaPhFibaNbpLQicYuplRuSG4uugzD1T7dUsZINqWvoxMM3EXZiaxoibfZf55mXon8wwdfkoEphpfDRgUDmYMiaFJhIfw/0) center no-repeat/cover;
 
 		.top-row-container {
 			display: flex;
@@ -738,7 +736,8 @@
 		.left-container {
 			position: absolute;
 			left: 20upx;
-			top: 30%;
+			top: 50%;
+			transform: translateY(-50%);
 
 			image {
 				width: 80upx;
@@ -746,6 +745,7 @@
 
 			.friend-wrapper {
 				margin-top: 10upx;
+				margin-bottom: 20upx;
 				background-color: rgba(255, 255, 255, .5);
 				border-radius: 20upx;
 				width: 80upx;
@@ -761,6 +761,12 @@
 					margin: 10upx 0;
 					border-radius: 50%;
 				}
+			}
+
+			.level {
+				text-align: center;
+				font-size: 32upx;
+				font-weight: 700;
 			}
 		}
 
@@ -797,23 +803,23 @@
 				}
 
 				65% {
-					transform: translateY(-10%);
+					transform: translateY(-3%);
 				}
 			}
 
 			.bounce-article {
-				animation: bounce 3s ease-in-out infinite;
-
+				animation: bounce 4s ease-in-out infinite;
 			}
 
 			.sprite-main {
-				width: 290upx;
+				width: 400upx;
 			}
 
 			.sprite-level {
-				top: -60upx;
+				bottom: -60upx;
 				color: #111;
 				font-size: 28upx;
+				text-align: center;
 
 				image {
 					width: 160upx;
@@ -830,8 +836,8 @@
 				height: 10upx;
 				margin: auto;
 				border-radius: 50%;
-				background: #37a45b;
-				box-shadow: 0 0 5upx #37a45b;
+				background: #fff;
+				box-shadow: 0 0 5upx #fff;
 				animation: shadow 3s ease-in-out infinite;
 			}
 
@@ -847,36 +853,46 @@
 				}
 			}
 
-			.progress {
-				width: 250upx;
-				height: 40upx;
-				z-index: 1;
-				margin-top: 40upx;
-				border-radius: 20upx;
-				color: #FFF;
-				background-color: #97cee3;
-				border: 4upx solid #68478e;
-				font-size: 20upx;
-				position: relative;
-				overflow: hidden;
+			.progress-wrap {
+				background-color: #FFF;
+				border-radius: 30upx;
 
-				.progress-bar {
-					content: "";
-					position: absolute;
-					top: 0;
-					left: 0;
-					height: 100%;
-					background-color: #c90186;
-					z-index: -1;
+				display: flex;
+				align-items: center;
+				padding: 5upx 20upx;
+
+				.lv {
+					font-weight: 700;
+					padding: 5upx 10upx;
 				}
 
+				.progress {
+					border-radius: 30upx;
+					background-color: #ad9b97;
+					width: 195upx;
+					height: 30upx;
+					position: relative;
+					overflow: hidden;
+
+					.progress-bar {
+						background-color: $color_2;
+						border-radius: 30upx;
+						height: 100%;
+					}
+
+					.text {
+						position: absolute;
+						color: #FFF;
+						font-size: 22upx;
+					}
+				}
 			}
 
 			.bottom-tips {
 				margin-top: 10upx;
 				font-size: 28upx;
 				letter-spacing: 4upx;
-				border-bottom: 2upx solid $color_1;
+				border-bottom: 2upx solid $text-color-2;
 
 			}
 
@@ -907,6 +923,8 @@
 			.skill-container.show {
 				transform: translate(-50%, -50%) scale(1);
 			}
+
+
 		}
 
 		@keyframes shine {
@@ -1076,8 +1094,8 @@
 					align-items: center;
 					padding: 10upx 20upx;
 					border-radius: 60upx;
-					// background-color: $color_0;
-					background-color: rgba($color_0, .3);
+					// background-color: $text-color-1;
+					background-color: rgba($text-color-1, .3);
 					margin: 10upx;
 
 					.rank-num {

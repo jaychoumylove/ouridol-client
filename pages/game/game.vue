@@ -31,7 +31,7 @@
 			this.type = option.type || 0
 			this.loadData()
 			if (this.type != '1') this.$app.toast('请点击游戏进行试玩' + time + '秒以上', 'none', 3000)
-			this.$app.openInterstitialAd()
+			// this.$app.openInterstitialAd()
 		},
 		onShow() {
 			if (this.openTime && this.type != '1') {

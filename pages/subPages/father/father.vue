@@ -61,6 +61,8 @@
 						<view class="flex-set" style="width: 130upx;height: 65upx;">领取</view>
 					</btnComponent>
 				</view>
+				
+				<view class="del-a iconfont icon-icon-test1"></view>
 			</view>
 
 		</view>
@@ -274,7 +276,12 @@
 				.btn {
 					font-size: 26upx;
 					position: absolute;
-					right: 40upx;
+					right: 60upx;
+				}
+				
+				.del-a {
+					position: absolute;
+					right: 10upx;
 				}
 			}
 		}

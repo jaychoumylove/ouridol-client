@@ -22,11 +22,7 @@
 <script>
 	export default {
 		data() {
-			return {
-				bannerList: [],
-				sList: [],
-				muti: false,
-			};
+			return {};
 		},
 		props: {
 			bannerHeight: {
@@ -35,27 +31,16 @@
 			bannerType: {
 				default: '0'
 			},
+			bannerList: {
+				default: [],
+			},
+			sList: {
+				default: []
+			},
+			muti: {
+				default: false,
+			}
 		},
-		created() {
-			this.$app.request(this.$app.API.BANNER_LIST, {}, res => {
-				// 底部小banner
-				this.sList = res.data.smallList
-				
-				const bannerList = []
-				for (let v of res.data.bannerList) {
-					bannerList.push({
-						img: v.img_url,
-						url: v.gopage,
-					})
-				}
-				
-				this.bannerList = bannerList
-				if (this.bannerList.length > 2) {
-					this.muti = true
-				}
-			})
-		},
-
 		computed: {
 			bannerHeightComputed() {
 				return uni.upx2px(this.bannerHeight) + 'px';
@@ -63,7 +48,7 @@
 		},
 		methods: {
 			goPage(url) {
-				if(url == '/pages/subPages/fanclub_list/fanclub_list' && !this.$app.getData('userStar').id) {
+				if (url == '/pages/subPages/fanclub_list/fanclub_list' && !this.$app.getData('userStar').id) {
 					this.$app.toast('请先加入一个圈子')
 					return
 				}
@@ -76,6 +61,7 @@
 <style lang="scss" scoped>
 	.swiper-container {
 		position: relative;
+
 		.banner-wrapper {
 			border-radius: 10upx;
 			overflow: hidden;
@@ -97,7 +83,7 @@
 			}
 
 		}
-		
+
 		.small {
 			width: 90%;
 			position: absolute;
@@ -108,7 +94,7 @@
 			.swiper-item {
 				display: flex;
 				align-items: center;
-				
+
 				.item {
 					font-size: 24upx;
 					background-color: rgba(#000, 0.6);
@@ -117,21 +103,21 @@
 					padding: 0 10upx;
 					display: flex;
 					align-items: center;
-					
+
 					.icon {
 						width: 24upx;
 						height: 24upx;
 						margin: 0 6upx;
 					}
-					
+
 					.text {
 						flex: 1;
 					}
-					
+
 				}
 			}
 		}
-		
+
 		.small.muti {
 			bottom: 5upx;
 			left: 29upx;

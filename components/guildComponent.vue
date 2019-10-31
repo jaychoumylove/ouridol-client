@@ -162,7 +162,18 @@
 						</button>
 						<view class="">{{treasureTime}}</view>
 					</view> -->
-					<view class="func-item" @tap="goMass">
+					<view class="func-item" @tap="app.goPage('/pages/signin/group')">
+
+						<btnComponent>
+							<view class="btn-wrap">
+								<image src="/static/image/guild/mass-1.png" mode="widthFix"></image>
+							</view>
+						</btnComponent>
+
+						<view class="">群集结</view>
+
+					</view>
+					<!-- <view class="func-item" @tap="goMass">
 						<btnComponent>
 							<view class="btn-wrap">
 								<image src="/static/image/guild/mass-1.png" mode="widthFix"></image>
@@ -174,7 +185,7 @@
 						<view class="" v-if="mass.status==1">集结中</view>
 						<view class="" v-else-if="mass.status==2">冷却中</view>
 						<view class="" v-else>集结</view>
-					</view>
+					</view> -->
 
 				</view>
 			</view>
@@ -257,7 +268,7 @@
 								<view class="name text-overflow">{{item.nickname}}</view>
 								<!-- 粉丝等级 -->
 								<view class="fan" v-if="item.level">
-									<image class="level" :src="'/static/image/icon/level/lv'+ item.level +'.png'" mode=""></image>
+									<image class="level" :src="'/static/image/icon/level/lv'+ item.level +'.png'" mode="widthFix"></image>
 								</view>
 								<!-- 徽章 -->
 								<view class="fan" v-if="item.badgeId">
@@ -289,7 +300,6 @@
 				</view>
 				<!-- <view class="level">lv10</view> -->
 				<view class="count">{{item.hot}}</view>
-
 			</view>
 		</view>
 		<!-- 侧边按钮组 -->
@@ -728,16 +738,16 @@
 					<view class="text flex-set">你已为{{star.name}}贡献了<text class="red" style="font-weight:700;">{{myTotalCount}}</text>
 						<image src="/static/image/index/ic_hot.png" class="s" mode=""></image>
 					</view>
-					<view class="text flex-set">邓伦目前排名<text class="red" style="font-weight:700;">NO.{{star.weekRank}}</text></view>
+					<view class="text flex-set">{{app.getData('userStar').name}}目前排名<text class="red" style="font-weight:700;">NO.{{star.weekRank}}</text></view>
 					<view v-if="disLeastCount" class="text flex-set">距离上一名还差<text style="color:red;font-weight:700;">{{disLeastCount}}</text>
 						<image src="/static/image/index/ic_hot.png" class="s" mode=""></image>
 					</view>
 				</view>
 				<view class="row flex-set">
 					<view class="btn">
-						<btnComponent type="default">
+						<btnComponent type="css">
 							<button open-type="share">
-								<view class="flex-set" style="width:300upx;height: 100upx;">召集好友一起打榜</view>
+								<view class="btn flex-set" style="width:300upx;height: 100upx;">召集好友一起打榜</view>
 							</button>
 						</btnComponent>
 					</view>
@@ -856,6 +866,26 @@
 						</view>
 					</view>
 
+				</view>
+			</view>
+		</modalComponent>
+
+		<modalComponent v-if="modal == 'joinGroup'" title=" " @closeModal="modal=''">
+			<view class="tips-modal-container">
+				<view class="text-wrap">
+
+					<!-- <view class="title">加群领福利</view> -->
+					<image class="avatar" :src="$app.getData('userStar').head_img_s" mode=""></image>
+					<view class="text flex-set">加入<text style="color:#F00;">{{$app.getData('userStar').name}}</text>官方打榜群</view>
+					<view class="text">加群需要注明爱豆名字</view>
+
+				</view>
+				<view class="row flex-set">
+					<view class="btn" @tap="$app.copy($app.getData('config').kefu)">
+						<btnComponent type="css">
+							<view class="flex-set" style="width:400upx;height: 100upx;font-weight: 700;font-size: 34upx;">点击复制微信号加群</view>
+						</btnComponent>
+					</view>
 				</view>
 			</view>
 		</modalComponent>
@@ -992,7 +1022,7 @@
 			this.initDanmaku()
 		},
 		destroyed() {
-			clearInterval(this.sayworldTimeId)
+			clearInterval(this.timeId_danmaku)
 		},
 		methods: {
 			/**
@@ -1015,19 +1045,32 @@
 						this.getSignin()
 					}
 
-					// 打榜提醒
-					let urgeSendModal = this.$app.getData('urgeSendModal')
 					let time = Math.round(new Date().getTime() / 1000)
-					if (time - urgeSendModal > 3600 * 12) {
-						let tipsArr = this.$app.getData('config').urge_send_tips
-						let tipsIndex = this.$app.getRandom(0, tipsArr.length - 1)
-						this.urgeSendTips = tipsArr[tipsIndex]
-						
-						this.$app.setData('urgeSendModal', time)
-						setTimeout(() => {
-							this.modal = 'urgeSend'
-						}, 3000)
+
+					// 加群提醒
+					if (this.$app.getData('userExt') && this.$app.getData('userExt').is_join_wxgroup == 0) {
+						let joinGroupModal = this.$app.getData('joinGroupModal')
+						if (time - joinGroupModal > 3600 * 24) {
+							this.$app.setData('joinGroupModal', time)
+							setTimeout(() => {
+								this.modal = 'joinGroup'
+							}, 3000)
+						}
+					} else {
+						// 打榜提醒
+						let urgeSendModal = this.$app.getData('urgeSendModal')
+						if (time - urgeSendModal > 3600 * 12) {
+							let tipsArr = this.$app.getData('config').urge_send_tips
+							let tipsIndex = this.$app.getRandom(0, tipsArr.length - 1)
+							this.urgeSendTips = tipsArr[tipsIndex]
+
+							this.$app.setData('urgeSendModal', time)
+							setTimeout(() => {
+								this.modal = 'urgeSend'
+							}, 3000)
+						}
 					}
+
 				}
 				// 请求数据
 				this.loadData()
@@ -1048,16 +1091,6 @@
 					stone: 0,
 					trumpet: 0
 				}
-
-				// 分享计时
-				// if (this.isTreasure) {
-				// 	if (Date.now() - this.isTreasure > 5 * 1000) {
-				// 		this.treasure()
-				// 	} else {
-				// 		this.$app.toast('请分享到不同的群')
-				// 	}
-				// 	this.isTreasure = false
-				// }
 			},
 			unLoad() {
 				this.leaveGroup()
@@ -1096,7 +1129,7 @@
 								content: e.content,
 								captain: e.user && e.user.user_star && e.user.user_star.captain || 0,
 								level: e.user && e.user.level,
-								badgeId: e.user && e.user.user_ext.badge_id,
+								badgeId: e.user && e.user.user_ext && e.user.user_ext.badge_id,
 								sendtimeInt: this.$app.strToTime(e.create_time),
 							}
 							const leastTime = chartList[i - 1] && chartList[i - 1].sendtimeInt || 0
@@ -1601,9 +1634,9 @@
 			},
 			// 定时显示弹幕
 			initDanmaku() {
-				clearInterval(this.sayworldTimeId)
+				clearInterval(this.timeId_danmaku)
 				this.danmaku = this.$app.danmakuQueue.shift() || null
-				this.sayworldTimeId = setInterval(() => {
+				this.timeId_danmaku = setInterval(() => {
 					this.danmaku = this.$app.danmakuQueue.shift() || null
 				}, 10000)
 			},
@@ -1818,16 +1851,10 @@
 							}
 						}
 					}
-					this.$app.toast('打榜成功', 'success')
 					// 弹窗
-					let sendOverTime = this.$app.getData('sendOverTime')
-					let time = Math.round(new Date().getTime() / 1000)
-					if (time - sendOverTime > 3600 * 6) {
-						this.modal = 'sendOver'
-						this.disLeastCount = res.data.disLeastCount
-						this.myTotalCount = res.data.totalCount
-						this.$app.setData('sendOverTime', time)
-					}
+					this.disLeastCount = res.data.disLeastCount
+					this.modal = 'sendOver'
+					this.myTotalCount = res.data.totalCount
 
 				}, 'POST', true)
 			},
@@ -2235,7 +2262,7 @@
 					}
 
 					.top-text-wrapper {
-						color: $color_1;
+						color: $text-color-2;
 						width: 300upx;
 						display: flex;
 						flex-direction: column;
@@ -2329,7 +2356,7 @@
 							.more-btn {
 								padding: 0 10upx;
 								padding-top: 6upx;
-								color: $color_1;
+								color: $text-color-2;
 							}
 
 						}
@@ -2436,7 +2463,7 @@
 						image {
 							width: 94upx;
 							height: 94upx;
-							position: relative;
+							position: relative; 
 						}
 
 						.text1 {
@@ -2458,7 +2485,7 @@
 
 			.notice-container {
 				padding: 0 20upx;
-				color: $color_2;
+				color: $text-color-2;
 				font-size: 24upx;
 				height: 54upx;
 				display: flex;
@@ -2575,13 +2602,13 @@
 								.fan {
 									display: flex;
 									align-items: center;
-									margin:0 5upx;
+									margin: 0 5upx;
 									position: relative;
 
 									.level {
-										width: 100upx;
-										height: 38upx;
-										margin-top: 10upx;
+										width: 76upx;
+										// height: 38upx;
+										margin-top: 2upx;
 									}
 
 									.badge {
@@ -2625,7 +2652,7 @@
 								max-width: 520upx;
 								word-break: break-all;
 								display: block;
-								
+
 								min-width: 320upx;
 							}
 						}
@@ -2634,26 +2661,26 @@
 				}
 			}
 
-// 			.msg-item.right {
-// 				.main-msg-wrapper {
-// 					flex-direction: row-reverse;
-// 
-// 					.top {
-// 						flex-direction: row-reverse;
-// 					}
-// 
-// 					.bottom {
-// 						flex-direction: row-reverse;
-// 
-// 						.msg-content {
-// 							background-color: #97c7db;
-// 							color: #FFF;
-// 
-// 						}
-// 					}
-// 				}
-// 
-// 			}
+			// 			.msg-item.right {
+			// 				.main-msg-wrapper {
+			// 					flex-direction: row-reverse;
+			// 
+			// 					.top {
+			// 						flex-direction: row-reverse;
+			// 					}
+			// 
+			// 					.bottom {
+			// 						flex-direction: row-reverse;
+			// 
+			// 						.msg-content {
+			// 							background-color: #97c7db;
+			// 							color: #FFF;
+			// 
+			// 						}
+			// 					}
+			// 				}
+			// 
+			// 			}
 
 			.msg-item:first-of-type {
 				padding-top: 32upx;
@@ -2699,7 +2726,7 @@
 					.bottom-text {
 						display: flex;
 						align-items: center;
-						color: $color_2;
+						color: $color_3;
 					}
 				}
 
@@ -2769,7 +2796,7 @@
 				height: 100%;
 				border-top-left-radius: 60upx;
 				border-bottom-left-radius: 60upx;
-				background-color: $color_0;
+				background-color: $color_3;
 				width: 100upx;
 
 
@@ -3140,7 +3167,7 @@
 				}
 
 				.text {
-					border-bottom: 2upx solid $color_1;
+					border-bottom: 2upx solid $color_3;
 				}
 			}
 
@@ -3204,7 +3231,7 @@
 					align-items: center;
 					padding: 10upx 20upx;
 					border-radius: 60upx;
-					background-color: rgba($color_0, .3);
+					background-color: rgba($color_3, .3);
 					margin: 10upx;
 
 					.rank-num {
@@ -3228,7 +3255,7 @@
 							align-items: center;
 
 							.hot-count {
-								color: $color_2;
+								color: $color_3;
 								margin-right: 4upx;
 							}
 
@@ -3286,8 +3313,8 @@
 					align-items: center;
 					padding: 10upx 20upx;
 					border-radius: 60upx;
-					// background-color: $color_0;
-					background-color: rgba($color_0, .3);
+					// background-color: $color_3;
+					background-color: rgba($color_3, .3);
 					margin: 10upx;
 
 					.rank-num {
@@ -3324,7 +3351,7 @@
 							align-items: center;
 
 							.hot-count {
-								color: $color_2;
+								color: $color_3;
 								margin-right: 4upx;
 							}
 
@@ -3369,7 +3396,7 @@
 					flex-direction: column;
 
 					.bottom {
-						color: $color_2;
+						color: $color_3;
 						font-size: 40upx;
 					}
 				}
@@ -3412,7 +3439,7 @@
 					align-items: center;
 					padding: 10upx 20upx;
 					border-radius: 60upx;
-					background-color: rgba($color_0, .3);
+					background-color: rgba($color_3, .3);
 					margin: 10upx;
 
 					.rank-num {
@@ -3436,7 +3463,7 @@
 							align-items: center;
 
 							.hot-count {
-								color: $color_2;
+								color: $color_3;
 								margin-right: 4upx;
 							}
 
@@ -3470,7 +3497,7 @@
 				// border: 2upx solid #000;
 				// border-top: none;
 				padding: 10upx 20upx;
-				border: 4upx dotted $color_1;
+				border: 4upx dotted $color_3;
 				border-radius: 20upx;
 			}
 
@@ -3487,7 +3514,7 @@
 					width: 100upx;
 					height: 100upx;
 					border-radius: 50%;
-					border: 2upx solid $color_1;
+					border: 2upx solid $color_3;
 					font-size: 50upx;
 					overflow: hidden;
 					z-index: 1;
@@ -3513,7 +3540,7 @@
 
 			.text-wrap {
 				text-align: center;
-				margin: 30upx;
+				margin: 50upx;
 
 				.title {
 					font-size: 40upx;
@@ -3532,6 +3559,10 @@
 					border-radius: 50%;
 					margin: 20upx;
 				}
+			}
+
+			.btn {
+				color: #FFF;
 			}
 		}
 

@@ -449,7 +449,7 @@
 				}
 
 				.text {
-					border-bottom: 2upx solid $color_1;
+					border-bottom: 2upx solid $text-color-2;
 				}
 			}
 

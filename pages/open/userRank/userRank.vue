@@ -121,7 +121,7 @@
 			margin: 20upx 0;
 			height: 130upx;
 			display: flex;
-			background-color: $color_0;
+			background-color: $text-color-1;
 			align-items: center;
 
 			.rank-num {
