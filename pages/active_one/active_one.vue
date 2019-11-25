@@ -11,7 +11,7 @@
 			<view class="top-wrap">
 				<view class="left">
 					<view class="left-1">为爱解锁</view>
-					<view class="left-2">剩余：{{activeInfo.left_time}}</view>
+					<view class="left-2">剩余：{{activeInfo.left_time||''}}</view>
 				</view>
 
 				<view v-if="!activeInfo.self.is_card_today" class="right" @tap="card()">
@@ -82,7 +82,7 @@
 		<modalComponent v-if="modal == 'cardOver'" title=" " headimg='false' @closeModal="modal=''">
 			<view class="modal-container flex-set">
 				<view class="top-wrap">
-					<image class="avatar" :src="star.avatar" mode=""></image>
+					<image class="avatar" :src="star.avatar" mode="aspectFill"></image>
 					<view>为爱解锁应援金活动</view>
 					<block v-if="activeInfo.progress.join_people < activeInfo.target_people">
 						<view class="">已有<text style="color: #F00;">{{activeInfo.progress.join_people}}</text>人参与</view>
@@ -413,7 +413,7 @@
 				text {
 					border-radius: 30upx;
 					padding: 0 10upx;
-					width: 180upx;
+					width: 190upx;
 					text-align: center;
 				}
 			}

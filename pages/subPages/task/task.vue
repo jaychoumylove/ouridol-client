@@ -8,7 +8,7 @@
 		<view class="item" v-for="(item,index) in taskList" :key="index" v-if="!(
 					(item.type==4 && ~$app.getData('sysInfo').system.indexOf('iOS') && $app.getData('config').ios_switch == 0) 
 					|| (item.id == 24 && $app.getData('config').version == $app.VERSION)
-					
+					|| (item.id==8&&$app.getData('config').version==$app.VERSION)
 					)">
 			<!-- 有些任务不显示 -->
 			<view v-if="current != 2" class="left-content">
@@ -53,10 +53,20 @@
 						<button class="btn" open-type="share" data-share='2' v-else-if="item.type == 12">
 							<view class="flex-set" style="width: 130upx;height: 65upx;">{{item.task_type.btn_text||'去完成'}}</view>
 						</button>
-						<!-- 客服 -->
-						<button class="btn" open-type="contact" v-else-if="item.type == 4 && $app.getData('config').ios_switch == 1 && ~$app.getData('sysInfo').system.indexOf('iOS') || item.type==13">
+						<!-- IOS充值 -->
+						<button class="btn" open-type="contact" v-else-if="$app.getVal('platform')!='MP-QQ' && item.type == 4 && $app.getData('config').ios_switch == 1 && ~$app.getData('sysInfo').system.indexOf('iOS')">
 							<view class="flex-set" style="width: 130upx;height: 65upx;">{{item.type==13?item.task_type.btn_text:'回复"1"'}}</view>
 						</button>
+						<!-- 公众号签到 -->
+						<button class="btn" open-type="contact" v-else-if="$app.getVal('platform')!='MP-QQ' && item.type == 13">
+							<view class="flex-set" style="width: 130upx;height: 65upx;">{{item.type==13?item.task_type.btn_text:'回复"1"'}}</view>
+						</button>
+						<view class="btn" v-else-if="$app.getVal('platform')=='MP-QQ' && item.type == 4">
+							<view class="flex-set" style="width: 130upx;height: 65upx;">去补充</view>
+						</view>
+						<view class="btn" v-else-if="$app.getVal('platform')=='MP-QQ' && item.type == 13">
+							<view class="flex-set" style="width: 130upx;height: 65upx;">去签到</view>
+						</view>
 						<!-- 默认 -->
 						<view v-else class="flex-set" style="width: 130upx;height: 65upx;">
 							{{item.task_type.btn_text||'去完成'}}
@@ -210,7 +220,11 @@
 			doTask(task, index) {
 				if (task.status == 0) {
 					// 做任务
-					if (task.task_type.id == 4 && ~this.$app.getData('sysInfo').system.indexOf('iOS')) {
+					if (this.$app.platform == 'MP-QQ' && (task.task_type.id == 4 || task.task_type.id == 13)) {
+						uni.previewImage({
+							urls: [this.$app.getData('config').qq_tips_img]
+						})
+					} else if (task.task_type.id == 4 && ~this.$app.getData('sysInfo').system.indexOf('iOS')) {
 						// ios 去公众号
 						return
 					} else if (task.task_type.id == 7) {

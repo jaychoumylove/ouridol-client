@@ -68,26 +68,39 @@
 		</view>
 
 		<view class="function-container-list">
-			<view class="list-item" @tap="$app.goPage('/pages/recharge/recharge')" v-if="!~$app.getData('sysInfo').system.indexOf('iOS')">
-				<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-				<view class="text">补充能量</view>
-				<!-- <view class="badge-wrapper">
+			<block v-if="$app.getData('config').version != $app.getVal('VERSION')">
+				<block v-if="$app.getVal('platform')!='MP-QQ'">
+					<!-- 微信小程序 -->
+					<view class="list-item" @tap="$app.goPage('/pages/recharge/recharge')" v-if="!~$app.getData('sysInfo').system.indexOf('iOS')">
+						<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+						<view class="text">补充爱心</view>
+						<!-- <view class="badge-wrapper">
 					<badgeComponent></badgeComponent>
 				</view> -->
-			</view>
-			<block v-else>
-				<button open-type="contact" :session-from="$app.getData('userInfo').id" v-if="$app.getData('config').ios_switch == 1">
-					<view class="list-item">
-						<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-						<view class="text">补充能量 回复"1"</view>
 					</view>
-				</button>
+					<block v-else>
+						<button open-type="contact" :session-from="$app.getData('userInfo').id" v-if="$app.getData('config').ios_switch == 1">
+							<view class="list-item">
+								<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+								<view class="text">补充爱心 回复"1"</view>
+							</view>
+						</button>
+					</block>
+				</block>
+				<!-- QQ小程序 -->
+				<view v-else class="list-item" @tap="$app.preImg($app.getData('config').qq_tips_img)">
+					<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+					<view class="text">补充爱心</view>
+					<!-- <view class="badge-wrapper">
+					<badgeComponent></badgeComponent>
+				</view> -->
+				</view>
 			</block>
 			<view class="list-item" @tap="$app.goPage('/pages/gift_package/gift_package')">
 				<image src="/static/image/user/r8.png" mode="widthFix"></image>
 				<view class="text">礼物背包</view>
 			</view>
-			<view class="list-item" @tap="$app.goPage('/pages/prop/prop')">
+			<view class="list-item" v-if="$app.getVal('platform')=='MP-WEIXIN'" @tap="$app.goPage('/pages/prop/prop')">
 				<image src="/static/image/icon/magic-wand.png" mode="widthFix"></image>
 				<view class="text">我的道具</view>
 			</view>
@@ -95,12 +108,12 @@
 				<image src="/static/image/user/r2.png" mode="widthFix"></image>
 				<view class="text">每日任务</view>
 			</view>
-			
+
 			<view class="list-item" @tap="$app.goPage('/pages/subPages/log/log')">
 				<image src="/static/image/user/s2.png" mode="widthFix"></image>
 				<view class="text">个人明细</view>
 			</view>
-			<button v-if="$app.getData('config').kefu_uid==$app.getData('userInfo').id" open-type="share" data-share="6">
+			<button v-if="$app.getData('config').kefu_uid==$app.getData('userInfo').id && $app.getData('config').version != $app.getVal('VERSION')" open-type="share" data-share="6">
 				<view class="list-item" @tap="$app.goPage('/pages/subPages/log/log')">
 					<image src="/static/image/user/s2.png" mode="widthFix"></image>
 					<view class="text">【客服】发群红包</view>
@@ -112,15 +125,15 @@
 					<view class="text">联系客服</view>
 				</view>
 			</button> -->
-			<view v-if="$app.getData('userExt').is_join_wxgroup == 0" class="list-item" @tap="modal='joinGroup'">
+			<view v-if="$app.getData('userExt').is_join_wxgroup == 0 && $app.getData('config').version != $app.getVal('VERSION')" class="list-item" @tap="modal='joinGroup'">
 				<image src="/static/image/wxq.png" mode="widthFix"></image>
 				<view class="text">加入{{$app.getData('userStar').name}}的官方群</view>
 			</view>
-			<view class="list-item" @tap="copy()">
+			<view class="list-item" v-if="$app.getData('config').version != $app.getVal('VERSION')" @tap="copy()">
 				<image src="/static/image/user/r3.png" mode="widthFix"></image>
 				<view class="text">客服微信号：{{$app.getData('config').kefu}}</view>
 			</view>
-			<view class="list-item" @tap="$app.goPage('/pages/game/game?type=1')" v-if="!~$app.getData('sysInfo').system.indexOf('iOS')">
+			<view class="list-item" @tap="$app.goPage('/pages/game/game?type=1')" v-if="!~$app.getData('sysInfo').system.indexOf('iOS')&&$app.getData('config').version != $app.getVal('VERSION')">
 				<image src="/static/image/icon/task-game.png" mode="widthFix"></image>
 				<view class="text">游戏试玩</view>
 			</view>

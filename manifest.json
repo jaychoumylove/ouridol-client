@@ -63,16 +63,16 @@
             "minified" : true
         },
         "usingComponents" : true,
-		"navigateToMiniProgramAppIdList": [
-			"wx3a69eb5e1b2a7fa9",//爱豆圈子
-			"wxb90a2375e2c7b52a",//超级明星榜
-			"wxb34a8a040639df9f",//童话村lite
-			"wx0f567ae09209c9c2",//爱豆庄园
-			"wx99ab9c8b254c48d4",// 全民赏钱
-			"wx3d73912e8bde3ebf",// 轻灵运动
-			"wxd949b04824167683",//小麦圈商城			
-			"wx7bb576902363f4ff"//当当
-		]
+        "navigateToMiniProgramAppIdList" : [
+            "wx3a69eb5e1b2a7fa9", //爱豆圈子
+            "wxb90a2375e2c7b52a", //超级明星榜
+            "wxb34a8a040639df9f", //童话村lite
+            "wx0f567ae09209c9c2", //爱豆庄园
+            "wx99ab9c8b254c48d4", // 全民赏钱
+            "wx3d73912e8bde3ebf", // 轻灵运动
+            "wxd949b04824167683", //小麦圈商城			
+            "wx7bb576902363f4ff" //当当
+        ]
     },
     "h5" : {
         "title" : "我们的偶像",
@@ -83,6 +83,12 @@
         },
         "devServer" : {
             "https" : false
+        }
+    },
+    "mp-qq" : {
+        "appid" : "1109702612",
+        "setting" : {
+            "minified" : true
         }
     }
 }

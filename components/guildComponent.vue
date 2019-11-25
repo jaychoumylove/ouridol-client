@@ -148,20 +148,7 @@
 						</btnComponent>
 						<view class="">拉票</view>
 					</view>
-					<!-- <view class="func-item" @tap="app.goPage('/pages/group/dynamic/dynamic?starid='+star.id+'&starname='+star.name)">
-						<btnComponent>
-							<image src="/static/image/guild/t4.png" mode=""></image>
-						</btnComponent>
-						<view class="">动态</view>
-					</view> -->
-					<!-- <view class="func-item" @tap="isTreasure = Date.now()">
-						<button open-type="share">
-							<btnComponent>
-								<image src="/static/image/guild/t5.png" mode=""></image>
-							</btnComponent>
-						</button>
-						<view class="">{{treasureTime}}</view>
-					</view> -->
+				
 					<view class="func-item" @tap="app.goPage('/pages/signin/group')">
 
 						<btnComponent>
@@ -870,7 +857,7 @@
 			</view>
 		</modalComponent>
 
-		<modalComponent v-if="modal == 'joinGroup'" title=" " @closeModal="modal=''">
+		<modalComponent v-if="modal == 'joinGroup'&&$app.getData('config').version != $app.getVal('VERSION')" title=" " @closeModal="modal=''">
 			<view class="tips-modal-container">
 				<view class="text-wrap">
 
@@ -896,10 +883,15 @@
 			<canvas canvas-id='mycanvas' class="canvas"></canvas>
 
 			<view class="btn-wrap">
-				<button class='fsend-btn flex-set' open-type='share'>
+				<button v-if="$app.getVal('platform')=='MP-WEIXIN'" class='fsend-btn flex-set' open-type='share'>
 					<image src="/static/image/wxq.png" mode="widthFix"></image>
 					<view>微信群</view>
 				</button>
+				<button v-if="$app.getVal('platform')=='MP-QQ'" class='fsend-btn flex-set' open-type='share'>
+					<image src="/static/image/qq.png" mode="widthFix"></image>
+					<view>QQ群</view>
+				</button>
+				
 				<view class='fsend-btn flex-set' open-type='share' @tap="modal ='otherShareW'">
 					<image src="/static/image/weibo.png" mode="widthFix"></image>
 					<view>微博</view>
@@ -1190,31 +1182,6 @@
 							}
 							// 师徒
 							this.fatherEarn = res.data.fatherEarn
-
-							// 邀请列表
-							// 							this.invitAward = res.data.invitList.award
-							// 							const resList = []
-							// 							this.spriteEarn = false
-							// 							res.data.invitList.list.forEach((e, i) => {
-							// 								resList.push({
-							// 									avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
-							// 									status: e.status,
-							// 									uid: e.user && e.user.id || 0,
-							// 									nickname: e.user && e.user.nickname || this.$app.NICKNAME,
-							// 									earn: e.sprite.earn,
-							// 									off: e.off,
-							// 								})
-							// 
-							// 								if (e.sprite.earn >= 100) {
-							// 									// 显示红点
-							// 									this.spriteEarn = true
-							// 								}
-							// 							})
-							// 							if (this.invitListPage == 1) {
-							// 								this.invitList = resList
-							// 							} else {
-							// 								this.invitList = this.invitList.concat(resList)
-							// 							}
 
 						}, 300)
 					})
@@ -1863,6 +1830,10 @@
 			 */
 			sendMsg() {
 				const chartMsg = this.chartMsg.trim()
+				if (this.chartMsg.trim().length > 24) {
+					this.$app.toast('内容过长')
+					return
+				}
 				this.chartMsg = ''
 				if (!chartMsg) return
 				this.modal = ''

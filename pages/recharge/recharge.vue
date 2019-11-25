@@ -3,6 +3,9 @@
 	<view v-if="~$app.getData('sysInfo').system.indexOf('iOS') && $app.getData('config').ios_switch == '0'" class="recharge-container flex-set">
 		由于相关规范，iOS功能暂不可用
 	</view>
+	<view v-else-if="$app.getVal('platform')=='MP-QQ'" class="recharge-container flex-set">
+		抱歉，QQ充值暂时无法使用
+	</view>
 	<view v-else class="recharge-container">
 		<!-- #endif -->
 
@@ -49,13 +52,18 @@
 			<!-- 礼物列表 -->
 			<view class="btn-wrapper">
 				<view class="btn" v-for="(item,index) in rechargeList" :key="index" @tap="payment(item.id)">
-					<image class="icon" :src="item.item.icon" mode="widthFix"></image>
-					<view class="icon-top flex-set" v-if="item_double">生日翻倍</view>
-					<view class="line one flex-set">
-						<image class="sicon" src="/static/image/user/b1.png" mode="widthFix"></image>{{item.item.count}}
+					<view class="icon-wrap">
+						<image class="icon" :src="item.item.icon" mode="widthFix"></image>
+						<view class="icon-top flex-set" v-if="item_double">生日翻倍</view>
+						<view class="line one flex-set">
+							<image class="sicon" src="/static/image/user/b1.png" mode="widthFix"></image>{{item.item.count}}
+						</view>
+						<view class="name flex-set">{{item.item.name}}</view>
 					</view>
-					<view class="name flex-set">{{item.item.name}}</view>
-					<view class="line two flex-set">
+					<view class="line two flex-set" v-if="item.coin">
+						<image class="sicon" src="/static/image/user/b1.png" mode="widthFix"></image>+{{item.coin}}
+					</view>
+					<view class="line two flex-set" v-if="item.stone">
 						<image class="sicon" src="/static/image/user/b2.png" mode="widthFix"></image>+{{item.stone}}
 					</view>
 
@@ -399,6 +407,12 @@
 					width: 125upx;
 					color: #fa5e86;
 					border-bottom: 2upx solid #EEE;
+				}
+				
+				.icon-wrap {
+					background-color: rgba(#fff, .3);
+					border-radius: 20upx;
+					padding: 0 20upx;
 				}
 
 				.icon {

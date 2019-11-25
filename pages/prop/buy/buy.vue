@@ -4,6 +4,10 @@
 	<view v-if="~$app.getData('sysInfo').system.indexOf('iOS')" class="buy-container flex-set">
 		由于相关规范，iOS功能暂不可用
 	</view>
+	
+	<view v-else-if="$app.getVal('platform')=='MP-QQ'" class="recharge-container flex-set">
+		抱歉，QQ充值暂时无法使用
+	</view>
 	<view v-else class="buy-container">
 	<!-- #endif -->
 

@@ -69,8 +69,20 @@
 		},
 
 		onShow(option) {
-			this.loadData()
-			this.getStarInfo()
+			if (this.$app.getData('userStar').id) {
+				this.loadData()
+				this.getStarInfo()
+				
+			} else {
+				uni.showModal({
+					content: '请先加入一个圈子',
+					showCancel: false,
+						
+					success: res => {
+						res.confirm && this.$app.goPage('/pages/group/group')
+					}
+				})
+			}
 		},
 		methods: {
 			getStarInfo() {
@@ -231,7 +243,7 @@
 					text {
 						border-radius: 30upx;
 						padding: 0 10upx;
-						width: 180upx;
+						width: 190upx;
 						text-align: center;
 					}
 				}

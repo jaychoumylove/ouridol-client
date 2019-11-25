@@ -28,7 +28,11 @@
 		},
 		methods: {
 			upload() {
+				uni.showLoading({
+					title: '上传中...'
+				})
 				this.$app.upload(this.img, res => {
+					uni.hideLoading()
 					const imgUrl = res[0]
 					if (!imgUrl) {
 						this.$app.toast('上传失败')
