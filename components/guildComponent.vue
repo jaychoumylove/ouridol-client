@@ -148,7 +148,7 @@
 						</btnComponent>
 						<view class="">拉票</view>
 					</view>
-				
+
 					<view class="func-item" @tap="app.goPage('/pages/signin/group')">
 
 						<btnComponent>
@@ -291,6 +291,9 @@
 		</view>
 		<!-- 侧边按钮组 -->
 		<view class='side-btn-group' :class="{chartbottom:app.getData('config').chart_type == '1', show:sideBtnOpacity}">
+			<view class="btn" @tap="modal ='joinGroup'" v-if="app.getData('config').version != app.VERSION && app.getData('userExt') && app.getData('userExt').is_join_wxgroup == 0" >
+				<image class="img" src="/static/image/guild/joingroup.png" mode=""></image>
+			</view>			
 			<view class="btn" @tap="app.goPage('/pages/open/rank/rank')">
 				<image class="img" src="/static/image/guild/open.png" mode=""></image>
 			</view>
@@ -368,6 +371,7 @@
 		</view>
 
 		<!-- MODAL -->
+		<!--
 		<modalComponent v-if="modal == 'signin'" title="签到" @closeModal="modal=''">
 			<view class="signin-modal-container">
 				<view class="top-container flex-set">
@@ -396,6 +400,8 @@
 				</btnComponent>
 			</view>
 		</modalComponent>
+		-->
+		
 
 		<modalComponent type="send" v-if="modal == 'send'" title="打榜" @closeModal="modal=''">
 			<view class="send-modal-container">
@@ -857,7 +863,8 @@
 			</view>
 		</modalComponent>
 
-		<modalComponent v-if="modal == 'joinGroup'&&$app.getData('config').version != $app.getVal('VERSION')" title=" " @closeModal="modal=''">
+		<modalComponent v-if="modal == 'joinGroup'&&$app.getData('config').version != $app.getVal('VERSION')" title=" "
+		 @closeModal="modal=''">
 			<view class="tips-modal-container">
 				<view class="text-wrap">
 
@@ -868,11 +875,12 @@
 
 				</view>
 				<view class="row flex-set">
-					<view class="btn" @tap="$app.copy($app.getData('config').kefu)">
+					<button class="btn" open-type="contact" :session-from="$app.getData('userInfo').id">
 						<btnComponent type="css">
-							<view class="flex-set" style="width:400upx;height: 100upx;font-weight: 700;font-size: 34upx;">点击复制微信号加群</view>
+							<view class="flex-set" style="width:400upx;height: 100upx;font-weight: 700;font-size: 34upx;">回复“3”加入官方打榜群</view>
 						</btnComponent>
-					</view>
+					</button>
+					
 				</view>
 			</view>
 		</modalComponent>
@@ -891,7 +899,7 @@
 					<image src="/static/image/qq.png" mode="widthFix"></image>
 					<view>QQ群</view>
 				</button>
-				
+
 				<view class='fsend-btn flex-set' open-type='share' @tap="modal ='otherShareW'">
 					<image src="/static/image/weibo.png" mode="widthFix"></image>
 					<view>微博</view>
@@ -1046,7 +1054,7 @@
 							this.$app.setData('joinGroupModal', time)
 							setTimeout(() => {
 								this.modal = 'joinGroup'
-							}, 3000)
+							}, 20000)
 						}
 					} else {
 						// 打榜提醒
@@ -1830,6 +1838,7 @@
 			 */
 			sendMsg() {
 				const chartMsg = this.chartMsg.trim()
+				const client_id = this.client_id
 				if (this.chartMsg.trim().length > 24) {
 					this.$app.toast('内容过长')
 					return
@@ -1841,6 +1850,7 @@
 				this.$app.request(this.$app.API.STAR_SENDMSG, {
 					starid: this.star.id,
 					content: chartMsg,
+					client_id: client_id,
 				})
 			},
 			/**
@@ -1896,6 +1906,7 @@
 							this.$app.request(this.$app.API.USER_STAR, {}, res => {
 								this.$app.setData('userStar', res.data, true)
 								this.chartMsg = `大家好，我是${this.$app.getData('userInfo').nickname}，初来乍到，请多关照~`
+								this.client_id = this.$app.getData('clientId')
 								this.sendMsg()
 								this.$app.toast('加入成功')
 								setTimeout(() => {
@@ -2434,7 +2445,7 @@
 						image {
 							width: 94upx;
 							height: 94upx;
-							position: relative; 
+							position: relative;
 						}
 
 						.text1 {

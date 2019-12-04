@@ -149,9 +149,28 @@
 
 	.container.show {
 		opacity: 1;
-
-		// .modal-container {
-		// 	transform: scale(1);
-		// }
+		
+		.modal-container {
+			-webkit-animation: popIn .4s ease-in-out 0.2s;
+			animation: popIn .3s ease-out;
+		}
+		@keyframes popIn {
+		    0% {
+		        -webkit-transform: scale3d(0, 0, 0);
+		        transform: scale3d(0.5, 0.5, 0.5);
+		        opacity: 0;
+		    }
+		    50% {
+		        -webkit-animation-timing-function: cubic-bezier(0.47, 0, 0.745, 0.715);
+		        animation-timing-function: cubic-bezier(0.47, 0, 0.745, 0.715);
+		    }
+		    100% {
+		        -webkit-transform: scale3d(1, 1, 1);
+		        transform: scale3d(1, 1, 1);
+		        -webkit-animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+		        animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+		        opacity: 1;
+		    }
+		}
 	}
 </style>

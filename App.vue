@@ -3,7 +3,7 @@
 	export default {
 		globalData: {
 			...lib
-		},
+		},		
 		onLaunch: function(option) {
 			// 微信小程序
 			this.$app.platform = 'MP-WEIXIN'

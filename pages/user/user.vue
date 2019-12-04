@@ -113,10 +113,10 @@
 				<image src="/static/image/user/s2.png" mode="widthFix"></image>
 				<view class="text">个人明细</view>
 			</view>
-			<button v-if="$app.getData('config').kefu_uid==$app.getData('userInfo').id && $app.getData('config').version != $app.getVal('VERSION')" open-type="share" data-share="6">
+			<button v-if="($app.getData('config').kefu_uid==$app.getData('userInfo').id ||$app.getData('userStar').captain==1)&& $app.getData('config').version != $app.getVal('VERSION')" open-type="share" data-share="6">
 				<view class="list-item" @tap="$app.goPage('/pages/subPages/log/log')">
 					<image src="/static/image/user/s2.png" mode="widthFix"></image>
-					<view class="text">【客服】发群红包</view>
+					<view class="text">给新群员发群红包</view>
 				</view>
 			</button>
 			<!-- <button open-type="contact" :session-from="$app.getData('userInfo').id">
@@ -125,9 +125,11 @@
 					<view class="text">联系客服</view>
 				</view>
 			</button> -->
-			<view v-if="$app.getData('userExt').is_join_wxgroup == 0 && $app.getData('config').version != $app.getVal('VERSION')" class="list-item" @tap="modal='joinGroup'">
+			<view v-if="$app.getData('userExt').is_join_wxgroup == 0 && $app.getData('config').version != $app.getVal('VERSION')" class="list-item">
 				<image src="/static/image/wxq.png" mode="widthFix"></image>
-				<view class="text">加入{{$app.getData('userStar').name}}的官方群</view>
+				<button class="btn" open-type="contact" :session-from="$app.getData('userInfo').id">
+					<view class="text">加入{{$app.getData('userStar').name}}的官方群</view>
+				</button>
 			</view>
 			<view class="list-item" v-if="$app.getData('config').version != $app.getVal('VERSION')" @tap="copy()">
 				<image src="/static/image/user/r3.png" mode="widthFix"></image>
@@ -154,12 +156,12 @@
 			</view> -->
 
 		</view>
-
+		
+		<!--
 		<modalComponent v-if="modal == 'joinGroup'" title=" " @closeModal="modal=''">
 			<view class="tips-modal-container">
 				<view class="text-wrap">
 
-					<!-- <view class="title">加群领福利</view> -->
 					<image class="avatar" :src="$app.getData('userStar').head_img_s" mode=""></image>
 					<view class="text flex-set">加入<text style="color:#F00;">{{$app.getData('userStar').name}}</text>官方打榜群</view>
 					<view class="text">加群需要注明爱豆名字</view>
@@ -173,7 +175,7 @@
 					</view>
 				</view>
 			</view>
-		</modalComponent>
+		</modalComponent>-->
 
 		<!-- <modalComponent v-if="modal == 'recharge'" title="充值" @closeModal="modal=''">
 			<view class="recharge-modal-container">
