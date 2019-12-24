@@ -96,11 +96,11 @@
 				</view> -->
 				</view>
 			</block>
-			<view class="list-item" @tap="$app.goPage('/pages/gift_package/gift_package')">
+			<view class="list-item" v-if="$app.getData('config').version != $app.getVal('VERSION')" @tap="$app.goPage('/pages/gift_package/gift_package')">
 				<image src="/static/image/user/r8.png" mode="widthFix"></image>
 				<view class="text">礼物背包</view>
 			</view>
-			<view class="list-item" v-if="$app.getVal('platform')=='MP-WEIXIN'" @tap="$app.goPage('/pages/prop/prop')">
+			<view class="list-item" v-if="$app.getData('config').version != $app.getVal('VERSION')&&$app.getVal('platform')=='MP-WEIXIN'" @tap="$app.goPage('/pages/prop/prop')">
 				<image src="/static/image/icon/magic-wand.png" mode="widthFix"></image>
 				<view class="text">我的道具</view>
 			</view>

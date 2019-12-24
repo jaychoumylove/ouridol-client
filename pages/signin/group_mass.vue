@@ -46,9 +46,9 @@
 					<image class="avatar" v-if="list[index]" :src="list[index].user.avatarurl" mode="aspectFill"></image>
 					<image class="avatar" v-else src="/static/image/ic_wechat.png" mode="aspectFill"></image>
 
-					<view class="extra yellow" v-if="index==0">发起人</view>
-					<view class="extra yellow" v-else-if="index==1">沙发</view>
-					<view class="extra yellow" v-else-if="index==2">板凳</view>
+					<view class="extra yellow" v-if="index==0">沙发</view>
+					<view class="extra yellow" v-else-if="index==1">板凳</view>
+					<view class="extra yellow" v-else-if="index==2">地板</view>
 
 					<view class="earn" v-if="list[index]">+{{list[index].mass_point}}能量</view>
 				</view>
@@ -157,10 +157,13 @@
 				this.$app.modal('无法为其他爱豆助力')
 				return
 			}
+			// #ifdef MP-WEIXIN
 			if (!this.$app.getVal('shareTicket')) {
 				this.$app.modal('请从群分享中进入')
 				return
 			}
+			// #endif
+			
 			this.groupAdd()
 		},
 		methods: {
