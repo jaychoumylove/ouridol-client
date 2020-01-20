@@ -66,7 +66,7 @@
 		onShow() {
 			this.starid = this.$app.getData('userStar')['id'] || null
 			if (this.starid) {
-				this.$nextTick(function(){
+				this.$nextTick(function() {
 					this.$refs.guildComponent.load(this.starid)
 				})
 			} else {
@@ -81,10 +81,10 @@
 		onHide() {
 			if (this.starid) {
 				this.$refs.guildComponent.unLoad && this.$refs.guildComponent.unLoad(this.starid)
-				this.$refs.guildComponent.modal = ''
+				// this.$refs.guildComponent.modal = ''
 			}
 		},
-		onShareAppMessage(e) {
+		 onShareAppMessage(e) {
 			const shareType = e.target && e.target.dataset.share
 			return this.$app.commonShareAppMessage(shareType)
 		},
@@ -111,7 +111,7 @@
 						item.avatar = e.star.head_img_s ? e.star.head_img_s : e.star.head_img_l
 						resList.push(item)
 					})
-					if(this.page == 1) {
+					if (this.page == 1) {
 						this.rankList = resList
 					} else {
 						this.rankList = this.rankList.concat(resList)

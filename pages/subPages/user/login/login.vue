@@ -1,10 +1,10 @@
 <template>
 	<view class="container flex-set">
 		<view class="avatar">
-			<image :src="userInfo.avatarurl || $app.AVATAR" mode="aspectFill"></image>
+			<image :src="userInfo.avatarurl || $app.getData('AVATAR')" mode="aspectFill"></image>
 		</view>
 		<view class="nickname">
-			{{userInfo.nickname || $app.NICKNAME}}
+			{{userInfo.nickname || $app.getData('NICKNAME')}}
 		</view>
 		<btnComponent type="css">
 			<view class="flex-set" style="width: 160upx;height: 80upx;">

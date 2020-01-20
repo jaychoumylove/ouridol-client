@@ -1,11 +1,24 @@
 <template>
 	<view class="game-container">
 		<block v-for="(item,index) in list" :key="index">
-			<!-- 微信广告 -->
+			<!-- 微信banner广告 -->
 			<view class="item-wrap ad" v-if="item.type == 0" @tap.capture='openGame(item)'>
 				<ad :unit-id="item.appid"></ad>
 			</view>
-			<!-- APP广告 -->
+			<!-- 微信格子广告 -->
+			<view class="item-wrap ad" v-else-if="item.type == 6" @tap.capture='openGame(item)'>
+				<ad :unit-id="item.appid" ad-type="grid" grid-opacity="0.8" grid-count="5" ad-theme="white"></ad>
+			</view>
+		
+			<!-- QQcard广告 -->
+			<view class="item-wrap ad" v-else-if="item.type == 7" @tap.capture='openGame(item)'>
+				<ad :unit-id="item.appid" type="card"></ad>
+			</view>
+			<!-- QQfeeds广告 -->
+			<view class="item-wrap ad" v-else-if="item.type == 8" @tap.capture='openGame(item)'>
+				<ad :unit-id="item.appid" type="feeds"></ad>
+			</view>
+			<!-- 小程序跳转广告 -->
 			<view class="item-wrap" v-else>
 				<image class="img" :src="item.img_s" mode="aspectFill"></image>
 				<view class="text">
@@ -14,6 +27,7 @@
 				</view>
 				<view class="btn flex-set" @tap="openGame(item)">{{item.button}}</view>
 			</view>
+		
 		</block>
 	</view>
 </template>
@@ -60,6 +74,7 @@
 		methods: {
 			// 点击广告
 			openGame(item) {
+				console.log(item)
 				this.openTime = Date.now()
 				this.openAdId = item.id
 				if (item.type != 0) {

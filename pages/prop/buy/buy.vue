@@ -1,19 +1,10 @@
 <template>
 
-	<!-- #ifdef MP -->
-	<view v-if="~$app.getData('sysInfo').system.indexOf('iOS')" class="buy-container flex-set">
-		由于相关规范，iOS功能暂不可用
-	</view>
-	
-	<view v-else-if="$app.getVal('platform')=='MP-QQ'" class="recharge-container flex-set">
-		抱歉，QQ充值暂时无法使用
+	<view v-if="$app.chargeSwitch()!=0" class="buy-container flex-set">
+		由于相关规范，充值功能暂不可用
 	</view>
 	<view v-else class="buy-container">
-	<!-- #endif -->
 
-	<!-- #ifdef H5 -->
-	<view class="buy-container">
-	<!-- #endif -->
 
 			<view class="list-wrapper">
 				<view class="list-item" v-for="(item,index) in list" :key="index">

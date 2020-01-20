@@ -146,9 +146,6 @@
 			uni.showTabBarRedDot({
 				index: 1
 			})
-			// #ifdef H5
-			this.modal = ''
-			// #endif
 			this.getSunday()
 
 			if (option.path) {
@@ -220,11 +217,6 @@
 			 * 去偶像圈打榜
 			 */
 			goGroup(starid) {
-				// #ifdef H5
-				this.modal = 'qrcode'
-				return
-				// #endif
-
 				if (this.$app.getData('userStar', true)['id'] == starid) {
 					this.$app.goPage('/pages/group/group')
 				} else {

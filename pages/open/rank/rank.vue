@@ -69,14 +69,16 @@
 					</view>
 
 				</view>
-				<view class="gift flex-set" @tap="$app.goPage('/pages/recharge/recharge')" v-if="!~$app.getData('sysInfo').system.indexOf('iOS')">
-					<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-					<view class="text">购买礼物补充能量</view>
-				</view>
-				<button open-type="contact" class="gift flex-set" v-if="~$app.getData('sysInfo').system.indexOf('iOS')&&$app.getData('config').ios_switch==1">
-					<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-					<view class="text">购买礼物补充能量回复"1"</view>
-				</button>
+				<block v-if="$app.getData('VERSION')!=$app.getData('config').version">
+					<view class="gift flex-set" @tap="$app.goPage('/pages/recharge/recharge')" v-if="$app.chargeSwitch()==0">
+						<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+						<view class="text">购买礼物补充能量</view>
+					</view>
+					<button open-type="contact" class="gift flex-set" v-if="$app.chargeSwitch()==2">
+						<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+						<view class="text">购买礼物补充能量回复"1"</view>
+					</button>
+				</block>
 			</view>
 		</modalComponent>
 	</view>

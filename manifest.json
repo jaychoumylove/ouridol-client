@@ -88,7 +88,16 @@
     "mp-qq" : {
         "appid" : "1109702612",
         "setting" : {
+            "urlCheck" : true,
+            "postcss" : true,
+            "es6" : true,
             "minified" : true
-        }
+        },
+		"usingComponents" : true,
+		"navigateToMiniProgramAppIdList" : [
+			"1109953774", // 爱豆圈子
+		    "1109694099", //最美偶像
+		    "1109771368" //超级明星榜
+		]
     }
 }

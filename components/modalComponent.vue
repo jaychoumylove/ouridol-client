@@ -141,9 +141,7 @@
 			background-color: rgba(0, 0, 0, .3);
 			color: #FFF;
 			font-size: 45upx;
-
 		}
-
 
 	}
 

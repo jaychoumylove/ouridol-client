@@ -22,7 +22,7 @@
 				</view>
 				<view class="row-info">
 					<view class="avatar-wrapper" @tap="drawCanvas">
-						<image class="avatar" :class="{share:this.app.getData('userStar').id == star.id}" :src="star.avatar" mode="aspectFill"></image>
+						<image class="avatar" :class="{share:$app.getData('userStar').id == star.id}" :src="star.avatar" mode="aspectFill"></image>
 						<!-- <view class="tips">分享海报</view> -->
 						<!-- <view class="rank">{{star.name}}</view> -->
 						<view class="star-name-wrapper text-overflow">NO.{{star.weekRank}}</view>
@@ -32,16 +32,16 @@
 						<view class="star-name row">
 							<view class="rank text-overflow">{{star.name}}</view>
 							<!-- <view class="star-name-wrapper text-overflow">NO.{{star.weekRank}}</view> -->
-							<block v-if="!app.getData('userStar')['id'] || app.getData('userInfo').type == 1 && app.getData('userStar').id != star.id">
-								<button v-if="!app.getData('userInfo')['nickname']" class="join flex-set" open-type="getUserInfo" @getuserinfo="getUserInfo">
+							<block v-if="!$app.getData('userStar')['id'] || $app.getData('userInfo').type == 1 && $app.getData('userStar').id != star.id">
+								<button v-if="!$app.getData('userInfo')['nickname']" class="join flex-set" open-type="getUserInfo" @getuserinfo="getUserInfo">
 									+加入
 								</button>
-								<button v-if="app.getData('userInfo')['nickname']" class="join flex-set" @tap="sendOrFollow">
-									+{{app.getData('userInfo').type == 0? '加入':'切换'}}
+								<button v-if="$app.getData('userInfo')['nickname']" class="join flex-set" @tap="sendOrFollow">
+									+{{$app.getData('userInfo').type == 0? '加入':'切换'}}
 								</button>
 							</block>
-							<view class="mystar flex-set" style="background-color: #415236;" v-if="app.getData('userStar').id ==star.id"
-							 @tap="app.goPage('/pages/subPages/fanclub_list/fanclub_list')">
+							<view class="mystar flex-set" style="background-color: #415236;" v-if="$app.getData('userStar').id ==star.id"
+							 @tap="$app.goPage('/pages/subPages/fanclub_list/fanclub_list')">
 								<image src="/static/image/user/s8.png" style="width: 30upx;" mode="widthFix"></image>
 								后援会
 							</view>
@@ -57,7 +57,7 @@
 							<image src="/static/image/index/ic_hot.png" class="s" mode=""></image>
 						</view>
 
-						<view class="rank-list row" @tap="app.goPage('/pages/subPages/user/rank/rank?starid='+star.id)">
+						<view class="rank-list row" @tap="$app.goPage('/pages/subPages/user/rank/rank?starid='+star.id)">
 							<view class="rank-list-container">
 								<view class="item" v-for="(item,index) in userRankList" :key="index" v-if="index < 3">
 									<image class="avatar-s" :src="item.avatar" mode="aspectFill"></image>
@@ -83,7 +83,7 @@
 						<image class="bubble" src="/static/image/guild/hart.png" mode=""></image>
 
 						<btnComponent>
-							<button open-type="getUserInfo" v-if="!app.getData('userInfo').nickname" @getuserinfo="getUserInfo">
+							<button open-type="getUserInfo" v-if="!$app.getData('userInfo').nickname" @getuserinfo="getUserInfo">
 								<image src="/static/image/guild/send-give.png" mode=""></image>
 							</button>
 							<form report-submit @submit="sendOrFollow" v-else>
@@ -100,13 +100,13 @@
 			<!-- 按钮组 -->
 			<view class="func-container">
 				<view class="func-list-wrapper">
-					<view class="func-item" @tap="app.goPage('/pages/subPages/task/task')">
+					<view class="func-item" @tap="$app.goPage('/pages/subPages/task/task')">
 						<btnComponent>
 							<view class="btn-wrap">
 								<image src="/static/image/guild/t1.png" mode="widthFix"></image>
-								<view class="badge-wrap" v-if="!app.isTaskAllDone">
+								<!-- <view class="badge-wrap" v-if="!$app.isTaskAllDone">
 									<badgeComponent size="8"></badgeComponent>
-								</view>
+								</view> -->
 							</view>
 						</btnComponent>
 						<view class="">任务</view>
@@ -149,7 +149,7 @@
 						<view class="">拉票</view>
 					</view>
 
-					<view class="func-item" @tap="app.goPage('/pages/signin/group')">
+					<view class="func-item" @tap="$app.goPage('/pages/signin/group')">
 
 						<btnComponent>
 							<view class="btn-wrap">
@@ -177,12 +177,12 @@
 				</view>
 			</view>
 
-			<view class="notice-container" @tap="app.goPage('/pages/notice/notice?id='+article.id)">
+			<view class="notice-container" @tap="$app.goPage('/pages/notice/notice?id='+article.id)">
 				<view class="left">
 					<view class="sign">【公告】</view>
 					<view class="content">{{article.name}}</view>
 				</view>
-				<view class="right" @tap.stop="app.goPage('/pages/subPages/notice/list/list')">更多>></view>
+				<view class="right" @tap.stop="$app.goPage('/pages/subPages/notice/list/list')">更多>></view>
 			</view>
 		</view>
 		<!-- 解锁活动 -->
@@ -235,11 +235,11 @@
 
 		</view> -->
 		<!-- 聊天区域 -->
-		<scroll-view v-if="app.getData('config').version != app.VERSION && (star.id == app.getData('userStar').id || app.getData('userInfo').type == 1)"
+		<scroll-view v-if="$app.getData('config').version != $app.getData('VERSION') && (star.id == $app.getData('userStar').id || $app.getData('userInfo').type == 1)"
 		 class="chart-container" scroll-y scroll-with-animation :scroll-into-view="'index_'+chartIndex" @touchstart="sideBtnOpacity=false;modal=''"
 		 @touchend="sideBtnOpacity=true">
 
-			<view :id="'index_'+index" class="msg-item" :class="{right:item.uid==app.getData('userInfo')['id']}" v-for="(item,index) in chartList"
+			<view :id="'index_'+index" class="msg-item" :class="{right:item.uid==$app.getData('userInfo')['id']}" v-for="(item,index) in chartList"
 			 :key="index">
 
 				<view v-if="item.sendtime" class="sendtime-wrapper">
@@ -290,18 +290,24 @@
 			</view>
 		</view>
 		<!-- 侧边按钮组 -->
-		<view class='side-btn-group' :class="{chartbottom:app.getData('config').chart_type == '1', show:sideBtnOpacity}">
-			<view class="btn" @tap="modal ='joinGroup'" v-if="app.getData('config').version != app.VERSION && app.getData('userExt') && app.getData('userExt').is_join_wxgroup == 0" >
+		<view class='side-btn-group' :class="{chartbottom:$app.getData('config').chart_type == '1', show:sideBtnOpacity}">
+			<view class="btn" @tap="modal ='joinGroup'" v-if="$app.getData('platform')=='MP-WEIXIN'&&$app.getData('config').version != $app.getData('VERSION') && $app.getData('userExt') && $app.getData('userExt').is_join_wxgroup == 0">
 				<image class="img" src="/static/image/guild/joingroup.png" mode=""></image>
-			</view>			
-			<view class="btn" @tap="app.goPage('/pages/open/rank/rank')">
+			</view>
+			<view class="btn" @tap="$app.goPage('/pages/open/rank/rank')">
 				<image class="img" src="/static/image/guild/open.png" mode=""></image>
+			</view>
+			<!-- 红包 -->
+			<view class="btn" v-if="$app.getData('config').hongbao_chun.title" @tap="openHongbao">
+				<image class="img" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9EsP1YK72GM1EGI8VsBLl4vDnX5444V6QyFOATsWQ50PKmdF2QnE9cPDpD2WiaFuRJjJLlbLDRq4Ig/0"
+				 mode=""></image>
+				<!-- <view class="bottom">{{hongbaoTime}}</view> -->
 			</view>
 		</view>
 
 		<!-- 聊天输入 -->
-		<block v-if="app.getData('config').version != app.VERSION && (star.id == app.getData('userStar').id || app.getData('userInfo').type == 1)">
-			<view class="msg-input-container" v-if="app.getData('config').chart_type == '0'">
+		<block v-if="$app.getData('config').version != $app.VERSION && (star.id == $app.getData('userStar').id || $app.getData('userInfo').type == 1)">
+			<view class="msg-input-container" v-if="$app.getData('config').chart_type == '0'">
 				<btnComponent>
 					<view class="trumpet-wrapper">
 						<image src="/static/image/guild/sayworld.png" mode="" @tap="sayworld"></image>
@@ -342,9 +348,9 @@
 		<!-- 催用户打榜 -->
 		<view class="urge-modal-container" :class="{show:modal=='urgeSend'}">
 			<view class="left-wrap flex-set">
-				<image class="avatar" :src="star.avatar" mode=""></image>
+				<image class="avatar" :src="star.avatar" mode="aspectFill"></image>
 				<view class="text-content">
-					<view class="top">@{{app.getData('userInfo').nickname}}</view>
+					<view class="top">@{{$app.getData('userInfo').nickname}}</view>
 					<view class="bottom">{{urgeSendTips}}</view>
 				</view>
 			</view>
@@ -371,45 +377,13 @@
 		</view>
 
 		<!-- MODAL -->
-		<!--
-		<modalComponent v-if="modal == 'signin'" title="签到" @closeModal="modal=''">
-			<view class="signin-modal-container">
-				<view class="top-container flex-set">
-					<image class="top-img" src="/static/image/guild/card-c.png" mode=""></image>
-					<view class="text">{{signin_coin?'签到成功':'今日已签到'}}</view>
-					<view v-if="signin_coin" class="coin flex-set">+{{signin_coin}}
-						<image src="/static/image/user/b1.png" mode="widthFix"></image>
-					</view>
-				</view>
-
-				<view class="section-container">
-					<view class="row r-1">
-						<view v-for="(item,index) in siginList" :key="index">+{{item.coin}}</view>
-					</view>
-					<view class="row line">
-						<view class="ball" v-for="(item,index) in siginList" :key="index" :class="{active:index+1<=signin_day}"></view>
-					</view>
-
-					<view class="row r-3">
-						<view v-for="(item,index) in siginList" :key="index">{{item.days}}天</view>
-					</view>
-				</view>
-				<view class="tips">您已累计连续签到{{signin_day}}天，坚持累计签到可获得更多能量</view>
-				<btnComponent type="css" v-if="!~$app.getData('sysInfo').system.indexOf('iOS')">
-					<view class="flex-set" @tap="$app.goPage('/pages/recharge/recharge')" style="width: 160upx;height: 80upx;">更多能量</view>
-				</btnComponent>
-			</view>
-		</modalComponent>
-		-->
-		
-
 		<modalComponent type="send" v-if="modal == 'send'" title="打榜" @closeModal="modal=''">
 			<view class="send-modal-container">
 				<!-- <view class="tab-wrapper"></view> -->
 				<!-- <view class="explain-wrapper">说明：还未确定后完全好大无穷皇帝和我去我前进的气温降低哦</view> -->
 				<view class="swiper-change flex-set">
 					<view class="item" :class="{select:current==0}" @tap="current = 0">送能量</view>
-					<view v-if="app.getData('config').version != app.VERSION" class="item" :class="{select:current==1}" @tap="current = 1">送能量礼物</view>
+					<view v-if="$app.getData('config').version != $app.VERSION" class="item" :class="{select:current==1}" @tap="current = 1">送能量礼物</view>
 				</view>
 
 				<!-- <swiper @change="swiperChange" :current="current"> -->
@@ -418,20 +392,7 @@
 					<view class="wrap">
 						<!-- <image class="bg" src="/static/image/guild/send-modal-bg.png" mode="widthFix"></image> -->
 						<view class="bottom-wrapper">
-							<view class="text left flex-set">我的能量：{{app.getData('userCurrency')['coin']}}</view>
-
-							<!-- <view class="text flex-set" @tap="app.goPage('/pages/recharge/recharge')" v-if="!~app.getData('sysInfo').system.indexOf('iOS')">
-										<image src="/static/image/guild/gift/gift.png" mode="widthFix" style="width: 40upx;"></image>补充能量
-									</view>
-									<button open-type="contact" :session-from="$app.getData('userInfo').id" v-if="~app.getData('sysInfo').system.indexOf('iOS')&&$app.getData('config').ios_switch == 1">
-										<view class="text flex-set">
-											<image src="/static/image/guild/gift/gift.png" mode="widthFix" style="width: 40upx;"></image>
-											<view class="flex-set" style="flex-direction: column;margin-left: 4upx;line-height: 1.2;">
-												<view>补充能量</view>
-												<view>回复"1"</view>
-											</view>
-										</view>
-									</button> -->
+							<view class="text left flex-set">我的能量：{{$app.getData('userCurrency')['coin']}}</view>
 
 						</view>
 						<view class="btn-wrapper">
@@ -461,14 +422,16 @@
 
 					</view>
 				</view>
-				<view class="gift flex-set" @tap="app.goPage('/pages/recharge/recharge')" v-if="app.getData('config').version != app.VERSION && !~app.getData('sysInfo').system.indexOf('iOS')">
-					<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-					<view class="text">购买礼物补充能量</view>
-				</view>
-				<button open-type="contact" class="gift flex-set" v-if="app.getData('config').version != app.VERSION && ~app.getData('sysInfo').system.indexOf('iOS')&&$app.getData('config').ios_switch==1">
-					<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-					<view class="text">购买礼物补充能量回复"1"</view>
-				</button>
+				<block v-if="$app.getData('VERSION')!=$app.getData('config').version">
+					<view class="gift flex-set" @tap="$app.goPage('/pages/recharge/recharge')" v-if="$app.chargeSwitch()==0">
+						<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+						<view class="text">购买礼物补充能量</view>
+					</view>
+					<button open-type="contact" class="gift flex-set" v-else-if="$app.chargeSwitch()==2">
+						<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+						<view class="text">购买礼物补充能量回复"1"</view>
+					</button>
+				</block>
 				<!-- </swiper-item> -->
 
 				<!-- <swiper-item> -->
@@ -491,19 +454,20 @@
 					</view>
 
 				</view>
-				<view class="gift flex-set" @tap="app.goPage('/pages/recharge/recharge')" v-if="app.getData('config').version != app.VERSION && !~app.getData('sysInfo').system.indexOf('iOS')">
-					<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-					<view class="text">购买礼物补充能量</view>
-				</view>
-				<button open-type="contact" class="gift flex-set" v-if="app.getData('config').version != app.VERSION && ~app.getData('sysInfo').system.indexOf('iOS')&&$app.getData('config').ios_switch==1">
-					<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-					<view class="text">购买礼物补充能量回复"1"</view>
-				</button>
+				<block v-if="$app.getData('VERSION')!=$app.getData('config').version">
+					<view class="gift flex-set" @tap="$app.goPage('/pages/recharge/recharge')" v-if="$app.chargeSwitch()==0">
+						<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+						<view class="text">购买礼物补充能量</view>
+					</view>
+					<button open-type="contact" class="gift flex-set" v-else-if="$app.chargeSwitch()==2">
+						<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+						<view class="text">购买礼物补充能量回复"1"</view>
+					</button>
+				</block>
 				<!-- </swiper-item> -->
 				<!-- </swiper> -->
 			</view>
 		</modalComponent>
-
 		<modalComponent v-if="modal == 'steal'" title="偷能量" @closeModal="modal=''">
 			<view class="steal-modal-container">
 				<!-- <view class="tips-wrapper">飞机为of为副将我叫非法违法</view> -->
@@ -511,7 +475,7 @@
 					<view class="top">当前精灵等级为<text>{{sprite_level}}</text>级。每次可偷<text>{{steal_count}}</text>
 						<image class="icon" src="/static/image/user/b1.png"></image>
 					</view>
-					<view class="">精灵等级越高可偷能量越多<text style="text-decoration: underline;" @tap="app.goPage('/pages/pet/pet')">快去升级精灵</text></view>
+					<view class="">精灵等级越高可偷能量越多<text style="text-decoration: underline;" @tap="$app.goPage('/pages/pet/pet')">快去升级精灵</text></view>
 					<view class="bottom">
 						今日已偷<text> {{steal_num}}/{{steal_num_max}} </text>
 						<image class="icon" src="/static/image/user/b1.png"></image>
@@ -603,12 +567,12 @@
 		<modalComponent v-if="modal == 'mass'" title="集结" @closeModal="modal=''">
 			<view class="mass-modal-container">
 				<view class="explain-wrapper flex-set">{{$app.getData('config').share_mass.text}}</view>
-				<view class="cutdown" v-if="mass.status==0">{{app.getData('config').share_mass.day_limit == mass.mass_times?'今日集结次数已达上限':app.getData('config').share_mass.tips_one}}</view>
+				<view class="cutdown" v-if="mass.status==0">{{$app.getData('config').share_mass.day_limit == mass.mass_times?'今日集结次数已达上限':$app.getData('config').share_mass.tips_one}}</view>
 				<view class="cutdown" v-if="mass.status==1">集结剩余时间：{{mass.lefttime}}</view>
 				<view class="cutdown" v-if="mass.status==2">集结冷却时间：{{mass.lefttime}}</view>
 				<view class="ava-wrapper">
 					<view class="ava flex-set" v-for="(item,index) in mass.mass_user" :key="index">
-						<image :src="item.user.avatarurl||app.AVATAR" mode="aspectFill"></image>
+						<image :src="item.user.avatarurl||$app.getData('AVATAR')" mode="aspectFill"></image>
 					</view>
 
 					<button v-if="8-mass.mass_user.length>0" open-type="share" v-for="n in 8-mass.mass_user.length" :key="n" @tap="startMass"
@@ -730,7 +694,7 @@
 					<view class="text flex-set">你已为{{star.name}}贡献了<text class="red" style="font-weight:700;">{{myTotalCount}}</text>
 						<image src="/static/image/index/ic_hot.png" class="s" mode=""></image>
 					</view>
-					<view class="text flex-set">{{app.getData('userStar').name}}目前排名<text class="red" style="font-weight:700;">NO.{{star.weekRank}}</text></view>
+					<view class="text flex-set">{{$app.getData('userStar').name}}目前排名<text class="red" style="font-weight:700;">NO.{{star.weekRank}}</text></view>
 					<view v-if="disLeastCount" class="text flex-set">距离上一名还差<text style="color:red;font-weight:700;">{{disLeastCount}}</text>
 						<image src="/static/image/index/ic_hot.png" class="s" mode=""></image>
 					</view>
@@ -862,7 +826,7 @@
 			</view>
 		</modalComponent>
 
-		<modalComponent v-if="modal == 'joinGroup'&&$app.getData('config').version != $app.getVal('VERSION')" title=" "
+		<modalComponent v-if="modal == 'joinGroup'&&$app.getData('config').version != $app.getData('VERSION')" title=" "
 		 @closeModal="modal=''">
 			<view class="tips-modal-container">
 				<view class="text-wrap">
@@ -879,8 +843,31 @@
 							<view class="flex-set" style="width:400upx;height: 100upx;font-weight: 700;font-size: 34upx;">回复“3”加入官方打榜群</view>
 						</btnComponent>
 					</button>
-					
+
 				</view>
+			</view>
+		</modalComponent>
+
+		<!-- 发红包 -->
+		<modalComponent v-if="modal == 'hongbao'" title=" " @closeModal="modal=''">
+			<view class="tips-modal-container hongbao">
+				<view class="text-wrap">
+					<image class="avatar" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9EsP1YK72GM1EGI8VsBLl4vDnX5444V6QyFOATsWQ50PKmdF2QnE9cPDpD2WiaFuRJjJLlbLDRq4Ig/0"
+					 mode=""></image>
+					<view class="title">{{$app.getData('config').hongbao_chun.title}}</view>
+					<view class="text flex-set">共<text style="color:#F00;">{{$app.getData('config').hongbao_chun.count}}能量</text>，
+						<text style="color:#ffaa00;">{{$app.getData('config').hongbao_chun.people}}人</text>瓜分</view>
+					<view class="tips" v-if="!hongbaoTime">系统派发的红包，不会消耗你的能量</view>
+					<view class="tips" v-else>将红包分享到不同的群，让更多的人来领取吧</view>
+				</view>
+				<view class="row flex-set">
+					<button class="btn" open-type="share" data-share="8" @tap="sendHongbao">
+						<btnComponent type="css">
+							<view class="flex-set" style="width:400upx;height: 100upx;font-weight: 700;font-size: 34upx;">{{hongbaoTime?'分享红包':'马上发红包'}}</view>
+						</btnComponent>
+					</button>
+				</view>
+				<view class="tips" v-if="hongbaoTime">新的红包：{{hongbaoTime}}</view>
 			</view>
 		</modalComponent>
 
@@ -890,11 +877,11 @@
 			<canvas canvas-id='mycanvas' class="canvas"></canvas>
 
 			<view class="btn-wrap">
-				<button v-if="$app.getVal('platform')=='MP-WEIXIN'" class='fsend-btn flex-set' open-type='share'>
+				<button v-if="$app.getData('platform')=='MP-WEIXIN'" class='fsend-btn flex-set' open-type='share'>
 					<image src="/static/image/wxq.png" mode="widthFix"></image>
 					<view>微信群</view>
 				</button>
-				<button v-if="$app.getVal('platform')=='MP-QQ'" class='fsend-btn flex-set' open-type='share'>
+				<button v-if="$app.getData('platform')=='MP-QQ'" class='fsend-btn flex-set' open-type='share'>
 					<image src="/static/image/qq.png" mode="widthFix"></image>
 					<view>QQ群</view>
 				</button>
@@ -903,11 +890,11 @@
 					<image src="/static/image/weibo.png" mode="widthFix"></image>
 					<view>微博</view>
 				</view>
-				<view v-if="app.getData('config').pyq_switch == '1'" class='fsend-btn flex-set' @tap="modal ='otherShareP'">
+				<view v-if="$app.getData('config').pyq_switch == '1'" class='fsend-btn flex-set' @tap="modal ='otherShareP'">
 					<image src="/static/image/pyq.png" mode="widthFix"></image>
 					<view>朋友圈</view>
 				</view>
-				<view v-if="app.getData('config').pyq_switch == '0'" class='fsend-btn flex-set' @tap="saveCanvas();">
+				<view v-if="$app.getData('config').pyq_switch == '0'" class='fsend-btn flex-set' @tap="saveCanvas();">
 					<image src="/static/image/icon/save.png" mode="widthFix"></image>
 					<view>保存</view>
 				</view>
@@ -950,7 +937,7 @@
 		},
 		data() {
 			return {
-				app: this.$app,
+				// $app: this.$app,
 				showLoading: true,
 				requestCount: 7,
 				tips: false,
@@ -1015,6 +1002,8 @@
 
 				sideBtnOpacity: 1, // 侧边按钮组显示
 				urgeSendTips: '', // 催促打榜tips
+
+				hongbaoTime: '',
 			};
 		},
 		created() {
@@ -1024,6 +1013,9 @@
 			clearInterval(this.timeId_danmaku)
 		},
 		methods: {
+			test() {
+				console.log(1)
+			},
 			/**
 			 * 加载数据
 			 */
@@ -1046,29 +1038,29 @@
 
 					let time = Math.round(new Date().getTime() / 1000)
 
-					// 加群提醒
-					if (this.$app.getData('userExt') && this.$app.getData('userExt').is_join_wxgroup == 0) {
-						let joinGroupModal = this.$app.getData('joinGroupModal')
-						if (time - joinGroupModal > 3600 * 24) {
-							this.$app.setData('joinGroupModal', time)
-							setTimeout(() => {
-								this.modal = 'joinGroup'
-							}, 20000)
-						}
-					} else {
-						// 打榜提醒
-						let urgeSendModal = this.$app.getData('urgeSendModal')
-						if (time - urgeSendModal > 3600 * 12) {
-							let tipsArr = this.$app.getData('config').urge_send_tips
-							let tipsIndex = this.$app.getRandom(0, tipsArr.length - 1)
-							this.urgeSendTips = tipsArr[tipsIndex]
+					// // 加群提醒
+					// if (this.$app.getData('userExt') && this.$app.getData('userExt').is_join_wxgroup == 0) {
+					// 	let joinGroupModal = this.$app.getData('joinGroupModal')
+					// 	if (time - joinGroupModal > 3600 * 24) {
+					// 		this.$app.setData('joinGroupModal', time)
+					// 		setTimeout(() => {
+					// 			this.modal = 'joinGroup'
+					// 		}, 20000)
+					// 	}
+					// } else {
+					// 	// 打榜提醒
+					// 	let urgeSendModal = this.$app.getData('urgeSendModal')
+					// 	if (time - urgeSendModal > 3600 * 12) {
+					// 		let tipsArr = this.$app.getData('config').urge_send_tips
+					// 		let tipsIndex = this.$app.getRandom(0, tipsArr.length - 1)
+					// 		this.urgeSendTips = tipsArr[tipsIndex]
 
-							this.$app.setData('urgeSendModal', time)
-							setTimeout(() => {
-								this.modal = 'urgeSend'
-							}, 3000)
-						}
-					}
+					// 		this.$app.setData('urgeSendModal', time)
+					// 		setTimeout(() => {
+					// 			this.modal = 'urgeSend'
+					// 		}, 3000)
+					// 	}
+					// }
 
 				}
 				// 请求数据
@@ -1123,8 +1115,8 @@
 						res.data.chartList.forEach((e, i) => {
 							const item = {
 								uid: e.user && e.user.id,
-								avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
-								nickname: e.user && e.user.nickname || this.$app.NICKNAME,
+								avatar: e.user && e.user.avatarurl || this.$app.getData('AVATAR'),
+								nickname: e.user && e.user.nickname || this.$app.getData('NICKNAME'),
 								content: e.content,
 								captain: e.user && e.user.user_star && e.user.user_star.captain || 0,
 								level: e.user && e.user.level,
@@ -1150,8 +1142,8 @@
 							const userRankList = []
 							res.data.userRank.forEach((e, i) => {
 								userRankList.push({
-									avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
-									nickname: e.user && e.user.nickname || this.$app.NICKNAME,
+									avatar: e.user && e.user.avatarurl || this.$app.getData('AVATAR'),
+									nickname: e.user && e.user.nickname || this.$app.getData('NICKNAME'),
 									hot: e.thisweek_count,
 								})
 							})
@@ -1299,7 +1291,7 @@
 					user_id: uid
 				}, res => {
 					this.currentUser = res.data
-					if (!this.currentUser.avatarurl) this.currentUser.avatarurl = this.$app.AVATAR
+					if (!this.currentUser.avatarurl) this.currentUser.avatarurl = this.$app.getData('AVATAR')
 				})
 			},
 			// socket 送礼物
@@ -1353,59 +1345,6 @@
 					this.fatherEarn = res.data
 				})
 			},
-			// 			treasure() {
-			// 				if (this.treasureTime === '助力') {
-			// 					this.$app.request(this.$app.API.TREASURE_SETTLE, {}, res => {
-			// 						this.$app.toast('助力获得能量+' + res.data)
-			// 						this.treasureInterval()
-			// 
-			// 						this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
-			// 							this.$app.setData('userCurrency', res.data)
-			// 						})
-			// 					})
-			// 				} else {
-			// 					this.$app.toast('宝箱正在冷却中')
-			// 				}
-			// 
-			// 			},
-			// 			treasureInterval() {
-			// 				this.$app.request(this.$app.API.TREASURE, {}, res => {
-			// 					if (res.data !== 0) {
-			// 						let time = res.data
-			// 						this.treasureTime = this.$app.timeGethms(time).str.slice(4)
-			// 
-			// 						// 宝箱倒计时
-			// 						clearInterval(this.$app.treasureTimeId)
-			// 						this.$app.treasureTimeId = setInterval(() => {
-			// 							this.treasureTime = this.$app.timeGethms(--time).str.slice(4)
-			// 							if (time <= 0) {
-			// 								clearInterval(this.$app.treasureTimeId)
-			// 								this.treasureTime = '助力'
-			// 							}
-			// 						}, 1000)
-			// 					} else {
-			// 						this.treasureTime = '助力'
-			// 					}
-			// 
-			// 					this.$app.closeLoading(this)
-			// 				})
-			// 			},
-			// 			settleSprite(index, item) {
-			// 				if (item.earn < 2) {
-			// 					this.$app.toast('TA的能量太少了，稍后再来吧')
-			// 				} else {
-			// 					this.$app.request(this.$app.API.SPRITE_SETTLE, {
-			// 						user_id: item.uid
-			// 					}, res => {
-			// 						this.invitList[index].earn = 0
-			// 
-			// 						this.$app.toast('为TA收集能量，你获得:' + res.data + '能量')
-			// 						this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
-			// 							this.$app.setData('userCurrency', res.data)
-			// 						})
-			// 					}, 'POST', true)
-			// 				}
-			// 			},
 			settleSprite(index, item) {
 				if (item.earn < 200) {
 					this.$app.toast('能量太少，请达到200能量再来帮TA收吧')
@@ -1483,7 +1422,7 @@
 					this.getLocalImg(this.star.share_img || this.star.avatar, src => {
 						ctx.drawImage(src, 48 * rate, 286 * rate, 382 * rate, 305 * rate);
 						// 用户头像
-						this.getLocalImg(this.$app.getData('userInfo').avatarurl || this.$app.AVATAR, src => {
+						this.getLocalImg(this.$app.getData('userInfo').avatarurl || this.$app.getData('AVATAR'), src => {
 							ctx.save() //保存当前的绘图上下文。
 							ctx.beginPath() //开始创建一个路径
 							ctx.arc(79 * rate, 784 * rate, 40 * rate, 0, 2 * Math.PI, false) //画一个圆形裁剪区域
@@ -1580,8 +1519,8 @@
 			addChartMsg(data) {
 				const item = {
 					uid: data.user_id,
-					avatar: data.user && data.user.avatarurl || this.$app.AVATAR,
-					nickname: data.user && data.user.nickname || this.$app.NICKNAME,
+					avatar: data.user && data.user.avatarurl || this.$app.getData('AVATAR'),
+					nickname: data.user && data.user.nickname || this.$app.getData('NICKNAME'),
 					content: data.content,
 					captain: data.user && data.user.user_star && data.user.user_star.captain || 0,
 					level: data.user && data.user.level,
@@ -1649,13 +1588,18 @@
 						iv: e.detail.iv,
 						encryptedData: e.detail.encryptedData,
 					}, res => {
-						this.$app.request(this.$app.API.USER_INFO, {}, res => {
-							this.$app.setData('userInfo', res.data, true)
+						if (res.data.token) this.$app.token = res.data.token
+						this.$app.request('page/app', {}, res => {
+							this.$app.setData('userCurrency', res.data.userCurrency)
+							this.$app.setData('userStar', res.data.userStar)
+							this.$app.setData('userExt', res.data.userExt)
+							this.$app.setData('userInfo', res.data.userInfo)
+							this.$app.setData('config', res.data.config)
 							this.sendOrFollow()
 						})
+
 					}, 'POST', true)
 				}
-
 			},
 			/**偷能量*/
 			steal(starid, index, steal) {
@@ -1702,8 +1646,8 @@
 					const resList = []
 					res.data.list.list.forEach((e, i) => {
 						resList.push({
-							avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
-							nickname: e.user && e.user.nickname || this.$app.NICKNAME,
+							avatar: e.user && e.user.avatarurl || this.$app.getData('AVATAR'),
+							nickname: e.user && e.user.nickname || this.$app.getData('NICKNAME'),
 							status: e.status,
 							uid: e.ral_user_id
 						})
@@ -1727,6 +1671,32 @@
 					this.$app.closeLoading(this)
 				})
 			},
+			openHongbao() {
+				this.modal = 'hongbao'
+
+				this.$app.request('page/hongbao', {}, res => {
+					let time = parseInt(res.data.send)
+					if (time > 0) {
+						this.hongbaoTime = this.$app.timeGethms(time).str.slice(3)
+						clearInterval(this.$app.hongbaoTimeId)
+						this.$app.hongbaoTimeId = setInterval(() => {
+							this.hongbaoTime = this.$app.timeGethms(--time).str.slice(3)
+							if (time <= 0) {
+								clearInterval(this.$app.hongbaoTimeId)
+								this.hongbaoTime = ''
+							}
+						}, 1000)
+					} else {
+						clearInterval(this.$app.hongbaoTimeId)
+						this.hongbaoTime = ''
+					}
+				})
+			},
+			sendHongbao() {
+				this.$app.request('page/sendHongbao', {}, res=>{
+					this.openHongbao()
+				})
+			},
 			// 好友列表
 			getInvitList() {
 				this.$app.request(this.$app.API.USER_INVITLIST, {
@@ -1737,7 +1707,7 @@
 					// const resList = []
 					// res.data.list.forEach((e, i) => {
 					// 	// resList.push({
-					// 	// 	avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
+					// 	// 	avatar: e.user && e.user.avatarurl || this.$app.getData('AVATAR'),
 					// 	// 	status: e.status,
 					// 	// 	uid: e.ral_user_id
 					// 	// })
@@ -1752,10 +1722,10 @@
 					this.friendTotal = res.data.list.total_count
 					res.data.list.list.forEach((e, i) => {
 						resList.push({
-							avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
+							avatar: e.user && e.user.avatarurl || this.$app.getData('AVATAR'),
 							status: e.status,
 							uid: e.user && e.user.id || 0,
-							nickname: e.user && e.user.nickname || this.$app.NICKNAME,
+							nickname: e.user && e.user.nickname || this.$app.getData('NICKNAME'),
 							earn: e.sprite.earn,
 							off: e.off,
 						})
@@ -1989,8 +1959,8 @@
 					const resList = []
 					res.data.forEach((e, i) => {
 						resList.push({
-							avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
-							nickname: e.user && e.user.nickname || this.$app.NICKNAME,
+							avatar: e.user && e.user.avatarurl || this.$app.getData('AVATAR'),
+							nickname: e.user && e.user.nickname || this.$app.getData('NICKNAME'),
 							hot: e.thisweek_count,
 						})
 					})
@@ -2008,8 +1978,8 @@
 					res.data.forEach((e, i) => {
 						const item = {
 							uid: e.user && e.user.id,
-							avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
-							nickname: e.user && e.user.nickname || this.$app.NICKNAME,
+							avatar: e.user && e.user.avatarurl || this.$app.getData('AVATAR'),
+							nickname: e.user && e.user.nickname || this.$app.getData('NICKNAME'),
 							content: e.content,
 							captain: e.user && e.user.user_star && e.user.user_star.captain || 0,
 							sendtimeInt: this.$app.strToTime(e.create_time),
@@ -3545,6 +3515,27 @@
 			.btn {
 				color: #FFF;
 			}
+
+
+		}
+
+		.tips-modal-container.hongbao {
+			.text-wrap {
+				margin: 10upx;
+
+				.avatar {
+					width: 250upx;
+					height: 250upx;
+					margin: 0;
+				}
+			}
+
+			.tips {
+				text-align: center;
+				color: #999;
+				font-size: 20upx;
+				padding: 10upx;
+			}
 		}
 
 		.canvas-container {
@@ -3920,6 +3911,11 @@
 				.img {
 					width: 120upx;
 					height: 120upx;
+				}
+
+				.bottom {
+					text-align: center;
+					margin-top: -20upx;
 				}
 			}
 		}

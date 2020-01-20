@@ -5,21 +5,11 @@
 			...lib
 		},		
 		onLaunch: function(option) {
-			// 微信小程序
-			this.$app.platform = 'MP-WEIXIN'
-			// QQ小程序
-			if (uni.getSystemInfoSync().AppPlatform == 'qq') {
-				this.$app.platform = 'MP-QQ'
-			}
-			// 微信H5
-			// #ifdef H5
-			this.$app.platform = 'H5'
-			// #endif
+			this.setPlatform()
 
 			this.$app.setData('sysInfo', uni.getSystemInfoSync())
 			// 弹幕队列
 			this.$app.danmakuQueue = []
-
 		},
 		onShow: function(option) {
 			// 处理入口option
@@ -29,21 +19,36 @@
 			// 检查更新
 			this.$app.checkUpdate()
 			// 连接socket
-			// #ifndef H5
 			this.$app.invokeSocket()
-			// #endif
 
 			// 群红包
 			if (option.query && option.query.award_type) {
-				this.$app.setVal('award_type', option.query.award_type)
+				this.$app.setData('award_type', option.query.award_type)
 			}
 		},
 		onHide: function() {},
 		methods: {
+			/**平台判断*/
+			setPlatform() {
+				// 微信小程序
+				this.$app.setData('platform', 'MP-WEIXIN')
+				// QQ小程序
+				if (uni.getSystemInfoSync().AppPlatform == 'qq') {
+					this.$app.setData('platform', 'MP-QQ')
+				}
+				// H5
+				// #ifdef H5
+				this.$app.setData('platform', 'H5')
+				// #endif
+				// APP
+				// #ifdef APP-PLUS
+				this.$app.setData('platform', 'APP')
+				// #endif
+			},
 			optionHandle(option) {
 				console.log('option', option);
 				// 入口参数
-				this.$app.setVal('query', option.query)
+				this.$app.setData('query', option.query)
 				if (option.query && option.query.referrer) {
 					// 推荐人
 					this.$app.setData('referrer', option.query.referrer)
@@ -53,7 +58,7 @@
 
 				if (option.shareTicket) {
 					// shareTicket 微信群分享信息
-					this.$app.setVal('shareTicket', option.shareTicket)
+					this.$app.setData('shareTicket', option.shareTicket)
 				}
 			},
 			loadData(option) {

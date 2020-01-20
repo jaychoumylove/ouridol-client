@@ -36,7 +36,7 @@
 		},
 		data() {
 			return {
-				award_type: this.$app.getVal('award_type'),
+				award_type: this.$app.getData('award_type'),
 				title: '',
 				award: {}
 			};

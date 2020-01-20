@@ -210,7 +210,7 @@
 							<view class="flex-set" style="width: 200upx;height: 100upx;">去做任务</view>
 						</btnComponent>
 					</view>
-					<view class="btn" v-if="!~$app.getData('sysInfo').system.indexOf('iOS')" @tap="$app.goPage('/pages/recharge/recharge')">
+					<view class="btn" v-if="$app.chargeSwitch()==0" @tap="$app.goPage('/pages/recharge/recharge')">
 						<btnComponent type="css">
 							<view class="flex-set" style="width: 200upx;height: 100upx;">补充能量</view>
 						</btnComponent>
@@ -265,7 +265,7 @@
 				skillShow: false, // 显示技能
 				off: false,
 				userInfo: {
-					nickname: this.$app.NICKNAME,
+					nickname: this.$app.getData('NICKNAME'),
 
 				},
 			};
@@ -292,8 +292,8 @@
 					this.userInfo = res.data
 
 					this.userInfo = {
-						avatarurl: res.data['avatarurl'] || this.$app.AVATAR,
-						nickname: res.data['nickname'] || this.$app.NICKNAME,
+						avatarurl: res.data['avatarurl'] || this.$app.getData('AVATAR'),
+						nickname: res.data['nickname'] || this.$app.getData('NICKNAME'),
 						id: res.data['id'] || null,
 					}
 				})

@@ -1,6 +1,5 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-		// #ifndef H5
 		{
 			"path": "pages/open/open",
 			"style": {
@@ -46,7 +45,6 @@
 			"path": "pages/game/game",
 			"style": {}
 		},
-		// #endif
 
 		{
 			"path": "pages/prop/prop",
@@ -74,9 +72,7 @@
 			"style": {
 				"navigationBarTitleText": "我的礼物"
 			}
-		}
-
-		, {
+		}, {
 			"path": "pages/open/rank/rank",
 			"style": {}
 		}, {
@@ -96,9 +92,11 @@
 		}, {
 			"path": "pages/signin/group",
 			"style": {}
+		}, {
+			"path": "pages/index/box_open",
+			"style": {}
 		}
 	],
-	// #ifndef H5
 	// 分包
 	"subPackages": [{
 		"root": "pages/subPages/",
@@ -211,27 +209,21 @@
 			}
 		]
 	},
-	// #endif
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "我们的偶像",
 		"navigationBarBackgroundColor": "#efccc8",
 		"enablePullDownRefresh": false,
-		// #ifdef H5
-		"navigationStyle": "custom",
-		// #endif
 		"onReachBottomDistance": 100
 
 	},
-	"condition" : { //模式配置，仅开发期间生效
+	"condition": { //模式配置，仅开发期间生效
 		"current": 0, //当前激活的模式(list 的索引项)
-		"list": [
-			{
-				"name": "", //模式名称
-				"path": "", //启动页面，必选
-				"query": "" //启动参数，在页面的onLoad函数里面得到
-			}
-		]
+		"list": [{
+			"name": "", //模式名称
+			"path": "", //启动页面，必选
+			"query": "" //启动参数，在页面的onLoad函数里面得到
+		}]
 	}
 
 }

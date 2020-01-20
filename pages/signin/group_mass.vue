@@ -17,7 +17,7 @@
 					</view>
 				</btnComponent>
 			</view>
-			<image class="avatar" :src="star.head_img_s||$app.AVATAR" mode="aspectFill"></image>
+			<image class="avatar" :src="star.head_img_s||$app.getData('AVATAR')" mode="aspectFill"></image>
 			<view class="nickname">{{star.name}}</view>
 		</view>
 
@@ -62,7 +62,7 @@
 				</view>
 				<view class="item-wrap" v-for="index in blockUserCount" :key="index">
 					<image class="avatar" src="/static/image/ic_wechat.png" mode="aspectFill"></image>
-					<view class="extra">+{{$app.getData('config').groupmass.coin}}</view>
+					<view class="extra">+{{base_count}}</view>
 				</view>
 			</view>
 		</view>
@@ -96,14 +96,14 @@
 				<view class="main-wrap flex-set">
 					<view class="item" @tap="ad">
 						<image class="img" src="/static/image/user/b1.png" mode="widthFix"></image>
-						<view class="text">+{{$app.getData('config').groupmass.coin*10}}能量</view>
+						<view class="text">+{{base_count*10}}能量</view>
 						<btnComponent type="css">
 							<view class="" style="padding: 10upx;">看视频参与x10倍</view>
 						</btnComponent>
 					</view>
-					<view class="item" @tap="join(this.$app.getData('config').groupmass.coin)">
+					<view class="item" @tap="join(base_count)">
 						<image class="img" src="/static/image/user/b1.png" mode="widthFix"></image>
-						<view class="text">+{{$app.getData('config').groupmass.coin}}能量</view>
+						<view class="text">+{{base_count}}能量</view>
 						<btnComponent type="css">
 							<view class="" style="padding: 10upx;">直接参与</view>
 						</btnComponent>
@@ -126,7 +126,7 @@
 		},
 		data() {
 			return {
-				$app: this.$app,
+				base_count: this.$app.getData('config').groupmass.coin,
 				starid: 0,
 				star: {},
 				gid: '', // 群id
@@ -145,7 +145,7 @@
 		},
 		onShow(option) {
 			// 爱豆id
-			this.starid = this.$app.getVal('query').starid || this.$app.getData('userStar').id
+			this.starid = this.$app.getData('query').starid || this.$app.getData('userStar').id
 			if (!this.$app.getData('userStar').id) {
 				this.$app.modal('请先加入一个圈子', () => {
 					this.$app.goPage('/pages/index/index')
@@ -158,7 +158,7 @@
 				return
 			}
 			// #ifdef MP-WEIXIN
-			if (!this.$app.getVal('shareTicket')) {
+			if (!this.$app.getData('shareTicket')) {
 				this.$app.modal('请从群分享中进入')
 				return
 			}
@@ -170,7 +170,7 @@
 			// 看视频广告
 			ad() {
 				this.$app.openVideoAd(() => {
-					this.join(this.$app.getData('config').groupmass.coin * 10)
+					this.join(this.base_count * 10)
 				})
 			},
 			join(force) {
@@ -216,7 +216,7 @@
 			},
 			groupAdd() {
 				wx.getShareInfo({
-					shareTicket: this.$app.getVal('shareTicket'),
+					shareTicket: this.$app.getData('shareTicket'),
 					success: res => {
 						// 需要解密群id
 						this.$app.request('share/group/add', {

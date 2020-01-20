@@ -7,12 +7,14 @@
 					<view class="top flex-set">道具商店</view>
 					<view class="bottom flex-set">稀有道具，每日限量抢购</view>
 				</view>
-				<btnComponent type="default" v-if="~$app.getData('sysInfo').system.indexOf('iOS') && $app.getData('config').ios_switch != 0">
-					<button class="flex-set" style="font-weight: 700 ;width: 140upx; height: 60upx;" open-type="contact">回复"1"</button>
-				</btnComponent>
-				<btnComponent type="default" v-if="!~$app.getData('sysInfo').system.indexOf('iOS')">
-					<view @tap="$app.goPage('/pages/prop/buy/buy')" class="flex-set" style="font-weight: 700 ;width: 140upx; height: 60upx;">进入</view>
-				</btnComponent>
+				<block v-if="$app.getData('VERSION')!=$app.getData('config').version">
+					<btnComponent type="default" v-if="$app.chargeSwitch()==0">
+						<view @tap="$app.goPage('/pages/prop/buy/buy')" class="flex-set" style="font-weight: 700 ;width: 140upx; height: 60upx;">进入</view>
+					</btnComponent>
+					<btnComponent type="default" v-else-if="$app.chargeSwitch()==2">
+						<button class="flex-set" style="font-weight: 700 ;width: 140upx; height: 60upx;" open-type="contact">回复"1"</button>
+					</btnComponent>
+				</block >
 			</view>
 		</view>
 

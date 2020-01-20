@@ -258,7 +258,7 @@
 							<view class="flex-set" style="width: 200upx;height: 100upx;">去做任务</view>
 						</btnComponent>
 					</view>
-					<view class="btn" v-if="!~$app.getData('sysInfo').system.indexOf('iOS')" @tap="$app.goPage('/pages/recharge/recharge')">
+					<view class="btn" v-if="$app.chargeSwitch()==0" @tap="$app.goPage('/pages/recharge/recharge')">
 						<btnComponent type="css">
 							<view class="flex-set" style="width: 200upx;height: 100upx;">补充能量</view>
 						</btnComponent>
@@ -456,10 +456,10 @@
 			// 					const resList = []
 			// 					res.data.list.forEach((e, i) => {
 			// 						resList.push({
-			// 							avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
+			// 							avatar: e.user && e.user.avatarurl || this.$app.getData('AVATAR'),
 			// 							status: e.status,
 			// 							uid: e.user && e.user.id || 0,
-			// 							nickname: e.user && e.user.nickname || this.$app.NICKNAME,
+			// 							nickname: e.user && e.user.nickname || this.$app.getData('NICKNAME'),
 			// 							earn: e.sprite.earn,
 			// 						})
 			// 					})
@@ -495,7 +495,7 @@
 					// const resList = []
 					// res.data.list.forEach((e, i) => {
 					// 	// resList.push({
-					// 	// 	avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
+					// 	// 	avatar: e.user && e.user.avatarurl || this.$app.getData('AVATAR'),
 					// 	// 	status: e.status,
 					// 	// 	uid: e.ral_user_id
 					// 	// })
@@ -510,10 +510,10 @@
 					this.friendTotal = res.data.list.total_count
 					res.data.list.list.forEach((e, i) => {
 						resList.push({
-							avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
+							avatar: e.user && e.user.avatarurl || this.$app.getData('AVATAR'),
 							status: e.status,
 							uid: e.user && e.user.id || 0,
-							nickname: e.user && e.user.nickname || this.$app.NICKNAME,
+							nickname: e.user && e.user.nickname || this.$app.getData('NICKNAME'),
 							earn: e.sprite.earn,
 							off: e.off,
 						})

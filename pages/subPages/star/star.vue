@@ -52,9 +52,13 @@
 							iv: e.detail.iv,
 							encryptedData: e.detail.encryptedData,
 						}, res => {
-							this.$app.request(this.$app.API.USER_INFO, {}, res => {
-								this.$app.setData('userInfo', res.data, true)
-
+							if (res.data.token) this.$app.token = res.data.token
+							this.$app.request('page/app', {}, res => {
+								this.$app.setData('userCurrency', res.data.userCurrency)
+								this.$app.setData('userStar', res.data.userStar)
+								this.$app.setData('userExt', res.data.userExt)
+								this.$app.setData('userInfo', res.data.userInfo)
+								this.$app.setData('config', res.data.config)
 							})
 						}, 'POST', true)
 					}

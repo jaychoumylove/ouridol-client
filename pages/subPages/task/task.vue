@@ -6,7 +6,7 @@
 			<!-- <view class="swiper-item" :class="{select:current==2}" @tap="current = 2;getTaskList();">徽章任务</view> -->
 		</view>
 		<view class="item" v-for="(item,index) in taskList" :key="index" v-if="!(
-					(item.type==4 && ~$app.getData('sysInfo').system.indexOf('iOS') && $app.getData('config').ios_switch == 0) 
+					(item.type==4 && $app.chargeSwitch()==1) 
 					|| (item.id == 24 && $app.getData('config').version == $app.VERSION)
 					|| (item.id==8&&$app.getData('config').version==$app.VERSION)
 					)">
@@ -54,17 +54,17 @@
 							<view class="flex-set" style="width: 130upx;height: 65upx;">{{item.task_type.btn_text||'去完成'}}</view>
 						</button>
 						<!-- IOS充值 -->
-						<button class="btn" open-type="contact" v-else-if="$app.getVal('platform')!='MP-QQ' && item.type == 4 && $app.getData('config').ios_switch == 1 && ~$app.getData('sysInfo').system.indexOf('iOS')">
+						<button class="btn" open-type="contact" v-else-if="item.type == 4 && $app.chargeSwitch()==2">
 							<view class="flex-set" style="width: 130upx;height: 65upx;">{{item.type==13?item.task_type.btn_text:'回复"1"'}}</view>
 						</button>
 						<!-- 公众号签到 -->
-						<button class="btn" open-type="contact" v-else-if="$app.getVal('platform')!='MP-QQ' && item.type == 13">
+						<button class="btn" open-type="contact" v-else-if="$app.getData('platform')!='MP-QQ' && item.type == 13">
 							<view class="flex-set" style="width: 130upx;height: 65upx;">{{item.type==13?item.task_type.btn_text:'回复"1"'}}</view>
 						</button>
-						<view class="btn" v-else-if="$app.getVal('platform')=='MP-QQ' && item.type == 4">
+						<view class="btn" v-else-if="$app.getData('platform')=='MP-QQ' && item.type == 4">
 							<view class="flex-set" style="width: 130upx;height: 65upx;">去补充</view>
 						</view>
-						<view class="btn" v-else-if="$app.getVal('platform')=='MP-QQ' && item.type == 13">
+						<view class="btn" v-else-if="$app.getData('platform')=='MP-QQ' && item.type == 13">
 							<view class="flex-set" style="width: 130upx;height: 65upx;">去签到</view>
 						</view>
 						<!-- 默认 -->
@@ -224,7 +224,7 @@
 						uni.previewImage({
 							urls: [this.$app.getData('config').qq_tips_img]
 						})
-					} else if (task.task_type.id == 4 && ~this.$app.getData('sysInfo').system.indexOf('iOS')) {
+					} else if (task.task_type.id == 4 && $app.chargeSwitch() == 2) {
 						// ios 去公众号
 						return
 					} else if (task.task_type.id == 7) {

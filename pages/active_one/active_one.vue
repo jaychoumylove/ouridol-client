@@ -110,11 +110,11 @@
 
 				<view class="btn-wrap">
 
-					<button v-if="$app.getVal('platform')=='MP-WEIXIN'" class='fsend-btn flex-set' open-type='share'>
+					<button v-if="$app.getData('platform')=='MP-WEIXIN'" class='fsend-btn flex-set' open-type='share'>
 						<image src="/static/image/wxq.png" mode="widthFix"></image>
 						<view>微信群</view>
 					</button>
-					<button v-if="$app.getVal('platform')=='MP-QQ'" class='fsend-btn flex-set' open-type='share'>
+					<button v-if="$app.getData('platform')=='MP-QQ'" class='fsend-btn flex-set' open-type='share'>
 						<image src="/static/image/qq.png" mode="widthFix"></image>
 						<view>QQ群</view>
 					</button>
@@ -261,7 +261,7 @@
 					this.getLocalImg(this.star.share_img || this.star.avatar, src => {
 						ctx.drawImage(src, 48 * rate, 176 * rate, 382 * rate, 300 * rate);
 						// 用户头像
-						this.getLocalImg(this.$app.getData('userInfo').avatarurl || this.$app.AVATAR, src => {
+						this.getLocalImg(this.$app.getData('userInfo').avatarurl || this.$app.getData('AVATAR'), src => {
 							ctx.save() //保存当前的绘图上下文。
 							ctx.beginPath() //开始创建一个路径
 							ctx.arc(85 * rate, 675 * rate, 40 * rate, 0, 2 * Math.PI, false) //画一个圆形裁剪区域
@@ -269,7 +269,7 @@
 							ctx.drawImage(src, 45 * rate, 635 * rate, 80 * rate, 80 * rate) //绘制图片
 							ctx.restore() //恢复之前保存的绘图上下文
 							// 二维码
-							if (this.$app.getData('config').version == this.$app.getVal('VERSION')) {
+							if (this.$app.getData('config').version == this.$app.getData('VERSION')) {
 								this.$app.setData('qrcode', '/static/image/def.jpg')
 							}
 

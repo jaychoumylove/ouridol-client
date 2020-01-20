@@ -1,17 +1,8 @@
 <template>
-	<!-- #ifdef MP -->
-	<view v-if="~$app.getData('sysInfo').system.indexOf('iOS') && $app.getData('config').ios_switch == '0'" class="recharge-container flex-set">
-		由于相关规范，iOS功能暂不可用
-	</view>
-	<view v-else-if="$app.getVal('platform')=='MP-QQ'" class="recharge-container flex-set">
-		抱歉，QQ充值暂时无法使用
+	<view v-if="$app.chargeSwitch()!=0" class="recharge-container flex-set">
+		由于相关规范，充值功能暂不可用
 	</view>
 	<view v-else class="recharge-container">
-		<!-- #endif -->
-
-		<!-- #ifdef H5 -->
-		<view class="recharge-container">
-			<!-- #endif -->
 
 			<view class="top-row">
 
@@ -115,8 +106,8 @@
 				modal: '',
 				requestCount: 1,
 				userInfo: {
-					avatarurl: this.$app.getData('userInfo')['avatarurl'] || this.$app.AVATAR,
-					nickname: this.$app.getData('userInfo')['nickname'] || this.$app.NICKNAME,
+					avatarurl: this.$app.getData('userInfo')['avatarurl'] || this.$app.getData('AVATAR'),
+					nickname: this.$app.getData('userInfo')['nickname'] || this.$app.getData('NICKNAME'),
 					id: this.$app.getData('userInfo')['id'] || null,
 				},
 				userCurrency: this.$app.getData('userCurrency') || {
@@ -128,7 +119,7 @@
 				handShow: false,
 				giftNum: 0,
 				currentUser: {
-					avatarurl: this.$app.AVATAR,
+					avatarurl: this.$app.getData('AVATAR'),
 				},
 				currentUserid: '',
 				item_double: false, // 礼物购买是否双倍

@@ -67,8 +67,8 @@
 					const resList = []
 					res.data.list.forEach((e, i) => {
 						resList.push({
-							avatar: e.user && e.user.avatarurl || this.$app.AVATAR,
-							nickname: e.user && e.user.nickname || this.$app.NICKNAME,
+							avatar: e.user && e.user.avatarurl || this.$app.getData('AVATAR'),
+							nickname: e.user && e.user.nickname || this.$app.getData('NICKNAME'),
 							hot: this.$app.formatNumberRgx(e.thisweek_count),
 						})
 					})

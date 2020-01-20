@@ -51,8 +51,8 @@
 					for (let v of res.data) {
 						resList.push({
 							type: v.type,
-							avatarurl: v.user && v.user.avatarurl || this.$app.AVATAR,
-							nickname: v.user && v.user.nickname || this.$app.NICKNAME,
+							avatarurl: v.user && v.user.avatarurl || this.$app.getData('AVATAR'),
+							nickname: v.user && v.user.nickname || this.$app.getData('NICKNAME'),
 							star: v.user && v.user.user_star && v.user.user_star.star.name || '???',
 							time: v.create_time.slice(11),
 							coin: Math.abs(v.coin),

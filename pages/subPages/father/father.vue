@@ -91,8 +91,8 @@
 				father: '',
 				sonList: this.$app.getData('sonList') || [],
 				userInfo: {
-					avatarurl: this.$app.getData('userInfo')['avatarurl'] || this.$app.AVATAR,
-					nickname: this.$app.getData('userInfo')['nickname'] || this.$app.NICKNAME,
+					avatarurl: this.$app.getData('userInfo')['avatarurl'] || this.$app.getData('AVATAR'),
+					nickname: this.$app.getData('userInfo')['nickname'] || this.$app.getData('NICKNAME'),
 					id: this.$app.getData('userInfo')['id'] || null,
 				},
 			};
@@ -143,8 +143,8 @@
 					for (let v of res.data.list) {
 						resList.push({
 							uid: v.user && v.user.id,
-							avatarurl: v.user && v.user.avatarurl || this.$app.AVATAR,
-							nickname: v.user && v.user.nickname || this.$app.NICKNAME,
+							avatarurl: v.user && v.user.avatarurl || this.$app.getData('AVATAR'),
+							nickname: v.user && v.user.nickname || this.$app.getData('NICKNAME'),
 							cur_contribute: v.cur_contribute,
 							earn: v.user_earn,
 						})
