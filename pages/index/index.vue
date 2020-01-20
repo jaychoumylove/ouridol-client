@@ -5,7 +5,7 @@
 				<view class="tab-item" :class="{active:rankField == 'week_hot'}" @tap="changeField('week_hot');getSunday()">周榜</view>
 				<view class="tab-item" v-if="$app.getData('config').show_month != 0" :class="{active:rankField == 'month_hot'}"
 				 @tap="changeField('month_hot');getLast()">月榜</view>
-				<view class="tab-item" @tap="$app.goPage('/pages/open/rank/rank')">开屏备选</view>
+				<view v-if="$app.getData('config').version != $app.getData('VERSION')" class="tab-item" @tap="$app.goPage('/pages/open/rank/rank')">开屏备选</view>
 				<!-- <view class="tab-item" :class="{active:sign == 2}" @tap="changeSign(2)">创造营</view> -->
 			</view>
 			<view class="right-search">
@@ -91,7 +91,7 @@
 
 		</view>
 		<view class="open-ad-container flex-set" v-if="modal=='indexBanner' && $app.getData('config').index_banner && $app.getData('config').index_banner.img_url 
-						&& $app.getData('config').version != $app.VERSION">
+						&& $app.getData('config').version != $app.getData('VERSION')">
 			<image class="main" :src="$app.getData('config').index_banner.img_url" mode="aspectFill" @tap="modal='';$app.goPage($app.getData('config').index_banner.gopage)"></image>
 			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
 		</view>

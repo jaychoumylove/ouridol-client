@@ -7,8 +7,8 @@
 		</view>
 		<view class="item" v-for="(item,index) in taskList" :key="index" v-if="!(
 					(item.type==4 && $app.chargeSwitch()==1) 
-					|| (item.id == 24 && $app.getData('config').version == $app.VERSION)
-					|| (item.id==8&&$app.getData('config').version==$app.VERSION)
+					|| (item.id == 24 && $app.getData('config').version == $app.getData('VERSION'))
+					|| (item.id==8&&$app.getData('config').version==$app.getData('VERSION'))
 					)">
 			<!-- 有些任务不显示 -->
 			<view v-if="current != 2" class="left-content">

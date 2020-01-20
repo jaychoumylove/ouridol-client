@@ -294,7 +294,7 @@
 			<view class="btn" @tap="modal ='joinGroup'" v-if="$app.getData('platform')=='MP-WEIXIN'&&$app.getData('config').version != $app.getData('VERSION') && $app.getData('userExt') && $app.getData('userExt').is_join_wxgroup == 0">
 				<image class="img" src="/static/image/guild/joingroup.png" mode=""></image>
 			</view>
-			<view class="btn" @tap="$app.goPage('/pages/open/rank/rank')">
+			<view class="btn" v-if="$app.getData('config').version != $app.getData('VERSION')" @tap="$app.goPage('/pages/open/rank/rank')">
 				<image class="img" src="/static/image/guild/open.png" mode=""></image>
 			</view>
 			<!-- 红包 -->
@@ -306,7 +306,7 @@
 		</view>
 
 		<!-- 聊天输入 -->
-		<block v-if="$app.getData('config').version != $app.VERSION && (star.id == $app.getData('userStar').id || $app.getData('userInfo').type == 1)">
+		<block v-if="$app.getData('config').version != $app.getData('VERSION') && (star.id == $app.getData('userStar').id || $app.getData('userInfo').type == 1)">
 			<view class="msg-input-container" v-if="$app.getData('config').chart_type == '0'">
 				<btnComponent>
 					<view class="trumpet-wrapper">
@@ -383,7 +383,7 @@
 				<!-- <view class="explain-wrapper">说明：还未确定后完全好大无穷皇帝和我去我前进的气温降低哦</view> -->
 				<view class="swiper-change flex-set">
 					<view class="item" :class="{select:current==0}" @tap="current = 0">送能量</view>
-					<view v-if="$app.getData('config').version != $app.VERSION" class="item" :class="{select:current==1}" @tap="current = 1">送能量礼物</view>
+					<view v-if="$app.getData('config').version != $app.getData('VERSION')" class="item" :class="{select:current==1}" @tap="current = 1">送能量礼物</view>
 				</view>
 
 				<!-- <swiper @change="swiperChange" :current="current"> -->
