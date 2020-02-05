@@ -239,7 +239,7 @@
 		methods: {
 			copy() {
 				uni.setClipboardData({
-					data: 'ouridol',
+					data: this.$app.getData('config').kefu,
 					success: () => {
 						this.$app.toast("微信号已复制\n请到微信中添加客服为好友")
 					}
