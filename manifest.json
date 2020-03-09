@@ -1,6 +1,6 @@
 {
     "name" : "我们的偶像",
-    "appid" : "__UNI__61CB11E",
+    "appid" : "__UNI__2E904EF",
     "description" : "",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -20,30 +20,7 @@
             /* 应用发布信息 */
             "android" : {
                 /* android打包配置 */
-                "permissions" : [
-                    "<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
-                    "<uses-permission android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"/>",
-                    "<uses-permission android:name=\"android.permission.READ_CONTACTS\"/>",
-                    "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
-                    "<uses-permission android:name=\"android.permission.READ_LOGS\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
-                    "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
-                    "<uses-permission android:name=\"android.permission.WRITE_CONTACTS\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
-                    "<uses-permission android:name=\"android.permission.CAMERA\"/>",
-                    "<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>",
-                    "<uses-permission android:name=\"android.permission.GET_ACCOUNTS\"/>",
-                    "<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>",
-                    "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>",
-                    "<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\"/>",
-                    "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
-                    "<uses-permission android:name=\"android.permission.CALL_PHONE\"/>",
-                    "<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>",
-                    "<uses-feature android:name=\"android.hardware.camera\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
-                    "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
-                ]
+                "permissions" : []
             },
             "ios" : {},
             /* ios打包配置 */
@@ -64,14 +41,14 @@
         },
         "usingComponents" : true,
         "navigateToMiniProgramAppIdList" : [
-            "wx3a69eb5e1b2a7fa9", //爱豆圈子
-            "wxb90a2375e2c7b52a", //超级明星榜
-            "wxb34a8a040639df9f", //童话村lite
-            "wx0f567ae09209c9c2", //爱豆庄园
-            "wx99ab9c8b254c48d4", // 全民赏钱
-            "wx3d73912e8bde3ebf", // 轻灵运动
-            "wxd949b04824167683", //小麦圈商城			
-            "wx7bb576902363f4ff" //当当
+			"wx3a69eb5e1b2a7fa9", //爱豆圈子
+			"wxb90a2375e2c7b52a", //超级明星榜
+			"wxb34a8a040639df9f", //童话村lite
+			"wx333c1a79a14c39a1", //最美偶像
+			"wx0f567ae09209c9c2", //爱豆庄园
+			"wx9b35343852f7c374", //明星餐厅
+			"wxd59271d054170d7d", //爱豆星球
+			"wxd56f3b4fa99c500e" //算术达人
         ]
     },
     "h5" : {
@@ -95,9 +72,11 @@
         },
 		"usingComponents" : true,
 		"navigateToMiniProgramAppIdList" : [
-			"1109953774", // 爱豆圈子
-		    "1109694099", //最美偶像
-		    "1109771368" //超级明星榜
+			"1109953774", //爱豆圈子
+			"1109694099", //最美偶像
+			"1109771368", //超级明星榜
+			"1109771378", //爱豆庄园
+			"1110245390" //爱豆星球
 		]
     }
 }
