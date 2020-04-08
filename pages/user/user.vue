@@ -66,16 +66,27 @@
 					<view class="item-content-bottom">道具</view>
 				</view> -->
 		</view>
-
+				
+		<view class="item-wrap" @tap="$app.preImg(levelImg)">
+			<view class="left-wrap">
+				<image class="icon" :src="`/static/image/icon/level/lv${userLevel}.png`" mode="aspectFill"></image>
+				<view class="text">
+					粉丝等级
+					<view class="tips flex-set">再贡献 <view class="highlight">{{userGap}}</view> 人气可升至下一级</view>
+				</view>
+			</view>
+			<view class="right-wrap iconfont iconjiantou"></view>
+		</view>
+		
 		<view class="function-container-list">
-			<view class="list-item" @tap="$app.goPage('/pages/recharge/recharge')" v-if="$app.chargeSwitch()==0">
+			<view class="list-item red" @tap="$app.goPage('/pages/recharge/recharge')" v-if="$app.chargeSwitch()==0">
 				<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-				<view class="text">补充爱心</view>
+				<view class="text">购买礼物给爱豆打榜</view>
 			</view>
 			<button open-type="contact" :session-from="$app.getData('userInfo').id" v-if="$app.chargeSwitch()==2">
-				<view class="list-item">
+				<view class="list-item red">
 					<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-					<view class="text">补充爱心 回复"1"</view>
+					<view class="text">回复"1" 获得更多能量</view>
 				</view>
 			</button>
 			<view class="list-item" v-if="$app.getData('config').version != $app.getData('VERSION')" @tap="$app.goPage('/pages/gift_package/gift_package')">
@@ -209,6 +220,9 @@
 				userStar: {},
 				modal: '',
 				rechargeList: [],
+				userLevel:1,
+				userGap:0,
+				levelImg:this.$app.getData('config').level_img,
 			};
 		},
 		onLoad() {},
@@ -229,7 +243,8 @@
 				this.$app.setData('userCurrency', res.data)
 				this.userCurrency = this.$app.getData('userCurrency')
 			})
-
+			
+			this.getUserLevel();
 			// this.$app.openInterstitialAd()
 		},
 		onShareAppMessage(e) {
@@ -252,6 +267,15 @@
 						this.$app.setData('userStar', {}, true)
 						this.userStar = {}
 					})
+				})
+			},
+			// HTTP
+			getUserLevel() {
+				this.$app.request('user/level', {
+					user_id: this.userInfo.id
+				}, res => {
+					this.userLevel = res.data.level
+					this.userGap = res.data.gap ? (res.data.gap / 10000).toFixed(1) + '万' : '0'
 				})
 			},
 			// HTTP
@@ -434,15 +458,63 @@
 				}
 			}
 		}
+		
+		.item-wrap {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin: 0 30upx;
+			padding: 25upx 10upx;
+			border-bottom: 2upx solid #EFEFEF;
+		
+			.left-wrap {
+				font-size: 30upx;
+				display: flex;
+				align-items: center;
+		
+				.icon {
+					width: 63upx;
+					height: 24upx;
+					margin-right: 10upx;
+				}
+		
+				.text {
+					display: flex;
+					align-items: center;
+		
+					.tips {
+						color: #999;
+						margin: 0 20upx;
+						font-size: 26upx;
+		
+						.highlight {
+							color: #345;
+							font-weight: 700;
+						}
+						
+					}
+					.red{
+						color:#FC3131 ;
+					}
+				}
+			}
+		
+			.right-wrap {
+				font-size: 22upx;
+				color: #999;
+			}
+		}
 
 		.function-container-list {
 			border-radius: 10upx;
 			// background-color: #fff;
 			margin-top: 20upx;
 			padding: 14upx;
-
+			
+			.red{
+				color: red;
+			}
 			.list-item {
-				height: 100upx;
 				display: flex;
 				align-items: center;
 				padding: 14upx 30upx;

@@ -421,17 +421,18 @@
 						</view>
 
 					</view>
+					
+					<block v-if="$app.getData('VERSION')!=$app.getData('config').version">
+						<view class="gift flex-set" @tap="$app.goPage('/pages/recharge/recharge')" v-if="$app.chargeSwitch()==0">
+							<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+							<view class="text">购买能量给爱豆打榜</view>
+						</view>
+						<button open-type="contact" class="gift flex-set" v-else-if="$app.chargeSwitch()==2">
+							<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+							<view class="text">回复"1"获得更多能量</view>
+						</button>
+					</block>
 				</view>
-				<block v-if="$app.getData('VERSION')!=$app.getData('config').version">
-					<view class="gift flex-set" @tap="$app.goPage('/pages/recharge/recharge')" v-if="$app.chargeSwitch()==0">
-						<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-						<view class="text">购买礼物补充能量</view>
-					</view>
-					<button open-type="contact" class="gift flex-set" v-else-if="$app.chargeSwitch()==2">
-						<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-						<view class="text">购买礼物补充能量回复"1"</view>
-					</button>
-				</block>
 				<!-- </swiper-item> -->
 
 				<!-- <swiper-item> -->
@@ -452,18 +453,18 @@
 						</view>
 
 					</view>
-
+					<!-- <view class="git-tips">送礼物能快速增加爱豆人气</view> -->
+					<block v-if="$app.getData('VERSION')!=$app.getData('config').version">
+						<view class="gift flex-set" @tap="$app.goPage('/pages/recharge/recharge')" v-if="$app.chargeSwitch()==0">
+							<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+							<view class="text">购买礼物给爱豆打榜</view>
+						</view>
+						<button open-type="contact" class="gift flex-set" v-else-if="$app.chargeSwitch()==2">
+							<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+							<view class="text">回复"1"获得能量礼物</view>
+						</button>
+					</block>
 				</view>
-				<block v-if="$app.getData('VERSION')!=$app.getData('config').version">
-					<view class="gift flex-set" @tap="$app.goPage('/pages/recharge/recharge')" v-if="$app.chargeSwitch()==0">
-						<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-						<view class="text">购买礼物补充能量</view>
-					</view>
-					<button open-type="contact" class="gift flex-set" v-else-if="$app.chargeSwitch()==2">
-						<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-						<view class="text">购买礼物补充能量回复"1"</view>
-					</button>
-				</block>
 				<!-- </swiper-item> -->
 				<!-- </swiper> -->
 			</view>
@@ -2258,7 +2259,7 @@
 						.bottom {
 							display: flex;
 							align-items: center;
-							font-size: 34upx;
+							font-size: 30upx;
 
 							.image {
 								width: 34upx;
@@ -3101,7 +3102,9 @@
 				}
 
 			}
-
+			.git-tips{
+				text-align: center;
+			}
 			.gift {
 				position: absolute;
 				right: 40upx;
@@ -3486,7 +3489,7 @@
 
 		.tips-modal-container {
 			height: 100%;
-			padding: 20upx 40upx;
+			padding: 20upx 10upx;
 			font-size: 32upx;
 
 			.text-wrap {

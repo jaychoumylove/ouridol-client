@@ -35,9 +35,9 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 15upx 0;
+		padding: 6upx 0;
 		background-color: rgba(255, 255, 255, .3);
-		margin: 10upx 0;
+		margin: 5upx 0;
 		width: 100%;
 
 
