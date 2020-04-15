@@ -179,7 +179,7 @@
 							this.taskList[key].status = 1
 						}
 					}
-				})
+				},this.$app.getData('config').kindness_switch)
 			},
 			clipboard() {
 				uni.setClipboardData({

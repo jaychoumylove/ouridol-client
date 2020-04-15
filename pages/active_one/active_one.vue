@@ -347,7 +347,7 @@
 								this.getActiveUserRank()
 								this.$app.toast('今日打卡成功', 'success')
 							}, 'POST', true)
-						})
+						},false)
 					} else {
 						this.modal = 'cardOver'
 						this.$app.toast('今日已打卡')

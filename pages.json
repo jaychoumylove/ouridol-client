@@ -95,6 +95,9 @@
 		}, {
 			"path": "pages/index/box_open",
 			"style": {}
+		},{
+			"path": "pages/signin/star_signin",
+			"style": {}
 		}
 	],
 	// 分包

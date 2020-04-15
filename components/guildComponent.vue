@@ -297,6 +297,9 @@
 			<view class="btn" v-if="$app.getData('config').version != $app.getData('VERSION')" @tap="$app.goPage('/pages/open/rank/rank')">
 				<image class="img" src="/static/image/guild/open.png" mode=""></image>
 			</view>
+			<view class="btn" v-if="$app.getData('config').version != $app.getData('VERSION')" @tap="$app.goPage('/pages/signin/star_signin')">
+				<image class="img" src="/static/image/signin/sign.png" mode=""></image>
+			</view>
 			<!-- 红包 -->
 			<view class="btn" v-if="$app.getData('config').hongbao_chun.title" @tap="openHongbao">
 				<image class="img" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9EsP1YK72GM1EGI8VsBLl4vDnX5444V6QyFOATsWQ50PKmdF2QnE9cPDpD2WiaFuRJjJLlbLDRq4Ig/0"
@@ -307,6 +310,22 @@
 
 		<!-- 聊天输入 -->
 		<block v-if="$app.getData('config').version != $app.getData('VERSION') && (star.id == $app.getData('userStar').id || $app.getData('userInfo').type == 1)">
+			<view class="msg-input-container" @tap="modal = 'phonenumberCheck'" v-if="$app.getData('config').phone_switch=='1' && !$app.getData('userInfo').phoneNumber">
+				<btnComponent>
+					<view class="trumpet-wrapper">
+						<image src="/static/image/guild/sayworld.png"></image>
+						<view class="trumpet">{{userCurrency.trumpet}}</view>
+					</view>
+				</btnComponent>
+				<input type="text" placeholder="快来和小伙伴们聊天吧" />
+				<btnComponent>
+					<image src="/static/image/guild/sendmsg.png"></image>
+				</btnComponent>
+			</view>
+			<!-- 聊天按钮 -->
+			
+			
+			<block v-else>
 			<view class="msg-input-container" v-if="$app.getData('config').chart_type == '0'">
 				<btnComponent>
 					<view class="trumpet-wrapper">
@@ -319,9 +338,11 @@
 				<btnComponent>
 					<image src="/static/image/guild/sendmsg.png" mode="" @tap="sendMsg"></image>
 				</btnComponent>
-			</view>
-			<!-- 聊天按钮 -->
+			</view> 
 			<image v-else class="msg-button" @tap="modal='say'" src="/static/image/guild/biaobai.png" mode=""></image>
+			</block>
+			<!-- 聊天按钮 -->
+			
 		</block>
 		<!-- 改版聊天 -->
 		<view class="say-modal-container" v-if="modal == 'say'">
@@ -375,7 +396,41 @@
 				<image :src="item.itemicon" class="item-content" mode="widthFix"></image>
 			</view>
 		</view>
-
+		<!-- 验证手机号 -->
+		<modalComponent v-if="modal == 'phonenumberCheck'" type="center" @closeModal="modal=''">
+			
+			<!-- #ifndef MP-WEIXIN -->
+			<view class="fansbox-modal-container" style="height: 680upx;">
+				<view class="title flex-set">手机号码验证</view>
+				<view class="tips">
+				根据国家互联网相关规定，【发言】功能需进行手机号验证才可使用，手机号码仅自己可见。
+				<text>国内短信：11位手机号码，例如15900000000。</text>
+				<text>国际/港澳台消息：国际区号+号码，例如85200000000。</text>
+				</view>
+				<input class="phonenumber" :value="phoneNumber" @input="setPhoneNumber" type="number" placeholder="输入手机号" />
+				<view class="phonecode flex-set self-input">
+					<input :value="phoneCode" @input="setPhoneCode" type="number" placeholder="输入验证码" />
+					<view @tap="sendPhoneCode()">获得验证码</view>
+				</view>			
+				<button class="btn-wrap"  @tap="savePhoneNumber">
+					<btnComponent type="default">
+						<view class="btn flex-set">立即验证</view>
+					</btnComponent>
+				</button>
+			</view>	
+			<!-- #endif -->
+			<!-- #ifdef MP-WEIXIN -->
+			<view class="fansbox-modal-container" style="height: 550upx; margin-top: 30upx;">
+				<view class="title flex-set">手机号码验证</view>
+				<view class="tips">根据国家互联网相关规定，【发言】功能需进行手机号验证才可使用，手机号码仅自己可见。</view>
+				<button class="btn-wrap" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">
+					<btnComponent type="default">
+						<view class="btn flex-set">立即验证</view>
+					</btnComponent>
+				</button>
+			</view>		
+			<!-- #endif -->
+		</modalComponent>
 		<!-- MODAL -->
 		<modalComponent type="send" v-if="modal == 'send'" title="打榜" @closeModal="modal=''">
 			<view class="send-modal-container">
@@ -969,7 +1024,8 @@
 				article: {}, // 公告文章
 
 				mass: {}, // 集结相关
-
+				phoneNumber:'',
+				phoneCode:'',
 				fakeinvitList: [],
 				invitFakePage: 1,
 				fatherEarn: 0,
@@ -1802,6 +1858,53 @@
 					this.myTotalCount = res.data.totalCount
 
 				}, 'POST', true)
+			},
+			/*
+			保存手机号码
+			*/
+			getPhoneNumber(e){
+				let userInfo = this.$app.getData('userInfo')
+				this.$app.request('user/savephone', {
+					iv: e.detail.iv,
+					encryptedData: e.detail.encryptedData,
+				}, res => {
+					userInfo.phoneNumber = res.data.phoneNumber
+					this.$app.setData('userInfo', userInfo)
+					this.modal = ''
+				}, 'POST', true)
+			},			
+			/*
+			保存手机号码
+			*/
+			savePhoneNumber(){
+				if (!this.phoneNumber || !this.phoneCode) {
+					this.$app.toast('手机号码或者验证码不能为空')
+					return;
+				} 
+				
+				let userInfo = this.$app.getData('userInfo')
+				this.$app.request('user/savephone', {
+					phoneNumber: this.phoneNumber,
+					phoneCode: this.phoneCode,
+				}, res => {
+					userInfo.phoneNumber = res.data.phoneNumber
+					this.$app.setData('userInfo', userInfo)
+					this.modal = ''
+				}, 'POST', true)
+			},
+			setPhoneNumber(e) {
+				this.phoneNumber = e.detail.value
+			},		
+			setPhoneCode(e) {
+				this.phoneCode = e.detail.value
+			},
+			//发送验证码
+			sendPhoneCode(){
+				this.$app.request('page/sendSms', {
+					phoneNumber: this.phoneNumber,
+				}, res => {
+					this.$app.toast('验证码已发送，1天只能发送一次')
+				})
 			},
 			/**
 			 * 发送留言
@@ -3967,6 +4070,101 @@
 
 		.urge-modal-container.show {
 			transform: translateY(0);
+		}
+	}
+	.fansbox-modal-container {
+		margin-top: -100upx;
+		padding: 40upx;
+		display: flex;
+		align-items: center;
+		flex-direction: column;
+	
+		.title {
+			font-size: 32upx;
+			font-weight: 700;
+			margin: 20upx;
+	
+			.iconfont {
+				color: #888;
+				margin: 0 10upx;
+				font-size: 26upx;
+			}
+		}
+		/* #ifdef  MP-WEIXIN */
+		/*  只在小程序中生效  */
+		.tips{
+			margin-bottom: 30upx;
+		}
+		/*  #endif  */
+		
+		.tips text{
+				display: block;
+		}
+		
+		.phonenumber{
+			margin-top: 30upx;
+			width: 330upx;
+			border-bottom: 1upx solid #818286;
+		}
+		.phonecode{
+			margin: 30upx 0;
+			input{
+				width: 200upx;
+				border-bottom: 1upx solid #818286;
+			}
+		}
+	
+		.scroll-wrap {
+			height: 420upx;
+			width: 100%;
+			overflow: scroll;
+			display: flex;
+			flex-wrap: wrap;
+			margin: 20upx;
+			white-space: nowrap;
+	
+			.box-item {
+				width: 33%;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+	
+				.img {
+					width: 154upx;
+					height: 126upx;
+				}
+	
+				.name {
+					font-weight: 700;
+					color: #fff;
+					text-align: center;
+					position: relative;
+					z-index: 1;
+					font-size: 24upx;
+					background: linear-gradient(to bottom, #fe947a, #ee5936);
+					border-radius: 40upx;
+					margin-top: 20upx;
+					margin-bottom: 40upx;
+					padding-right: 20upx;
+	
+					.img {
+						border-radius: 50%;
+						width: 40upx;
+						height: 40upx;
+						margin-right: 10upx;
+					}
+				}
+			}
+		}
+	
+		.btn-wrap {
+			margin: 0 20upx;
+	
+			.btn {
+				font-size: 34upx;
+				font-weight: 700;
+				padding: 10upx 40upx;
+			}
 		}
 	}
 </style>

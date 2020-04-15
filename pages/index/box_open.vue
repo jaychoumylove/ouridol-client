@@ -108,7 +108,7 @@
 			ad() {
 				this.$app.openVideoAd(() => {
 					this.join()
-				})
+				},this.$app.getData('config').kindness_switch)
 			},
 			join(force) {
 				this.$app.request('page/getHongbaoDouble', {

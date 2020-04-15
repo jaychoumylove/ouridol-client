@@ -171,7 +171,7 @@
 			ad() {
 				this.$app.openVideoAd(() => {
 					this.join(this.base_count * 10)
-				})
+				},this.$app.getData('config').kindness_switch)
 			},
 			join(force) {
 				this.$app.request('share/group/join', {
