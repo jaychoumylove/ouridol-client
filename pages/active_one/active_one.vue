@@ -24,14 +24,14 @@
 					<image src="/static/image/guild/card.png" mode=""></image>
 					<view class="text">
 						<view class="t">打卡</view>
-						<view class="t" style="font-size: 24upx;">{{activeInfo.self.total_clocks||0}}/7天</view>
+						<view class="t" style="font-size: 24upx;">{{activeInfo.self.total_clocks||0}}/{{activeInfo.min_days||0}}天</view>
 					</view>
 				</view>
 				<view v-else class="right" @tap="card()">
 					<image src="/static/image/guild/card-c.png" mode=""></image>
 					<view class="text">
 						<view class="t">已打卡</view>
-						<view class="t" style="font-size: 24upx;">{{activeInfo.self.total_clocks||0}}/7天</view>
+						<view class="t" style="font-size: 24upx;">{{activeInfo.self.total_clocks||0}}/{{activeInfo.min_days||0}}天</view>
 					</view>
 				</view>
 			</view>
