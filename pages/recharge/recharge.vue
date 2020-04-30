@@ -102,7 +102,6 @@
 		},
 		data() {
 			return {
-				$app: this.$app,
 				modal: '',
 				requestCount: 1,
 				userInfo: {

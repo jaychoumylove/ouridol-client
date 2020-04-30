@@ -147,7 +147,6 @@
 		},
 		data() {
 			return {
-				$app: this.$app,
 				requestCount: 1,
 				taskList: this.$app.getData('taskList') || [],
 				modal: '',

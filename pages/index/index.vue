@@ -120,7 +120,6 @@
 		},
 		data() {
 			return {
-				$app: this.$app,
 				modal: 'indexBanner',
 				showBottomLoading: true,
 				requestCount: 1,

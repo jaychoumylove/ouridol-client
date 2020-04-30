@@ -4,7 +4,13 @@
 		<view class="top-container" v-if="activeInfo.bg_img">
 			<image class="bg" :src="activeInfo.bg_img" mode="aspectFill"></image>
 		</view>
-
+		<!-- #ifdef MP-WEIXIN -->
+		<!-- <ad :unit-id="adUnitId" ad-type="video" ad-theme="white"></ad>	//视频广告-->
+		<ad :unit-id="adUnitId" ad-type="grid" grid-opacity="0.8" grid-count="5" ad-theme="white"></ad>
+		<!-- #endif -->
+		<!-- #ifdef MP-QQ -->		
+		<ad :unit-id="adUnitId"></ad>
+		<!-- #endif -->
 		<!-- <view class="cardday">你已累计打卡<text>{{activeInfo.self.total_clocks||0}}</text>天</view> -->
 
 		<view class="active-center-container">
@@ -135,7 +141,14 @@
 
 					<!-- <view class='save-btn flex-set' @tap='saveCanvas'>保存到相册</view> -->
 				</view>
-			</view>
+			</view>			
+			<!-- #ifdef MP-WEIXIN -->
+			<!-- <ad :unit-id="adUnitId" ad-type="video" ad-theme="white"></ad>	//视频广告-->
+				<ad :unit-id="adUnitId" ad-type="grid" grid-opacity="0.8" grid-count="5" ad-theme="white"></ad>
+			<!-- #endif -->
+			<!-- #ifdef MP-QQ -->		
+				<ad :unit-id="adUnitId"></ad>
+			<!-- #endif -->
 		</modalComponent>
 
 		<!--<view class="canvas-container flex-set" v-if="modal == 'canvas'">
@@ -176,7 +189,12 @@
 		},
 		data() {
 			return {
-				$app: this.$app,
+				// #ifdef MP-WEIXIN
+				adUnitId: this.$app.gridAd_adUnitId,
+				// #endif
+				// #ifdef MP-QQ				
+				adUnitId: this.$app.qq_bannerAdUnitId,
+				// #endif
 				star: {},
 				activeInfo: {},
 				userRank: [],
@@ -194,6 +212,7 @@
 			this.id = option.id
 		},
 		onShow(option) {
+			this.$app.openInterstitialAd()
 			this.starid = this.$app.getData('userStar').id
 			this.getActiveInfo()
 			this.getStarInfo()
@@ -347,7 +366,7 @@
 								this.getActiveUserRank()
 								this.$app.toast('今日打卡成功', 'success')
 							}, 'POST', true)
-						},false)
+						},0)//没有广告不给奖励
 					} else {
 						this.modal = 'cardOver'
 						this.$app.toast('今日已打卡')

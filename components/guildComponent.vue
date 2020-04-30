@@ -993,7 +993,6 @@
 		},
 		data() {
 			return {
-				// $app: this.$app,
 				showLoading: true,
 				requestCount: 7,
 				tips: false,
@@ -1930,10 +1929,10 @@
 			 * 加入明星偶像圈
 			 */
 			sendOrFollow(e) {
-				if (!this.$app.getData('userInfo').nickname) {
-					this.$app.toast('请先去个人中心点击头像进行授权')
-					return
-				}
+				// if (!this.$app.getData('userInfo').nickname) {
+				// 	this.$app.toast('请先去个人中心点击头像进行授权')
+				// 	return
+				// }
 				if (this.$app.getData('userStar')['id']) {
 					if (this.$app.getData('userStar')['id'] == this.star.id) {
 						// 打榜

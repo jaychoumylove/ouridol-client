@@ -79,11 +79,11 @@
 		</view>
 		
 		<view class="function-container-list">
-			<view class="list-item red" @tap="$app.goPage('/pages/recharge/recharge')" v-if="$app.chargeSwitch()==0">
+			<view class="list-item red" @tap="$app.goPage('/pages/recharge/recharge')" v-if="$app.getData('config').version != $app.getData('VERSION') && $app.chargeSwitch()==0">
 				<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
 				<view class="text">购买礼物给爱豆打榜</view>
 			</view>
-			<button open-type="contact" :session-from="$app.getData('userInfo').id" v-if="$app.chargeSwitch()==2">
+			<button open-type="contact" :session-from="$app.getData('userInfo').id" v-if="$app.getData('config').version != $app.getData('VERSION') && $app.chargeSwitch()==2">
 				<view class="list-item red">
 					<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
 					<view class="text">回复"1" 获得更多能量</view>
@@ -261,7 +261,7 @@
 				})
 			},
 			exitGroup() {
-				this.$app.modal(`只有一次机会\n并且会清除你的师徒关系\n是否退出${this.$app.getData('userStar').name}偶像圈？`, () => {
+				this.$app.modal(`${this.$app.getData('config').exitgroup_tips}\n\n是否退出${this.$app.getData('userStar').name}偶像圈？`, () => {
 					this.$app.request(this.$app.API.USER_EXIT, {}, res => {
 						this.$app.toast('退出成功')
 						this.$app.setData('userStar', {}, true)
