@@ -148,7 +148,8 @@
 			this.getSunday()
 
 			if (option.path) {
-				return this.$app.goPage(option.path)
+				console.log(unescape(option.path))
+				return this.$app.goPage(unescape(option.path))
 			}
 			// 跳转到明星页
 			if (option.starid) {

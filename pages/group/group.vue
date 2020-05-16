@@ -86,7 +86,8 @@
 		},
 		 onShareAppMessage(e) {
 			const shareType = e.target && e.target.dataset.share
-			return this.$app.commonShareAppMessage(shareType)
+			const otherparam = e.target && e.target.dataset.otherparam
+			return this.$app.commonShareAppMessage(shareType,otherparam)
 		},
 		methods: {
 			goPage(id) {

@@ -108,7 +108,7 @@
 					top: 50%;
 					transform: translateY(-50%);
 					left: 30upx;
-					color: #FFF;
+					// color: #FFF;
 				}
 
 				.center-img {

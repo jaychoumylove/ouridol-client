@@ -300,7 +300,12 @@
 			<view class="btn" v-if="$app.getData('config').version != $app.getData('VERSION')" @tap="$app.goPage('/pages/signin/star_signin')">
 				<image class="img" src="/static/image/signin/sign.png" mode=""></image>
 			</view>
-			<!-- 红包 -->
+			<!-- 我的福袋btn -->
+			<view class="btn" @tap="openFudai">
+				<image class="img" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9HhvlXURtbJbFvRVwdINYhHcI1krgG784vHafRPrqpicP7KKTbav91rJF5ibqKPcPEV5zp3oUhRyicZg/0"
+				 mode=""></image>
+			</view>			
+			<!-- 发红包btn -->
 			<view class="btn" v-if="$app.getData('config').hongbao_chun.title" @tap="openHongbao">
 				<image class="img" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9EsP1YK72GM1EGI8VsBLl4vDnX5444V6QyFOATsWQ50PKmdF2QnE9cPDpD2WiaFuRJjJLlbLDRq4Ig/0"
 				 mode=""></image>
@@ -438,7 +443,7 @@
 				<!-- <view class="explain-wrapper">说明：还未确定后完全好大无穷皇帝和我去我前进的气温降低哦</view> -->
 				<view class="swiper-change flex-set">
 					<view class="item" :class="{select:current==0}" @tap="current = 0">送能量</view>
-					<view v-if="$app.getData('config').version != $app.getData('VERSION')" class="item" :class="{select:current==1}" @tap="current = 1">送能量礼物</view>
+					<view v-if="$app.getData('config').version != $app.getData('VERSION')" class="item" :class="{select:current==1}" @tap="current = 1">送礼物</view>
 				</view>
 
 				<!-- <swiper @change="swiperChange" :current="current"> -->
@@ -476,11 +481,11 @@
 						</view>
 
 					</view>
-					
+					<view class="git-tips">送礼物可获得福袋(多达15万能量)</view>
 					<block v-if="$app.getData('VERSION')!=$app.getData('config').version">
 						<view class="gift flex-set" @tap="$app.goPage('/pages/recharge/recharge')" v-if="$app.chargeSwitch()==0">
 							<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-							<view class="text">购买能量给爱豆打榜</view>
+							<view class="text">购买礼物给爱豆打榜</view>
 						</view>
 						<button open-type="contact" class="gift flex-set" v-else-if="$app.chargeSwitch()==2">
 							<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
@@ -516,7 +521,7 @@
 						</view>
 						<button open-type="contact" class="gift flex-set" v-else-if="$app.chargeSwitch()==2">
 							<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-							<view class="text">回复"1"获得能量礼物</view>
+							<view class="text">回复"1"获得礼物</view>
 						</button>
 					</block>
 				</view>
@@ -741,11 +746,11 @@
 
 		</modalComponent>
 		<!-- 送礼物成功弹框 -->
-		<modalComponent v-if="modal == 'sendOver'" title="提示" @closeModal="modal=''">
+		<modalComponent v-if="modal == 'sendOver'" title="打榜成功" @closeModal="modal=''">
 			<view class="tips-modal-container">
 				<view class="text-wrap">
 
-					<view class="title">打榜成功</view>
+					<!-- <view class="title">打榜成功</view> -->
 					<image class="avatar" :src="star.avatar" mode=""></image>
 					<view class="text flex-set">你已为{{star.name}}贡献了<text class="red" style="font-weight:700;">{{myTotalCount}}</text>
 						<image src="/static/image/index/ic_hot.png" class="s" mode=""></image>
@@ -767,6 +772,76 @@
 			</view>
 
 		</modalComponent>
+		
+		<!--送礼物后福袋-->
+		<modalComponent v-if="modal == 'sendFudai'" title="福袋" @closeModal="modal=''">
+			<view class="tips-modal-container hongbao">
+				<view class="text-wrap">
+					<image class="avatar" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9HhvlXURtbJbFvRVwdINYhHcI1krgG784vHafRPrqpicP7KKTbav91rJF5ibqKPcPEV5zp3oUhRyicZg/0"
+					 mode=""></image>
+					<view class="title">恭喜获得【能量福袋】</view>
+					<view class="text flex-set">共<text style="color:#F00;">{{$app.getData('config').hongbao_chun.count}}能量</text>，
+						<text style="color:#ffaa00;">{{$app.getData('config').hongbao_chun.people}}人</text>瓜分</view>
+					<view class="tips">将福袋分享到不同的群，让更多的人来领取吧</view>
+				</view>
+				<view class="row flex-set">
+					<button class="btn" open-type="share" data-share="10" :data-otherparam="referrerFudai">
+						<btnComponent type="css">
+							<view class="flex-set" style="width:400upx;height: 100upx;font-weight: 700;font-size: 34upx;">立即分享</view>
+						</btnComponent>
+					</button>
+				</view>
+			</view>		
+		</modalComponent>
+		
+		<!--我的福袋列表-->		
+		<modalComponent v-if="modal == 'fudai'" title="我派发的福袋" @closeModal="modal=''">
+			<view class="invit-fake-modal-container">
+				<view class="explain-wrapper">
+					<view class="top flex-set">
+						<view class="">
+							给爱豆送礼物，获得10%的能量福袋
+						</view>				
+						<btnComponent type="default" @tap="model='send'">
+							<button class="btn">
+								<view class="flex-set" style="padding: 10upx 20upx;">我要派福袋</view>
+							</button>
+						</btnComponent>
+					</view>
+				</view>		
+				<scroll-view scroll-y class="list-wrapper" @scrolltolower="fudaiPage++;getMyfudaiList();" v-if="fudaiList.length>0">
+					<view class="item" v-for="(item,index) in fudaiList" :key="index">
+						<view class='avatar'>
+							<image :src="item.avatar" mode="aspectFill"></image>
+						</view>
+						<view class="text-container">
+							<view class="star-name">第{{hasEarnCount+index+1}}位好友</view>
+							<view class="bottom-text">
+								<view class="hot-count">能量+{{invitAward.coin}}</view>
+								<view class="hot-count" v-if="invitAward.stone"> 灵丹+{{invitAward.stone}}</view>
+							</view>
+						</view>
+						<view class="btn">
+							<btnComponent v-if="item.status == 0" type="default">
+								<button open-type="share">
+									<view class="flex-set" style="width: 130upx;height: 65upx;">去邀请</view>
+								</button>
+							</btnComponent>
+							<btnComponent v-if="item.status == 1" type="success" @tap="getInvitAward(item.uid,item.status,index)">
+								<view class="flex-set" style="width: 130upx;height: 65upx;">去领取</view>
+							</btnComponent>
+							<btnComponent v-if="item.status == 2" type="disable">
+								<view class="flex-set" style="width: 130upx;height: 65upx;">已领取</view>
+							</btnComponent>
+						</view>
+		
+		
+					</view>
+				</scroll-view>
+			</view>
+		
+		</modalComponent>
+		
 		<!-- 用户信息 -->
 		<modalComponent v-if="modal == 'userInfo'" title=" " @closeModal="modal=''">
 			<view class="userinfo-modal-container">
@@ -1060,6 +1135,10 @@
 				urgeSendTips: '', // 催促打榜tips
 
 				hongbaoTime: '',
+				
+				referrerFudai:null,
+				fudaiList: [],
+				fudaiPage: 1,
 			};
 		},
 		created() {
@@ -1753,25 +1832,45 @@
 					this.openHongbao()
 				})
 			},
+			//打开我的福袋列表
+			openFudai() {
+				this.modal = 'fudai'
+				this.getMyfudaiList()
+				
+			},						
+			// 我的福袋列表
+			getMyfudaiList() {
+				this.$app.request('page/fudai', {
+					page: this.fudaiPage || 1
+				}, res => {
+					const resList = []
+					res.data.forEach((e, i) => {
+						resList.push({
+							avatar: e.user && e.user.avatarurl || this.$app.getData('AVATAR'),
+							status: e.status
+						})
+					})
+					if (this.fudaiPage == 1) {
+						this.fudaiList = resList
+					} else {
+						this.fudaiList = this.fudaiList.concat(resList)
+					}
+			
+					this.$app.closeLoading(this)
+				})
+			},
+			
+			sendFudai() {
+				this.$app.request('page/sendFudai', {}, res=>{
+					this.referrerFudai = 'id='+res.data.id
+				})
+			},
 			// 好友列表
 			getInvitList() {
 				this.$app.request(this.$app.API.USER_INVITLIST, {
 					type: 1,
 					page: this.invitListPage || 1
 				}, res => {
-					// this.invitAward = res.data.award
-					// const resList = []
-					// res.data.list.forEach((e, i) => {
-					// 	// resList.push({
-					// 	// 	avatar: e.user && e.user.avatarurl || this.$app.getData('AVATAR'),
-					// 	// 	status: e.status,
-					// 	// 	uid: e.ral_user_id
-					// 	// })
-					// 	
-					// 	
-					// })
-					// this.invitList = resList
-
 					this.invitAward = res.data.award
 					const resList = []
 					this.spriteEarn = false
@@ -1801,6 +1900,7 @@
 					this.$app.closeLoading(this)
 				})
 			},
+			
 			/**
 			 * 贡献人气
 			 */
@@ -1833,7 +1933,7 @@
 						}
 						return
 					}
-					this.modal = ''
+					this.modal = 'sendOver'
 					this.sendCount = 0
 					this.getStarInfo()
 
@@ -1850,10 +1950,11 @@
 								this.itemList[key].self--
 							}
 						}
+						this.sendFudai()
+						this.modal = 'sendFudai'
 					}
 					// 弹窗
 					this.disLeastCount = res.data.disLeastCount
-					this.modal = 'sendOver'
 					this.myTotalCount = res.data.totalCount
 
 				}, 'POST', true)
@@ -3206,6 +3307,7 @@
 			}
 			.git-tips{
 				text-align: center;
+				color: red;
 			}
 			.gift {
 				position: absolute;
@@ -3596,7 +3698,7 @@
 
 			.text-wrap {
 				text-align: center;
-				margin: 50upx;
+				margin: 20upx;
 
 				.title {
 					font-size: 40upx;

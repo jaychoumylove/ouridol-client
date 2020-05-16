@@ -86,7 +86,7 @@
 			<view class="signin-button signin-time margin-ls">
 			<text class="time">{{timeHour}}</text>:<text class="time">{{timeMin}}</text>:<text class="time">{{timeSec}}</text>
 			</view>
-			<view class="margin-ls">还差<text class="red">{{joinCount-joinAll}}人</text>，爱豆就可获得<text  class="red">能量礼物</text></view>
+			<view class="margin-ls">还差<text class="red">{{joinCount-joinAll}}人</text>，爱豆就可获得<text  class="red">礼物</text></view>
 			<!-- <image src="../../static/image/signin/walls.png" mode="aspectFit" style="width: 440upx;position: absolute;top: 390upx;height: 80upx;left: 160upx;">
 			</image>
 			<view class="font-size-lg" style="font-size: 32upx; text-align: center;">签到奖励</view>
@@ -109,7 +109,7 @@
 		<view class="signin-footer" style="">
 			<button open-type="share" data-share="9" style="text-align: center;margin-top: 20upx;"><image style="width: 320upx; " src="/static/image/signin/shara.png"  mode="widthFix"></image></button>
 			<!-- <image src="../../static/image/signin/wall.png" mode="aspectFit" style="width: 440upx;position: absolute;top: 815upx;height: 80upx;left: 160upx;">
-			<view class="font-size-lg" style="font-size: 32upx; text-align: center;">能量礼物助力墙</view>
+			<view class="font-size-lg" style="font-size: 32upx; text-align: center;">礼物助力墙</view>
 			<view class="font-size-xs" style="margin-left: 5upx;color: #666666;text-align: center;">邀请你的好友为爱豆一起签到吧</view>
 			<view style="display: flex;justify-content:flex-end"><button class="shara-but" style="" open-type="share">召唤群友</button></view>
 			</image>

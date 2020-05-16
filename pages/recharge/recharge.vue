@@ -36,8 +36,8 @@
 				<image class='hand' v-if="handShow" src="/static/image/pet/hand.png" mode="widthFix"></image>
 			</view>
 			<view class="count-wrap tips">
-				<view>购买的能量礼物不清零</view>
-				<view>能量礼物可点击“打榜”直接送出，增加爱豆能量</view>
+				<view>购买的礼物不清零</view>
+				<view>礼物可点击“打榜”直接送出，增加爱豆能量</view>
 			</view>
 			<view class="count-wrap middle">{{$app.getData('config').recharge_title}}</view>
 			<!-- 礼物列表 -->

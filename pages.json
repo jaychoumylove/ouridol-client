@@ -19,7 +19,7 @@
 		}, {
 			"path": "pages/pet/pet",
 			"style": {
-				"navigationBarTitleText": "能量精灵",
+				"navigationBarTitleText": "精灵",
 				"disableScroll": true
 			}
 		}, {
@@ -94,6 +94,9 @@
 			"style": {}
 		}, {
 			"path": "pages/index/box_open",
+			"style": {}
+		}, {
+			"path": "pages/index/fudai_open",
 			"style": {}
 		},{
 			"path": "pages/signin/star_signin",
@@ -189,7 +192,7 @@
 				"pagePath": "pages/pet/pet",
 				"iconPath": "/static/image/tab/pet.png",
 				"selectedIconPath": "/static/image/tab/pet-tap.png",
-				"text": "能量精灵"
+				"text": "精灵"
 			}, {
 				"pagePath": "pages/group/group",
 				"iconPath": "/static/image/tab/group.png",

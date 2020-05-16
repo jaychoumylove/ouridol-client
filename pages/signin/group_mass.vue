@@ -144,11 +144,14 @@
 			return this.$app.commonShareAppMessage(shareType)
 		},
 		onShow(option) {
+			
 			// 爱豆id
 			this.starid = this.$app.getData('query').starid || this.$app.getData('userStar').id
 			if (!this.$app.getData('userStar').id) {
 				this.$app.modal('请先加入一个圈子', () => {
-					this.$app.goPage('/pages/index/index')
+					uni.reLaunch({
+						url: '/pages/group/group'
+					})
 				}, '跳转')
 				return
 			}

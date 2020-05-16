@@ -1,7 +1,7 @@
 <template>
 	<view class="gift-package-container">
 		<view class="count-wrap tips">
-			能量礼物不清零
+			礼物不清零
 		</view>
 		<view class="btn-wrapper">
 			<view class="btn" v-for="(item,index) in giftList" :key="index" @tap="change(item)">

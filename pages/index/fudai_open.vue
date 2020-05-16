@@ -3,7 +3,7 @@
 		<!-- <view class="top-title">来自 <text style="color: #fbb225;">{{info.user.nickname}}</text> 送出的 <text style="color: #fbb225;">{{info.coin}}</text> 金豆</view> -->
 		<view class="top-container">
 			<image class="avatar" :src="info.user.avatarurl||$app.getData('AVATAR')" mode="aspectFill"></image>
-			<view class="nickname">来自 <text class="highlight">{{info.user.nickname||$app.getData('NICKNAME')}}</text> 的红包</view>
+			<view class="nickname">来自 <text class="highlight">{{info.user.nickname||$app.getData('NICKNAME')}}</text> 的福袋</view>
 			<view class="count flex-set">
 				你获得了
 				<text class="num">+{{self.count||0}}</text>
@@ -40,14 +40,11 @@
 			</view>
 		</view>
 		
-		<modalComponent v-if="modal == 'join'" title="红包" @closeModal="modal=''">
-			<view class="join-modal-container">
+		<modalComponent v-if="modal == 'fudai'" title="福袋" @closeModal="modal=''">
+			<view class="join-modal-container flex-set">
 				<view class="top-wrap">
-					<image class="img" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9EsP1YK72GM1EGI8VsBLl4vDnX5444V6QyFOATsWQ50PKmdF2QnE9cPDpD2WiaFuRJjJLlbLDRq4Ig/0" mode="widthFix"></image>
-					<!-- <view class="title" style="font-size: 38upx;">选择参与集结方式</view> -->
-					<view class="title">选择观看视频，可获得双倍红包能量</view>
-					
-					
+					<image class="img" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9HhvlXURtbJbFvRVwdINYhHcI1krgG784vHafRPrqpicP7KKTbav91rJF5ibqKPcPEV5zp3oUhRyicZg/0" mode="widthFix"></image>
+					<view class="title">选择观看视频，可获得双倍能量</view>					
 				</view>
 		
 				<view class="main-wrap flex-set">
@@ -55,22 +52,45 @@
 						<image class="img" src="/static/image/user/b1.png" mode="widthFix"></image>
 						<view class="text">+{{self.count*2}}能量</view>
 						<btnComponent type="css">
-							<view class="" style="padding: 10upx;">看视频获取x2倍</view>
+							<view class="" style="padding:20upx; 20upx">看视频x2倍</view>
 						</btnComponent>
 					</view>
 					<view class="item" @tap="modal=''">
 						<image class="img" src="/static/image/user/b1.png" mode="widthFix"></image>
 						<view class="text">+{{self.count}}能量</view>
 						<btnComponent type="css">
-							<view class="" style="padding: 10upx;">直接获取</view>
+							<view class="" style="padding: 20upx; 20upx">直接获取</view>
 						</btnComponent>
 		
 					</view>
 				</view>
+			</view>			
+			
+			<!-- #ifdef MP-WEIXIN -->
+				<ad :unit-id="adUnitId" ad-type="grid" grid-opacity="0.8" grid-count="5" ad-theme="white"></ad>
+			<!-- #endif -->
+			<!-- #ifdef MP-QQ -->		
+				<ad :unit-id="adUnitId"></ad>
+			<!-- #endif -->
+		</modalComponent>
+		
+		<modalComponent v-if="modal == 'tips'" title="如何派发福袋" @closeModal="modal=''">
+			<view class="join-modal-container flex-set">
+				<view class="top-wrap">
+					<view class="title">给爱豆打榜，选择送礼物</view>	
+					<view class="title">送礼物后获得该礼物10%的能量福袋</view>				
+				</view>
+				<view class="flex-set">
+					<view @tap="$app.goPage('/pages/group/group')">
+						<btnComponent type="css">
+							<view style="padding: 30upx;50upx">给爱豆打榜</view>
+						</btnComponent>
+					</view>
+				</view>
 			</view>
 		</modalComponent>
-
-		<!-- <view class="btn" @tap="$app.goPage('/pages/index/index')">我也要红包</view> -->
+		
+		<view class="btn" @tap="modal='tips'">我也要派福袋</view>
 
 
 	</view>
@@ -86,6 +106,13 @@
 		},
 		data() {
 			return {
+				// #ifdef MP-WEIXIN
+				adUnitId: this.$app.gridAd_adUnitId,
+				// #endif
+				// #ifdef MP-QQ				
+				adUnitId: this.$app.qq_bannerAdUnitId,
+				// #endif
+				
 				modal: '',
 				self: {},
 				info: {},
@@ -104,7 +131,8 @@
 				}, '跳转')
 				return
 			}
-						
+			
+			this.box_id = option.id
 			this.loadData()
 		},
 		onShow() {},
@@ -116,33 +144,30 @@
 			// 看视频广告
 			ad() {
 				this.$app.openVideoAd(() => {
-					this.join()
+					this.getFudaiDouble()
 				},this.$app.getData('config').kindness_switch)
 			},
-			join(force) {
-				this.$app.request('page/getHongbaoDouble', {
-					gid: this.gid,
-					force: 2
-				}, res => {
+			getFudaiDouble() {
+				this.$app.request('page/getFudaiDouble', {}, res => {
 					this.$app.toast('领取成功', 'success')
 					this.modal = ''
-					this.loadData();
+					this.loadData()
 				}, 'POST', true)
 			},
-			loadData() {
-				this.$app.request('page/getBox', {
-					referrer: this.$app.getData('referrer')
+			loadData(box_id) {
+				this.$app.request('page/getFudai', {
+					id: this.box_id
 				}, res => {
 					this.info = res.data.info
 					if (!this.info.id){
-						this.$app.modal('不存在的红包\n可以联系发红包的人让TA放点能量进去');
+						this.$app.modal('不存在的福袋');
 					}
 					this.lucky = res.data.lucky
 					this.self = res.data.self
 
 					this.list = res.data.list
 					this.award_type = res.data.award_type
-					if (res.data.open) this.modal = 'join'
+					if (res.data.open) this.modal = 'fudai'
 				})
 			}
 		}
@@ -265,9 +290,12 @@
 		}
 
 		.btn {
-			margin: 30upx;
+			position: fixed;
+			bottom: 2%;
+			left: 26%;
+			margin: 10upx 30upx;
 			padding: 25upx 100upx;
-			background-color: #fff;
+			background-color: red;
 			color: #fff;
 			border-radius: 60upx;
 			display: inline-block;
@@ -285,6 +313,9 @@
 				text-align: center;
 				margin: 20upx 10upx;
 				
+				.title{
+					padding: 10upx 0;
+				}
 				.img {
 					width: 200upx;
 					height: 200upx;
@@ -292,6 +323,7 @@
 			}
 		
 			.main-wrap {
+				width: 90%;
 				justify-content: space-between;
 		
 				.item {
