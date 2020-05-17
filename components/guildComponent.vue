@@ -302,8 +302,7 @@
 			</view>
 			<!-- 我的福袋btn -->
 			<view class="btn" @tap="openFudai">
-				<image class="img" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9HhvlXURtbJbFvRVwdINYhHcI1krgG784vHafRPrqpicP7KKTbav91rJF5ibqKPcPEV5zp3oUhRyicZg/0"
-				 mode=""></image>
+				<image class="img" src="/static/image/prop/4.png" mode=""></image>
 			</view>			
 			<!-- 发红包btn -->
 			<view class="btn" v-if="$app.getData('config').hongbao_chun.title" @tap="openHongbao">
@@ -800,10 +799,10 @@
 				<view class="explain-wrapper">
 					<view class="top flex-set">
 						<view class="">
-							给爱豆送礼物，获得10%的能量福袋
+							给爱豆送礼物<view>获得10%的能量福袋</view>
 						</view>				
-						<btnComponent type="default" @tap="model='send'">
-							<button class="btn">
+						<btnComponent type="default">
+							<button class="btn" @tap="modal='send'">
 								<view class="flex-set" style="padding: 10upx 20upx;">我要派福袋</view>
 							</button>
 						</btnComponent>
@@ -812,29 +811,26 @@
 				<scroll-view scroll-y class="list-wrapper" @scrolltolower="fudaiPage++;getMyfudaiList();" v-if="fudaiList.length>0">
 					<view class="item" v-for="(item,index) in fudaiList" :key="index">
 						<view class='avatar'>
-							<image :src="item.avatar" mode="aspectFill"></image>
+							<image src="/static/image/prop/4.png" mode="aspectFill"></image>
 						</view>
 						<view class="text-container">
-							<view class="star-name">第{{hasEarnCount+index+1}}位好友</view>
+							<view class="total-coin"><image src="/static/image/user/b1.png" mode="aspectFill"></image>{{item.coin}}</view>
 							<view class="bottom-text">
-								<view class="hot-count">能量+{{invitAward.coin}}</view>
-								<view class="hot-count" v-if="invitAward.stone"> 灵丹+{{invitAward.stone}}</view>
+								<view class="hot-count">已领取{{item.opened_people}}/{{item.people}}</view>
 							</view>
 						</view>
-						<view class="btn">
+						
+						<view class="btn">								
 							<btnComponent v-if="item.status == 0" type="default">
-								<button open-type="share">
-									<view class="flex-set" style="width: 130upx;height: 65upx;">去邀请</view>
+								<button open-type="share" data-share="10" :data-otherparam="'id=' + item.id">
+									<view class="flex-set" style="width: 130upx;height: 65upx;">立即分享</view>
 								</button>
 							</btnComponent>
-							<btnComponent v-if="item.status == 1" type="success" @tap="getInvitAward(item.uid,item.status,index)">
-								<view class="flex-set" style="width: 130upx;height: 65upx;">去领取</view>
-							</btnComponent>
-							<btnComponent v-if="item.status == 2" type="disable">
-								<view class="flex-set" style="width: 130upx;height: 65upx;">已领取</view>
+							
+							<btnComponent v-if="item.status == 1" type="success" @tap="$app.goPage('/pages/index/fudai_open?id' + item.id)">
+								<view class="flex-set" style="width: 130upx;height: 65upx;">详情</view>
 							</btnComponent>
 						</view>
-		
 		
 					</view>
 				</scroll-view>
@@ -1846,8 +1842,11 @@
 					const resList = []
 					res.data.forEach((e, i) => {
 						resList.push({
-							avatar: e.user && e.user.avatarurl || this.$app.getData('AVATAR'),
-							status: e.status
+							id: e.id,
+							coin: e.coin,
+							people: e.people,
+							opened_people: e.opened_people,
+							status: e.status,
 						})
 					})
 					if (this.fudaiPage == 1) {
@@ -2877,7 +2876,7 @@
 					margin-left: 30upx;
 					width: 250upx;
 					line-height: 44upx;
-
+					
 					.bottom-text {
 						display: flex;
 						align-items: center;
@@ -3610,12 +3609,19 @@
 						height: 90upx;
 						border-radius: 50%;
 					}
-
+					
 					.text-container {
 						width: 300upx;
 						padding: 0 30upx;
 						line-height: 44upx;
-
+						
+						.total-coin{
+							display: flex;
+							image{
+								width: 40upx;
+								height: 40upx;
+							}
+						}
 						.bottom-text {
 							display: flex;
 							align-items: center;
