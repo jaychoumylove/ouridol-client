@@ -2037,15 +2037,6 @@
 					if (this.$app.getData('userStar')['id'] == this.star.id) {
 						// 打榜
 						this.modal = 'send'
-
-						// 保存formId
-						const formId = e && e.detail && e.detail.formId || null
-
-						if (formId && formId != 'the formId is a mock one') {
-							this.$app.request(this.$app.API.EXT_SAVEFORMID, {
-								formId
-							})
-						}
 						return
 					} else {
 						if (this.$app.getData('userInfo').type != 1) {
@@ -2062,7 +2053,6 @@
 						rer_user_id: this.$app.getData('referrer'), // 推荐人
 					}, res => {
 						if (this.$app.getData('userInfo').type == 1) {
-							// 管理员
 							this.$app.token = ''
 							this.$app.request(this.$app.API.USER_INFO, {}, res => {
 								this.$app.setData('userInfo', res.data, true)
