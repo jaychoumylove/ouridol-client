@@ -189,14 +189,14 @@
 		</modalComponent>
 
 		<!--<view class="canvas-container flex-set" v-if="modal == 'canvas'">
-			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view> -->
+			<view class="close-btn flex-set iconfont iconclose" @tap="modal = ''"></view> -->
 
 		<canvas canvas-id='mycanvas' class="canvas"></canvas>
 
 		<!-- </view> -->
 
 		<view class="canvas-container flex-set" v-if="modal == 'otherShareW'">
-			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
+			<view class="close-btn flex-set iconfont iconclose" @tap="modal = ''"></view>
 
 			<view class="wrapper flex-set">
 				<image src="http://tva1.sinaimg.cn/large/0060lm7Tly1g5k6xgs6fqg30bv0h4wg4.gif" mode="scaleToFill"></image>
@@ -204,7 +204,7 @@
 			</view>
 		</view>
 		<view class="canvas-container flex-set" v-if="modal == 'otherShareP'">
-			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
+			<view class="close-btn flex-set iconfont iconclose" @tap="modal = ''"></view>
 
 			<view class="wrapper flex-set">
 				<image src="http://tva1.sinaimg.cn/large/0060lm7Tly1g5k70tvqe8g30bv0h4407.gif" mode="scaleToFill"></image>

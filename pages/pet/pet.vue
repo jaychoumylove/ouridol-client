@@ -39,7 +39,6 @@
 				<!-- 				<image @tap="goOther(item)" v-for="(item,index) in invitList" :key="index" v-if="index<3" :src="item.avatar" mode="widthFix"></image> -->
 			</view>
 
-			<!-- <view class="level">Lv.{{spriteInfo.sprite_level}}</view> -->
 			<btnComponent>
 				<image src="/static/image/pet/help.png" mode="widthFix" @tap="$app.goPage('/pages/notice/notice?id=2')"></image>
 			</btnComponent>
@@ -94,6 +93,23 @@
 					</view>
 				</btnComponent>
 			</view>
+		</view>
+		
+		<view class="nav-container">
+			<!--排行-->
+			<btnComponent>
+				<image src="/static/image/pet/help.png" mode="widthFix" @tap="$app.goPage('/pages/subPages/user/rank/pet_rank')"></image>
+			</btnComponent>
+			
+			<!--道具-->
+			<btnComponent>
+				<image src="/static/image/pet/help.png" mode="widthFix" @tap="$app.goPage('/pages/prop/prop')"></image>
+			</btnComponent>
+			
+			<!--帮助-->
+			<btnComponent>
+				<image src="/static/image/pet/help.png" mode="widthFix" @tap="$app.goPage('/pages/notice/notice?id=2')"></image>
+			</btnComponent>
 		</view>
 
 		<view class="earn-container" @tap="settle">
@@ -234,7 +250,7 @@
 							<view class="bottom">{{item.need_stone}}</view>
 						</view>
 						<btnComponent type="css" v-if="item.status != 1">
-							<view class="flex-set" style="width: 130upx;height: 65upx;" @tap="skillUpgrade">升级</view>
+							<view class="flex-set" style="width: 130upx;height: 60upx;" @tap="skillUpgrade">升级</view>
 						</btnComponent>
 					</view>
 
@@ -255,12 +271,12 @@
 				<view class="flex-set">
 					<view class="btn" @tap="$app.goPage('/pages/subPages/task/task')">
 						<btnComponent type="css">
-							<view class="flex-set" style="width: 200upx;height: 100upx;">去做任务</view>
+							<view class="flex-set" style="width: 200upx;height: 80upx;">去做任务</view>
 						</btnComponent>
 					</view>
 					<view class="btn" v-if="$app.chargeSwitch()==0" @tap="$app.goPage('/pages/recharge/recharge')">
 						<btnComponent type="css">
-							<view class="flex-set" style="width: 200upx;height: 100upx;">补充能量</view>
+							<view class="flex-set" style="width: 200upx;height: 80upx;">补充能量</view>
 						</btnComponent>
 					</view>
 				</view>
@@ -788,9 +804,9 @@
 
 		.sprite {
 			position: absolute;
-			left: 50%;
+			left: 45%;
 			transform: translateX(-50%);
-			bottom: 5%;
+			bottom: 10%;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
@@ -812,7 +828,7 @@
 			}
 
 			.sprite-main {
-				width: 400upx;
+				width: 505upx;
 			}
 
 			.sprite-level {
@@ -938,7 +954,16 @@
 				transform: scale(1);
 			}
 		}
-
+		
+		.nav-container{
+			position: absolute;
+			right: 8%;
+			top:30%;
+			image {
+				margin-bottom: 20upx;
+				width: 60upx;
+			}
+		}
 		.earn-container::before {
 			content: "";
 			position: absolute;

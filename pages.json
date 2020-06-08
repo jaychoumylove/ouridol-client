@@ -145,6 +145,13 @@
 				}
 			},
 			{
+				"path": "user/rank/pet_rank",
+				"style": {
+					"navigationBarTitleText": "精灵排行榜",
+					"enablePullDownRefresh": true
+				}
+			},
+			{
 				"path": "pet/other/other",
 				"style": {}
 			},

@@ -19,10 +19,10 @@
 				</view>
 
 				<btnComponent type="default" v-if="!item.join" @tap="joinFanclub(item)">
-					<view class="flex-set" style="width: 130upx;height: 65upx;">加入</view>
+					<view class="flex-set" style="width: 130upx;height: 60upx;">加入</view>
 				</btnComponent>
 				<btnComponent type="disable" v-else @tap="exitFanclub()">
-					<view class="flex-set" style="width: 130upx;height: 65upx;">退出</view>
+					<view class="flex-set" style="width: 130upx;height: 60upx;">退出</view>
 				</btnComponent>
 			</view>
 		</view>

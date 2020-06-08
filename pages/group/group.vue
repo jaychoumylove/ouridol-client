@@ -172,7 +172,7 @@
 					}
 
 					input::after {
-						content: "\e61f";
+						content: "\e63d";
 						position: absolute;
 						right: 20upx;
 						top: 50%;

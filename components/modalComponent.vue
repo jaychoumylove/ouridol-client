@@ -12,7 +12,7 @@
 				<slot></slot>
 			</view>
 		</view>
-		<view class="close-btn flex-set iconfont icon-icon-test1" @tap="closeModal">
+		<view class="close-btn flex-set iconfont iconclose" @tap="closeModal">
 			<!-- <btnComponent>
 				<image @tap="closeModal" src="/static/image/guild/close-btn.png" mode=""></image>
 			</btnComponent> -->

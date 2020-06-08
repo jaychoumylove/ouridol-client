@@ -47,56 +47,56 @@
 					<btnComponent type="default" v-if="item.status == 0">
 						<!-- 分享 -->
 						<button class="btn" open-type="share" v-if="item.type == 9">
-							<view class="flex-set" style="width: 130upx;height: 65upx;">{{item.task_type.btn_text||'去完成'}}</view>
+							<view class="flex-set" style="width: 130upx;height: 60upx;">{{item.task_type.btn_text||'去完成'}}</view>
 						</button>
 						<!-- 集结 -->
 						<button class="btn" open-type="share" data-share='2' v-else-if="item.type == 12">
-							<view class="flex-set" style="width: 130upx;height: 65upx;">{{item.task_type.btn_text||'去完成'}}</view>
+							<view class="flex-set" style="width: 130upx;height: 60upx;">{{item.task_type.btn_text||'去完成'}}</view>
 						</button>
 						<!-- IOS充值 -->
 						<button class="btn" open-type="contact" v-else-if="item.type == 4 && $app.chargeSwitch()==2">
-							<view class="flex-set" style="width: 130upx;height: 65upx;">{{item.type==13?item.task_type.btn_text:'回复"1"'}}</view>
+							<view class="flex-set" style="width: 130upx;height: 60upx;">{{item.type==13?item.task_type.btn_text:'回复"1"'}}</view>
 						</button>
 						<!-- 公众号签到 -->
 						<button class="btn" open-type="contact" v-else-if="$app.getData('platform')!='MP-QQ' && item.type == 13">
-							<view class="flex-set" style="width: 130upx;height: 65upx;">{{item.type==13?item.task_type.btn_text:'回复"1"'}}</view>
+							<view class="flex-set" style="width: 130upx;height: 60upx;">{{item.type==13?item.task_type.btn_text:'回复"1"'}}</view>
 						</button>
 						<view class="btn" v-else-if="$app.getData('platform')=='MP-QQ' && item.type == 4">
-							<view class="flex-set" style="width: 130upx;height: 65upx;">去补充</view>
+							<view class="flex-set" style="width: 130upx;height: 60upx;">去补充</view>
 						</view>
 						<view class="btn" v-else-if="$app.getData('platform')=='MP-QQ' && item.type == 13">
-							<view class="flex-set" style="width: 130upx;height: 65upx;">去签到</view>
+							<view class="flex-set" style="width: 130upx;height: 60upx;">去签到</view>
 						</view>
 						<!-- 默认 -->
-						<view v-else class="flex-set" style="width: 130upx;height: 65upx;">
+						<view v-else class="flex-set" style="width: 130upx;height: 60upx;">
 							{{item.task_type.btn_text||'去完成'}}
 						</view>
 					</btnComponent>
 					<btnComponent type="success" v-if="item.status == 1">
-						<view class="flex-set" style="width: 130upx;height: 65upx;">可领取</view>
+						<view class="flex-set" style="width: 130upx;height: 60upx;">可领取</view>
 					</btnComponent>
 					<btnComponent type="disable" v-if="item.status == 2">
-						<view class="flex-set" style="width: 130upx;height: 65upx;">已完成</view>
+						<view class="flex-set" style="width: 130upx;height: 60upx;">已完成</view>
 					</btnComponent>
 				</view>
 				<view v-else class="btn" @tap="useBadge(item,index)">
 					<btnComponent type="default" v-if="item.status == 0">
 						<!-- 分享 -->
 						<button class="btn" open-type="share" v-if="item.type == 1">
-							<view class="flex-set" style="width: 130upx;height: 65upx;">{{item.btn_text||'去完成'}}</view>
+							<view class="flex-set" style="width: 130upx;height: 60upx;">{{item.btn_text||'去完成'}}</view>
 						</button>
 
 						<!-- 默认 -->
-						<view v-else class="flex-set" style="width: 130upx;height: 65upx;">
+						<view v-else class="flex-set" style="width: 130upx;height: 60upx;">
 							{{item.btn_text||'去完成'}}
 						</view>
 					</btnComponent>
 
 					<btnComponent type="success" v-if="item.status == 1">
-						<view class="flex-set" style="width: 130upx;height: 65upx;">佩戴</view>
+						<view class="flex-set" style="width: 130upx;height: 60upx;">佩戴</view>
 					</btnComponent>
 					<btnComponent type="disable" v-if="item.status == 2">
-						<view class="flex-set" style="width: 130upx;height: 65upx;">卸下</view>
+						<view class="flex-set" style="width: 130upx;height: 60upx;">卸下</view>
 					</btnComponent>
 				</view>
 			</view>

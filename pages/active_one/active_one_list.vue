@@ -1,10 +1,10 @@
 <template>
 	<view class="active_one-container">
-		<view class="top-container">
+		<!-- <view class="top-container">
 
 			<image class="avatar" :src="star.head_img_l" mode="aspectFill"></image>
 			<view class="rank"><text>NO.{{star.star_rank.week_hot_rank||''}}{{star.name||''}}</text><text>本周人气值{{star.star_rank.week_hot||''}}</text></view>
-		</view>
+		</view> -->
 
 		<view class="active-center-container" @tap="goPage(item.id)" :class="{red:item.category==1}" v-for="(item,index) in activeList"
 		 :key="index">

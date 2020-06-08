@@ -351,7 +351,7 @@
 		<!-- 改版聊天 -->
 		<view class="say-modal-container" v-if="modal == 'say'">
 			<view class="container">
-				<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal=''"></view>
+				<view class="close-btn flex-set iconfont iconclose" @tap="modal=''"></view>
 
 				<input class="textarea" :focus="true" type="text" :value="chartMsg" confirm-type="send" @confirm="sendMsg" @input="chartMsg = $event.detail.value"
 				 placeholder="快来和小伙伴们聊天吧" />
@@ -553,7 +553,7 @@
 							<view class="star-name">{{item.name}}</view>
 							<view class="bottom-text">
 								<view class="hot-count">{{item.hot}}</view>
-								<image class="icon-heart" src="/static/image/index/ic_hot.png" mode=""></image>
+								<!-- <image class="icon-heart" src="/static/image/index/ic_hot.png" mode=""></image> -->
 							</view>
 						</view>
 						<view class="steal-count flex-set">+{{item.steal_count}}
@@ -561,7 +561,7 @@
 						</view>
 						<view class="btn" @tap="steal(item.starid,index,item.steal)">
 							<btnComponent type="default">
-								<view class="flex-set" style="width: 130upx;height: 65upx;">{{item.steal>0?item.steal:'偷取'}}</view>
+								<view class="flex-set" style="width: 130upx;height: 60upx;">{{item.steal>0?item.steal:'偷取'}}</view>
 							</btnComponent>
 						</view>
 					</view>
@@ -603,14 +603,14 @@
 						<view class="btn">
 							<btnComponent v-if="item.status == 0" type="default">
 								<button open-type="share">
-									<view class="flex-set" style="width: 130upx;height: 65upx;">去邀请</view>
+									<view class="flex-set" style="width: 130upx;height: 60upx;">去邀请</view>
 								</button>
 							</btnComponent>
 							<btnComponent v-if="item.status == 1" type="success" @tap="getInvitAward(item.uid,item.status,index)">
-								<view class="flex-set" style="width: 130upx;height: 65upx;">去领取</view>
+								<view class="flex-set" style="width: 130upx;height: 60upx;">去领取</view>
 							</btnComponent>
 							<btnComponent v-if="item.status == 2" type="disable">
-								<view class="flex-set" style="width: 130upx;height: 65upx;">已领取</view>
+								<view class="flex-set" style="width: 130upx;height: 60upx;">已领取</view>
 							</btnComponent>
 						</view>
 
@@ -823,12 +823,12 @@
 						<view class="btn">								
 							<btnComponent v-if="item.status == 0" type="default">
 								<button open-type="share" data-share="10" :data-otherparam="'id=' + item.id">
-									<view class="flex-set" style="width: 130upx;height: 65upx;">立即分享</view>
+									<view class="flex-set" style="width: 130upx;height: 60upx;">立即分享</view>
 								</button>
 							</btnComponent>
 							
 							<btnComponent v-if="item.status == 1" type="success" @tap="$app.goPage('/pages/index/fudai_open?id' + item.id)">
-								<view class="flex-set" style="width: 130upx;height: 65upx;">详情</view>
+								<view class="flex-set" style="width: 130upx;height: 60upx;">详情</view>
 							</btnComponent>
 						</view>
 		
@@ -999,7 +999,7 @@
 		</modalComponent>
 
 		<view class="canvas-container flex-set" v-if="modal == 'canvas'">
-			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
+			<view class="close-btn flex-set iconfont iconclose" @tap="modal = ''"></view>
 
 			<canvas canvas-id='mycanvas' class="canvas"></canvas>
 
@@ -1030,7 +1030,7 @@
 			</view>
 		</view>
 		<view class="canvas-container flex-set" v-if="modal == 'otherShareW'">
-			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
+			<view class="close-btn flex-set iconfont iconclose" @tap="modal = ''"></view>
 
 			<view class="wrapper flex-set">
 				<image src="http://tva1.sinaimg.cn/large/0060lm7Tly1g4p9rnx2f3g30ku112qc3.gif" mode="scaleToFill"></image>
@@ -1038,7 +1038,7 @@
 			</view>
 		</view>
 		<view class="canvas-container flex-set" v-if="modal == 'otherShareP'">
-			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
+			<view class="close-btn flex-set iconfont iconclose" @tap="modal = ''"></view>
 
 			<view class="wrapper flex-set">
 				<image src="http://tva1.sinaimg.cn/large/0060lm7Tly1g4p9r2rbokg30ku112n3f.gif" mode="scaleToFill"></image>
@@ -2559,7 +2559,7 @@
 			}
 
 			.func-container {
-				height: 100upx;
+				height: 120upx;
 				overflow: hidden;
 				display: flex;
 				align-items: center;
@@ -2749,6 +2749,8 @@
 								align-items: center;
 
 								.name {
+									color: $color_2;
+									font-size: 26upx;
 									max-width: 250upx;
 								}
 
@@ -2799,15 +2801,13 @@
 
 							.msg-content {
 								margin-top: 2upx;
-								background-color: #f0f0f0;
-								color: #979797;
-								border-radius: 8upx;
+								background-color: rgba(#666, 0.1);
+								border-radius: 0 60upx 60upx 44upx;
 								padding: 10upx 30upx;
+								min-width: 240upx;
 								max-width: 520upx;
 								word-break: break-all;
 								display: block;
-
-								min-width: 320upx;
 							}
 						}
 					}
@@ -2852,7 +2852,7 @@
 			.item {
 				margin: 20upx 0;
 				height: 130upx;
-				background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2enrl619ng30j703n741.gif) right center no-repeat/contain;
+				background: url(https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9Hicp1fkOPfEamMrMFVshzPogbEoXnyBLd9TudUpKHe8Pn0J1GkgicU1R90Ym8fics7SPE6Z7TTrbKxg/0) right center no-repeat/contain;
 				display: flex;
 				align-items: center;
 

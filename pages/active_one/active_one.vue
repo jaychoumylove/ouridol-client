@@ -152,14 +152,14 @@
 		</modalComponent>
 
 		<!--<view class="canvas-container flex-set" v-if="modal == 'canvas'">
-			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view> -->
+			<view class="close-btn flex-set iconfont iconclose" @tap="modal = ''"></view> -->
 
 		<canvas canvas-id='mycanvas' class="canvas"></canvas>
 
 		<!-- </view> -->
 
 		<view class="canvas-container flex-set" v-if="modal == 'otherShareW'">
-			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
+			<view class="close-btn flex-set iconfont iconclose" @tap="modal = ''"></view>
 
 			<view class="wrapper flex-set">
 				<image src="http://mmbiz.qpic.cn/mmbiz_gif/iaPhFibaNbpLSV7UadegJZuSRW9g4rKDYZjDICZhLmouhT16m4TNPagic3McRuLQ797d3m16iafI3OXjm1JOKC4OaA/0"
@@ -168,7 +168,7 @@
 			</view>
 		</view>
 		<view class="canvas-container flex-set" v-if="modal == 'otherShareP'">
-			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
+			<view class="close-btn flex-set iconfont iconclose" @tap="modal = ''"></view>
 
 			<view class="wrapper flex-set">
 				<image src="http://mmbiz.qpic.cn/mmbiz_gif/iaPhFibaNbpLSV7UadegJZuSRW9g4rKDYZ1O2agUjUWuKibTick4mXTql7LkXf6AcsPeSlz5jEibu16QgPOJUZFgwXw/0"

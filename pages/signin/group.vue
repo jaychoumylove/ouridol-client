@@ -4,9 +4,9 @@
 		<view class="top-container">
 			<view class="top-wrap flex-set">
 				<view class="title">群集结动态</view>
-				<btnComponent type="css">
+				<btnComponent type="default">
 					<button open-type="share" data-share="7">
-						<view class="" style="padding: 10upx 20upx;">发起群集结</view>
+						<view class="" style="padding: 10upx 30upx;">发起群集结</view>
 					</button>
 				</btnComponent>
 			</view>

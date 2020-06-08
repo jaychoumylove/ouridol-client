@@ -186,7 +186,7 @@
 							<view class="bottom">{{item.need_stone}}</view>
 						</view>
 						<btnComponent type="css" v-if="item.status != 1">
-							<view class="flex-set" style="width: 130upx;height: 65upx;" @tap="skillUpgrade">升级</view>
+							<view class="flex-set" style="width: 130upx;height: 60upx;" @tap="skillUpgrade">升级</view>
 						</btnComponent>
 					</view>
 

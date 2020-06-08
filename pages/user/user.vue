@@ -69,135 +69,111 @@
 				
 		<view class="item-wrap" @tap="$app.preImg(levelImg)">
 			<view class="left-wrap">
-				<image class="icon" :src="`/static/image/icon/level/lv${userLevel}.png`" mode="aspectFill"></image>
-				<view class="text">
-					粉丝等级
-					<view class="tips flex-set">再贡献 <view class="highlight">{{userGap}}</view> 人气可升至下一级</view>
-				</view>
+				<!-- <image class="icon" :src="`/static/image/icon/level/lv${userLevel}.png`" mode="aspectFill"></image> -->
+				<view class="tips flex-set">粉丝等级<view class="highlight">LV{{userLevel}}</view>，再贡献 <view class="highlight">{{userGap}}</view> 人气可升至下一级</view>
 			</view>
-			<view class="right-wrap iconfont iconjiantou"></view>
 		</view>
 		
 		<view class="function-container-list">
 			<view class="list-item red" @tap="$app.goPage('/pages/recharge/recharge')" v-if="$app.getData('config').version != $app.getData('VERSION') && $app.chargeSwitch()==0">
-				<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-				<view class="text">购买礼物给爱豆打榜</view>
+				<view class="left-wrap">
+					<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+					<view class="text">购买礼物给爱豆打榜</view>
+				</view>
+				<view class="right-wrap iconfont iconjiantou"></view>
 			</view>
 			<button open-type="contact" :session-from="$app.getData('userInfo').id" v-if="$app.getData('config').version != $app.getData('VERSION') && $app.chargeSwitch()==2">
 				<view class="list-item red">
-					<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-					<view class="text">回复"1" 获得更多能量</view>
+					<view class="left-wrap">
+						<image src="/static/image/user/r7.png" mode="widthFix"></image>
+						<view class="text">回复"1" 获得更多能量</view>
+					</view>
+					<view class="right-wrap iconfont iconjiantou"></view>
 				</view>
 			</button>
 			<view class="list-item" v-if="$app.getData('config').version != $app.getData('VERSION')" @tap="$app.goPage('/pages/gift_package/gift_package')">
-				<image src="/static/image/user/r8.png" mode="widthFix"></image>
-				<view class="text">礼物背包</view>
+				<view class="left-wrap">
+					<image src="/static/image/user/r8.png" mode="widthFix"></image>
+					<view class="text">礼物背包</view>
+				</view>
+				<view class="right-wrap iconfont iconjiantou"></view>
 			</view>
 			<view class="list-item" v-if="$app.getData('config').version != $app.getData('VERSION')&&$app.getData('platform')=='MP-WEIXIN'"
 			 @tap="$app.goPage('/pages/prop/prop')">
-				<image src="/static/image/icon/magic-wand.png" mode="widthFix"></image>
-				<view class="text">我的道具</view>
+				<view class="left-wrap">
+					<image src="/static/image/user/r6.png" mode="widthFix"></image>
+					<view class="text">我的道具</view>
+				</view>
+				<view class="right-wrap iconfont iconjiantou"></view>
 			</view>
 			<view class="list-item" @tap="$app.goPage('/pages/subPages/task/task')">
-				<image src="/static/image/user/r2.png" mode="widthFix"></image>
-				<view class="text">每日任务</view>
+				<view class="left-wrap">
+					<image src="/static/image/user/r2.png" mode="widthFix"></image>
+					<view class="text">每日任务</view>
+				</view>
+				<view class="right-wrap iconfont iconjiantou"></view>
 			</view>
 
 			<view class="list-item" @tap="$app.goPage('/pages/subPages/log/log')">
-				<image src="/static/image/user/s2.png" mode="widthFix"></image>
-				<view class="text">个人明细</view>
+				<view class="left-wrap">
+					<image src="/static/image/user/s2.png" mode="widthFix"></image>
+					<view class="text">个人明细</view>
+				</view>
+				<view class="right-wrap iconfont iconjiantou"></view>
 			</view>
 			<button v-if="($app.getData('config').kefu_uid==$app.getData('userInfo').id ||$app.getData('userStar').captain==1)&& $app.getData('config').version != $app.getData('VERSION')"
 			 open-type="share" data-share="6">
 				<view class="list-item" @tap="$app.goPage('/pages/subPages/log/log')">
-					<image src="/static/image/user/s2.png" mode="widthFix"></image>
-					<view class="text">给新群员发群红包</view>
+					<view class="left-wrap">
+						<image src="/static/image/user/s2.png" mode="widthFix"></image>
+						<view class="text">给新群员发群红包</view>
+					</view>
+					<view class="right-wrap iconfont iconjiantou"></view>
 				</view>
 			</button>
 			<!-- <button open-type="contact" :session-from="$app.getData('userInfo').id">
 				<view class="list-item">
-					<image src="/static/image/user/r3.png" mode="widthFix"></image>
-					<view class="text">联系客服</view>
+					<view class="left-wrap">
+						<image src="/static/image/user/r3.png" mode="widthFix"></image>
+						<view class="text">联系客服</view>
+					</view>
+					<view class="right-wrap iconfont iconjiantou"></view>
 				</view>
 			</button> -->
 			<view v-if="$app.getData('platform')=='MP-WEIXIN'&&$app.getData('userExt').is_join_wxgroup == 0 && $app.getData('config').version != $app.getData('VERSION')"
 			 class="list-item">
-				<image src="/static/image/wxq.png" mode="widthFix"></image>
-				<button class="btn" open-type="contact" :session-from="$app.getData('userInfo').id">
-					<view class="text">加入{{$app.getData('userStar').name}}的官方群</view>
-				</button>
+				 <view class="left-wrap">
+					<image src="/static/image/user/r5.png" mode="widthFix"></image>
+					<button class="btn" open-type="contact" :session-from="$app.getData('userInfo').id">
+						<view class="text">加入{{$app.getData('userStar').name}}的官方群</view>
+					</button>
+				</view>
+				<view class="right-wrap iconfont iconjiantou"></view>
 			</view>
 			<view class="list-item" v-if="$app.getData('config').version != $app.getData('VERSION')" @tap="copy()">
-				<image src="/static/image/user/r3.png" mode="widthFix"></image>
-				<view class="text">客服微信号：{{$app.getData('config').kefu}}</view>
+				<view class="left-wrap">
+					<image src="/static/image/user/r3.png" mode="widthFix"></image>
+					<view class="text">客服微信号：{{$app.getData('config').kefu}}</view>
+				</view>
+				<view class="right-wrap iconfont iconjiantou"></view>
 			</view>
 			<view class="list-item" @tap="$app.goPage('/pages/game/game?type=1')" v-if="$app.getData('config').version != $app.getData('VERSION')">
-				<image src="/static/image/icon/task-game.png" mode="widthFix"></image>
-				<view class="text">游戏试玩</view>
+				<view class="left-wrap">
+					<image src="/static/image/user/s7.png" mode="widthFix"></image>
+					<view class="text">游戏试玩</view>
+				</view>
+				<view class="right-wrap iconfont iconjiantou"></view>
 			</view>
 
 			<view v-if="userStar.id && $app.getData('userInfo').type == 0" class="list-item" @tap="exitGroup">
-				<image src="/static/image/user/r4.png" mode="widthFix"></image>
-				<view class="text">退出偶像圈</view>
+				<view class="left-wrap">
+					<image src="/static/image/user/r4.png" mode="widthFix"></image>
+					<view class="text">退出偶像圈</view>
+				</view>
+				<view class="right-wrap iconfont iconjiantou"></view>
 			</view>
-
-			<!-- <view class="list-item"  @tap="$app.goPage('/pages/subPages/msg/msg')">
-				<image src="/static/image/user/s7.png" mode=""></image>
-				<view class="text">我的消息</view>
-			</view> -->
-
-			<!-- <view class="list-item" @tap="$app.goPage('/pages/subPages/adver/adver')">
-				<image src="/static/image/user/s7.png" mode="widthFix"></image>
-				<view class="text">游戏试玩</view>
-			</view> -->
 
 		</view>
-
-		<!--
-		<modalComponent v-if="modal == 'joinGroup'" title=" " @closeModal="modal=''">
-			<view class="tips-modal-container">
-				<view class="text-wrap">
-
-					<image class="avatar" :src="$app.getData('userStar').head_img_s" mode=""></image>
-					<view class="text flex-set">加入<text style="color:#F00;">{{$app.getData('userStar').name}}</text>官方打榜群</view>
-					<view class="text">加群需要注明爱豆名字</view>
-
-				</view>
-				<view class="row flex-set">
-					<view class="btn" @tap="$app.copy($app.getData('config').kefu)">
-						<btnComponent type="css">
-							<view class="flex-set" style="width:400upx;height: 100upx;font-weight: 700;font-size: 34upx;">点击复制微信号加群</view>
-						</btnComponent>
-					</view>
-				</view>
-			</view>
-		</modalComponent>-->
-
-		<!-- <modalComponent v-if="modal == 'recharge'" title="充值" @closeModal="modal=''">
-			<view class="recharge-modal-container">
-				<view class="header">
-					<view class="">我的 <image src="/static/image/user/b1.png" mode="widthFix"></image>：{{$app.getData('userCurrency')['coin']}}</view>
-					<view class="">我的 <image src="/static/image/user/b2.png" mode="widthFix"></image>：{{$app.getData('userCurrency')['stone']}}</view>
-				</view>
-
-				<view class="btn-wrapper">
-					<view class="btn" v-for="(item,index) in rechargeList" :key="index" @tap="payment(item.id)">
-						<view class="line">
-							<image src="../../static/image/user/b1.png" mode="widthFix"></image>
-							<view class="">{{item.coin}}</view>
-						</view>
-						<view class="line">
-							<image src="../../static/image/user/b2.png" mode="widthFix"></image>
-							<view class="">{{item.stone}}</view>
-						</view>
-						<view class="line">
-							<view class="">￥{{item.fee}}</view>
-						</view>
-					</view>
-				</view>
-			</view>
-
-		</modalComponent> -->
 	</view>
 </template>
 
@@ -463,9 +439,8 @@
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			margin: 0 30upx;
-			padding: 25upx 10upx;
-			border-bottom: 2upx solid #EFEFEF;
+			margin: 0 20upx;
+			padding-top: 20upx;
 		
 			.left-wrap {
 				font-size: 30upx;
@@ -477,25 +452,17 @@
 					height: 24upx;
 					margin-right: 10upx;
 				}
-		
-				.text {
-					display: flex;
-					align-items: center;
-		
-					.tips {
-						color: #999;
-						margin: 0 20upx;
-						font-size: 26upx;
-		
-						.highlight {
-							color: #345;
-							font-weight: 700;
-						}
+				
+				.tips {
+					color: #999;
+					margin: 0 20upx;
+					font-size: 26upx;
 						
+					.highlight {
+						color: #345;
+						font-weight: 700;
 					}
-					.red{
-						color:#FC3131 ;
-					}
+					
 				}
 			}
 		
@@ -506,31 +473,33 @@
 		}
 
 		.function-container-list {
-			border-radius: 10upx;
-			// background-color: #fff;
 			margin-top: 20upx;
-			padding: 14upx;
-			
 			.red{
 				color: red;
 			}
 			.list-item {
 				display: flex;
+				justify-content: space-between;
 				align-items: center;
-				padding: 14upx 30upx;
-
-				image {
-					width: 50upx;
-					height: 50upx;
-					margin-right: 30upx;
+				margin: 0 20upx;
+				padding: 22upx 0;
+				border-radius: 18rpx;
+				border-bottom: 1rpx solid #EFEFEF;
+				
+				.left-wrap {
+					display: flex;
+					align-items: center;
+					
+					image {
+						width: 48upx;
+						height: 48upx;
+						margin-right: 20upx;
+					}
 				}
-
-				.badge-wrapper {
-					position: relative;
-					margin-left: 320upx;
-					margin-top: 10upx;
-					height: 10upx;
-					width: 60upx;
+				
+				.right-wrap {
+					font-size: 22upx;
+					color: #999;
 				}
 			}
 		}

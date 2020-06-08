@@ -63,7 +63,7 @@
 			.item {
 				margin: 20upx 0;
 				height: 130upx;
-				background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2enrl619ng30j703n741.gif) right center no-repeat/contain;
+				background: url(https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9Hf1Erx2q066sKAsgEzqUsxtR4IyxJscPr234VZVlMPb9Z2TSwvzWYBOMtribqMrLGIUAbJGtyERqA/0) right center no-repeat/contain;
 				display: flex;
 				align-items: center;
 

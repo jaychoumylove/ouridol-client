@@ -35,7 +35,7 @@
 					<view class="flex-set">
 						<text style="max-width: 150upx;" class='text-overflow'>{{item.star.name}}</text>
 						<btnComponent type="css">
-							<view class="flex-set" style="width: 130upx;height: 60upx;" @tap="preSend(item)">助力开屏</view>
+							<view class="flex-set" style="width: 160upx;height: 60upx;" @tap="preSend(item)">助力开屏</view>
 						</btnComponent>
 					</view>
 

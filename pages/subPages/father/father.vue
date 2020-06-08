@@ -58,11 +58,11 @@
 
 				<view class="btn" @tap="getSonEarn(item.uid,item.earn,index)">
 					<btnComponent type="default">
-						<view class="flex-set" style="width: 130upx;height: 65upx;">领取</view>
+						<view class="flex-set" style="width: 130upx;height: 60upx;">领取</view>
 					</btnComponent>
 				</view>
 				
-				<view class="del-a iconfont icon-icon-test1"></view>
+				<view class="del-a iconfont iconclose"></view>
 			</view>
 
 		</view>

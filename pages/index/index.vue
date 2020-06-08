@@ -11,7 +11,7 @@
 			<view class="right-search">
 				<input :class="{show:!searchHide}" type="text" :value="keywords" @input="searchInput" placeholder="搜索爱豆名字"
 				 placeholder-class="placeholder-style" placeholder-style="color:#FFF;" />
-				<view class="iconfont flex-set" :class="[searchHide?'icon-sousuo':'icon-icon-test1']" @tap="searchToggle()"></view>
+				<view class="iconfont flex-set" :class="[searchHide?'iconfangdajing':'iconclose']" @tap="searchToggle()"></view>
 			</view>
 		</view>
 		<bannerComponent :bannerList="bannerList" :sList="sList" :muti="muti" bannerHeight="280"></bannerComponent>
@@ -32,7 +32,7 @@
 					<image src="/static/image/index/ic_hot.png" mode=""></image>
 				</view>
 				<btnComponent type="default">
-					<view class="flex-set" style="width: 130upx;height: 65upx;">打榜</view>
+					<view class="flex-set" style="width: 130upx;height: 60upx;">打榜</view>
 				</btnComponent>
 			</view>
 			<view class="content" @tap="goGroup(rankList[0]&&rankList[0].starid)">
@@ -45,7 +45,7 @@
 					<image src="/static/image/index/ic_hot.png" mode=""></image>
 				</view>
 				<btnComponent type="default">
-					<view class="flex-set" style="width: 130upx;height: 65upx;">打榜</view>
+					<view class="flex-set" style="width: 130upx;height: 60upx;">打榜</view>
 				</btnComponent>
 			</view>
 			<view class="content" @tap="goGroup(rankList[2]&&rankList[2].starid)">
@@ -58,7 +58,7 @@
 					<image src="/static/image/index/ic_hot.png" mode=""></image>
 				</view>
 				<btnComponent type="default">
-					<view class="flex-set" style="width: 130upx;height: 65upx;">打榜</view>
+					<view class="flex-set" style="width: 130upx;height: 60upx;">打榜</view>
 				</btnComponent>
 			</view>
 		</view>
@@ -80,7 +80,7 @@
 					<template v-slot:right-container>
 						<view class="right-container">
 							<btnComponent type="default">
-								<view class="flex-set" style="width: 130upx;height: 65upx;">打榜</view>
+								<view class="flex-set" style="width: 130upx;height: 60upx;">打榜</view>
 							</btnComponent>
 						</view>
 					</template>
@@ -93,12 +93,12 @@
 		<view class="open-ad-container flex-set" v-if="modal=='indexBanner' && $app.getData('config').index_banner && $app.getData('config').index_banner.img_url 
 						&& $app.getData('config').version != $app.getData('VERSION')">
 			<image class="main" :src="$app.getData('config').index_banner.img_url" mode="aspectFill" @tap="modal='';$app.goPage($app.getData('config').index_banner.gopage)"></image>
-			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
+			<view class="close-btn flex-set iconfont iconclose" @tap="modal = ''"></view>
 		</view>
 
 		<view class="open-ad-container flex-set" v-if="modal=='qrcode'">
 			<image class="main" :src="$app.getData('config').webmodal" @tap="preimg($app.getData('config').webmodal)" mode="aspectFill"></image>
-			<view class="close-btn flex-set iconfont icon-icon-test1" @tap="modal = ''"></view>
+			<view class="close-btn flex-set iconfont iconclose" @tap="modal = ''"></view>
 		</view>
 
 
@@ -417,14 +417,14 @@
 			}
 
 			.rule::after {
-				content: "\e64c";
+				content: "\e6e5";
 				font-family: "iconfont" !important;
 				padding-left: 10upx;
 			}
 		}
 
 		.topthree-container {
-			height: 440upx;
+			height: 420upx;
 			display: flex;
 			justify-content: space-between;
 
