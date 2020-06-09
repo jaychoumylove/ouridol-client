@@ -98,12 +98,12 @@
 		<view class="nav-container">
 			<!--排行-->
 			<btnComponent>
-				<image src="/static/image/pet/help.png" mode="widthFix" @tap="$app.goPage('/pages/subPages/user/rank/pet_rank')"></image>
+				<image src="/static/image/pet/rank.png" mode="widthFix" @tap="$app.goPage('/pages/subPages/user/rank/pet_rank')"></image>
 			</btnComponent>
 			
 			<!--道具-->
 			<btnComponent>
-				<image src="/static/image/pet/help.png" mode="widthFix" @tap="$app.goPage('/pages/prop/prop')"></image>
+				<image src="/static/image/pet/prop.png" mode="widthFix" @tap="$app.goPage('/pages/prop/prop')"></image>
 			</btnComponent>
 			
 			<!--帮助-->

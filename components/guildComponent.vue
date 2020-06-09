@@ -302,8 +302,8 @@
 			</view>
 			<!-- 我的福袋btn -->
 			<view class="btn" @tap="openFudai">
-				<image class="img" src="/static/image/prop/4.png" mode=""></image>
-			</view>			
+				<image class="img" src="/static/image/guild/fd_btn.png" mode=""></image>
+			</view>
 			<!-- 发红包btn -->
 			<view class="btn" v-if="$app.getData('config').hongbao_chun.title" @tap="openHongbao">
 				<image class="img" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9EsP1YK72GM1EGI8VsBLl4vDnX5444V6QyFOATsWQ50PKmdF2QnE9cPDpD2WiaFuRJjJLlbLDRq4Ig/0"
@@ -327,26 +327,26 @@
 				</btnComponent>
 			</view>
 			<!-- 聊天按钮 -->
-			
-			
+
+
 			<block v-else>
-			<view class="msg-input-container" v-if="$app.getData('config').chart_type == '0'">
-				<btnComponent>
-					<view class="trumpet-wrapper">
-						<image src="/static/image/guild/sayworld.png" mode="" @tap="sayworld"></image>
-						<view class="trumpet">{{userCurrency.trumpet}}</view>
-					</view>
-				</btnComponent>
-				<input type="text" :value="chartMsg" confirm-type="send" @confirm="sendMsg" @input="chartMsg = $event.detail.value"
-				 placeholder="快来和小伙伴们聊天吧" />
-				<btnComponent>
-					<image src="/static/image/guild/sendmsg.png" mode="" @tap="sendMsg"></image>
-				</btnComponent>
-			</view> 
-			<image v-else class="msg-button" @tap="modal='say'" src="/static/image/guild/biaobai.png" mode=""></image>
+				<view class="msg-input-container" v-if="$app.getData('config').chart_type == '0'">
+					<btnComponent>
+						<view class="trumpet-wrapper">
+							<image src="/static/image/guild/sayworld.png" mode="" @tap="sayworld"></image>
+							<view class="trumpet">{{userCurrency.trumpet}}</view>
+						</view>
+					</btnComponent>
+					<input type="text" :value="chartMsg" confirm-type="send" @confirm="sendMsg" @input="chartMsg = $event.detail.value"
+					 placeholder="快来和小伙伴们聊天吧" />
+					<btnComponent>
+						<image src="/static/image/guild/sendmsg.png" mode="" @tap="sendMsg"></image>
+					</btnComponent>
+				</view>
+				<image v-else class="msg-button" @tap="modal='say'" src="/static/image/guild/biaobai.png" mode=""></image>
 			</block>
 			<!-- 聊天按钮 -->
-			
+
 		</block>
 		<!-- 改版聊天 -->
 		<view class="say-modal-container" v-if="modal == 'say'">
@@ -402,26 +402,26 @@
 		</view>
 		<!-- 验证手机号 -->
 		<modalComponent v-if="modal == 'phonenumberCheck'" type="center" @closeModal="modal=''">
-			
+
 			<!-- #ifndef MP-WEIXIN -->
 			<view class="fansbox-modal-container" style="height: 680upx;">
 				<view class="title flex-set">手机号码验证</view>
 				<view class="tips">
-				根据国家互联网相关规定，【发言】功能需进行手机号验证才可使用，手机号码仅自己可见。
-				<text>国内短信：11位手机号码，例如15900000000。</text>
-				<text>国际/港澳台消息：国际区号+号码，例如85200000000。</text>
+					根据国家互联网相关规定，【发言】功能需进行手机号验证才可使用，手机号码仅自己可见。
+					<text>国内短信：11位手机号码，例如15900000000。</text>
+					<text>国际/港澳台消息：国际区号+号码，例如85200000000。</text>
 				</view>
 				<input class="phonenumber" :value="phoneNumber" @input="setPhoneNumber" type="number" placeholder="输入手机号" />
 				<view class="phonecode flex-set self-input">
 					<input :value="phoneCode" @input="setPhoneCode" type="number" placeholder="输入验证码" />
 					<view @tap="sendPhoneCode()">获得验证码</view>
-				</view>			
-				<button class="btn-wrap"  @tap="savePhoneNumber">
+				</view>
+				<button class="btn-wrap" @tap="savePhoneNumber">
 					<btnComponent type="default">
 						<view class="btn flex-set">立即验证</view>
 					</btnComponent>
 				</button>
-			</view>	
+			</view>
 			<!-- #endif -->
 			<!-- #ifdef MP-WEIXIN -->
 			<view class="fansbox-modal-container" style="height: 550upx; margin-top: 30upx;">
@@ -432,7 +432,7 @@
 						<view class="btn flex-set">立即验证</view>
 					</btnComponent>
 				</button>
-			</view>		
+			</view>
 			<!-- #endif -->
 		</modalComponent>
 		<!-- MODAL -->
@@ -442,7 +442,8 @@
 				<!-- <view class="explain-wrapper">说明：还未确定后完全好大无穷皇帝和我去我前进的气温降低哦</view> -->
 				<view class="swiper-change flex-set">
 					<view class="item" :class="{select:current==0}" @tap="current = 0">送能量</view>
-					<view v-if="$app.getData('config').version != $app.getData('VERSION')" class="item" :class="{select:current==1}" @tap="current = 1">送礼物</view>
+					<view v-if="$app.getData('config').version != $app.getData('VERSION')" class="item" :class="{select:current==1}"
+					 @tap="current = 1">送礼物</view>
 				</view>
 
 				<!-- <swiper @change="swiperChange" :current="current"> -->
@@ -771,7 +772,7 @@
 			</view>
 
 		</modalComponent>
-		
+
 		<!--送礼物后福袋-->
 		<modalComponent v-if="modal == 'sendFudai'" title="福袋" @closeModal="modal=''">
 			<view class="tips-modal-container hongbao">
@@ -790,54 +791,55 @@
 						</btnComponent>
 					</button>
 				</view>
-			</view>		
+			</view>
 		</modalComponent>
-		
-		<!--我的福袋列表-->		
+
+		<!--我的福袋列表-->
 		<modalComponent v-if="modal == 'fudai'" title="我派发的福袋" @closeModal="modal=''">
 			<view class="invit-fake-modal-container">
 				<view class="explain-wrapper">
 					<view class="top flex-set">
 						<view class="">
 							给爱豆送礼物<view>获得10%的能量福袋</view>
-						</view>				
+						</view>
 						<btnComponent type="default">
 							<button class="btn" @tap="modal='send'">
 								<view class="flex-set" style="padding: 10upx 20upx;">我要派福袋</view>
 							</button>
 						</btnComponent>
 					</view>
-				</view>		
+				</view>
 				<scroll-view scroll-y class="list-wrapper" @scrolltolower="fudaiPage++;getMyfudaiList();" v-if="fudaiList.length>0">
 					<view class="item" v-for="(item,index) in fudaiList" :key="index">
 						<view class='avatar'>
 							<image src="/static/image/prop/4.png" mode="aspectFill"></image>
 						</view>
 						<view class="text-container">
-							<view class="total-coin"><image src="/static/image/user/b1.png" mode="aspectFill"></image>{{item.coin}}</view>
+							<view class="total-coin">
+								<image src="/static/image/user/b1.png" mode="aspectFill"></image>{{item.coin}}
+							</view>
 							<view class="bottom-text">
 								<view class="hot-count">已领取{{item.opened_people}}/{{item.people}}</view>
 							</view>
 						</view>
-						
-						<view class="btn">								
-							<btnComponent v-if="item.status == 0" type="default">
+
+						<view class="btn flex-set">
+							<btnComponent v-if="item.status == 0" type="default" style=" display: inline-block;margin-bottom: 10upx;">
 								<button open-type="share" data-share="10" :data-otherparam="'id=' + item.id">
 									<view class="flex-set" style="width: 130upx;height: 60upx;">立即分享</view>
 								</button>
 							</btnComponent>
-							
-							<btnComponent v-if="item.status == 1" type="success" @tap="$app.goPage('/pages/index/fudai_open?id' + item.id)">
-								<view class="flex-set" style="width: 130upx;height: 60upx;">详情</view>
-							</btnComponent>
+
+							<view @tap="openFudaiDetail(item.id)" v-if="item.status == 0" class="flex-set" style="width: 70upx;height: 60upx;">详情</view>
+							<view @tap="openFudaiDetail(item.id)" v-if="item.status == 1" class="flex-set" style="width: 130upx;height: 60upx;">详情</view>
 						</view>
-		
+
 					</view>
 				</scroll-view>
 			</view>
-		
+
 		</modalComponent>
-		
+
 		<!-- 用户信息 -->
 		<modalComponent v-if="modal == 'userInfo'" title=" " @closeModal="modal=''">
 			<view class="userinfo-modal-container">
@@ -1094,8 +1096,8 @@
 				article: {}, // 公告文章
 
 				mass: {}, // 集结相关
-				phoneNumber:'',
-				phoneCode:'',
+				phoneNumber: '',
+				phoneCode: '',
 				fakeinvitList: [],
 				invitFakePage: 1,
 				fatherEarn: 0,
@@ -1131,8 +1133,8 @@
 				urgeSendTips: '', // 催促打榜tips
 
 				hongbaoTime: '',
-				
-				referrerFudai:null,
+
+				referrerFudai: null,
 				fudaiList: [],
 				fudaiPage: 1,
 			};
@@ -1824,7 +1826,7 @@
 				})
 			},
 			sendHongbao() {
-				this.$app.request('page/sendHongbao', {}, res=>{
+				this.$app.request('page/sendHongbao', {}, res => {
 					this.openHongbao()
 				})
 			},
@@ -1832,8 +1834,13 @@
 			openFudai() {
 				this.modal = 'fudai'
 				this.getMyfudaiList()
-				
-			},						
+
+			},
+			// 去福袋详情
+
+			openFudaiDetail(itemId) {
+				this.$app.goPage('/pages/index/fudai_open?id=' + itemId);
+			},
 			// 我的福袋列表
 			getMyfudaiList() {
 				this.$app.request('page/fudai', {
@@ -1854,14 +1861,14 @@
 					} else {
 						this.fudaiList = this.fudaiList.concat(resList)
 					}
-			
+
 					this.$app.closeLoading(this)
 				})
 			},
-			
+
 			sendFudai() {
-				this.$app.request('page/sendFudai', {}, res=>{
-					this.referrerFudai = 'id='+res.data.id
+				this.$app.request('page/sendFudai', {}, res => {
+					this.referrerFudai = 'id=' + res.data.id
 				})
 			},
 			// 好友列表
@@ -1899,7 +1906,7 @@
 					this.$app.closeLoading(this)
 				})
 			},
-			
+
 			/**
 			 * 贡献人气
 			 */
@@ -1961,7 +1968,7 @@
 			/*
 			保存手机号码
 			*/
-			getPhoneNumber(e){
+			getPhoneNumber(e) {
 				let userInfo = this.$app.getData('userInfo')
 				this.$app.request('user/savephone', {
 					iv: e.detail.iv,
@@ -1971,16 +1978,16 @@
 					this.$app.setData('userInfo', userInfo)
 					this.modal = ''
 				}, 'POST', true)
-			},			
+			},
 			/*
 			保存手机号码
 			*/
-			savePhoneNumber(){
+			savePhoneNumber() {
 				if (!this.phoneNumber || !this.phoneCode) {
 					this.$app.toast('手机号码或者验证码不能为空')
 					return;
-				} 
-				
+				}
+
 				let userInfo = this.$app.getData('userInfo')
 				this.$app.request('user/savephone', {
 					phoneNumber: this.phoneNumber,
@@ -1993,12 +2000,12 @@
 			},
 			setPhoneNumber(e) {
 				this.phoneNumber = e.detail.value
-			},		
+			},
 			setPhoneCode(e) {
 				this.phoneCode = e.detail.value
 			},
 			//发送验证码
-			sendPhoneCode(){
+			sendPhoneCode() {
 				this.$app.request('page/sendSms', {
 					phoneNumber: this.phoneNumber,
 				}, res => {
@@ -2866,7 +2873,7 @@
 					margin-left: 30upx;
 					width: 250upx;
 					line-height: 44upx;
-					
+
 					.bottom-text {
 						display: flex;
 						align-items: center;
@@ -3294,10 +3301,12 @@
 				}
 
 			}
-			.git-tips{
+
+			.git-tips {
 				text-align: center;
 				color: red;
 			}
+
 			.gift {
 				position: absolute;
 				right: 40upx;
@@ -3599,19 +3608,21 @@
 						height: 90upx;
 						border-radius: 50%;
 					}
-					
+
 					.text-container {
 						width: 300upx;
 						padding: 0 30upx;
 						line-height: 44upx;
-						
-						.total-coin{
+
+						.total-coin {
 							display: flex;
-							image{
+
+							image {
 								width: 40upx;
 								height: 40upx;
 							}
 						}
+
 						.bottom-text {
 							display: flex;
 							align-items: center;
@@ -4169,48 +4180,53 @@
 			transform: translateY(0);
 		}
 	}
+
 	.fansbox-modal-container {
 		margin-top: -100upx;
 		padding: 40upx;
 		display: flex;
 		align-items: center;
 		flex-direction: column;
-	
+
 		.title {
 			font-size: 32upx;
 			font-weight: 700;
 			margin: 20upx;
-	
+
 			.iconfont {
 				color: #888;
 				margin: 0 10upx;
 				font-size: 26upx;
 			}
 		}
+
 		/* #ifdef  MP-WEIXIN */
 		/*  只在小程序中生效  */
-		.tips{
+		.tips {
 			margin-bottom: 30upx;
 		}
+
 		/*  #endif  */
-		
-		.tips text{
-				display: block;
+
+		.tips text {
+			display: block;
 		}
-		
-		.phonenumber{
+
+		.phonenumber {
 			margin-top: 30upx;
 			width: 330upx;
 			border-bottom: 1upx solid #818286;
 		}
-		.phonecode{
+
+		.phonecode {
 			margin: 30upx 0;
-			input{
+
+			input {
 				width: 200upx;
 				border-bottom: 1upx solid #818286;
 			}
 		}
-	
+
 		.scroll-wrap {
 			height: 420upx;
 			width: 100%;
@@ -4219,18 +4235,18 @@
 			flex-wrap: wrap;
 			margin: 20upx;
 			white-space: nowrap;
-	
+
 			.box-item {
 				width: 33%;
 				display: flex;
 				flex-direction: column;
 				align-items: center;
-	
+
 				.img {
 					width: 154upx;
 					height: 126upx;
 				}
-	
+
 				.name {
 					font-weight: 700;
 					color: #fff;
@@ -4243,7 +4259,7 @@
 					margin-top: 20upx;
 					margin-bottom: 40upx;
 					padding-right: 20upx;
-	
+
 					.img {
 						border-radius: 50%;
 						width: 40upx;
@@ -4253,10 +4269,10 @@
 				}
 			}
 		}
-	
+
 		.btn-wrap {
 			margin: 0 20upx;
-	
+
 			.btn {
 				font-size: 34upx;
 				font-weight: 700;
