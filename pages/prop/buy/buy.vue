@@ -27,15 +27,9 @@
 								<input class="flex-set" type="number" :value="item.num" @input="numChange(index, $event)" />
 								<view class="btn flex-set" @tap="numChange(index, 1)">+</view>
 							</view>
-							<view class="flex-set">
-								
-								<btnComponent type="css">
-									<view class="flex-set" style="width: 100upx;height:50upx;display: block;" @tap="payment(item)">购买</view>
-								</btnComponent>
-								<btnComponent type="css">
-									<view class="flex-set" style="width: 100upx;height:50upx;" @tap="payment(item)">购买</view>
-								</btnComponent>
-							</view>
+							<btnComponent type="css">
+								<view class="flex-set" style="width: 140upx;height:70upx;" @tap="payment(item)">购买</view>
+							</btnComponent>
 						</view>
 					</view>
 
