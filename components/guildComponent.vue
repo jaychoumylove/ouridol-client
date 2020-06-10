@@ -1741,7 +1741,7 @@
 					starid,
 					index
 				}, res => {
-					this.starRankList[index].steal = 60
+					this.starRankList[index].steal = res.data.steal
 					this.$app.toast(`偷到了${res.data.count}能量`)
 
 					this.getStarRank()
