@@ -62,7 +62,7 @@
 					</btnComponent>
 				</view>
 				
-				<view class="del-a iconfont iconclose"></view>
+				<view class="del-a iconfont iconclose" @tap="breakSon(item)"></view>
 			</view>
 
 		</view>
@@ -108,7 +108,7 @@
 			cancelFather() {
 				if (this.father) {
 					this.$app.modal(`是否脱离和${this.father}的师徒关系？`, () => {
-						this.$app.request('user/breakFather', {}, res => {
+						this.$app.request(this.$app.API.USER_BREAK_FATHER, {}, res => {
 							this.$app.toast('脱离成功', 'success')
 							this.father = ''
 						})
@@ -131,6 +131,21 @@
 					}, 'POST', true)
 				}
 
+			},
+			
+			breakSon(son) {
+				console.info(son);
+				if (!son) this.$app.toast('请选择接触关系的徒弟')
+				this.$app.modal(`是否脱离和${son.nickname}的师徒关系？`, () => {
+					this.$app.request(this.$app.API.USER_BREAK_SON, {id: son.uid}, res => {
+						this.$app.toast('脱离成功', 'success')
+						let newList = [];
+						newList = this.sonList.filter(item => {
+							return item.uid != son.uid
+						})
+						this.sonList = newList
+					})
+				})
 			},
 
 			getFatherInfo() {
