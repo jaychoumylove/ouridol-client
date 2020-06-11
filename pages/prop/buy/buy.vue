@@ -286,7 +286,7 @@
 
 					.content {
 						line-height: 1.7;
-						margin: 0 20upx;
+						margin: 0 0 0 20upx;
 
 						.top {
 							width: 200upx;
