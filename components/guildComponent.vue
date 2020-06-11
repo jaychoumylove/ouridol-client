@@ -830,8 +830,10 @@
 								</button>
 							</btnComponent>
 
-							<view @tap="openFudaiDetail(item.id)" v-if="item.status == 0" class="flex-set" style="width: 70upx;height: 60upx;">详情</view>
-							<view @tap="openFudaiDetail(item.id)" v-if="item.status == 1" class="flex-set" style="width: 130upx;height: 60upx;">详情</view>
+							<view @tap="openFudaiDetail(item.id)" v-if="item.status == 0" class="flex-set" style="width: 70upx;height: 60upx;border-bottom: 2rpx solid #e5b4b0;
+">详情</view>
+							<view @tap="openFudaiDetail(item.id)" v-if="item.status == 1" class="flex-set" style="width: 130upx;height: 60upx;border-bottom: 2rpx solid #e5b4b0;
+">详情</view>
 						</view>
 
 					</view>

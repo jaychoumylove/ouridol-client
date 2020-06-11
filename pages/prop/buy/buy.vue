@@ -1,56 +1,131 @@
-<template>
+ <template>
+	<view class="buy-container">
+		<view class="top-enter-wrapper">
+			<view class="explain-wrapper flex-set">
+				<!-- <image src=""></image> -->
+				<view class="text-wrapper">
+					<view class="top flex-set"></view>
+					<view class="bottom flex-set"></view>
+				</view>
+				<block v-if="$app.getData('VERSION')!=$app.getData('config').version">
+					<btnComponent type="default">
+						<view @tap="$app.goPage('/pages/prop/prop')" class="flex-set" style="font-weight: 700 ;width: 140upx; height: 60upx;">我的道具</view>
+					</btnComponent>
+				</block >
+			</view>
+		</view>
+		<view class="list-wrapper">
+			<view class="list-item" v-for="(item,index) in list" :key="index">
+				<view class="row row-1">
+					<view class="left flex-set">
+						<image :src="item.img" class="icon" mode="aspectFill"></image>
 
-	<view v-if="$app.chargeSwitch()!=0" class="buy-container flex-set">
-		由于相关规范，充值功能暂不可用
-	</view>
-	<view v-else class="buy-container">
-
-
-			<view class="list-wrapper">
-				<view class="list-item" v-for="(item,index) in list" :key="index">
-					<view class="row row-1">
-						<view class="left flex-set">
-							<image :src="item.img" class="icon" mode="aspectFill"></image>
-
-							<view class="content">
-								<view class="top text-overflow">{{item.name}}</view>
-								<view class="bottom flex-set">
-									<view class="price">￥{{item.fee}}</view>
-									<view class="remain">剩余{{item.remain}}</view>
-								</view>
+						<view class="content">
+							<view class="top text-overflow">{{item.name}}</view>
+							<view class="bottom flex-set">
+								<view class="price">￥{{item.fee}}</view>
+								<view class="remain">剩余{{item.remain}}</view>
 							</view>
-						</view>
-
-						<view class="right flex-set">
-							<view class="num-wrapper flex-set">
-								<view class="btn flex-set" @tap="numChange(index, 0)">-</view>
-								<input class="flex-set" type="number" :value="item.num" @input="numChange(index, $event)" />
-								<view class="btn flex-set" @tap="numChange(index, 1)">+</view>
-							</view>
-							<btnComponent type="css">
-								<view class="flex-set" style="width: 140upx;height:70upx;" @tap="payment(item)">购买</view>
-							</btnComponent>
 						</view>
 					</view>
 
-					<view class="row row-2">{{item.desc}}</view>
+					<view class="right flex-set">
+						<view class="num-wrapper flex-set">
+							<view class="btn flex-set" @tap="numChange(index, 0)">-</view>
+							<input class="flex-set" type="number" :value="item.num" @input="numChange(index, $event)" />
+							<view class="btn flex-set" @tap="numChange(index, 1)">+</view>
+						</view>
+							<!-- <btnComponent type="css">
+								<view class="flex-set" style="width: 140upx;height:70upx;" @tap="payment(item)">购买</view>
+							</btnComponent> -->
+						
+						<!-- <view class="flex-set">
+							<btnComponent v-if="$app.chargeSwitch()!=0" type="css">
+								<view class="text flex-set" style="width: 140upx;height:70upx;" @tap="payment(item)">购买</view>
+							</btnComponent>
+							<btnComponent v-else type="css">
+								<view class="flex-set" style="width: 140upx;height:70upx;" @tap="payment(item)">回复"1"获得</view>
+							</btnComponent>
+							<btnComponent type="css">
+								<view class="text flex-set" style="width: 140upx;height:70upx;" @tap="payment(item)">灵丹兑换</view>
+							</btnComponent>								
+						</view> -->
 
+						<view class="flex-set action-btn" style="flex-direction: column;">
+							<btnComponent v-if="$app.chargeSwitch()!=0" type="css" style="margin-bottom: 10upx;">
+								<view class="flex-set" style="width: 100upx;height:50upx;" @tap="payment(item)">购买</view>
+							</btnComponent>
+							<btnComponent v-else type="css" style="margin-bottom: 10upx;">
+								<button class="flex-set comment" style="width: 100upx;height:50upx;" open-type="contact">回复"1"</button>
+							</btnComponent>
+							<btnComponent type="css">
+								<view class="flex-set ldexchange" style="width: 100upx;height:50upx;" @tap="exchangeModel(index, 'open')">{{item.stone}}灵丹</view>
+							</btnComponent>
+						</view>
+					</view>
 				</view>
+
+				<view class="row row-2">{{item.desc}}</view>
+
 			</view>
 		</view>
+		
+		<modalComponent v-if="modal == 'exchange'" title="灵丹兑换" @closeModal="exchangeModel(-1, 'close')">
+			<view class="exchangeModal">
+				<view class="intro flex-set mTop">
+					<image :src="list[exchangeIndex].img" class="icon" mode="aspectFill"></image>
+					<view class="intro-r">
+						<view class="title">
+							<view class="name">{{list[exchangeIndex].name}}</view>
+							<view class="remain flex-set" style="justify-content: flex-start;">
+								<image src="/static/image/user/b2.png" mode="aspectFit"></image>
+								{{list[exchangeIndex].stone}}
+								<view class="remain-num">剩余：{{list[exchangeIndex].remain}}个</view>
+							</view>
+						</view>
+					</view>
+				</view>
+				<view class="intro mTop">
+					<view class="description">{{list[exchangeIndex].desc}}</view>
+				</view>
+				<view class="num flex-set mTop">
+					<view class="stone flex-set">
+					<image src="/static/image/user/b2.png" mode="aspectFit"></image>
+					{{list[exchangeIndex].stone}} x 
+					</view>
+					<view class="token-input">
+						<input :value="list[exchangeIndex].num" @input="handleExchangeInput" placeholder="0" type="number" />
+					</view>
+					<view class="token-stone">
+						<image src="/static/image/user/b2.png" mode="aspectFit"></image>
+						{{list[exchangeIndex].stone * list[exchangeIndex].num}}
+					</view>
+				</view>
+				<view class="submit mTop">
+					<btnComponent type="css">
+						<view class="flex-set" style="width:250upx;height: 80upx;font-weight: 700;font-size: 34upx;" @tap="exchange()">确认兑换</view>
+					</btnComponent>
+				</view>				
+			</view>
+		</modalComponent>
+	</view>
 </template>
 
 <script>
+	import modalComponent from '@/components/modalComponent.vue'
 	import btnComponent from "@/components/btnComponent.vue"
 
 	export default {
 		components: {
-			btnComponent
+			btnComponent,
+			modalComponent
 		},
 		data() {
 			return {
 				list: [],
-				num: 1
+				num: 1,
+				modal: '',
+				exchangeIndex: -1
 			};
 		},
 		onShow() {
@@ -66,6 +141,31 @@
 				}
 
 				if (this.list[index].num < 1) this.list[index].num = 1
+			},
+			// 打开灵丹兑换弹窗
+			exchangeModel(index, type) {
+				this.exchangeIndex = type == 'open' ? index: -1;
+				this.modal = type == "open" ? 'exchange': '';
+			},
+			// 执行兑换请求
+			exchange() {
+				if (this.exchangeIndex < 0) this.$app.toast(res.msg);
+				
+				const item = this.list[this.exchangeIndex];
+				this.$app.request(this.$app.API.PROP_EXCHANGE, {
+					id: item.id,
+					num: item.num,
+				}, res => {
+					this.$app.toast(res.msg, 'success');
+					this.exchangeModel(-1, 'close');
+				}, 'POST', true)
+			},
+			handleExchangeInput(evt) {
+				const remain = this.list[this.exchangeIndex].remain;
+				
+				if (evt.target.value > remain) return this.$app.toast(`最多兑换${remain}个`);
+				
+				this.list[this.exchangeIndex].num = evt.target.value;
 			},
 			// 支付
 			payment(item) {
@@ -137,6 +237,29 @@
 
 <style lang="scss" scoped>
 	.buy-container {
+		
+		.top-enter-wrapper {
+		
+			.explain-wrapper {
+				padding: 10upx 20upx;
+				margin: 20upx;
+				// box-shadow: 0upx 2upx 4upx rgba(#000, .3);
+				border-radius: 30upx;
+				background-color: rgba(#FFF, .3);
+				justify-content: space-around;
+		
+				text {
+					color: orange;
+				}
+		
+				.icon {
+					width: 30upx;
+					height: 30upx;
+				}
+		
+		
+			}
+		}
 		.list-item {
 			padding: 10upx 20upx;
 			background-color: rgba(#FFF, .3);
@@ -209,11 +332,105 @@
 							font-size: 22upx;
 						}
 					}
+					
+					.action-btn {
+						.comment,.ldexchange {
+							font-size: 24upx;
+						}
+					}
 				}
 			}
 
 			.row-2 {
 				font-size: 24upx;
+			}
+		}
+		.exchangeModal {
+			width: 95%;
+			margin: 10upx auto 10upx auto;
+			.intro {
+				margin: 0;
+				flex-direction: row;
+				flex-grow: "wrap";
+				.icon {
+					width: 100upx;
+					height: 100upx;
+				}
+				.intro-r {
+					flex: 1;
+					margin-left: 20upx;
+					.title,.description {
+						width: 100%;
+						margin-bottom: 10upx;
+					}
+					.description {
+						font-size: 22upx;
+						color: $text-color-2;
+					}
+					.title {
+						display: flex;
+						flex-direction: row;
+						flex-wrap: wrap;
+						.remain{
+							width: 100%;
+							font-size: 22upx;
+							color: $text-color-2;
+							image {
+								width: 50upx;
+								height: 50upx;
+								margin-right: 4upx;
+							}
+							.remain-num {
+								margin-left: 10upx;
+							}
+						}
+						.name {
+							width: 100%;
+						}
+					}
+				}
+			}
+			.num {
+				// width: 100upx;
+				height: 100upx;
+				.stone {
+					width: 150upx;
+					text-align: center;
+				}
+				.token-stone {
+					width: 160upx;
+					margin-right: 15upx;
+					text-align: center;
+				}
+				image {
+					width: 50upx;
+					height: 50upx;
+					margin-right: 4upx;
+				}
+				.token-input {
+					flex: 1;
+					input {
+						background-color: $color_3;
+						border-radius: 15upx;
+						flex: 1;
+						height: 80upx;
+						font-size: 40upx;
+						text-align: center;
+						line-height: 110upx;
+						// background-color: rgba(50, 50, 50, .3);
+					}
+				}
+			}
+			.submit {
+				width: 250upx;
+				margin: 0 auto;
+				bottom: 20upx;
+				display: flex;
+				flex-direction: row;
+				align-self: flex-end;
+			}
+			.mTop {
+				margin-bottom: 20upx;
 			}
 		}
 	}

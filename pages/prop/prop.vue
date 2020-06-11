@@ -8,11 +8,8 @@
 					<view class="bottom flex-set">稀有道具，每日限量抢购</view>
 				</view>
 				<block v-if="$app.getData('VERSION')!=$app.getData('config').version">
-					<btnComponent type="default" v-if="$app.chargeSwitch()==0">
+					<btnComponent type="default">
 						<view @tap="$app.goPage('/pages/prop/buy/buy')" class="flex-set" style="font-weight: 700 ;width: 140upx; height: 60upx;">进入</view>
-					</btnComponent>
-					<btnComponent type="default" v-else-if="$app.chargeSwitch()==2">
-						<button class="flex-set" style="font-weight: 700 ;width: 140upx; height: 60upx;" open-type="contact">回复"1"</button>
 					</btnComponent>
 				</block >
 			</view>
@@ -50,6 +47,9 @@
 		<view v-else class="nodata">
 			<image src="/static/image/user/blank.png" mode="widthFix" class="img"></image>
 			<view class="text">你还没有道具</view>
+			<view class="text flex-set" style="height: 60upx;width: 230upx;border-bottom: 1upx solid #000;margin: 0 auto;">
+				<button class="comment" open-type="contact">回复"1"获得道具</button>
+			</view>
 
 		</view>
 	</view>
