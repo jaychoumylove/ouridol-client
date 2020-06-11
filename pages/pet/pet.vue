@@ -97,9 +97,9 @@
 		
 		<view class="nav-container">
 			<!--排行-->
-			<btnComponent>
+			<!-- <btnComponent>
 				<image src="/static/image/pet/rank.png" mode="widthFix" @tap="$app.goPage('/pages/subPages/user/rank/pet_rank')"></image>
-			</btnComponent>
+			</btnComponent> -->
 			
 			<!--道具-->
 			<btnComponent>
@@ -107,9 +107,9 @@
 			</btnComponent>
 			
 			<!--帮助-->
-			<btnComponent>
+			<!-- <btnComponent>
 				<image src="/static/image/pet/help.png" mode="widthFix" @tap="$app.goPage('/pages/notice/notice?id=2')"></image>
-			</btnComponent>
+			</btnComponent> -->
 		</view>
 
 		<view class="earn-container" @tap="settle">
@@ -961,7 +961,7 @@
 			top:30%;
 			image {
 				margin-bottom: 20upx;
-				width: 60upx;
+				width: 80upx;
 			}
 		}
 		.earn-container::before {
