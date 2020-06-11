@@ -4,8 +4,8 @@
 			<view class="explain-wrapper flex-set">
 				<!-- <image src=""></image> -->
 				<view class="text-wrapper">
-					<view class="top flex-set"></view>
-					<view class="bottom flex-set"></view>
+					<view class="top flex-set">小贴士</view>
+					<view class="bottom flex-set">道具每日限量,每日24:00失效,请及时使用</view>
 				</view>
 				<block v-if="$app.getData('VERSION')!=$app.getData('config').version">
 					<btnComponent type="default">
@@ -53,13 +53,13 @@
 
 						<view class="flex-set action-btn" style="flex-direction: column;">
 							<btnComponent v-if="$app.chargeSwitch()!=0" type="css" style="margin-bottom: 10upx;">
-								<view class="flex-set" style="width: 100upx;height:50upx;" @tap="payment(item)">购买</view>
+								<view class="flex-set" style="width: 130upx;height:50upx;" @tap="payment(item)">购买</view>
 							</btnComponent>
 							<btnComponent v-else type="css" style="margin-bottom: 10upx;">
-								<button class="flex-set comment" style="width: 100upx;height:50upx;" open-type="contact">回复"1"</button>
+								<button class="flex-set comment" style="width: 130upx;height:50upx; padding: 0 auto;" open-type="contact">回复"1"</button>
 							</btnComponent>
 							<btnComponent type="css">
-								<view class="flex-set ldexchange" style="width: 100upx;height:50upx;" @tap="exchangeModel(index, 'open')">{{item.stone}}灵丹</view>
+								<view class="flex-set ldexchange" style="width: 130upx;height:50upx;padding: 0 auto;" @tap="exchangeModel(index, 'open')">{{item.stone}}灵丹</view>
 							</btnComponent>
 						</view>
 					</view>
@@ -158,6 +158,7 @@
 				}, res => {
 					this.$app.toast(res.msg, 'success');
 					this.exchangeModel(-1, 'close');
+					this.list[this.exchangeIndex].num = 1;
 				}, 'POST', true)
 			},
 			handleExchangeInput(evt) {
@@ -285,7 +286,7 @@
 
 					.content {
 						line-height: 1.7;
-						margin: 0 40upx;
+						margin: 0 20upx;
 
 						.top {
 							width: 200upx;
