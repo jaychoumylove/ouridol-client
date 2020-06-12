@@ -844,7 +844,8 @@
 
 		<!-- 用户信息 -->
 		<modalComponent v-if="modal == 'userInfo'" title=" " @closeModal="modal=''">
-			<view class="userinfo-modal-container">
+			<view :class="currentUser.forbidden ? 'userinfo-modal-container': 'userinfo-modal-container forbiddenPadding'">
+				<view v-if="currentUser.forbidden" class="forbidden flex-set">已被{{currentUser.forbidden_time == 'ever' ? "永久禁言": "禁言至"+currentUser.forbidden_time}}</view>
 				<view class="top">
 					<image class="avatar" :src="currentUser.avatarurl" mode="scaleToFill" @tap="$app.preImg(currentUser.avatarurl)"></image>
 					<view class="nickname">{{currentUser.nickname}}</view>
@@ -898,7 +899,7 @@
 						<view class="bg flex-set">
 							<image src="/static/image/icon/forbidden.png" mode=""></image>
 						</view>
-						<view class="text">{{currentUser.type==2?'已':''}}禁言</view>
+						<view class="text">{{currentUser.forbidden?'已':''}}禁言</view>
 					</view>
 				</view>
 
@@ -1348,6 +1349,7 @@
 			},
 			// 禁言
 			openForbidden(uid) {
+				if (this.currentUser.forbidden) return;
 				if (this.$app.getData('userInfo').type == 1) return this.forbidden();
 				if (this.captain == 1) {
 					// 获取禁言配置
@@ -3901,6 +3903,10 @@
 				margin: 100upx auto;
 			}
 		}
+		
+		.forbiddenPadding {
+			padding-top: 0 !important;
+		}
 
 		.userinfo-modal-container {
 			height: 640upx;
@@ -3909,7 +3915,12 @@
 			align-items: center;
 			justify-content: space-around;
 			padding: 40upx;
-
+			.forbidden {
+				width: 100%;
+				height: 20upx;
+				line-height: 20upx;
+				color: red;
+			}
 			.top {
 				display: flex;
 				flex-direction: column;
