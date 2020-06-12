@@ -11,7 +11,7 @@
 				<!-- 弹幕 -->
 				<view class="danmaku-wrapper flex-set">
 
-					<view class="danmaku" v-if="danmaku" :class="{gift:danmaku.starname}">
+					<view class="danmaku" v-if="danmaku" :class="{gift:danmaku.starname}" @tap="goReport(danmaku)">
 						<image class="avatar" :src="danmaku.avatarurl"></image>
 
 						<view class="content" v-if="danmaku.content">{{danmaku.content}}</view>
@@ -1343,6 +1343,10 @@
 						})
 					}
 				})
+			},
+			goReport(data) {
+				const {id, rec} = data;
+				this.$app.goPage(`/pages/group/report/report?user=${id}&id=${rec}`);
 			},
 			checkForbidden() {
 				return this.captain == 1 || this.$app.getData('userInfo').type == 1

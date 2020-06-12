@@ -102,7 +102,11 @@
 			"path": "pages/signin/star_signin",
 			"style": {}
 		}
-	],
+	    ,{
+            "path" : "pages/group/report/report",
+            "style" : {}
+        }
+    ],
 	// 分包
 	"subPackages": [{
 		"root": "pages/subPages/",
