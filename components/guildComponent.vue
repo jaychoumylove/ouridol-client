@@ -780,12 +780,12 @@
 					<image class="avatar" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9HhvlXURtbJbFvRVwdINYhHcI1krgG784vHafRPrqpicP7KKTbav91rJF5ibqKPcPEV5zp3oUhRyicZg/0"
 					 mode=""></image>
 					<view class="title">恭喜获得【能量福袋】</view>
-					<view class="text flex-set">共<text style="color:#F00;">{{$app.getData('config').hongbao_chun.count}}能量</text>，
-						<text style="color:#ffaa00;">{{$app.getData('config').hongbao_chun.people}}人</text>瓜分</view>
+					<view class="text flex-set">共<text style="color:#F00;">{{sendFudaiInfo.coin}}能量</text>，
+						<text style="color:#ffaa00;">{{sendFudaiInfo.people}}人</text>瓜分</view>
 					<view class="tips">将福袋分享到不同的群，让更多的人来领取吧</view>
 				</view>
 				<view class="row flex-set">
-					<button class="btn" open-type="share" data-share="10" :data-otherparam="referrerFudai">
+					<button class="btn" open-type="share" data-share="10" :data-otherparam="sendFudaiInfo.referrer">
 						<btnComponent type="css">
 							<view class="flex-set" style="width:400upx;height: 100upx;font-weight: 700;font-size: 34upx;">立即分享</view>
 						</btnComponent>
@@ -1139,6 +1139,11 @@
 				referrerFudai: null,
 				fudaiList: [],
 				fudaiPage: 1,
+				sendFudaiInfo: {
+					referrer: -1,
+					coin: 0,
+					people: 0
+				}
 			};
 		},
 		created() {
@@ -1958,7 +1963,10 @@
 								this.itemList[key].self--
 							}
 						}
-						this.sendFudai()
+						let fudai = res.data.fudai;
+						fudai.referrer = 'id=' + fudai.id;
+						delete fudai.id;
+						this.sendFudaiInfo = fudai;
 						this.modal = 'sendFudai'
 					}
 					// 弹窗
