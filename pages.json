@@ -104,7 +104,14 @@
 		}
 	    ,{
             "path" : "pages/group/report/report",
-            "style" : {}
+            "style" : {
+				"navigationBarTitleText": "举报",
+				// "backgroundColor":"#000"
+				// "backgroundColorTop":"#000",
+				"navigationBarBackgroundColor": "#000",
+				"backgroundColor": "#cccccc",
+				"navigationBarTextStyle": "white"
+			}
         }
     ],
 	// 分包

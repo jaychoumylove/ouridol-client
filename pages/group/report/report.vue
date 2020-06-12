@@ -1,18 +1,14 @@
 <template>
 	<view class="report-container">
-		<view class="report-list-item" v-for="(item,index) in reportList" :key="index" @tap="postReport(index)">
+		<view class="item" v-for="(item,index) in reportList" :key="index" @tap="postReport(index)">
 			<listItemComponent :avatar="item.avatar">
 				<template v-slot:left-container>
-					<view class="left-container">
-						<view class="star-name">{{item.value}}</view>
-					</view>
+					<view class="color">{{item.value}}</view>
 				</template>
 				<template v-slot:right-container>
-					<view class="right-container">
-						<btnComponent type="default">
-							<view class="flex-set" style="width: 130upx;height: 60upx;">></view>
-						</btnComponent>
-					</view>
+					<btnComponent type="default">
+						<view class="flex-set color" style="width: 130upx;height: 60upx;">></view>
+					</btnComponent>
 				</template>
 			</listItemComponent>
 		</view>
@@ -63,5 +59,19 @@
 </script>
 
 <style lang="less">
-	
+	page {
+		background-color: #ccc !important;
+	}
+	page::before {
+		background: #ccc !important;
+	}
+	.color {
+		color: #000;
+	}
+	.report-container {
+		background-color: #fff;
+		.item {
+			border-bottom: 1upx solid #ccc;
+		}
+	}
 </style>
