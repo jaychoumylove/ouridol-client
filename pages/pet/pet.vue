@@ -39,9 +39,9 @@
 				<!-- 				<image @tap="goOther(item)" v-for="(item,index) in invitList" :key="index" v-if="index<3" :src="item.avatar" mode="widthFix"></image> -->
 			</view>
 
-			<btnComponent>
+			<!-- <btnComponent>
 				<image src="/static/image/pet/help.png" mode="widthFix" @tap="$app.goPage('/pages/notice/notice?id=2')"></image>
-			</btnComponent>
+			</btnComponent> -->
 		</view>
 
 		<view class="right-container">
@@ -107,9 +107,9 @@
 			</btnComponent>
 			
 			<!--帮助-->
-			<!-- <btnComponent>
+			<btnComponent>
 				<image src="/static/image/pet/help.png" mode="widthFix" @tap="$app.goPage('/pages/notice/notice?id=2')"></image>
-			</btnComponent> -->
+			</btnComponent>
 		</view>
 
 		<view class="earn-container" @tap="settle">
