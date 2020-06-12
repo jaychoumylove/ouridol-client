@@ -894,7 +894,7 @@
 						</view>
 						<view class="text">赠送礼物</view>
 					</view>
-					<view v-if="captain" class="btn-item" @tap="forbidden">
+					<view @v-if="checkForbidden" class="btn-item" @tap="openForbidden">
 						<view class="bg flex-set">
 							<image src="/static/image/icon/forbidden.png" mode=""></image>
 						</view>
@@ -1343,12 +1343,36 @@
 					}
 				})
 			},
+			checkForbidden() {
+				return this.captain == 1 || this.$app.getData('userInfo').type == 1
+			},
 			// 禁言
-			forbidden() {
+			openForbidden(uid) {
+				if (this.$app.getData('userInfo').type == 1) return this.forbidden();
+				if (this.captain == 1) {
+					// 获取禁言配置
+					
+					const forbiddenTime = this.$app.getData('config').forbidden_time
+					
+					let key = forbiddenTime.map(item => item.key)
+					let value = forbiddenTime.map(item => item.value)
+					
+					return uni.showActionSheet({
+						title:'选择禁言时间',
+						itemList: value,
+						success: (e) => {
+							this.forbidden(e.tapIndex)
+						}
+					})
+				}
+				this.$app.toast('你无权禁言')
+			},
+			// 禁言
+			forbidden(time) {
+				let data = {user_id: this.currentUser.id,};
+				if (!!time && time > -1) data.time = time
 				this.$app.modal(`确认将${this.currentUser.nickname}禁言？`, () => {
-					this.$app.request('user/forbidden', {
-						user_id: this.currentUser.id,
-					}, res => {
+					this.$app.request('user/forbidden', data, res => {
 						this.$app.toast('操作成功', 'success')
 						this.modal = ''
 					}, 'POST', true)
