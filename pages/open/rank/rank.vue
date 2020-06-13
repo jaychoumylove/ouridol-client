@@ -81,16 +81,40 @@
 				</block>
 			</view>
 		</modalComponent>
+		
+		<!--送礼物后福袋-->
+		<modalComponent v-if="modal == 'sendFudai'" title="福袋" @closeModal="modal=''">
+			<view class="tips-modal-container hongbao">
+				<view class="text-wrap">
+					<image class="avatar" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9HhvlXURtbJbFvRVwdINYhHcI1krgG784vHafRPrqpicP7KKTbav91rJF5ibqKPcPEV5zp3oUhRyicZg/0"
+					 mode=""></image>
+					<view class="title">恭喜获得【能量福袋】</view>
+					<view class="text flex-set">共<text style="color:#F00;">{{sendFudaiInfo.coin}}能量</text>，
+						<text style="color:#ffaa00;">{{sendFudaiInfo.people}}人</text>瓜分</view>
+					<view class="tips">将福袋分享到不同的群，让更多的人来领取吧</view>
+				</view>
+				<view class="row flex-set">
+					<btnComponent type="css">
+						<button class="btn" open-type="share" data-share="10" :data-otherparam="`id=${sendFudaiInfo.referrer}`">
+							<view class="flex-set" style="width:400upx;height: 100upx;font-weight: 700;font-size: 34upx;">立即分享</view>
+						</button>
+					</btnComponent>
+				</view>
+				<view class="text-wrap">
+					<view class="tips">福袋有效时间24小时，24小时候消失</view>
+				</view>
+			</view>
+		</modalComponent>
 	</view>
 </template>
 
 <script>
-	import btnComponent from '@/components/btnComponent.vue';
+	import btnComponent from '@/components/btnComponent.vue'
 	import modalComponent from '@/components/modalComponent.vue'
 	export default {
 		components: {
 			btnComponent,
-			modalComponent
+			modalComponent,
 		},
 		data() {
 			return {
@@ -101,10 +125,19 @@
 				yestoday: {
 					tomorrow: ''
 				}, // 昨日榜首
+				sendFudaiInfo: {
+					referrer: -1,
+					coin: 0,
+					people: 0
+				}
 			};
 		},
 		onShow() {
 			this.loadData()
+		},
+		onShareAppMessage(e) {
+			const shareType = e.target && e.target.dataset.share
+			return this.$app.commonShareAppMessage(shareType)
 		},
 		onReachBottom() {
 			this.page++
@@ -143,9 +176,16 @@
 						}
 						return
 					}
-					this.modal = ''
-
-					this.$app.toast('助力成功', 'success')
+					let fudai = res.data.fudai;
+					if (!!fudai) {
+						fudai.referrer = fudai.id;
+						delete fudai.id;
+						this.sendFudaiInfo = fudai;
+						this.modal = 'sendFudai'
+					} else {
+						this.modal = ''
+						this.$app.toast("助力成功", 'success')
+					}
 
 					this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
 						this.$app.setData('userCurrency', res.data)
@@ -153,6 +193,9 @@
 					this.page = 1
 					this.loadData()
 				}, 'POST', true)
+			},
+			closeFudai() {
+				this.modal = ''
 			},
 			preSend(item) {
 				if (this.$app.getData('userStar').id != item.star_id) {
@@ -455,6 +498,53 @@
 				}
 			}
 
+		}
+		
+		.tips-modal-container {
+			height: 100%;
+			padding: 20upx 10upx;
+			font-size: 32upx;
+			.text-wrap {
+				text-align: center;
+				margin: 20upx;
+				.title {
+					font-size: 40upx;
+					font-weight: 700;
+					text-align: center;
+					margin: 20upx;
+				}
+				.text {
+					line-height: 1.7;
+				}
+				.avatar {
+					width: 140upx;
+					height: 140upx;
+					border-radius: 50%;
+					margin: 20upx;
+				}
+			}
+			.btn {
+				color: #FFF;
+			}
+		}
+		
+		.tips-modal-container.hongbao {
+			.text-wrap {
+				margin: 10upx;
+		
+				.avatar {
+					width: 250upx;
+					height: 250upx;
+					margin: 0;
+				}
+			}
+		
+			.tips {
+				text-align: center;
+				color: #999;
+				font-size: 20upx;
+				padding: 10upx;
+			}
 		}
 	}
 </style>

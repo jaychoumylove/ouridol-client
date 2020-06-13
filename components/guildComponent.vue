@@ -301,7 +301,7 @@
 				<image class="img" src="/static/image/signin/sign.png" mode=""></image>
 			</view>
 			<!-- 我的福袋btn -->
-			<view class="btn" @tap="openFudai">
+			<view class="btn" @tap="openFudai" v-if="fudaiActive">
 				<image class="img" src="/static/image/guild/fd_btn.png" mode=""></image>
 			</view>
 			<!-- 发红包btn -->
@@ -785,11 +785,14 @@
 					<view class="tips">将福袋分享到不同的群，让更多的人来领取吧</view>
 				</view>
 				<view class="row flex-set">
-					<button class="btn" open-type="share" data-share="10" :data-otherparam="sendFudaiInfo.referrer">
+					<button class="btn" open-type="share" data-share="10" :data-otherparam="`id=${sendFudaiInfo.referrer}`">
 						<btnComponent type="css">
 							<view class="flex-set" style="width:400upx;height: 100upx;font-weight: 700;font-size: 34upx;">立即分享</view>
 						</btnComponent>
 					</button>
+				</view>
+				<view class="text-wrap">
+					<view class="tips">福袋有效时间24小时，24小时候消失</view>
 				</view>
 			</view>
 		</modalComponent>
@@ -1137,9 +1140,11 @@
 
 				hongbaoTime: '',
 
+				fudaiActive: false,
 				referrerFudai: null,
 				fudaiList: [],
 				fudaiPage: 1,
+				fudaiEnd: false,
 				sendFudaiInfo: {
 					referrer: -1,
 					coin: 0,
@@ -1296,6 +1301,9 @@
 
 							// 活动
 							this.activeInfo = res.data.activeInfo
+							
+							// 是否开启福袋活动
+							this.fudaiActive = res.data.fudai
 
 							// 其他
 							// 礼物列表
@@ -1870,6 +1878,8 @@
 			//打开我的福袋列表
 			openFudai() {
 				this.modal = 'fudai'
+				this.fudaiPage = 1
+				this.fudaiEnd = false
 				this.getMyfudaiList()
 
 			},
@@ -1880,9 +1890,15 @@
 			},
 			// 我的福袋列表
 			getMyfudaiList() {
+				if (this.fudaiEnd) return
 				this.$app.request('page/fudai', {
 					page: this.fudaiPage || 1
 				}, res => {
+					if (!res.data.length) {
+						this.fudaiEnd = true
+						this.$app.closeLoading(this)
+						return
+					}
 					const resList = []
 					res.data.forEach((e, i) => {
 						resList.push({
@@ -1994,10 +2010,15 @@
 							}
 						}
 						let fudai = res.data.fudai;
-						fudai.referrer = 'id=' + fudai.id;
-						delete fudai.id;
-						this.sendFudaiInfo = fudai;
-						this.modal = 'sendFudai'
+						
+						if (!!fudai) {
+							fudai.referrer = fudai.id;
+							delete fudai.id;
+							this.sendFudaiInfo = fudai;
+							this.modal = 'sendFudai'
+						} else {
+							this.$app.toast("助力成功", 'success')
+						}
 					}
 					// 弹窗
 					this.disLeastCount = res.data.disLeastCount
