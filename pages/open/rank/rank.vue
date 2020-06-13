@@ -95,7 +95,7 @@
 				</view>
 				<view class="row flex-set">
 					<btnComponent type="css">
-						<button class="btn" open-type="share" data-share="10" :data-otherparam="`id=${sendFudaiInfo.referrer}`">
+						<button class="btn" open-type="share" data-share="10" :data-otherparam="'id=' + sendFudaiInfo.referrer">
 							<view class="flex-set" style="width:400upx;height: 100upx;font-weight: 700;font-size: 34upx;">立即分享</view>
 						</button>
 					</btnComponent>
@@ -137,7 +137,8 @@
 		},
 		onShareAppMessage(e) {
 			const shareType = e.target && e.target.dataset.share
-			return this.$app.commonShareAppMessage(shareType)
+			const otherparam = e.target && e.target.dataset.otherparam
+			return this.$app.commonShareAppMessage(shareType, otherparam)
 		},
 		onReachBottom() {
 			this.page++
@@ -177,7 +178,7 @@
 						return
 					}
 					let fudai = res.data.fudai;
-					if (!!fudai) {
+					if (false !== fudai) {
 						fudai.referrer = fudai.id;
 						delete fudai.id;
 						this.sendFudaiInfo = fudai;
