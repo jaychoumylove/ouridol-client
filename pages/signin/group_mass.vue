@@ -167,7 +167,7 @@
 			}
 			// #endif
 			
-			this.groupAdd()
+			this.getShareInfo()
 		},
 		methods: {
 			// 看视频广告
@@ -217,24 +217,27 @@
 
 				})
 			},
-			groupAdd() {
-				wx.getShareInfo({
+			getShareInfo() {
+				uni.getShareInfo({
 					shareTicket: this.$app.getData('shareTicket'),
 					success: res => {
 						// 需要解密群id
-						this.$app.request('share/group/add', {
-							encryptedData: res.encryptedData,
-							iv: res.iv,
-							star_id: this.starid
-						}, res => {
-							if (!res.data.gid) {
-								this.$app.toast('未获取到群信息，请尝试重新进入')
-							} else {
-								this.openGid = res.data.open_gid
-								this.gid = res.data.gid
-								this.loadData()
-							}
-						})
+						this.groupAdd(res)
+					}
+				})
+			},
+			groupAdd(data) {
+				this.$app.request('share/group/add', {
+					encryptedData: data.encryptedData,
+					iv: data.iv,
+					star_id: this.starid
+				}, res => {
+					if (!res.data.gid) {
+						this.$app.toast('未获取到群信息，请尝试重新进入')
+					} else {
+						this.openGid = res.data.open_gid
+						this.gid = res.data.gid
+						this.loadData()
 					}
 				})
 			}
