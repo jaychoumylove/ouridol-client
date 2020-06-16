@@ -898,7 +898,7 @@
 						</view>
 						<view class="text">赠送礼物</view>
 					</view>
-					<view @v-if="checkForbidden" class="btn-item" @tap="openForbidden">
+					<view v-if="captain == 1 || $app.getData('userInfo').type == 1" class="btn-item" @tap="openForbidden">
 						<view class="bg flex-set">
 							<image src="/static/image/icon/forbidden.png" mode=""></image>
 						</view>
@@ -1365,7 +1365,6 @@
 				if (this.$app.getData('userInfo').type == 1) return this.forbidden();
 				if (this.captain == 1) {
 					// 获取禁言配置
-					
 					const forbiddenTime = this.$app.getData('config').forbidden_time
 					
 					let key = forbiddenTime.map(item => item.key)
