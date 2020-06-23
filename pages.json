@@ -48,12 +48,21 @@
 
 		{
 			"path": "pages/prop/prop",
-			"style": {}
-		}
-
-		, {
+			"style": {
+				// #ifdef H5
+				"navigationStyle": "custom",
+				// #endif
+				"navigationBarTitleText": "我的道具"
+				
+			}
+		}, {
 			"path": "pages/prop/buy/buy",
-			"style": {}
+			"style": {
+				// #ifdef H5
+				"navigationStyle": "custom",
+				// #endif
+				"navigationBarTitleText": "购买道具"
+			}
 		},
 		{
 			"path": "pages/signin/signin",
@@ -64,6 +73,9 @@
 		{
 			"path": "pages/recharge/recharge",
 			"style": {
+				// #ifdef H5
+				"navigationStyle": "custom",
+				// #endif
 				"navigationBarTitleText": "充值"
 			}
 		},
@@ -106,8 +118,6 @@
             "path" : "pages/group/report/report",
             "style" : {
 				"navigationBarTitleText": "举报",
-				// "backgroundColor":"#000"
-				// "backgroundColorTop":"#000",
 				"navigationBarBackgroundColor": "#000",
 				"backgroundColor": "#cccccc",
 				"navigationBarTextStyle": "white"
