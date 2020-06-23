@@ -27,7 +27,10 @@
 				</view>
 				<view class="btn flex-set" @tap="openGame(item)">{{item.button}}</view>
 			</view>
+		</block>
 		
+		<block v-if='list.length == 0'>
+			<view class="empty-data">暂无数据</view>
 		</block>
 	</view>
 </template>
@@ -104,9 +107,9 @@
 							resList.push(value)
 						}
 					}
-
+				
 					this.list = resList
-				})
+				}, 'POST', true)
 			}
 		}
 	}
@@ -151,6 +154,10 @@
 				width: 140upx;
 				height: 70upx;
 			}
+		}
+		.empty-data {
+			text-align: center;
+			margin: 10upx auto;
 		}
 
 		.item-wrap.ad {

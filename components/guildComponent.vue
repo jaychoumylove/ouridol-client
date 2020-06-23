@@ -481,7 +481,7 @@
 						</view>
 
 					</view>
-					<view class="git-tips">送礼物可获得福袋(多达15万能量)</view>
+					<view v-if="fudaiActive" class="git-tips">送礼物可获得福袋(多达15万能量)</view>
 					<block v-if="$app.getData('VERSION')!=$app.getData('config').version">
 						<view class="gift flex-set" @tap="$app.goPage('/pages/recharge/recharge')" v-if="$app.chargeSwitch()==0">
 							<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
