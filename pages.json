@@ -39,6 +39,9 @@
 		}, {
 			"path": "pages/active_one/active_one_list",
 			"style": {}
+		}, {
+			"path": "pages/active_one/active_one_section",
+			"style": {}
 		},
 
 		{
@@ -227,14 +230,17 @@
 				"selectedIconPath": "/static/image/tab/group-tap.png",
 				"text": "偶像圈"
 			},
-
 			{
+				// #ifdef MP-WEIXIN
+				"pagePath": "pages/active_one/active_one_section",
+				// #endif
+				// #ifndef MP-WEIXIN
 				"pagePath": "pages/active_one/active_one_list",
+				// #endif
 				"iconPath": "/static/image/tab/yingyuan.png",
 				"selectedIconPath": "/static/image/tab/yingyuan-tap.png",
 				"text": "应援"
-			},
-
+			}, 
 			{
 				"pagePath": "pages/user/user",
 				"iconPath": "/static/image/tab/user.png",

@@ -2,103 +2,74 @@
 	<view class="active_one-container" v-if="starid">
 
 		<view class="top-container">
-			<view class="top-btn-wrap">
-				<!-- <button open-type="share" data-share='4'>
-					<view class="btn">分享</view>
-				</button> -->
-				<view class="left-wrap flex-set">
-					<switch class="switch" :checked="activeInfo.active_subscribe == '2'" @change="subScribe" />
-					<text>订阅进度</text>
-					<image v-if="subscriibeShow" @tap="subscriibeShow = false" class="s-over" src="/static/image/guild/t-23.png" mode="widthFix"></image>
-				</view>
-
-				<view class="btn flex-set" @tap="$app.goPage('/pages/subPages/fanclub_list/fanclub_list?starname='+star.name)">
-					<image src="/static/image/user/s8.png" mode="widthFix"></image>
-					<text>后援会</text>
-				</view>
-			</view>
-			<image class="avatar" :src="star.avatar" mode="aspectFill"></image>
-			<view class="nickname">{{star.name}}</view>
+			<image :src="info.banner"
+				 mode="widthFix"></image>
 		</view>
 
-		<view class="cardday">
-			你已累计解锁<text>{{activeInfo.my_card_days}}</text>次
-		</view>
-		<view class="cardday newbie">
-			好友助力<text>{{activeInfo.my_newbie_cards}}</text>次
-		</view>
 		<view class="active-center-container">
-			<view class="top-wrap">
-				<view class="left">
-					<view class="left-1">为爱解锁</view>
-					<view class="left-2">剩余：{{activeInfo.left_time}}</view>
+			<view class="header">
+				<view class="lable">
+					7月福利
 				</view>
-				<button v-if="activeInfo.can_card" open-type="getUserInfo" @getuserinfo="getUserInfo">
-					<view class="right">
-						<image src="/static/image/guild/card-o.png" mode=""></image>
-						<view class="text">
-							<view class="t">解锁 <text style="color: #DC6B0C;">{{activeInfo.can_card}}</text>次</view>
-						</view>
-					</view>
-				</button>
-				<form v-else report-submit @submit="card">
-					<button class="right" form-type="submit">
-						<image src="/static/image/ic_haibao__bak.png" mode=""></image>
-						<view class="text">
-							<view class="t">增加次数</view>
-						</view>
-					</button>
-				</form>
-
+				<view class="title">
+					为{{$app.getData('userStar').name || '明星'}}完成看视频任务，解锁应援金
+				</view>
 			</view>
 			<view class="progress-wrap">
 				<view class="bottom-text">
 					<!-- <view>已参与人数：<text style="color:#007EFF;">{{activeInfo.join_people}}</text></view> -->
-					<view v-if="activeInfo.finishedFee">已解锁：<text style="color:#ff0000;">{{activeInfo.finishedFee}}元</text></view>
-					<view v-else>解锁中</view>
-					<view>目标预计所需人数：<text style="color:#ff5cf7;">{{activeInfo.remainPeople}}人/天</text></view>
+					<view>已解锁：<text style="color:#ff0000;">{{reward.done}}元</text></view>
+					<view>正在解锁：<text style="color:#ff5cf7;">{{reward.doing}}元</text></view>
 				</view>
 
 				<!-- 里程碑进度条 -->
-				<view class="milestone-wrap" v-if="activeInfo.active_info">
+				<view class="milestone-wrap">
 					<view class="dot finished"></view>
-
-					<view class="item-box" v-for="(item,index) in activeInfo.active_info" :key="index">
+					<view class="item-box" v-for="(item,index) in step" :key="index">
 						<view class="progress">
-							<view class="progress-finished" :style="{width:item.progress+'%'}"></view>
+							<view class="progress-finished" :style="{width: item.precent+'%'}"></view>
 						</view>
-						<view class="dot" :class="{finished:item.progress==100}">
-							<view class="name">￥{{item.fee}}</view>
-							<view class="value">{{item.count}}次</view>
-						</view>
+						<view class="dot" :class="{finished:item.precent==100}">
+							<view class="name">￥{{item.reward}}</view>
+							<view class="value">{{item.step}}天</view>
+·						</view>
 					</view>
 
 
 				</view>
 
 				<view class="bottom-text">
-					<view>已解锁次数：<text style="color:#007EFF;">{{activeInfo.complete_people}}</text></view>
-					<view>目标次数：<text style="color:#ff5cf7;">{{activeInfo.nextCount}}</text></view>
+					<view>目标人数：<text style="color:#007EFF;">{{info.people}}</text></view>
+					<view>参与人数：<text style="color:#ff5cf7;">{{people.join_num}}</text></view>
+					<view>达标人数：<text style="color:#ff5cf7;">{{people.finish_num}}</text></view>
 				</view>
-
-				<!-- <view class="progress">
-					<progress activeColor="#007EFF" stroke-width="15" backgroundColor="#f8c4be" :percent="activeInfo.join_people/activeInfo.active_info.target_people*100" />
-					<text style="background-color:#007EFF;">{{(activeInfo.join_people/activeInfo.active_info.target_people*100).toFixed(1)}}%</text>
+			</view>
+			
+			<view class="active-container">
+				<view class="lable">
+					你已打卡：<text style="color:#007EFF;">{{my.sup_num}}</text> 天
 				</view>
-				<view class="progress" style="color:#ff0000;">
-					<progress activeColor="#ff0000" stroke-width="15" backgroundColor="#f8c4be" :percent="activeInfo.complete_people/activeInfo.active_info.target_people*100" />
-					<text style="background-color:#ff0000;">{{(activeInfo.complete_people/activeInfo.active_info.target_people*100).toFixed(1)}}%</text>
-				</view> -->
+				<btnComponent v-if="is_today" type='default' @tap="setCard">
+					<view class="card-action">今日已打卡</view>
+				</btnComponent>
+				<btnComponent v-else type='default' @tap="setCard">
+					<view class="card-action">打卡解锁</view>
+				</btnComponent>
+				<button style="margin-left: 10upx;" open-type="share">
+					<btnComponent type="default">
+						<view class="card-action friend flex-set">好友助力</view>
+					</btnComponent>
+				</button>
 			</view>
 
 			<view class="notice-container">
 				<view class="article-name">为爱解锁活动说明</view>
 
-				<block v-for="(item,index) in article" :key="index">
+				<block v-for="(item,index) in info.desc" :key="index">
 					<view class="article-group">
-						<view class="article-title" v-if="item.title">{{item.title}}</view>
+						<view class="article-title" v-if="item.label">{{item.label}}</view>
 						<view class="article-row">
-							<text class="article-content" decode v-if="item.content.length>0" v-for="(item1,index1) in item.content" :key="index1">{{item1}}</text>
+							<text class="article-content">{{item.content}}</text>
 						</view>
 					</view>
 				</block>
@@ -110,10 +81,10 @@
 			<view class='scroll-view'>
 
 				<view class='item-wrap' v-for="(item,index) in userRank" :key="index">
-					<image class='avatar' :src="item.user.avatarurl" mode="aspectFill"></image>
+					<image class='avatar' :src="item.avatarurl" mode="aspectFill"></image>
 					<view class="text-wrap">
-						<view class="name">{{item.user.nickname}}</view>
-						<view class="card">累计解锁次数：{{item.active_card_days}}次</view>
+						<view class="name">{{item.nickname}}</view>
+						<view class="card">累计打卡：{{item.sup_num}}天</view>
 						<!-- <view class="progress">
 							<progress activeColor="#007EFF" backgroundColor="#f8c4be" :percent="item.active_card_days/activeInfo.active_info.total_days*100" />
 						</view> -->
@@ -130,27 +101,26 @@
 		<modalComponent v-if="modal == 'cardOver'" title=" " headimg='false' @closeModal="modal=''">
 			<view class="modal-container flex-set">
 				<view class="top-wrap">
-					<image class="avatar" :src="star.avatar" mode=""></image>
-					<block v-if="activeInfo.finishedFee">
-						<view class="">已获得<text style="color: #F00;">{{activeInfo.finishedFee}}</text>元应援金</view>
+					<image class="avatar" :src="$app.getData('userStar').head_img_s" mode="aspectFill"></image>
+					<block v-if="progressing.done > 0">
+						<view class="">已获得<text style="color: #F00;">{{reward.done}}</text>元应援金</view>
 						<view class="">后援会入驻免费领取</view>
 					</block>
 					<block v-else>
-						<view class="">已解锁<text style="color: #007EFF;">{{activeInfo.complete_people}}</text>次，还差<text style="color: #F00;">{{activeInfo.nextCount - activeInfo.complete_people}}</text>次</view>
+						<view class="">你已打卡<text style="color: #007EFF;">{{my.sup_num}}</text>天</view>
 						<view class="">后援会入驻免费领取</view>
 					</block>
 				</view>
 				<view class="milestone-container">
-					<view class="milestone-wrap" v-if="activeInfo.active_info">
+					<view class="milestone-wrap" v-if="step">
 						<view class="dot finished"></view>
-
-						<view class="item-box" v-for="(item,index) in activeInfo.active_info" :key="index">
+						<view class="item-box" v-for="(item,index) in step" :key="index">
 							<view class="progress">
-								<view class="progress-finished" :style="{width:item.progress+'%'}"></view>
+								<view class="progress-finished" :style="{width: item.precent+'%'}"></view>
 							</view>
-							<view class="dot" :class="{finished:item.progress==100}">
-								<view class="name">￥{{item.fee}}</view>
-								<view class="value">{{item.count}}次</view>
+							<view class="dot" :class="{finished:item.precent==100}">
+								<view class="name">￥{{item.reward}}元</view>
+								<view class="value">{{item.step}}天</view>
 							</view>
 						</view>
 					</view>
@@ -163,7 +133,7 @@
 						</button>
 					</block>
 				</view>
-				<view>——每邀请1位新人立即解锁10次——</view>
+				<view>——{{is_ext ? '邀请新用户增加自己解锁天数': '快召集大家一起来解锁福利吧'}}——</view>
 
 				<view class="btn-wrap">
 					<button class='fsend-btn flex-set' open-type='share'>
@@ -174,14 +144,14 @@
 						<image src="/static/image/weibo.png" mode="widthFix"></image>
 						<view>微博</view>
 					</view>
-					<view v-if="$app.getData('config').pyq_switch == '1'" class='fsend-btn flex-set' open-type='share' @tap="drawCanvas();modal ='otherShareP'">
+					<!-- <view v-if="$app.getData('config').pyq_switch == '1'" class='fsend-btn flex-set' open-type='share' @tap="drawCanvas();modal ='otherShareP'">
 						<image src="/static/image/pyq.png" mode="widthFix"></image>
 						<view>朋友圈</view>
 					</view>
 					<view v-if="$app.getData('config').pyq_switch == '0'" class='fsend-btn flex-set' @tap="drawCanvas();saveCanvas();">
 						<image src="/static/image/icon/save.png" mode="widthFix"></image>
 						<view>保存</view>
-					</view>
+					</view> -->
 
 					<!-- <view class='save-btn flex-set' @tap='saveCanvas'>保存到相册</view> -->
 				</view>
@@ -200,7 +170,7 @@
 
 			<view class="wrapper flex-set">
 				<image src="http://tva1.sinaimg.cn/large/0060lm7Tly1g5k6xgs6fqg30bv0h4wg4.gif" mode="scaleToFill"></image>
-				<view class="btn flex-set" @tap="getShareText(2)">点击复制微博格式</view>
+				<view class="btn flex-set" @tap="getShareText(4)">点击复制微博格式</view>
 			</view>
 		</view>
 		<view class="canvas-container flex-set" v-if="modal == 'otherShareP'">
@@ -242,14 +212,36 @@
 				mileList: [],
 				invitList: [],
 				subscriibeShow: false,
+				page: 1,
+				size: 10,
+				end: false,
+				info: {},
+				progressing: {
+					done: 0,
+					doing: 0,
+				},
+				reward: {
+					done: 0,
+					doing: 0,
+				},
+				people: {
+					join_num: 0,
+					finish_num: 0,
+				},
+				step: [], // 进度条
+				my: {
+					sup_num: 0,
+					sup_ext: 0,
+				},
+				is_today: false, // 是否已打卡
+				is_ext: false, // 是否可以补签
 			};
 		},
 		onShareAppMessage(e) {
 			const shareType = e.target && e.target.dataset.share
-			return this.$app.commonShareAppMessage(5)
+			return this.$app.commonShareAppMessage(11)
 		},
 		onLoad(option) {
-			
 		},
 		onShow(){
 			if (this.$app.getData('userStar').id) {
@@ -266,9 +258,17 @@
 				});
 				return
 			}
-			this.getActiveInfo()
-			this.getStarInfo()
-			this.getActiveUserRank()
+			this.getInfo();
+			this.page = 1;
+			this.end = false;
+			this.getList();
+		},
+		/**
+		 * 上拉加载
+		 */
+		onReachBottom() {
+			this.page++;
+			this.getList()
 		},
 		methods: {
 			getLocalImg(src, callback) {
@@ -326,7 +326,7 @@
 				this.getLocalImg('/static/image/canvas-bg.png', src => {
 					ctx.drawImage(src, 0, 0, 480 * rate, 854 * rate);
 					// 明星 
-					this.getLocalImg(this.star.share_img || this.star.avatar, src => {
+					this.getLocalImg(this.$app.getData('userStar').share_img || this.$app.getData('userStar').avatar, src => {
 						ctx.drawImage(src, 48 * rate, 286 * rate, 382 * rate, 305 * rate);
 						// 用户头像
 						this.getLocalImg(this.$app.getData('userInfo').avatarurl || this.$app.getData('AVATAR'), src => {
@@ -355,6 +355,7 @@
 										success: res => {
 											this.canvasImg = res.tempFilePath
 											console.log(this.canvasImg);
+											
 										}
 									}, this);
 								})
@@ -378,80 +379,52 @@
 					}
 				});
 			},
-			subScribe(e) {
-				this.$app.request('subscribe', {
-					sub_type: 'active_card',
-					flag: e.detail.value ? "2" : "1"
+			getInfo() {
+				this.$app.request(this.$app.API.YINGYUAN_INFO, {}, res => {
+					const {info, progressing, is_today, reward, sup_ext, people, step} = res.data;
+					this.info = info;
+					this.progressing = progressing;
+					this.reward = reward;
+					this.step = step;
+					this.is_today = is_today;
+					this.people = people;
+					this.my = res.data.self;
+					this.is_ext = res.data.sup_ext;
+				}, 'POST')
+			},
+			getList() {
+				if (this.end) return;
+				
+				this.$app.request(this.$app.API.YINGYUAN_LIST, {
+					page: this.page
 				}, res => {
-					this.activeInfo.active_subscribe = res.data
-					if (res.data == "2") {
-						this.$app.toast('订阅成功', 'success')
+					let list = this.userRank;
+					if (res.data.length < this.size) {
+						this.end = true;
 					}
-				}, 'POST', true)
-			},
-			getStarInfo() {
-				this.$app.request(this.$app.API.STAR_INFO, {
-					starid: this.starid
-				}, res => {
-					const star = res.data
-					this.star = {
-						id: star.id,
-						avatar: star.head_img_s ? star.head_img_s : star.head_img_l,
-						name: star.name,
-						weekHot: this.$app.formatNumberRgx(star.star_rank.week_hot),
-						weekRank: star.star_rank.week_hot_rank,
-					}
-
-					this.$app.closeLoading(this)
-				})
-			},
-
-			// 加入圈子
-			join() {
-				this.$app.modal(`每个人只能加入一个偶像圈\n是否加入${this.star.name}的偶像圈？`, () => {
-					// 加入圈子
-					this.$app.request(this.$app.API.STAR_FOLLOW, {
-						starid: this.starid,
-						rer_user_id: this.$app.getData('referrer'), // 推荐人
-					}, res => {
-						this.$app.request(this.$app.API.USER_STAR, {}, res => {
-							this.$app.setData('userStar', res.data, true)
-							this.card()
-						})
-					})
-				})
-			},
-			// 用户授权
-			getUserInfo(e) {
-				const userInfo = e.detail.userInfo
-				if (userInfo) {
-					if (!this.$app.getData('userInfo').nickname) {
-						// 保存用户信息
-						this.$app.request(this.$app.API.USER_SAVEINFO, {
-							iv: e.detail.iv,
-							encryptedData: e.detail.encryptedData,
-						}, res => {
-							if (res.data.token) this.$app.token = res.data.token
-							this.$app.request('page/app', {}, res => {
-								this.$app.setData('userCurrency', res.data.userCurrency)
-								this.$app.setData('userStar', res.data.userStar)
-								this.$app.setData('userExt', res.data.userExt)
-								this.$app.setData('userInfo', res.data.userInfo)
-								this.$app.setData('config', res.data.config)
-							})
-							if (!this.$app.getData('userStar').id) {
-								this.join()
-							}
-						}, 'POST', true)
+					if (this.page > 1) {
+						this.userRank = list.concat(res.data);
 					} else {
-						if (!this.$app.getData('userStar').id) {
-							this.join()
-						} else {
-							this.card()
-						}
+						this.userRank = res.data;
 					}
-
+				}, 'POST')
+			},
+			setCard() {
+				// 看视频打卡
+				if (this.is_today) {
+					// this.$app.toast('今日已打卡');
+					this.modal = 'cardOver'
+					this.is_today = true
+					return;
 				}
+				this.$app.openVideoAd(() => {
+					this.$app.request(this.$app.API.YINGYUAN_CARD, {}, res => {
+						this.modal = 'cardOver'
+						this.is_today = true
+						this.getInfo()
+						this.$app.toast('今日打卡成功', 'success')
+					}, 'POST', true)
+				}, this.$app.getData('config').kindness_swithch)//没有广告不给奖励
 			},
 			// 打卡
 			card(e) {
@@ -550,6 +523,9 @@
 </script>
 
 <style lang="scss" scoped="">
+	
+	$color_0: white;
+	$color_1: white;
 	.active_one-container {
 		padding: 20upx;
 
@@ -618,6 +594,9 @@
 			display: flex;
 			flex-direction: column;
 			align-items: center;
+			image {
+				border-radius: 20upx;
+			}
 
 			.switch {
 				transform: scale(0.7);
@@ -687,6 +666,24 @@
 		}
 
 		.active-center-container {
+			.header {
+				display: flex;
+				justify-content: flex-start;
+				margin: 20upx 0;
+				.lable {
+					padding: 0 20upx;
+					display: inline-block;
+					border-top-right-radius: 8upx;
+					border-top-left-radius: 8upx;
+					background-color: #f1b3b0;
+					margin-left: 20upx;
+					color: white;
+				}
+				.title {
+					font-size: 30upx;
+					font-weight: 700;
+				}
+			}
 			.top-wrap {
 				border-top-left-radius: 30upx;
 				border-top-right-radius: 30upx;
@@ -768,6 +765,28 @@
 				.bottom-text {
 					display: flex;
 					justify-content: space-between;
+				}
+			}
+			
+			.active-container {
+				display: flex;
+				margin: 10upx 0;
+				justify-content: flex-end;
+				// height: 40upx;
+				line-height: 70upx;
+				.lable {
+					margin-left: 20upx;
+					margin-right: auto;
+					display: inline-block;
+					height: 70upx;
+				}
+				.card-action {
+					height: 70upx;
+					margin: 0 10upx;
+					padding: 0 10upx;
+				}
+				.friend {
+					
 				}
 			}
 
