@@ -66,10 +66,20 @@
 			return {
 				list: [],
 				page: 1,
+				size: 10,
+				end: false,
 			};
 		},
 		onShow() {
+			this.page = 1;
+			this.end = false;
 			this.loadData()
+		},
+		onReachBottom (){
+			if (!this.end) {
+				this.page ++;
+				this.loadData();
+			}
 		},
 		methods: {
 			useProp(item) {
@@ -86,14 +96,17 @@
 			},
 			loadData() {
 				this.$app.request('page/myprop', {
-					page: this.page
+					page: this.page,
+					size: this.size
 				}, res => {
 					if (this.page == 1) {
 						this.list = res.data.list
 					} else {
 						this.list = this.list.concat(res.data.list)
 					}
-
+					if (res.data.list.length < size) {
+						this.end = true;
+					}
 				})
 			},
 		}
