@@ -102,14 +102,8 @@
 			<view class="modal-container flex-set">
 				<view class="top-wrap">
 					<image class="avatar" :src="$app.getData('userStar').head_img_s" mode="aspectFill"></image>
-					<block v-if="progressing.done > 0">
-						<view class="">已获得<text style="color: #F00;">{{reward.done}}</text>元应援金</view>
-						<view class="">后援会入驻免费领取</view>
-					</block>
-					<block v-else>
-						<view class="">你已打卡<text style="color: #007EFF;">{{my.sup_num}}</text>天</view>
-						<view class="">后援会入驻免费领取</view>
-					</block>
+					<view class="">打卡成功<text style="color: #007EFF;">+1000</text>能量 助力<text style="color: red;">{{$app.getData('userStar').name}}</text>拿第一</view>
+					<view class="">你还可以通知后援会来解锁<text style="color: red;">500</text>元应援金</view>
 				</view>
 				<view class="milestone-container">
 					<view class="milestone-wrap" v-if="step">
