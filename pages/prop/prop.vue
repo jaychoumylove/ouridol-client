@@ -91,7 +91,14 @@
 					} else {
 						this.$app.toast('使用成功', 'success')
 					}
-					this.loadData()
+					let list = this.list;
+					let newList = list.map(d => {
+						if (d.id == item.id) {
+							d.status = 1;
+						}
+						return d;
+					})
+					this.list = newList;
 				}, 'POST', true)
 			},
 			loadData() {
