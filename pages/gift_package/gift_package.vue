@@ -101,9 +101,13 @@
 				}
 			},
 			change(item) {
-				this.modal = 'change'
-				this.item = item
-				this.val = 1
+				if (item.self) {
+					this.modal = 'change'
+					this.item = item
+					this.val = 1
+				} else {
+					this.$app.toast(`你还没有【${item.name}】哦`)
+				}
 			},
 			getGoodsList() {
 				this.$app.request('page/gift_package', {}, res => {
