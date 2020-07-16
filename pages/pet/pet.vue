@@ -116,7 +116,7 @@
 			<image class="mountain" src="/static/image/pet/y2.png" mode="widthFix"></image>
 			<view class="egg flex-set">
 				<view class="num-wrapper position-set">{{spriteInfo.earn}}</view>
-				<image class="flex-set" src="/static/image/pet/y5.png" mode="widthFix"></image>
+				<image class="flex-set" :src="spriteInfo.egg_icon?spriteInfo.egg_icon:'/static/image/pet/y5.png'" mode="widthFix"></image>
 				<view class="progress flex-set">
 					<view class="progress-bar" :style="{width:earnCuttime + '%'}"></view>
 					{{earnCuttime}}
@@ -181,7 +181,8 @@
 
 					<view class="explain-wrapper">
 						<view class="">
-							帮好友收集能量，自己额外获得<text>50%</text>能量
+							本月好友亲密榜
+							<!-- 帮好友收集能量，自己额外获得<text>50%</text>能量 -->
 							<!-- <image src="/static/image/ic_haibao__bak.png" mode="widthFix"></image> -->
 							<!-- 加好友一起养精灵 -->
 						</view>
@@ -214,13 +215,17 @@
 								<view class="star-name text-overflow">{{item.nickname}}</view>
 							</view>
 							<image @tap.stop="deleteFriend(item,index)" class="del" src="/static/image/guild/del.png" mode="widthFix"></image>
-							<view class="egg flex-set" @tap.stop="settleSprite(index, item)">
+							<view class="egg flex-set">
+								<view class="num-wrapper position-set">{{item.intimacy?item.intimacy:0}}</view>
+								<image class="flex-set" src="/static/image/pet/intimacy.png" mode="widthFix"></image>
+							</view>
+							<!-- <view class="egg flex-set" @tap.stop="settleSprite(index, item)">
 								<image v-if="item.earn >= 200 && !item.off" class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
 
 								<view class="num-wrapper position-set">{{item.earn}}</view>
 								<image v-if="!item.off" class="flex-set" src="/static/image/pet/y5.png" mode="widthFix"></image>
 								<image v-else class="flex-set" src="/static/image/pet/y5-off.png" mode="widthFix"></image>
-							</view>
+							</view> -->
 						</view>
 					</block>
 
@@ -532,6 +537,7 @@
 							nickname: e.user && e.user.nickname || this.$app.getData('NICKNAME'),
 							earn: e.sprite.earn,
 							off: e.off,
+							intimacy: e.intimacy,//亲密度
 						})
 
 						if (e.sprite.earn >= 100) {
@@ -973,7 +979,7 @@
 			top: 28upx;
 			border-radius: 50%;
 			left: 100upx;
-			background-color: gold;
+			background-color: #FFFFFF;
 			filter: blur(10upx);
 			animation: shine 1.5s linear infinite;
 		}
@@ -1144,7 +1150,7 @@
 
 
 					.text-container {
-						padding: 0 30upx;
+						padding: 0 0 0 30rpx;
 						line-height: 44upx;
 
 						.star-name {
@@ -1175,7 +1181,6 @@
 					}
 
 					.egg {
-						margin-right: 20upx;
 						position: relative;
 
 						.hand {
@@ -1188,11 +1193,14 @@
 						.num-wrapper {
 							z-index: 1;
 							color: #FFF;
+							font-size: 24upx;
+							left: 55% !important;
+
 						}
 
 						image {
-							width: 60upx;
-							min-height: 60upx;
+							width: 80upx;
+							min-height: 80upx;
 						}
 					}
 				}
