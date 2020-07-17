@@ -111,7 +111,7 @@
 					} else {
 						this.list = this.list.concat(res.data.list)
 					}
-					if (res.data.list.length < size) {
+					if (res.data.list.length < this.size) {
 						this.end = true;
 					}
 				})
