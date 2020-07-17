@@ -94,29 +94,35 @@
 				</btnComponent>
 			</view>
 		</view>
-		
+
 		<view class="nav-container">
 			<!--排行-->
 			<!-- <btnComponent>
 				<image src="/static/image/pet/rank.png" mode="widthFix" @tap="$app.goPage('/pages/subPages/user/rank/pet_rank')"></image>
 			</btnComponent> -->
-			
+
+			<!--宝箱-->
+			<btnComponent>
+				<image src="/static/image/pet/treasure_box.png" mode="widthFix" @tap="treasure_box"></image>
+			</btnComponent>
+
 			<!--道具-->
 			<btnComponent>
 				<image src="/static/image/pet/prop.png" mode="widthFix" @tap="$app.goPage('/pages/prop/prop')"></image>
 			</btnComponent>
-			
+
 			<!--帮助-->
 			<btnComponent>
 				<image src="/static/image/pet/help.png" mode="widthFix" @tap="$app.goPage('/pages/notice/notice?id=2')"></image>
 			</btnComponent>
+
 		</view>
 
 		<view class="earn-container" @tap="settle">
 			<image class="mountain" src="/static/image/pet/y2.png" mode="widthFix"></image>
 			<view class="egg flex-set">
 				<view class="num-wrapper position-set">{{spriteInfo.earn}}</view>
-				<image class="flex-set" :src="spriteInfo.egg_info?spriteInfo.egg_info.icon:'/static/image/pet/y5.png'" mode="widthFix"></image>
+				<image class="flex-set" :src="spriteInfo.egg_info?spriteInfo.egg_info.icon:'/static/image/pet/egg/egg_1.png'" mode="widthFix"></image>
 				<view class="progress flex-set">
 					<view class="progress-bar" :style="{width:earnCuttime + '%'}"></view>
 					{{earnCuttime}}
@@ -238,6 +244,7 @@
 				</scroll-view>
 			</view>
 		</modalComponent>
+
 		<modalComponent v-if="modal == 'skill'" :title="modalTitle" @closeModal="modal=''">
 			<view class="skill-modal-container">
 
@@ -306,16 +313,16 @@
 			</view>
 
 		</modalComponent>
-		
+
 		<modalComponent v-if="modal == 'egg_upgrade'" title="能量蛋升级" @closeModal="modal=''">
-		
+
 			<view class="upgrade-modal-container">
 				<view class="title">当前:{{spriteInfo.egg_info.name}}</view>
 				<view class="show_img">
 					<view class="flash"></view>
-					<image :src="spriteInfo.egg_info?spriteInfo.egg_info.icon:'/static/image/pet/y5.png'" mode="widthFix"></image>
+					<image :src="spriteInfo.egg_info?spriteInfo.egg_info.icon:'/static/image/pet/egg/egg_1.png'" mode="widthFix"></image>
 				</view>
-				
+
 				<view class="text-wrap">
 					<view class="text">当前可储存能量时间:{{spriteInfo.egg_info.storage_time}}小时</view>
 					<view class="text">下一级需要 灵丹x{{spriteInfo.next_egg_info.need_stone}}</view>
@@ -330,20 +337,77 @@
 						<view class="flex-set" style="width: 240upx;height: 80upx;">升级</view>
 					</btnComponent>
 				</view>
+
+			</view>
+
+		</modalComponent>
+
+		<listModalComponent v-if="modal == 'treasure_box'" title="我的宝箱" @closeModal="modal=''">
+
+			<view class="box-modal-container">
+				<view class="box-top">
+					<view class="left">新一批宝箱 21:00 更新</view>
+					<view class="right" @tap="$app.goPage('/pages/notice/notice?id=2')">玩宝箱说明</view>
+				</view>
+				<view class="box-countdown">
+					还剩 06::22:25
+				</view>
+
+				<view class="box-list">
+					<block v-for="(item,index) in treasureBoxList" :key="index">
+						<view class="item">
+							<image class="item-img" src="/static/image/pet/treasure_box_close.png" mode="widthFix"></image>
+							
+							<view class="item-button" v-if="index==0" @tap="open_treasure_box">
+								<btnComponent type="default">
+									<view class="flex-set" style="width: 180upx;height: 60upx;">开宝箱</view>
+								</btnComponent>
+							</view>
+							<view class="item-button" v-if="index!=0">
+								<btnComponent type="default">
+									<button open-type="share" data-share="12" :data-otherparam="'index=' + index">
+										<view class="flex-set" style="width: 180upx;height: 60upx;">开宝箱</view>
+									</button>
+								</btnComponent>
+							</view>
+							
+						</view>
+					</block>
+					
+					<!-- <view class="item" @tap="open_treasure_box">
+						<image class="item-img" src="/static/image/pet/treasure_box_close.png" mode="widthFix"></image>
+						
+						<view class="item-button">
+							<btnComponent type="default">
+								<view class="flex-set" style="width: 180upx;height: 60upx;">开宝箱</view>
+							</btnComponent>
+						</view>
+						
+					</view> -->
+					
+				</view>
+				
+				<view class="box-log" @tap="$app.goPage('/pages/subPages/log/log')">
+					<view class="left">开宝箱记录</view>
+					<view class="right">宝箱记录></view>
+				</view>
 				
 			</view>
+
+		</listModalComponent>
 		
-		</modalComponent>
 	</view>
 </template>
 
 <script>
 	import modalComponent from '@/components/modalComponent.vue'
+	import listModalComponent from '@/components/listModalComponent.vue'
 	import btnComponent from '@/components/btnComponent.vue'
 	import listItemComponent from '@/components/listItemComponent.vue'
 	export default {
 		components: {
 			modalComponent,
+			listModalComponent,
 			btnComponent,
 			listItemComponent
 		},
@@ -373,11 +437,13 @@
 				currentSkillType: 1,
 				useCard: false,
 				addCount: 0,
+				treasureBoxList:[],
 			};
 		},
 		onShareAppMessage(e) {
 			const shareType = e.target && e.target.dataset.share
-			return this.$app.commonShareAppMessage(shareType)
+			const otherparam = e.target && e.target.dataset.otherparam
+			return this.$app.commonShareAppMessage(shareType, otherparam)
 		},
 		onLoad() {
 			uni.hideTabBarRedDot({
@@ -396,6 +462,22 @@
 			}
 		},
 		methods: {
+			//宝箱信息
+			treasure_box() {
+				
+				this.$app.request(this.$app.API.TREASURE_BOX, {}, res => {
+					
+					this.modal = 'treasure_box';
+					this.treasureBoxList = res.data.list;
+				
+				}, 'POST', true)
+			},
+			//开宝箱
+			open_treasure_box(){
+				this.$app.request(this.$app.API.TREASURE_BOX_OPEN, {}, res => {
+									
+				}, 'POST', true)
+			},
 			/**
 			 * 收益计时器
 			 */
@@ -448,23 +530,23 @@
 				if (this.spriteInfo.next_egg_info.need_stone && this.userCurrency.stone >= this.spriteInfo.next_egg_info.need_stone) {
 					// 能量蛋升级
 					this.$app.request(this.$app.API.SPRITE_UPGRAGE, {
-						type:type
+						type: type
 					}, res => {
 						this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
 							this.$app.setData('userCurrency', res.data)
 							this.userCurrency = this.$app.getData('userCurrency')
 						})
 						this.getSpriteInfo()
-			
+
 						this.$app.toast('升级成功', 'success')
-			
+
 					}, 'POST', true)
 				} else {
 					// 显示技能
 					// this.skillShow = !this.skillShow
 					this.$app.toast('灵丹不足')
 				}
-			
+
 			},
 			openSkillModal(type) {
 				this.modal = 'skill'
@@ -583,7 +665,7 @@
 							status: e.status,
 							uid: e.user && e.user.id || 0,
 							nickname: e.user && e.user.nickname || this.$app.getData('NICKNAME'),
-							intimacy: e.intimacy,//亲密度
+							intimacy: e.intimacy, //亲密度
 						})
 
 					})
@@ -601,15 +683,17 @@
 				this.modal = ''
 				this.$app.goPage('/pages/subPages/pet/other/other?user_id=' + item.uid + '&off=' + item.off)
 			},
-			
+
 			//HTTP
 			settle() {
 				if (this.spriteInfo.earn == 0) {
 					this.$app.toast('能量太少了，稍后再来吧')
-					setTimeout(() => {
-						
-						this.modal = 'egg_upgrade'
-					}, 1000)
+
+					if (this.spriteInfo.next_egg_info) {
+						setTimeout(() => {
+							this.modal = 'egg_upgrade'
+						}, 1000)
+					}
 				} else {
 					this.$app.request(this.$app.API.SPRITE_SETTLE, {
 						user_id: this.$app.getData('userInfo').id,
@@ -1007,16 +1091,18 @@
 				transform: scale(1);
 			}
 		}
-		
-		.nav-container{
+
+		.nav-container {
 			position: absolute;
 			right: 8%;
-			top:30%;
+			top: 30%;
+
 			image {
 				margin-bottom: 20upx;
 				width: 80upx;
 			}
 		}
+
 		.earn-container::before {
 			content: "";
 			position: absolute;
@@ -1387,26 +1473,29 @@
 			}
 		}
 
-		.upgrade-modal-container{
+		.upgrade-modal-container {
 			width: 100%;
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
 			align-items: center;
 			padding: 30rpx 0;
-			.title{
+
+			.title {
 				font-size: 32rpx;
 				font-weight: 500;
 				padding: 20rpx 0;
 			}
-			.show_img{
+
+			.show_img {
 				position: relative;
-				image{
+
+				image {
 					width: 160rpx;
 					z-index: 3;
 				}
 			}
-			
+
 			.flash {
 				content: "";
 				position: absolute;
@@ -1418,7 +1507,8 @@
 				filter: blur(10upx);
 				animation: shine 1.5s linear infinite;
 			}
-			.text-wrap{
+
+			.text-wrap {
 				padding: 20rpx 0;
 				width: 100%;
 				display: flex;
@@ -1428,5 +1518,69 @@
 			}
 		}
 
+		.box-modal-container{
+			padding: 0 20rpx;
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			.box-top{
+				width: 100%;
+				display: flex;
+				justify-content: space-between;
+				padding-bottom: 20rpx;
+				
+				.left{
+					color: #ce797c;
+					font-size: 32rpx;
+				}
+				
+				.right{
+					color: #999999;
+				}
+			}
+			
+			.box-countdown{
+				font-size: 24rpx;
+			}
+			
+			.box-list{
+				width: 100%;
+				display: flex;
+				flex-wrap: wrap;
+				padding: 30rpx 0;
+				.item{
+					width: 33.3%;
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
+					padding: 10rpx 0;
+					.item-img{
+						width: 80%;
+					}
+					.item-button{
+						width: 80%;
+						font-size: 24rpx;
+					}
+				}
+			}
+			
+			.box-log{
+				width: 100%;
+				display: flex;
+				justify-content: space-between;
+				padding-bottom: 20rpx;
+				font-size: 28rpx;
+				
+				.left{
+					color: #666666;
+				}
+				
+				.right{
+					color: #ce797c;
+				}
+			}
+			
+		}
 	}
 </style>
