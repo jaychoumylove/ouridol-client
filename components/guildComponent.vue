@@ -1932,7 +1932,6 @@
 				}, res => {
 					this.invitAward = res.data.award
 					const resList = []
-					this.spriteEarn = false
 					this.friendTotal = res.data.list.total_count
 					res.data.list.list.forEach((e, i) => {
 						resList.push({
@@ -1940,15 +1939,9 @@
 							status: e.status,
 							uid: e.user && e.user.id || 0,
 							nickname: e.user && e.user.nickname || this.$app.getData('NICKNAME'),
-							earn: e.sprite.earn,
-							off: e.off,
 							intimacy: e.intimacy,
 						})
 
-						if (e.sprite.earn >= 100) {
-							// 显示红点
-							this.spriteEarn = true
-						}
 					})
 					if (this.invitListPage == 1) {
 						this.invitList = resList
