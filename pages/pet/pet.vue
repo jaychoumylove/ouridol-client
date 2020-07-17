@@ -585,7 +585,6 @@
 							uid: e.user && e.user.id || 0,
 							nickname: e.user && e.user.nickname || this.$app.getData('NICKNAME'),
 							earn: e.sprite.earn,
-							off: e.off,
 							intimacy: e.intimacy,//亲密度
 						})
 
@@ -1421,7 +1420,7 @@
 				width: 150upx;
 				height: 200upx;
 				border-radius: 50%;
-				background-color: gold;
+				background-color: #ce797c;
 				filter: blur(10upx);
 				animation: shine 1.5s linear infinite;
 			}
