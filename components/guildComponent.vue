@@ -665,18 +665,19 @@
 		</modalComponent>
 		<modalComponent v-if="modal == 'invit'" title="好友" @closeModal="modal=''">
 			<view class="invit-modal-container">
-
+		
 				<scroll-view scroll-y class="list-wrapper" @scrolltolower='invitListPage++; getInvitList()'>
-
+		
 					<view class="explain-wrapper">
 						<view class="">
-							帮好友收集能量，自己额外获得<text>50%</text>能量
+							本月好友亲密榜
+							<!-- 帮好友收集能量，自己额外获得<text>50%</text>能量 -->
 							<!-- <image src="/static/image/ic_haibao__bak.png" mode="widthFix"></image> -->
 							<!-- 加好友一起养精灵 -->
 						</view>
 						<view class="bottom flex-set">
 							<view>当前好友数<text>{{friendTotal}}/100</text>人</view>
-
+		
 							<btnComponent type="default">
 								<button class="btn" open-type="share" data-share="1">
 									<view class="flex-set" style="font-weight: 700 ;width: 140upx; height: 60upx;">邀请好友</view>
@@ -685,13 +686,11 @@
 							<!-- <image src="/static/image/ic_haibao__bak.png" mode="widthFix"></image> -->
 							<!-- 加好友一起养精灵 -->
 						</view>
-
-
 					</view>
 					<!-- <button class='explain-wrapper' open-type="share" data-share="1">
 						<image style="width: 100%;" :src="$app.getData('config').zhuren_tips_img" mode="widthFix"></image>
 					</button> -->
-
+		
 					<block v-if="invitList.length > 0">
 						<view class="item" v-for="(item,index) in invitList" :key="index" @tap="goOther(item)">
 							<view class="rank-num">
@@ -705,26 +704,28 @@
 								<view class="star-name text-overflow">{{item.nickname}}</view>
 							</view>
 							<image @tap.stop="deleteFriend(item,index)" class="del" src="/static/image/guild/del.png" mode="widthFix"></image>
-							<view class="egg flex-set" @tap.stop="settleSprite(index, item)">
+							<view class="egg flex-set">
+								<view class="num-wrapper position-set">{{item.intimacy?item.intimacy:0}}</view>
+								<image class="flex-set" src="/static/image/pet/intimacy.png" mode="widthFix"></image>
+							</view>
+							<!-- <view class="egg flex-set" @tap.stop="settleSprite(index, item)">
 								<image v-if="item.earn >= 200 && !item.off" class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
-
+		
 								<view class="num-wrapper position-set">{{item.earn}}</view>
 								<image v-if="!item.off" class="flex-set" src="/static/image/pet/y5.png" mode="widthFix"></image>
 								<image v-else class="flex-set" src="/static/image/pet/y5-off.png" mode="widthFix"></image>
-							</view>
+							</view> -->
 						</view>
 					</block>
-
+		
 					<view v-else class="nodata flex-set">
 						<view class="top">你还没有好友</view>
 						<button open-type="share" data-share="1">
 							<view class="bottom">加一位好友></view>
 						</button>
 					</view>
-
 				</scroll-view>
 			</view>
-
 		</modalComponent>
 		<!-- 好友很久没打榜 -->
 		<modalComponent v-if="modal == 'tips_t'" title="提示" @closeModal="modal=''">
@@ -1941,6 +1942,7 @@
 							nickname: e.user && e.user.nickname || this.$app.getData('NICKNAME'),
 							earn: e.sprite.earn,
 							off: e.off,
+							intimacy: e.intimacy,
 						})
 
 						if (e.sprite.earn >= 100) {
@@ -3597,7 +3599,9 @@
 
 						.num-wrapper {
 							z-index: 1;
+							font-size: 24upx;
 							color: #FFF;
+							left: 55% !important;
 						}
 
 						image {

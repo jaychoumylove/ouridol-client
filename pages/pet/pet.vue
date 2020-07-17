@@ -116,7 +116,7 @@
 			<image class="mountain" src="/static/image/pet/y2.png" mode="widthFix"></image>
 			<view class="egg flex-set">
 				<view class="num-wrapper position-set">{{spriteInfo.earn}}</view>
-				<image class="flex-set" :src="spriteInfo.egg_icon?spriteInfo.egg_icon:'/static/image/pet/y5.png'" mode="widthFix"></image>
+				<image class="flex-set" :src="spriteInfo.egg_info?spriteInfo.egg_info.icon:'/static/image/pet/y5.png'" mode="widthFix"></image>
 				<view class="progress flex-set">
 					<view class="progress-bar" :style="{width:earnCuttime + '%'}"></view>
 					{{earnCuttime}}
@@ -290,7 +290,6 @@
 		</modalComponent>
 
 		<modalComponent v-if="modal == 'tips_t'" title="提示" @closeModal="modal=''">
-			<!-- this.$app.modal("好友已经很久没有打榜了\n提醒TA一起为偶像打榜\n") -->
 
 			<view class="tips-modal-container-s">
 				<view class="text-wrap">
@@ -306,6 +305,34 @@
 				</btnComponent>
 			</view>
 
+		</modalComponent>
+		
+		<modalComponent v-if="modal == 'egg_upgrade'" title="能量蛋升级" @closeModal="modal=''">
+		
+			<view class="upgrade-modal-container">
+				<view class="title">当前:{{spriteInfo.egg_info.name}}</view>
+				<view class="show_img">
+					<view class="flash"></view>
+					<image :src="spriteInfo.egg_info?spriteInfo.egg_info.icon:'/static/image/pet/y5.png'" mode="widthFix"></image>
+				</view>
+				
+				<view class="text-wrap">
+					<view class="text">当前可储存能量时间:{{spriteInfo.egg_info.storage_time}}小时</view>
+					<view class="text">下一级需要 灵丹x{{spriteInfo.next_egg_info.need_stone}}</view>
+					<view class="text">
+						<text class="">{{spriteInfo.egg_info.storage_time}}小时</text>
+						<text class="">-></text>
+						<text class="">{{spriteInfo.next_egg_info.storage_time}}小时</text>
+					</view>
+				</view>
+				<view class="button" @tap="egg_upgrade(2)">
+					<btnComponent type="default">
+						<view class="flex-set" style="width: 240upx;height: 80upx;">升级</view>
+					</btnComponent>
+				</view>
+				
+			</view>
+		
 		</modalComponent>
 	</view>
 </template>
@@ -416,6 +443,28 @@
 					this.$app.toast('灵丹不足')
 				}
 
+			},
+			egg_upgrade(type) {
+				if (this.spriteInfo.next_egg_info.need_stone && this.userCurrency.stone >= this.spriteInfo.next_egg_info.need_stone) {
+					// 能量蛋升级
+					this.$app.request(this.$app.API.SPRITE_UPGRAGE, {
+						type:type
+					}, res => {
+						this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
+							this.$app.setData('userCurrency', res.data)
+							this.userCurrency = this.$app.getData('userCurrency')
+						})
+						this.getSpriteInfo()
+			
+						this.$app.toast('升级成功', 'success')
+			
+					}, 'POST', true)
+				} else {
+					// 显示技能
+					// this.skillShow = !this.skillShow
+					this.$app.toast('灵丹不足')
+				}
+			
 			},
 			openSkillModal(type) {
 				this.modal = 'skill'
@@ -559,10 +608,15 @@
 				this.modal = ''
 				this.$app.goPage('/pages/subPages/pet/other/other?user_id=' + item.uid + '&off=' + item.off)
 			},
+			
 			//HTTP
 			settle() {
 				if (this.spriteInfo.earn == 0) {
 					this.$app.toast('能量太少了，稍后再来吧')
+					setTimeout(() => {
+						
+						this.modal = 'egg_upgrade'
+					}, 1000)
 				} else {
 					this.$app.request(this.$app.API.SPRITE_SETTLE, {
 						user_id: this.$app.getData('userInfo').id,
@@ -1340,6 +1394,46 @@
 			}
 		}
 
+		.upgrade-modal-container{
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			padding: 30rpx 0;
+			.title{
+				font-size: 32rpx;
+				font-weight: 500;
+				padding: 20rpx 0;
+			}
+			.show_img{
+				position: relative;
+				image{
+					width: 160rpx;
+					z-index: 3;
+				}
+			}
+			
+			.flash {
+				content: "";
+				position: absolute;
+				left: 5rpx;
+				width: 150upx;
+				height: 200upx;
+				border-radius: 50%;
+				background-color: gold;
+				filter: blur(10upx);
+				animation: shine 1.5s linear infinite;
+			}
+			.text-wrap{
+				padding: 20rpx 0;
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+			}
+		}
 
 	}
 </style>
