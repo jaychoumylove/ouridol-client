@@ -180,6 +180,10 @@
 				"style": {}
 			},
 			{
+			    "path" : "pet/treasure_box/treasure_box",
+			    "style" : {}
+			},
+			{
 				"path": "father/father",
 				"style": {
 					"navigationBarTitleText": "师徒"

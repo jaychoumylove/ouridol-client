@@ -342,7 +342,7 @@
 
 		</modalComponent>
 
-		<listModalComponent v-if="modal == 'treasure_box'" title="我的宝箱" @closeModal="modal=''">
+		<listModalComponent v-if="modal == 'treasure_box'" title="我的宝箱" headimg="/static/image/pet/box_title_img.png" @closeModal="modal=''">
 
 			<view class="box-modal-container">
 				<view class="box-top">
@@ -474,9 +474,10 @@
 			},
 			//开宝箱
 			open_treasure_box(){
-				this.$app.request(this.$app.API.TREASURE_BOX_OPEN, {}, res => {
+				this.$app.goPage('/pages/subPages/pet/treasure_box/treasure_box');
+				// this.$app.request(this.$app.API.TREASURE_BOX_OPEN, {}, res => {
 									
-				}, 'POST', true)
+				// }, 'POST', true)
 			},
 			/**
 			 * 收益计时器
@@ -1556,10 +1557,10 @@
 					align-items: center;
 					padding: 10rpx 0;
 					.item-img{
-						width: 80%;
+						width: 70%;
 					}
 					.item-button{
-						width: 80%;
+						width: 70%;
 						font-size: 24rpx;
 					}
 				}

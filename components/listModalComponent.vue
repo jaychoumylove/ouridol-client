@@ -6,7 +6,7 @@
 				<image v-if="type == 'send'" src="/static/image/guild/send-modal-bg-1_01.png" mode="widthFix" class="title-bg"></image>
 				<view v-if="type == 'default'" class="title-bg linear"></view>
 				<view class="title">{{title}}</view>
-				<image class='center-img' :src="headimg" mode=""></image>
+				<image class='center-img' :src="headimg" mode="widthFix"></image>
 			
 			</view>
 			<view class="content">
@@ -120,7 +120,7 @@
 			
 				.center-img {
 					width: 100upx;
-					height: 100upx;
+					// height: 100upx;
 					position: absolute;
 					left: 50%;
 					transform: translateX(-50%);
