@@ -702,15 +702,16 @@
 							</view>
 							<view class="text-container">
 								<view class="star-name text-overflow">{{item.nickname}}</view>
+								<view style="font-size: 24rpx;">亲密度:{{item.intimacy?item.intimacy:0}}</view>
 							</view>
 							<image @tap.stop="deleteFriend(item,index)" class="del" src="/static/image/guild/del.png" mode="widthFix"></image>
 							<view class="egg flex-set">
-								<view class="num-wrapper position-set">{{item.intimacy?item.intimacy:0}}</view>
-								<image class="flex-set" src="/static/image/pet/intimacy.png" mode="widthFix"></image>
+								<image class="flex-set" src="/static/image/pet/treasure_box_close.png" mode="widthFix"></image>
+								<view class="num-wrapper">{{item.treasure_box_count?item.treasure_box_count:0}}/6</view>
 							</view>
 							<!-- <view class="egg flex-set" @tap.stop="settleSprite(index, item)">
 								<image v-if="item.earn >= 200 && !item.off" class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
-		
+					
 								<view class="num-wrapper position-set">{{item.earn}}</view>
 								<image v-if="!item.off" class="flex-set" src="/static/image/pet/y5.png" mode="widthFix"></image>
 								<image v-else class="flex-set" src="/static/image/pet/y5-off.png" mode="widthFix"></image>
@@ -3549,7 +3550,7 @@
 
 
 					.text-container {
-						padding: 0 30upx;
+						padding: 0 0 0 30upx;
 						line-height: 44upx;
 
 						.star-name {
@@ -3580,26 +3581,19 @@
 					}
 
 					.egg {
-						margin-right: 20upx;
-						position: relative;
-
+						flex-direction: column;
+					
 						.hand {
-							position: absolute;
-							z-index: 2;
-							right: -15upx;
-							bottom: -15upx;
 						}
-
+					
 						.num-wrapper {
-							z-index: 1;
 							font-size: 24upx;
-							color: #FFF;
 							left: 55% !important;
+					
 						}
-
+					
 						image {
 							width: 60upx;
-							min-height: 60upx;
 						}
 					}
 				}

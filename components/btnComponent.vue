@@ -69,6 +69,21 @@
 		background:linear-gradient(to right bottom, #FF3A8A 20%, #fa6c9f 82%, #ffe140 100%);
 		box-shadow: 0 2upx 4upx rgba(#000, 0.3);//, inset 0 0 4upx rgba(#000, 0.3);
 	}
+	
+	.button.palePink {
+		color: #FFFFFF;
+		background:url(https://mmbiz.qpic.cn/mmbiz_png/CbJC0icY3EzYDK6IibJZCjKRgkicZiapsgltvnGHD42bLH7zibMs071OjaqnRicjpLucbuGyYXnxVW5Ro99ppCvPvp5w/0) center center/100% 100% no-repeat;
+	}
+	
+	.button.pink {
+		color: #FFFFFF;
+		background:url(https://mmbiz.qpic.cn/mmbiz_png/CbJC0icY3EzZkic73fibNnibpIvllj1icjrN7gGdaQiaejibgHicJ6hBDTmQcprH8ibdbskrzvoqaBkbX8cpR9WZfDicRDfA/0) center center/100% 100% no-repeat;
+	}
+	
+	.button.golden {
+		color: #FFFFFF;
+		background:url(https://mmbiz.qpic.cn/mmbiz_png/CbJC0icY3EzZkic73fibNnibpIvllj1icjrN7gdbcBHONe18HPVfJTuhBpDBqlcTYloxiblEdhzLDlZlfLuF5xjicQ4uw/0) center center/100% 100% no-repeat;
+	}
 
 	.button.color {
 		background-color: $text-color-1;

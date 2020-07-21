@@ -2,7 +2,7 @@
 	<view class="pet-container">
 		<view class="top-row-container">
 
-			<view class="left-wrap">
+			<!-- <view class="left-wrap">
 				<view class="row flex-set">
 					<image class="coin-img" src="/static/image/user/b1.png" mode="widthFix"></image>
 					<view class="">
@@ -15,7 +15,7 @@
 					</view>
 				</view>
 				<view class="row bottom">产能：<text style="color:#F00;">{{spriteInfo.earnPer}}</text>能量/<text style="color:#F00;">100</text>秒</view>
-			</view>
+			</view> -->
 			<view class="btn-wrap flex-set">
 				<view class="button-wrap flex-set" @tap="$app.goPage('/pages/prop/prop')">
 					<image src="/static/image/pet/btn.png" mode="widthFix"></image>
@@ -33,6 +33,7 @@
 			<btnComponent>
 				<image @tap="openInvitModal" src="/static/image/pet/add.png" mode="widthFix"></image>
 			</btnComponent>
+			<view class="add-text">好友</view>
 
 			<view class="friend-wrapper">
 				<image @tap="openInvitModal" v-for="(item,index) in invitList" :key="index" v-if="index<3" :src="item.avatar" mode="aspectFill"></image>
@@ -44,46 +45,12 @@
 			</btnComponent> -->
 		</view>
 
-		<view class="right-container">
-
-		</view>
-
-		<!-- <view class="sprite-bubble">
-			<image src="/static/image/bubble-1.png" mode="widthFix"></image>
-		</view> -->
 
 		<view class="sprite" @tap="tapSprite">
 			<view class="bounce-article">
 				<image class="sprite-main" :src="spriteInfo.sprite_img" mode="widthFix"></image>
-				<!-- <view class="sprite-level">
-					<image src="/static/image/pet/fly.png" mode="widthFix"></image>
-					<view class="text position-set">LV{{spriteInfo.sprite_level}}</view>
-				</view> -->
+				
 			</view>
-			<!-- <view class="shadow"></view> -->
-
-			<!-- <view class="progress flex-set" v-if="spriteInfo.need_stone">
-				<view class="progress-bar" :style="{width:userCurrency.stone / spriteInfo.need_stone * 100 + '%'}"></view>
-				<image src="/static/image/user/b2.png" mode="widthFix" style="width: 30upx;"></image>
-				{{userCurrency.stone}}/{{spriteInfo.need_stone}} {{userCurrency.stone>=spriteInfo.need_stone?'可升级！':''}}
-			</view>
-			<view class="progress flex-set" v-else>
-				<view class="progress-bar" :style="{width:'100%'}"></view>
-				已经是最高级了
-			</view> -->
-
-			<view class="progress-wrap">
-				<view class="lv">Lv.{{spriteInfo.sprite_level}}</view>
-
-				<view class="progress">
-					<view class="progress-bar" :style="{width:userCurrency.stone / spriteInfo.need_stone * 100 + '%'}"></view>
-					<view class="text position-set">
-						{{userCurrency.stone>=spriteInfo.need_stone?'可升级！':userCurrency.stone +'/'+ spriteInfo.need_stone}}
-					</view>
-				</view>
-
-			</view>
-			<view class="bottom-tips" @tap.stop="modal = 'tips'">如何获得灵丹升级</view>
 
 			<view class="skill-container position-set" :class="{show:skillShow}">
 				<btnComponent>
@@ -118,6 +85,9 @@
 
 		</view>
 
+		<view class="egg-upgrade" v-if="!spriteInfo.earn" @tap="modal = 'egg_upgrade'">
+			<image src="/static/image/pet/egg_upgrade.png" mode="widthFix"></image>
+		</view>
 		<view class="earn-container" @tap="settle">
 			<image class="mountain" src="/static/image/pet/y2.png" mode="widthFix"></image>
 			<view class="egg flex-set">
@@ -129,12 +99,43 @@
 				</view>
 			</view>
 
-
 			<view class="hand-wrap position-set" v-show="spriteInfo.earn">
 				<image class='bubble flex-set' src="/static/image/pet/bubble.png" mode="widthFix"></image>
 				<image class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
 			</view>
 		</view>
+		
+		<view class="bottom-container">
+			<image class="avatarurl" :src="$app.getData('userInfo').avatarurl" mode="aspectFill"></image>
+			<view class="sprite-level">
+				<view class="sprite-level-info">
+					<view class="lv">Lv.{{spriteInfo.sprite_level}}</view>
+					<view class="progress">
+						<view class="progress-bar" :style="{width:userCurrency.stone / spriteInfo.need_stone * 100 + '%'}"></view>
+						<view class="text position-set">
+							{{userCurrency.stone>=spriteInfo.need_stone?'可升级！':userCurrency.stone +'/'+ spriteInfo.need_stone}}
+						</view>
+					</view>
+				</view>
+				
+				<view class="bottom-tips" @tap.stop="modal = 'tips'">如何获得灵丹升级</view>
+			</view>
+			<view class="right-wrap">
+				<view class="row">
+					<view style="display: flex;flex-direction: row;">
+						<view class="">累计获得：</view>
+						<view class="count flex-set">
+							<view class="num" :class="{active:blockScale}">{{spriteInfo.total_coin}}</view>
+							<image v-if="useCard" class="icon m" src="/static/image/prop/2.png" mode="widthFix"></image>
+							<text v-if="blockScale" class="top-num">+{{addCount}}</text>
+						</view>
+					</view>
+				</view>
+				<view class="row bottom">产能:<text style="color:#EEADCC;">{{spriteInfo.earnPer}}能量/100秒</text></view>
+			</view>
+			
+		</view>
+		
 
 		<!-- <modalComponent v-if="modal == 'invit'" title="好友" @closeModal="modal=''">
 			<view class="invit-modal-container">
@@ -219,11 +220,12 @@
 							</view>
 							<view class="text-container">
 								<view class="star-name text-overflow">{{item.nickname}}</view>
+								<view style="font-size: 24rpx;">亲密度:{{item.intimacy?item.intimacy:0}}</view>
 							</view>
 							<image @tap.stop="deleteFriend(item,index)" class="del" src="/static/image/guild/del.png" mode="widthFix"></image>
 							<view class="egg flex-set">
-								<view class="num-wrapper position-set">{{item.intimacy?item.intimacy:0}}</view>
-								<image class="flex-set" src="/static/image/pet/intimacy.png" mode="widthFix"></image>
+								<image class="flex-set" src="/static/image/pet/treasure_box_close.png" mode="widthFix"></image>
+								<view class="num-wrapper">{{item.treasure_box_count?item.treasure_box_count:0}}/6</view>
 							</view>
 							<!-- <view class="egg flex-set" @tap.stop="settleSprite(index, item)">
 								<image v-if="item.earn >= 200 && !item.off" class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
@@ -342,38 +344,39 @@
 
 		</modalComponent>
 
-		<listModalComponent v-if="modal == 'treasure_box'" title="我的宝箱" headimg="/static/image/pet/box_title_img.png" @closeModal="modal=''">
+		<listModalComponent v-if="modal == 'treasure_box'" title="我的宝箱" headimg="/static/image/pet/box_title_img.png"
+		 @closeModal="modal=''">
 
 			<view class="box-modal-container">
 				<view class="box-top">
-					<view class="left">新一批宝箱 21:00 更新</view>
-					<view class="right" @tap="$app.goPage('/pages/notice/notice?id=2')">玩宝箱说明</view>
+					<view class="left">新一批宝箱 {{nextTimeText}} 更新</view>
+					<view class="right" @tap="$app.goPage('/pages/notice/notice?id='+box_notice_id)">玩宝箱说明</view>
 				</view>
 				<view class="box-countdown">
-					还剩 06::22:25
+					还剩 {{nextTime}}
 				</view>
 
 				<view class="box-list">
 					<block v-for="(item,index) in treasureBoxList" :key="index">
 						<view class="item">
 							<image class="item-img" src="/static/image/pet/treasure_box_close.png" mode="widthFix"></image>
-							
-							<view class="item-button" v-if="index==0" @tap="open_treasure_box">
-								<btnComponent type="default">
+
+							<view class="item-button" v-if="index==0" @tap="open_treasure_box(index)">
+								<btnComponent type="palePink">
 									<view class="flex-set" style="width: 180upx;height: 60upx;">开宝箱</view>
 								</btnComponent>
 							</view>
 							<view class="item-button" v-if="index!=0">
-								<btnComponent type="default">
+								<btnComponent type="palePink">
 									<button open-type="share" data-share="12" :data-otherparam="'index=' + index">
 										<view class="flex-set" style="width: 180upx;height: 60upx;">开宝箱</view>
 									</button>
 								</btnComponent>
 							</view>
-							
+
 						</view>
 					</block>
-					
+
 					<!-- <view class="item" @tap="open_treasure_box">
 						<image class="item-img" src="/static/image/pet/treasure_box_close.png" mode="widthFix"></image>
 						
@@ -384,18 +387,18 @@
 						</view>
 						
 					</view> -->
-					
+
 				</view>
-				
+
 				<view class="box-log" @tap="$app.goPage('/pages/subPages/log/log')">
 					<view class="left">开宝箱记录</view>
 					<view class="right">宝箱记录></view>
 				</view>
-				
+
 			</view>
 
 		</listModalComponent>
-		
+
 	</view>
 </template>
 
@@ -437,7 +440,10 @@
 				currentSkillType: 1,
 				useCard: false,
 				addCount: 0,
-				treasureBoxList:[],
+				treasureBoxList: [],
+				box_notice_id: '',
+				nextTime: '00:00:00',
+				nextTimeText: '',
 			};
 		},
 		onShareAppMessage(e) {
@@ -464,20 +470,40 @@
 		methods: {
 			//宝箱信息
 			treasure_box() {
-				
+
 				this.$app.request(this.$app.API.TREASURE_BOX, {}, res => {
-					
+
 					this.modal = 'treasure_box';
 					this.treasureBoxList = res.data.list;
-				
+					this.box_notice_id = res.data.box_notice_id;
+					this.nextTimeText = res.data.nextTimeText;
+					this.nextTime = this.addTimer(res.data.nextTime);
+
 				}, 'POST', true)
 			},
 			//开宝箱
-			open_treasure_box(){
-				this.$app.goPage('/pages/subPages/pet/treasure_box/treasure_box');
-				// this.$app.request(this.$app.API.TREASURE_BOX_OPEN, {}, res => {
-									
-				// }, 'POST', true)
+			open_treasure_box(index) {
+				// this.$app.goPage('/pages/subPages/pet/treasure_box/treasure_box');
+				this.$app.request(this.$app.API.TREASURE_BOX_OPEN, {
+					index:index,
+					user_id:this.$app.getData('userInfo').id
+				}, res => {
+					
+				}, 'POST', true)
+			},
+			addTimer(nextTime){
+				let timeId=null;
+				clearInterval(this.timeId)
+				timeId = setInterval(() => {
+					let left_time = this.$app.timeGethms(--nextTime)
+					this.nextTime = left_time.str
+						
+					if(nextTime<=0){
+						clearInterval(timeId)
+					}
+					
+				}, 1000)
+				
 			},
 			/**
 			 * 收益计时器
@@ -764,12 +790,12 @@
 <style lang="scss" scoped>
 	.pet-container {
 		height: 100%;
-		background: url(http://mmbiz.qpic.cn/mmbiz_jpg/iaPhFibaNbpLQicYuplRuSG4uugzD1T7dUsZINqWvoxMM3EXZiaxoibfZf55mXon8wwdfkoEphpfDRgUDmYMiaFJhIfw/0) center no-repeat/cover;
+		background: url(https://mmbiz.qpic.cn/mmbiz_jpg/CbJC0icY3EzZkic73fibNnibpIvllj1icjrN7XT1X8XQKQpD8qFbzF7OyjcSdw9R8HC72q6ia1pdmCxicua6UB55RX9oA/0) center no-repeat/cover;
 
 		.top-row-container {
 			display: flex;
 			align-items: center;
-			justify-content: space-between;
+			justify-content: flex-end;
 			padding: 20upx;
 			color: #aa877d;
 			color: #000;
@@ -890,11 +916,17 @@
 		.left-container {
 			position: absolute;
 			left: 20upx;
-			top: 50%;
+			top: 36%;
 			transform: translateY(-50%);
 
 			image {
-				width: 80upx;
+				width: 60upx;
+			}
+			.add-text{
+				display: flex;
+				justify-content: center;
+				color: #684B3C; 
+				font-size: 28rpx;
 			}
 
 			.friend-wrapper {
@@ -902,7 +934,7 @@
 				margin-bottom: 20upx;
 				background-color: rgba(255, 255, 255, .5);
 				border-radius: 20upx;
-				width: 80upx;
+				width: 70upx;
 				height: 240upx;
 				display: flex;
 				justify-content: flex-start;
@@ -927,7 +959,7 @@
 		.right-container {
 			position: absolute;
 			right: 20upx;
-			top: 50%;
+			top: 36%;
 			transform: translateY(-50%);
 
 			image {
@@ -942,9 +974,9 @@
 
 		.sprite {
 			position: absolute;
-			left: 45%;
+			left: 50%;
 			transform: translateX(-50%);
-			bottom: 10%;
+			top: 19%;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
@@ -1095,8 +1127,8 @@
 
 		.nav-container {
 			position: absolute;
-			right: 8%;
-			top: 30%;
+			right: 6%;
+			top: 19%;
 
 			image {
 				margin-bottom: 20upx;
@@ -1117,10 +1149,19 @@
 			filter: blur(10upx);
 			animation: shine 1.5s linear infinite;
 		}
+		
+		.egg-upgrade{
+			position: absolute;
+			right: 7%;
+			bottom: 33%;
+				image{
+					width: 80upx;
+				}
+			}
 
 		.earn-container {
 			position: absolute;
-			right: 0upx;
+			right: -1%;
 			bottom: 22%;
 
 			.mountain {
@@ -1186,7 +1227,8 @@
 
 
 			}
-
+			
+			
 			.hand-wrap {
 				width: 100upx;
 				top: -4upx;
@@ -1225,6 +1267,97 @@
 			}
 		}
 
+		.bottom-container{
+			width: 100%;
+			height: 140upx;
+			background-color: rgba(255,255,255,0.5);;
+			position: absolute;
+			bottom: 3%;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			padding: 20rpx;
+			
+			.avatarurl{
+				width: 90rpx;
+				height: 90rpx;
+				border: 4rpx solid #EEADCC;
+				border-radius: 50%;
+			}
+			
+			.sprite-level{
+				width: 45%;
+				padding-left: 20rpx;
+				
+				.sprite-level-info{
+					display: flex;
+					flex-direction: row;
+					align-items: center;
+					
+					.lv {
+						font-weight: 700;
+						padding: 5upx 10upx;
+					}
+					
+					.progress {
+						border-radius: 30upx;
+						background-color: #ad9b97;
+						width: 195upx;
+						height: 30upx;
+						position: relative;
+						overflow: hidden;
+								
+						.progress-bar {
+							background-color: $color_2;
+							border-radius: 30upx;
+							height: 100%;
+						}
+								
+						.text {
+							position: absolute;
+							color: #FFF;
+							font-size: 22upx;
+						}
+					}
+				}	
+				
+				.bottom-tips {
+					width: 210rpx;
+					font-size: 24upx;
+					font-weight: bold;
+					letter-spacing: 2upx;
+					border-bottom: 2upx solid $text-color-2;
+				
+				}
+				
+			}
+			.right-wrap{
+				line-height: 40rpx;
+
+				.row{
+					display: flex;
+					align-items: center;
+					.count{
+						color:#EEADCC;
+						.num {
+							font-weight: 700;
+						}
+						
+						.num.active {
+							animation: scaleA 0.8s linear;
+						}
+						
+						.icon {
+							width: 30upx;
+							height: 30upx;
+						}
+					}
+				}
+				
+			}
+			
+		}
+		
 		.invit-modal-container {
 			width: 100%;
 			height: 100%;
@@ -1315,26 +1448,19 @@
 					}
 
 					.egg {
-						position: relative;
+						flex-direction: column;
 
 						.hand {
-							position: absolute;
-							z-index: 2;
-							right: -15upx;
-							bottom: -15upx;
 						}
 
 						.num-wrapper {
-							z-index: 1;
-							color: #FFF;
 							font-size: 24upx;
 							left: 55% !important;
 
 						}
 
 						image {
-							width: 80upx;
-							min-height: 80upx;
+							width: 60upx;
 						}
 					}
 				}
@@ -1519,69 +1645,72 @@
 			}
 		}
 
-		.box-modal-container{
+		.box-modal-container {
 			padding: 0 20rpx;
 			width: 100%;
 			display: flex;
 			flex-direction: column;
-			.box-top{
+
+			.box-top {
 				width: 100%;
 				display: flex;
 				justify-content: space-between;
 				padding-bottom: 20rpx;
-				
-				.left{
+
+				.left {
 					color: #ce797c;
 					font-size: 32rpx;
 				}
-				
-				.right{
+
+				.right {
 					color: #999999;
 				}
 			}
-			
-			.box-countdown{
+
+			.box-countdown {
 				font-size: 24rpx;
 			}
-			
-			.box-list{
+
+			.box-list {
 				width: 100%;
 				display: flex;
 				flex-wrap: wrap;
 				padding: 30rpx 0;
-				.item{
+
+				.item {
 					width: 33.3%;
 					display: flex;
 					flex-direction: column;
 					justify-content: center;
 					align-items: center;
 					padding: 10rpx 0;
-					.item-img{
+
+					.item-img {
 						width: 70%;
 					}
-					.item-button{
-						width: 70%;
+
+					.item-button {
 						font-size: 24rpx;
 					}
 				}
 			}
-			
-			.box-log{
+
+			.box-log {
 				width: 100%;
 				display: flex;
 				justify-content: space-between;
 				padding-bottom: 20rpx;
 				font-size: 28rpx;
-				
-				.left{
+
+				.left {
 					color: #666666;
 				}
-				
-				.right{
+
+				.right {
 					color: #ce797c;
 				}
 			}
-			
+
 		}
 	}
 </style>
