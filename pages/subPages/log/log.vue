@@ -54,7 +54,7 @@
 				}, res => {
 					const resList = []
 					for (let v of res.data) {
-						let content = v.type && v.type.content || ""
+						let content = v.type && (v.content?v.content:v.type.content)  || ""
 						let star = v.target_star && v.target_star.name || ""
 						let user = v.target_user && v.target_user.nickname || ""
 						content = content.replace(/STAR/g, '【' + star + '】')

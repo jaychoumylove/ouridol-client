@@ -70,7 +70,7 @@
 
 			<!--宝箱-->
 			<btnComponent>
-				<image src="/static/image/pet/treasure_box.png" mode="widthFix" @tap="treasure_box"></image>
+				<image src="/static/image/pet/treasure_box.png" mode="widthFix" @tap="treasure_box()"></image>
 			</btnComponent>
 
 			<!--道具-->
@@ -225,15 +225,9 @@
 							<image @tap.stop="deleteFriend(item,index)" class="del" src="/static/image/guild/del.png" mode="widthFix"></image>
 							<view class="egg flex-set">
 								<image class="flex-set" src="/static/image/pet/treasure_box_close.png" mode="widthFix"></image>
-								<view class="num-wrapper">{{item.treasure_box_count?item.treasure_box_count:0}}/6</view>
+								<view class="num-wrapper">{{item.treasure_box_count?item.treasure_box_count:0}}/5</view>
 							</view>
-							<!-- <view class="egg flex-set" @tap.stop="settleSprite(index, item)">
-								<image v-if="item.earn >= 200 && !item.off" class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
-
-								<view class="num-wrapper position-set">{{item.earn}}</view>
-								<image v-if="!item.off" class="flex-set" src="/static/image/pet/y5.png" mode="widthFix"></image>
-								<image v-else class="flex-set" src="/static/image/pet/y5-off.png" mode="widthFix"></image>
-							</view> -->
+							
 						</view>
 					</block>
 
@@ -343,6 +337,29 @@
 			</view>
 
 		</modalComponent>
+		
+		<modalComponent v-if="modal == 'open_treasure_box_tips'" title="打开宝箱" @closeModal="treasure_box();openBoxData = ''">
+		
+			<view class="open-box-modal-container">
+				<view class="top">今日24:00失效</view>
+				<view class="show_img">
+					<image style="width: 100%;" src="/static/image/pet/open_box.png" mode="widthFix"></image>
+					<image style="width: 180rpx; position: absolute; bottom: 0%; left: 15%;" :src="openBoxData.imgsrc?openBoxData.imgsrc:'https://mmbiz.qpic.cn/mmbiz_png/CbJC0icY3EzYDtytnskVf0eZwtl4xVKmxFdAicib8taV6ibQUzC8R0Ule7TxB2L1PMr1reibsPbkGEv1wfp5DYNftMg/0'" mode="widthFix"></image>
+				</view>
+		
+				<view class="text-wrap">
+					<view class="text">获得:<text style="color: #F75A73;">[{{openBoxData.prizeName?openBoxData.prizeName:''}}]+{{openBoxData.num?openBoxData.num:''}}</text></view>
+					<view class="text"><text style="color: #AAA7A7; font-size: 24rpx;">{{openBoxData.desc?openBoxData.desc:''}}</text></view>
+				</view>
+				<view class="button" @tap="treasure_box();openBoxData = ''">
+					<btnComponent type="pink">
+						<view class="flex-set" style="width: 240upx;height: 80upx;">确认收到</view>
+					</btnComponent>
+				</view>
+		
+			</view>
+		
+		</modalComponent>
 
 		<listModalComponent v-if="modal == 'treasure_box'" title="我的宝箱" headimg="/static/image/pet/box_title_img.png"
 		 @closeModal="modal=''">
@@ -359,20 +376,32 @@
 				<view class="box-list">
 					<block v-for="(item,index) in treasureBoxList" :key="index">
 						<view class="item">
-							<image class="item-img" src="/static/image/pet/treasure_box_close.png" mode="widthFix"></image>
-
-							<view class="item-button" v-if="index==0" @tap="open_treasure_box(index)">
-								<btnComponent type="palePink">
-									<view class="flex-set" style="width: 180upx;height: 60upx;">开宝箱</view>
-								</btnComponent>
-							</view>
-							<view class="item-button" v-if="index!=0">
-								<btnComponent type="palePink">
-									<button open-type="share" data-share="12" :data-otherparam="'index=' + index">
+						
+							<image v-if="item.treasure_box" class="item-img1" :src="item.treasure_box.imgsrc" mode="widthFix"></image>
+							<image v-else class="item-img" src="/static/image/pet/treasure_box_close.png" mode="widthFix"></image>
+							<block v-if="item.treasure_box">
+								<view class="item-button">
+									<view style="height: 60upx; color: #E16737;">{{item.treasure_box.prizeName}}+{{item.count}}</view>
+								</view>
+								
+							</block>
+							<block v-else>
+								<view class="item-button" v-if="index==0" @tap="open_treasure_box(index)">
+									<btnComponent type="palePink">
 										<view class="flex-set" style="width: 180upx;height: 60upx;">开宝箱</view>
-									</button>
-								</btnComponent>
-							</view>
+									</btnComponent>
+								</view>
+								<view class="item-button" v-if="index!=0">
+									<btnComponent type="palePink">
+										<button open-type="share" data-share="12" :data-otherparam="'index=' + index">
+											<view class="flex-set" style="width: 180upx;height: 60upx; display: flex; flex-direction: row;">
+												<image style="width: 40rpx; padding-right: 10rpx;" src="/static/image/pet/share.png" mode="widthFix"></image>
+												<view>开宝箱</view>
+											</view>
+										</button>
+									</btnComponent>
+								</view>
+							</block>
 
 						</view>
 					</block>
@@ -444,6 +473,7 @@
 				box_notice_id: '',
 				nextTime: '00:00:00',
 				nextTimeText: '',
+				openBoxData: '',
 			};
 		},
 		onShareAppMessage(e) {
@@ -483,31 +513,31 @@
 			},
 			//开宝箱
 			open_treasure_box(index) {
-				// this.$app.goPage('/pages/subPages/pet/treasure_box/treasure_box');
 				this.$app.request(this.$app.API.TREASURE_BOX_OPEN, {
 					index:index,
 					user_id:this.$app.getData('userInfo').id
 				}, res => {
+
+					this.openBoxData = res.data;
+					this.modal = 'open_treasure_box_tips';
 					
 				}, 'POST', true)
 			},
 			addTimer(nextTime){
 				let timeId=null;
 				clearInterval(this.timeId)
-				timeId = setInterval(() => {
+				this.timeId = setInterval(() => {
 					let left_time = this.$app.timeGethms(--nextTime)
 					this.nextTime = left_time.str
 						
 					if(nextTime<=0){
-						clearInterval(timeId)
+						clearInterval(this.timeId)
 					}
 					
 				}, 1000)
 				
 			},
-			/**
-			 * 收益计时器
-			 */
+			//收益计时器
 			initInterval() {
 				clearInterval(this.$app.petTimeId)
 				this.$app.petTimeId = setInterval(() => {
@@ -693,6 +723,7 @@
 							uid: e.user && e.user.id || 0,
 							nickname: e.user && e.user.nickname || this.$app.getData('NICKNAME'),
 							intimacy: e.intimacy, //亲密度
+							treasure_box_count: e.treasure_box_count,
 						})
 
 					})
@@ -716,11 +747,6 @@
 				if (this.spriteInfo.earn == 0) {
 					this.$app.toast('能量太少了，稍后再来吧')
 
-					if (this.spriteInfo.next_egg_info) {
-						setTimeout(() => {
-							this.modal = 'egg_upgrade'
-						}, 1000)
-					}
 				} else {
 					this.$app.request(this.$app.API.SPRITE_SETTLE, {
 						user_id: this.$app.getData('userInfo').id,
@@ -1615,6 +1641,7 @@
 			}
 
 			.show_img {
+			
 				position: relative;
 
 				image {
@@ -1635,6 +1662,40 @@
 				animation: shine 1.5s linear infinite;
 			}
 
+			.text-wrap {
+				padding: 20rpx 0;
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+			}
+		}
+
+		.open-box-modal-container{
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			padding: 20rpx;
+			
+			.top {
+				width: 100%;
+				color: #817F7F;
+				font-weight: bold;
+				text-align: right;
+			}
+			
+			.show_img {
+				position: relative;
+				width: 280rpx;
+				height: 280rpx;
+				border: 0;
+				margin-top: 10rpx;
+			}
+			
+			
 			.text-wrap {
 				padding: 20rpx 0;
 				width: 100%;
@@ -1687,6 +1748,11 @@
 
 					.item-img {
 						width: 70%;
+						padding-bottom: 10rpx;
+					}
+					.item-img1 {
+						width: 50%;
+						padding-bottom: 10rpx;
 					}
 
 					.item-button {

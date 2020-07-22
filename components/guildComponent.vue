@@ -707,7 +707,7 @@
 							<image @tap.stop="deleteFriend(item,index)" class="del" src="/static/image/guild/del.png" mode="widthFix"></image>
 							<view class="egg flex-set">
 								<image class="flex-set" src="/static/image/pet/treasure_box_close.png" mode="widthFix"></image>
-								<view class="num-wrapper">{{item.treasure_box_count?item.treasure_box_count:0}}/6</view>
+								<view class="num-wrapper">{{item.treasure_box_count?item.treasure_box_count:0}}/5</view>
 							</view>
 							<!-- <view class="egg flex-set" @tap.stop="settleSprite(index, item)">
 								<image v-if="item.earn >= 200 && !item.off" class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
@@ -1941,6 +1941,7 @@
 							uid: e.user && e.user.id || 0,
 							nickname: e.user && e.user.nickname || this.$app.getData('NICKNAME'),
 							intimacy: e.intimacy,
+							treasure_box_count: e.treasure_box_count,
 						})
 
 					})
