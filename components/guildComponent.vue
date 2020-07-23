@@ -3830,9 +3830,13 @@
 		}
 
 		.tips-modal-container {
-			height: 100%;
-			padding: 20upx 10upx;
-			font-size: 32upx;
+			height: 90%;
+			padding: 20rpx 30rpx;
+			font-size: 32rpx;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+
 
 			.text-wrap {
 				text-align: center;

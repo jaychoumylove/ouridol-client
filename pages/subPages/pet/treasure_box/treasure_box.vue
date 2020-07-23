@@ -28,7 +28,7 @@
 				<block v-else>
 					<view class="desc">谢谢你,宝箱已经开启了</text></view>
 					<view class="desc">我获得了<text style="color: #F75A73;">{{boxData.prizeName}}+{{boxData.count}}</text></view>
-					
+
 				</block>
 				<view class="button" @tap="$app.goPage('/pages/pet/pet')">
 					<btnComponent type="golden">
@@ -66,6 +66,13 @@
 		},
 		methods: {
 			openBox() {
+				if (!this.$app.getData('userStar').id) {
+					this.$app.toast('请先加入一个圈子')
+					setTimeout(() => {
+						this.$app.goPage('/pages/index/index')
+					}, 500)
+					return
+				}
 				if (this.index && this.source_user_id) {
 					this.$app.request(this.$app.API.TREASURE_BOX_OPEN, {
 						index: this.index,
@@ -144,7 +151,7 @@
 
 			.show_img {
 				width: 280rpx;
-				padding: 20rpx;
+				margin: 20rpx;
 			}
 
 			.button {

@@ -180,12 +180,11 @@
 
 		</modalComponent> -->
 
-
 		<modalComponent v-if="modal == 'invit'" title="好友" @closeModal="modal=''">
 			<view class="invit-modal-container">
-
+		
 				<scroll-view scroll-y class="list-wrapper" @scrolltolower='invitListPage++; getInvitList()'>
-
+		
 					<view class="explain-wrapper">
 						<view style="display: flex; align-items: center;">
 							<text>本月好友互动榜</text>
@@ -193,7 +192,7 @@
 						</view>
 						<view class="bottom flex-set">
 							<view>当前好友数<text>{{friendTotal}}/100</text>人</view>
-
+		
 							<btnComponent type="default">
 								<button class="btn" open-type="share" data-share="1">
 									<view class="flex-set" style="font-weight: 700 ;width: 140upx; height: 60upx;">邀请好友</view>
@@ -206,7 +205,7 @@
 					<!-- <button class='explain-wrapper' open-type="share" data-share="1">
 						<image style="width: 100%;" :src="$app.getData('config').zhuren_tips_img" mode="widthFix"></image>
 					</button> -->
-
+		
 					<block v-if="invitList.length > 0">
 						<view class="item" v-for="(item,index) in invitList" :key="index">
 							<view class="rank-num">
@@ -219,6 +218,46 @@
 							<view class="text-container">
 								<view class="star-name text-overflow">{{item.nickname}}</view>
 								<view style="font-size: 24rpx;">互动值:{{item.intimacy?item.intimacy:0}}</view>
+							</view>
+							<view class="egg flex-set" v-if="item.treasure_box_times>0" @tap="open_other_treasure_box(item.uid)">
+								<image class="flex-set" src="/static/image/pet/treasure_box_close.png" mode="widthFix"></image>
+								<view class="num-wrapper">{{item.treasure_box_count?item.treasure_box_count:0}}/5</view>
+							</view>
+							<view class="egg flex-set" v-else @tap="treasure_box_times_tips(item.uid,item.treasure_box_times)">
+								<image class="flex-set" src="/static/image/pet/treasure_box_close.png" mode="widthFix"></image>
+								<view class="num-wrapper">{{item.treasure_box_count?item.treasure_box_count:0}}/5</view>
+							</view>
+							<image @tap.stop="deleteFriend(item,index)" class="del" src="/static/image/guild/del.png" mode="widthFix"></image>
+						</view>
+					</block>
+		
+					<view v-else class="nodata flex-set">
+						<view class="top">你还没有好友</view>
+						<button open-type="share" data-share="1">
+							<view class="bottom">加一位好友></view>
+						</button>
+					</view>
+				</scroll-view>
+			</view>
+		</modalComponent>
+		
+		<modalComponent v-if="modal == 'help_open_box_rank'" title="助力开箱榜" @closeModal="modal='invit'">
+			<view class="invit-modal-container">
+
+				<scroll-view scroll-y class="list-wrapper" @scrolltolower='invitListPage++; getInvitList()'>
+
+					<block v-if="invitList.length > 0">
+						<view class="item" v-for="(item,index) in invitList" :key="index">
+							<view class="rank-num">
+								<image v-if="index<3" :src="'/static/image/guild/'+(index+1)+'.png'" mode="widthFix"></image>
+								<view v-else>{{index+1}}</view>
+							</view>
+							<view class='avatar'>
+								<image :src="item.avatar" mode="aspectFill"></image>
+							</view>
+							<view class="text-container">
+								<view class="star-name text-overflow">{{item.nickname}}</view>
+								<view style="font-size: 24rpx;">助力次数:100</view>
 							</view>
 							<view class="egg flex-set" v-if="item.treasure_box_times>0" @tap="open_other_treasure_box(item.uid)">
 								<image class="flex-set" src="/static/image/pet/treasure_box_close.png" mode="widthFix"></image>
@@ -511,7 +550,7 @@
 				},
 				invitList: [],
 				invitAward: '',
-				modal: '',
+				modal: 'help_open_box_rank',
 				modalTitle: '',
 				earnCuttime: 1, // 收益计时
 				skillShow: false, // 显示技能
@@ -552,6 +591,10 @@
 		methods: {
 			//宝箱信息
 			treasure_box() {
+				if (!this.$app.getData('userStar').id) {
+					this.$app.toast('请先加入一个圈子')
+					return
+				}
 
 				this.$app.request(this.$app.API.TREASURE_BOX, {}, res => {
 
@@ -565,6 +608,10 @@
 			},
 			//开宝箱
 			open_treasure_box(index) {
+				if (!this.$app.getData('userStar').id) {
+					this.$app.toast('请先加入一个圈子')
+					return
+				}
 				this.$app.request(this.$app.API.TREASURE_BOX_OPEN, {
 					index:index,
 					user_id:this.$app.getData('userInfo').id
@@ -581,6 +628,10 @@
 			},
 			//帮助开宝箱
 			open_other_treasure_box(user_id) {
+				if (!this.$app.getData('userStar').id) {
+					this.$app.toast('请先加入一个圈子')
+					return
+				}
 				this.$app.request(this.$app.API.TREASURE_BOX_OPEN_OTHER, {
 					user_id:user_id
 				}, res => {
@@ -1640,9 +1691,13 @@
 
 
 		.tips-modal-container {
-			height: 100%;
-			padding: 20upx 40upx;
-			font-size: 32upx;
+			height: 90%;
+			padding: 20rpx 30rpx;
+			font-size: 32rpx;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+
 
 			.text-wrap {
 
