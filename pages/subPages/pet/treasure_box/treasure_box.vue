@@ -9,7 +9,8 @@
 					<image :src="boxData.user.avatarurl?boxData.user.avatarurl:$app.getData('AVATAR')" mode="widthFix"></image>
 				</view>
 				<view class="desc">来自<text style="color: #F75A73;">{{boxData.user.nickname?boxData.user.nickname:$app.getData('NICKNAME')}}</text>的宝箱</view>
-				<image class="show_img" src="/static/image/pet/treasure_box_close.png" mode="widthFix"></image>
+				<image class="show_img" src="/static/image/pet/treasure_box_share.png" mode="widthFix"></image>
+				<view style="font-size: 24rpx;" v-if="boxData.treasure_box_times==0">已经没有开箱次数了,继续开启将花费20灵丹</view>
 				<view class="button" @tap="openBox">
 					<btnComponent type="golden">
 						<view class="flex-set" style="width: 280upx;height: 80upx;">开启</view>

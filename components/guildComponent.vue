@@ -669,11 +669,9 @@
 				<scroll-view scroll-y class="list-wrapper" @scrolltolower='invitListPage++; getInvitList()'>
 		
 					<view class="explain-wrapper">
-						<view class="">
-							本月好友亲密榜
-							<!-- 帮好友收集能量，自己额外获得<text>50%</text>能量 -->
-							<!-- <image src="/static/image/ic_haibao__bak.png" mode="widthFix"></image> -->
-							<!-- 加好友一起养精灵 -->
+						<view style="display: flex; align-items: center;">
+							<text>本月好友互动榜</text>
+							<image @tap="modal = 'intimacy_tips'" style="width: 40rpx;padding-left: 10rpx;" src="/static/image/pet/notice_box.png" mode="widthFix"></image>
 						</view>
 						<view class="bottom flex-set">
 							<view>当前好友数<text>{{friendTotal}}/100</text>人</view>
@@ -692,23 +690,27 @@
 					</button> -->
 		
 					<block v-if="invitList.length > 0">
-						<view class="item" v-for="(item,index) in invitList" :key="index" @tap="goOther(item)">
+						<view class="item" v-for="(item,index) in invitList" :key="index">
 							<view class="rank-num">
 								<image v-if="index<3" :src="'/static/image/guild/'+(index+1)+'.png'" mode="widthFix"></image>
 								<view v-else>{{index+1}}</view>
 							</view>
-							<view class='avatar'>
+							<view class='avatar' @tap="goOther(item)">
 								<image :src="item.avatar" mode="aspectFill"></image>
 							</view>
 							<view class="text-container">
 								<view class="star-name text-overflow">{{item.nickname}}</view>
-								<view style="font-size: 24rpx;">亲密度:{{item.intimacy?item.intimacy:0}}</view>
+								<view style="font-size: 24rpx;">互动值:{{item.intimacy?item.intimacy:0}}</view>
 							</view>
-							<image @tap.stop="deleteFriend(item,index)" class="del" src="/static/image/guild/del.png" mode="widthFix"></image>
-							<view class="egg flex-set">
+							<view class="egg flex-set" v-if="item.treasure_box_times>0" @tap="open_other_treasure_box(item.uid)">
 								<image class="flex-set" src="/static/image/pet/treasure_box_close.png" mode="widthFix"></image>
 								<view class="num-wrapper">{{item.treasure_box_count?item.treasure_box_count:0}}/5</view>
 							</view>
+							<view class="egg flex-set" v-else @tap="treasure_box_times_tips(item.uid,item.treasure_box_times)">
+								<image class="flex-set" src="/static/image/pet/treasure_box_close.png" mode="widthFix"></image>
+								<view class="num-wrapper">{{item.treasure_box_count?item.treasure_box_count:0}}/5</view>
+							</view>
+							<image @tap.stop="deleteFriend(item,index)" class="del" src="/static/image/guild/del.png" mode="widthFix"></image>
 							<!-- <view class="egg flex-set" @tap.stop="settleSprite(index, item)">
 								<image v-if="item.earn >= 200 && !item.off" class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
 					
@@ -727,6 +729,64 @@
 					</view>
 				</scroll-view>
 			</view>
+		</modalComponent>
+		
+		<modalComponent v-if="modal == 'treasure_box_times_tips'" title="提示" @closeModal="modal='invit'">
+			<view class="tips-modal-container" style="display: flex; flex-direction: column; align-items: center;">
+				<view class="text-wrap" style="text-align: center;">
+					<view class="text" style="font-size: 32upx;font-weight: 700;">次数用尽</view>
+					<view class="text">每人每天只能免费帮别人开5次宝箱</view>
+					<view class="text">可用20灵丹帮助开启</view>
+				</view>
+				<view class="flex-set">
+					<view class="btn" style="width: 240rpx;" @tap="open_other_treasure_box(help_friend_id);help_friend_id = ''">
+						<btnComponent type="pink">
+							<view class="flex-set" style="width: 240upx;height: 80upx; font-size: 24rpx;">花费20灵丹开启</view>
+						</btnComponent>
+					</view>
+				</view>
+			</view>
+		
+		</modalComponent>
+		
+		<modalComponent v-if="modal == 'intimacy_tips'" title="说明" @closeModal="modal='invit'">
+			<view class="tips-modal-container">
+				<view class="text-wrap" style="text-align: left;">
+		
+					<view class="text">互动值说明</view>
+					<view class="text">1.帮好友开一次宝箱互动值加1</view>
+					<view class="text">2.解除好友关系，互动值清零</view>
+				</view>
+				
+			</view>
+		
+		</modalComponent>
+		
+		<!-- 帮助好友开箱 -->
+		<modalComponent v-if="modal == 'open_other_treasure_box_tips'" title="帮助好友开箱" @closeModal="getInvitList();modal = 'invit';openOtherBoxData = ''">
+		
+			<view class="open-box-modal-container">
+				<view class="top">今日24:00失效</view>
+				<view class="show_img">
+					<image style="width: 100%;" src="/static/image/pet/open_box.png" mode="widthFix"></image>
+					<image style="width: 180rpx; position: absolute; bottom: 0%; left: 15%;" :src="openOtherBoxData.imgsrc?openOtherBoxData.imgsrc:'https://mmbiz.qpic.cn/mmbiz_png/CbJC0icY3EzYDtytnskVf0eZwtl4xVKmxFdAicib8taV6ibQUzC8R0Ule7TxB2L1PMr1reibsPbkGEv1wfp5DYNftMg/0'" mode="widthFix"></image>
+				</view>
+		
+				<view class="text-wrap">
+					<view class="text">开箱成功</view>
+					<view class="text">恭喜你帮助好友获得:<text style="color: #F75A73;">[{{openOtherBoxData.prizeName?openOtherBoxData.prizeName:''}}]+{{openOtherBoxData.num?openOtherBoxData.num:''}}</text></view>
+					<view class="text"><text style="color: #AAA7A7; font-size: 24rpx;">{{openOtherBoxData.desc?openOtherBoxData.desc:''}}</text></view>
+				</view>
+				<view class="button">
+					<btnComponent type="pink">
+						<button class="btn" open-type="share" data-share="1">
+							<view class="flex-set" style="width: 240upx;height: 80upx;">通知好友</view>
+						</button>
+					</btnComponent>
+				</view>
+		
+			</view>
+		
 		</modalComponent>
 		<!-- 好友很久没打榜 -->
 		<modalComponent v-if="modal == 'tips_t'" title="提示" @closeModal="modal=''">
@@ -1151,7 +1211,9 @@
 					referrer: -1,
 					coin: 0,
 					people: 0
-				}
+				},
+				openOtherBoxData:'',
+				help_friend_id: '',
 			};
 		},
 		created() {
@@ -1441,6 +1503,21 @@
 						})
 					}, 'POST', true)
 				})
+			},
+			treasure_box_times_tips(user_id,treasure_box_times){
+				this.modal = 'treasure_box_times_tips';
+				this.help_friend_id = user_id;
+			},
+			//帮助开宝箱
+			open_other_treasure_box(user_id) {
+				this.$app.request(this.$app.API.TREASURE_BOX_OPEN_OTHER, {
+					user_id:user_id
+				}, res => {
+			
+					this.openOtherBoxData = res.data;
+					this.modal = 'open_other_treasure_box_tips';
+					
+				}, 'POST', true)
 			},
 			// 删除好友
 			deleteFriend(item, index) {
@@ -1942,6 +2019,7 @@
 							nickname: e.user && e.user.nickname || this.$app.getData('NICKNAME'),
 							intimacy: e.intimacy,
 							treasure_box_count: e.treasure_box_count,
+							treasure_box_times: e.treasure_box_times,
 						})
 
 					})
@@ -3578,12 +3656,13 @@
 					.del {
 						width: 36.78upx;
 						height: 36upx;
-						margin: 20upx;
+						margin-left: 40upx;
 					}
 
 					.egg {
 						flex-direction: column;
-					
+						margin-left: 10rpx;
+						
 						.hand {
 						}
 					
@@ -4239,6 +4318,40 @@
 
 		.urge-modal-container.show {
 			transform: translateY(0);
+		}
+	}
+	
+	.open-box-modal-container{
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		padding: 20rpx;
+		
+		.top {
+			width: 100%;
+			color: #817F7F;
+			font-weight: bold;
+			text-align: right;
+		}
+		
+		.show_img {
+			position: relative;
+			width: 280rpx;
+			height: 280rpx;
+			border: 0;
+			margin-top: 10rpx;
+		}
+		
+		
+		.text-wrap {
+			padding: 20rpx 0;
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
 		}
 	}
 
