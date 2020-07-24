@@ -18,7 +18,7 @@
 				</view>
 			</block>
 			<block v-else>
-				<view class="desc"><text style="color: #F75A73;">@{{$app.getData('userInfo').nickname}}</text></view>
+				<view class="desc"><text style="color: #F75A73;">@{{$app.getData('userInfo').nickname?$app.getData('userInfo').nickname:$app.getData('NICKNAME')}}</text></view>
 				<image class="show_img" src="https://mmbiz.qpic.cn/mmbiz_png/CbJC0icY3EzYDK6IibJZCjKRgkicZiapsglt6iaDzMoFF8TYZnTKN5Jd2XcrrYXOrZTgU8v7GickwgKRjQGvWZRHR46Q/0"
 				 mode="widthFix"></image>
 				<block v-if="openBoxData">
@@ -27,7 +27,7 @@
 				</block>
 				<block v-else>
 					<view class="desc">谢谢你,宝箱已经开启了</text></view>
-					<view class="desc">我获得了<text style="color: #F75A73;">{{boxData.prizeName}}+{{boxData.count}}</text></view>
+					<view class="desc">我已经获得了<text style="color: #F75A73;">{{boxData.prizeName}}+{{boxData.count}}</text></view>
 
 				</block>
 				<view class="button" @tap="$app.goPage('/pages/pet/pet')">
