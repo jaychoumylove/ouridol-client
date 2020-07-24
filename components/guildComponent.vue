@@ -731,7 +731,7 @@
 			</view>
 		</modalComponent>
 		
-		<modalComponent v-if="modal == 'treasure_box_times_tips'" title="提示" @closeModal="modal='invit'">
+		<modalComponent v-if="modal == 'treasure_box_times_tips'" title="提示" @closeModal="modal='invit';help_friend_id = ''">
 			<view class="tips-modal-container" style="display: flex; flex-direction: column; align-items: center;">
 				<view class="text-wrap" style="text-align: center;">
 					<view class="text" style="font-size: 32upx;font-weight: 700;">次数用尽</view>
@@ -739,7 +739,7 @@
 					<view class="text">可用20灵丹帮助开启</view>
 				</view>
 				<view class="flex-set">
-					<view class="btn" style="width: 240rpx;" @tap="open_other_treasure_box(help_friend_id);help_friend_id = ''">
+					<view class="btn" style="width: 240rpx;" @tap="open_other_treasure_box(help_friend_id);">
 						<btnComponent type="pink">
 							<view class="flex-set" style="width: 240upx;height: 80upx; font-size: 24rpx;">花费20灵丹开启</view>
 						</btnComponent>

@@ -242,14 +242,15 @@
 			</view>
 		</modalComponent>
 		
-		<modalComponent v-if="modal == 'help_open_box_rank'" title="全服开箱排行榜" @closeModal="modal='';rankList=[];rankListPage=1">
+		<modalComponent v-if="modal == 'help_open_box_rank'" title="排行" @closeModal="modal='';rankList=[];rankListPage=1">
 			<view class="invit-modal-container">
 
 				<scroll-view scroll-y class="list-wrapper" @scrolltolower='rankListPage++; getOpenBoxRankList()'>
-					<view class="explain-wrapper">
+					<view class="explain-wrapper" style="padding: 20rpx;">
+						<view style="font-size: 28rpx; font-weight: bold;">助力开箱排行榜(每日更新)</view>
 						<view style="display: flex; justify-content: space-between; align-items: center;">
 							<view>我的排名:{{my_help_open_rank}}</view>
-							<view>助力次数:{{my_help_open_times}}</view>
+							<view>助力开箱:{{my_help_open_times}}次</view>
 						</view>
 					</view>
 					<block v-if="rankList.length > 0">
@@ -265,8 +266,8 @@
 								<view class="star-name text-overflow">{{item.nickname}}</view>
 							</view>
 							<view style="flex: 1 1 0%;font-size: 12px;display: flex;align-items: center;flex-direction: column;justify-content: flex-end;">
-								<view>助力次数</view>
-								<view>{{item.help_open_times}}</view>
+								<view>助力开箱</view>
+								<view>{{item.help_open_times}}次</view>
 							</view>	
 						</view>
 					</block>
@@ -278,7 +279,7 @@
 			</view>
 		</modalComponent>
 		
-		<modalComponent v-if="modal == 'treasure_box_times_tips'" title="提示" @closeModal="modal='invit'">
+		<modalComponent v-if="modal == 'treasure_box_times_tips'" title="提示" @closeModal="modal='invit';help_friend_id = ''">
 			<view class="tips-modal-container">
 				<view class="text-wrap" style="text-align: center;">
 					<view class="text" style="font-size: 32upx;font-weight: 700;">次数用尽</view>
@@ -286,7 +287,7 @@
 					<view class="text">可用20灵丹帮助开启</view>
 				</view>
 				<view class="flex-set">
-					<view class="btn" style="width: 240rpx;" @tap="open_other_treasure_box(help_friend_id);help_friend_id = ''">
+					<view class="btn" style="width: 240rpx;" @tap="open_other_treasure_box(help_friend_id);">
 						<btnComponent type="pink">
 							<view class="flex-set" style="width: 240upx;height: 80upx; font-size: 24rpx;">花费20灵丹开启</view>
 						</btnComponent>
@@ -378,7 +379,7 @@
 
 		</modalComponent>
 
-		<modalComponent v-if="modal == 'egg_upgrade'" title="能量蛋升级" @closeModal="modal=''">
+		<listModalComponent v-if="modal == 'egg_upgrade'" title="我的能量蛋" @closeModal="modal=''">
 
 			<view class="upgrade-modal-container">
 				<view class="title">当前:{{spriteInfo.egg_info.name}}</view>
@@ -386,30 +387,41 @@
 					<view class="flash"></view>
 					<image :src="spriteInfo.egg_info?spriteInfo.egg_info.icon:'/static/image/pet/egg/egg_1.png'" mode="widthFix"></image>
 				</view>
-
-				<view class="text-wrap">
-					<view class="text">当前可储存能量时间:{{spriteInfo.egg_info.storage_time}}小时</view>
-					<view class="text">下一级需要 灵丹x{{spriteInfo.next_egg_info.need_stone}}</view>
-					<view class="text">
-						<text class="">{{spriteInfo.egg_info.storage_time}}小时</text>
-						<text class="">-></text>
-						<text class="">{{spriteInfo.next_egg_info.storage_time}}小时</text>
+				<view style="display: flex;flex-direction: row;width: 100%; align-items: center; justify-content: space-around;">
+					<view class="text-wrap" v-if="spriteInfo.next_egg_info.level">
+						<view style="padding: 10rpx;">
+							<view class="text title-text">当前等级lv.{{spriteInfo.egg_info.level}}</view>
+							<view class="text">可储存能量时间:{{spriteInfo.egg_info.storage_time}}小时</view>
+						</view>
+						<view style="padding: 10rpx;">
+							<view class="text title-text">下一等级lv.{{spriteInfo.next_egg_info.level}}</view>
+							<view class="text">可储存能量时间:{{spriteInfo.next_egg_info.storage_time}}小时</view>
+						</view>
 					</view>
-				</view>
-				<view class="button" @tap="egg_upgrade(2)">
-					<btnComponent type="default">
-						<view class="flex-set" style="width: 240upx;height: 80upx;">升级</view>
-					</btnComponent>
+					<view class="text-wrap" v-else>
+						<view style="padding: 10rpx;">
+							<view class="text title-text">当前等级lv.{{spriteInfo.egg_info.level}},已是顶级</view>
+							<view class="text">可储存能量时间:{{spriteInfo.egg_info.storage_time}}小时</view>
+						</view>
+						
+					</view>
+					<view class="button" @tap="egg_upgrade(2)" v-if="spriteInfo.next_egg_info.level">
+						<btnComponent type="default">
+							<view class="flex-set" style="width: 240upx;height: 60upx;">升级 {{spriteInfo.next_egg_info.need_stone}}灵丹</view>
+						</btnComponent>
+					</view>
 				</view>
 
 			</view>
 
-		</modalComponent>
+		</listModalComponent>
 		
 		<modalComponent v-if="modal == 'open_treasure_box_tips'" title="打开宝箱" @closeModal="treasure_box();openBoxData = ''">
 		
 			<view class="open-box-modal-container">
-				<view class="top">今日24:00失效</view>
+				<view class="top" v-if="openBoxData.type==0">今日24:00失效</view>
+				<view class="top" v-else-if="openBoxData.type==1">每周日24:00清零</view>
+				<view class="top" v-else></view>
 				<view class="show_img">
 					<image style="width: 100%;" src="/static/image/pet/open_box.png" mode="widthFix"></image>
 					<image style="width: 180rpx; position: absolute; bottom: 0%; left: 15%;" :src="openBoxData.imgsrc?openBoxData.imgsrc:'https://mmbiz.qpic.cn/mmbiz_png/CbJC0icY3EzYDtytnskVf0eZwtl4xVKmxFdAicib8taV6ibQUzC8R0Ule7TxB2L1PMr1reibsPbkGEv1wfp5DYNftMg/0'" mode="widthFix"></image>
@@ -432,7 +444,9 @@
 		<modalComponent v-if="modal == 'open_other_treasure_box_tips'" title="帮助好友开箱" @closeModal="getInvitList();modal = 'invit';openOtherBoxData = ''">
 		
 			<view class="open-box-modal-container">
-				<view class="top">今日24:00失效</view>
+				<view class="top" v-if="openOtherBoxData.type==0">今日24:00失效</view>
+				<view class="top" v-else-if="openOtherBoxData.type==1">每周日24:00清零</view>
+				<view class="top" v-else></view>
 				<view class="show_img">
 					<image style="width: 100%;" src="/static/image/pet/open_box.png" mode="widthFix"></image>
 					<image style="width: 180rpx; position: absolute; bottom: 0%; left: 15%;" :src="openOtherBoxData.imgsrc?openOtherBoxData.imgsrc:'https://mmbiz.qpic.cn/mmbiz_png/CbJC0icY3EzYDtytnskVf0eZwtl4xVKmxFdAicib8taV6ibQUzC8R0Ule7TxB2L1PMr1reibsPbkGEv1wfp5DYNftMg/0'" mode="widthFix"></image>
@@ -1303,12 +1317,12 @@
 			content: "";
 			position: absolute;
 			z-index: 1;
-			width: 70upx;
+			width: 80upx;
 			height: 90upx;
 			top: -48upx;
 			border-radius: 50%;
-			left: 45upx;
-			background-color: #ce797c;
+			left: 40upx;
+			background-color: #fbbff5;
 			filter: blur(10upx);
 			animation: shine 1.5s linear infinite;
 		}
@@ -1358,8 +1372,8 @@
 					width: 100%;
 					border-radius: 20upx;
 					color: #FFF;
-					background-color: #ad9b97;
-					border: 4upx solid #68478e;
+					background-color: #dcdcdc;
+					border: 4upx solid #aa89bd;
 					text-align: center;
 					font-size: 20upx;
 					position: relative;
@@ -1372,7 +1386,7 @@
 						left: 0;
 						right: 0;
 						height: 100%;
-						background-color: $color_2;
+						background-color: #f19ec2;
 						z-index: -1;
 					}
 
@@ -1781,7 +1795,6 @@
 			flex-direction: column;
 			justify-content: center;
 			align-items: center;
-			padding: 30rpx 0;
 
 			.title {
 				font-size: 32rpx;
@@ -1812,12 +1825,18 @@
 			}
 
 			.text-wrap {
-				padding: 20rpx 0;
-				width: 100%;
+				padding: 20rpx;
 				display: flex;
 				flex-direction: column;
 				justify-content: center;
 				align-items: center;
+				.title-text{
+					border-left: 8rpx solid #ce797c; 
+					font-weight: bold;
+				}
+				.text{
+					padding: 5rpx 10rpx;
+				}
 			}
 		}
 

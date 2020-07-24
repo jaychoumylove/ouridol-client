@@ -5,8 +5,10 @@
 
 			<view class="item" v-for="(item,index) in logList" :key="index">
 				<view class="left-content">
-					<view class="content ">
-						<view class="top">获得:<text style="color: #F75A73; font-weight: bold;">[{{item.content}}]</text></view>
+					<view class="content">
+						<view class="top" v-if="item.help_user_info"><text style="color: #aa89bd; font-weight: bold;">{{item.help_user_info.nickname}}</text>帮我开出了<text style="color: #F75A73; font-weight: bold;">[{{item.content}}]</text></view>
+						<view class="top" v-else-if="item.helped_user_info">我帮<text style="color: #aa89bd; font-weight: bold;">{{item.helped_user_info.nickname}}</text>开出了<text style="color: #F75A73; font-weight: bold;">[{{item.content}}]</text></view>
+						<view class="top" v-else>我开出了<text style="color: #F75A73; font-weight: bold;">[{{item.content}}]</text></view>
 						<view class="bottom">{{item.create_time}}</view>
 					</view>
 				</view>
@@ -46,6 +48,9 @@
 							content: content,
 							imgsrc: v.treasure_box.imgsrc,
 							count: v.count,
+							help_user_id: v.help_user_id,
+							help_user_info: v.help_user_info,
+							helped_user_info: v.helped_user_info,
 							create_time: v.create_time.slice(5)
 						})
 					}
