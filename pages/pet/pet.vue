@@ -63,10 +63,11 @@
 		</view>
 
 		<view class="nav-container">
+			
 			<!--排行-->
-			<!-- <btnComponent>
-				<image src="/static/image/pet/rank.png" mode="widthFix" @tap="$app.goPage('/pages/subPages/user/rank/pet_rank')"></image>
-			</btnComponent> -->
+			<btnComponent>
+				<image src="/static/image/pet/rank.png" mode="widthFix" @tap="modal = 'help_open_box_rank';getOpenBoxRankList()"></image>
+			</btnComponent>
 
 			<!--宝箱-->
 			<btnComponent>
@@ -241,13 +242,18 @@
 			</view>
 		</modalComponent>
 		
-		<modalComponent v-if="modal == 'help_open_box_rank'" title="助力开箱榜" @closeModal="modal='invit'">
+		<modalComponent v-if="modal == 'help_open_box_rank'" title="全服开箱排行榜" @closeModal="modal='';rankList=[];rankListPage=1">
 			<view class="invit-modal-container">
 
-				<scroll-view scroll-y class="list-wrapper" @scrolltolower='invitListPage++; getInvitList()'>
-
-					<block v-if="invitList.length > 0">
-						<view class="item" v-for="(item,index) in invitList" :key="index">
+				<scroll-view scroll-y class="list-wrapper" @scrolltolower='rankListPage++; getOpenBoxRankList()'>
+					<view class="explain-wrapper">
+						<view style="display: flex; justify-content: space-between; align-items: center;">
+							<view>我的排名:{{my_help_open_rank}}</view>
+							<view>助力次数:{{my_help_open_times}}</view>
+						</view>
+					</view>
+					<block v-if="rankList.length > 0">
+						<view class="item" v-for="(item,index) in rankList" :key="index">
 							<view class="rank-num">
 								<image v-if="index<3" :src="'/static/image/guild/'+(index+1)+'.png'" mode="widthFix"></image>
 								<view v-else>{{index+1}}</view>
@@ -257,25 +263,16 @@
 							</view>
 							<view class="text-container">
 								<view class="star-name text-overflow">{{item.nickname}}</view>
-								<view style="font-size: 24rpx;">助力次数:100</view>
 							</view>
-							<view class="egg flex-set" v-if="item.treasure_box_times>0" @tap="open_other_treasure_box(item.uid)">
-								<image class="flex-set" src="/static/image/pet/treasure_box_close.png" mode="widthFix"></image>
-								<view class="num-wrapper">{{item.treasure_box_count?item.treasure_box_count:0}}/5</view>
-							</view>
-							<view class="egg flex-set" v-else @tap="treasure_box_times_tips(item.uid,item.treasure_box_times)">
-								<image class="flex-set" src="/static/image/pet/treasure_box_close.png" mode="widthFix"></image>
-								<view class="num-wrapper">{{item.treasure_box_count?item.treasure_box_count:0}}/5</view>
-							</view>
-							<image @tap.stop="deleteFriend(item,index)" class="del" src="/static/image/guild/del.png" mode="widthFix"></image>
+							<view style="flex: 1 1 0%;font-size: 12px;display: flex;align-items: center;flex-direction: column;justify-content: flex-end;">
+								<view>助力次数</view>
+								<view>{{item.help_open_times}}</view>
+							</view>	
 						</view>
 					</block>
 
 					<view v-else class="nodata flex-set">
-						<view class="top">你还没有好友</view>
-						<button open-type="share" data-share="1">
-							<view class="bottom">加一位好友></view>
-						</button>
+						<view class="top">暂时无人上榜</view>
 					</view>
 				</scroll-view>
 			</view>
@@ -536,6 +533,7 @@
 			return {
 				requestCount: 1,
 				invitListPage: 1,
+				rankListPage: 1,
 				friendTotal: 0,
 				blockScale: false,
 
@@ -549,8 +547,9 @@
 					earnPer: 0,
 				},
 				invitList: [],
+				rankList: [],
 				invitAward: '',
-				modal: 'help_open_box_rank',
+				modal: '',
 				modalTitle: '',
 				earnCuttime: 1, // 收益计时
 				skillShow: false, // 显示技能
@@ -565,6 +564,8 @@
 				openBoxData: '',
 				openOtherBoxData: '',
 				help_friend_id: '',
+				my_help_open_rank: 0,
+				my_help_open_times: 0,
 			};
 		},
 		onShareAppMessage(e) {
@@ -813,23 +814,39 @@
 					}, 'POST', true)
 				}
 			},
+			getOpenBoxRankList(){
+				this.$app.request(this.$app.API.TREASURE_BOX_RANK, {
+					type: 1,
+					page: this.rankListPage || 1
+				}, res => {
+				
+				this.my_help_open_times = res.data.my_help_open_times;
+				this.my_help_open_rank = res.data.my_help_open_rank;
+					const resList = []
+					res.data.list.forEach((e, i) => {
+						resList.push({
+							avatar: e.user && e.user.avatarurl || this.$app.getData('AVATAR'),
+							uid: e.user && e.user.id || 0,
+							nickname: e.user && e.user.nickname || this.$app.getData('NICKNAME'),
+							help_open_times: e.help_open_times,
+						})
+				
+					})
+					if (this.rankList == 1) {
+						this.rankList = resList
+					} else {
+						this.rankList = this.rankList.concat(resList)
+					}
+				
+				
+					this.$app.closeLoading(this)
+				})
+			},
 			getInvitList() {
 				this.$app.request(this.$app.API.USER_INVITLIST, {
 					type: 1,
 					page: this.invitListPage || 1
 				}, res => {
-					// this.invitAward = res.data.award
-					// const resList = []
-					// res.data.list.forEach((e, i) => {
-					// 	// resList.push({
-					// 	// 	avatar: e.user && e.user.avatarurl || this.$app.getData('AVATAR'),
-					// 	// 	status: e.status,
-					// 	// 	uid: e.ral_user_id
-					// 	// })
-					// 	
-					// 	
-					// })
-					// this.invitList = resList
 
 					this.invitAward = res.data.award
 					const resList = []
