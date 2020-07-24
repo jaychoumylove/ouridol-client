@@ -93,7 +93,12 @@
 
 					.content {
 						margin-left: 20upx;
-
+						.top{
+							width: 400rpx;
+							text-overflow: ellipsis;
+							white-space: nowrap;
+							overflow: hidden;
+						}
 						.bottom {
 							font-size: 24upx;
 							color: #888;
