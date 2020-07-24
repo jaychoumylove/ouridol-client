@@ -941,7 +941,7 @@
 				</view> -->
 
 				<view class="btn-list flex-set">
-					<view class="btn-item" @tap="addFriend(currentUser.id)">
+					<view class="btn-item" v-if="currentUser.avatarurl != $app.getData('AVATAR')" @tap="addFriend(currentUser.id)">
 						<view class="bg flex-set">
 							<image src="/static/image/guild/card.png" mode=""></image>
 						</view>

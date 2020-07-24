@@ -86,11 +86,10 @@
 
 		</view>
 
-		<view class="egg-upgrade" v-if="!spriteInfo.earn" @tap="modal = 'egg_upgrade'">
+		<!-- <view class="egg-upgrade" v-if="!spriteInfo.earn" @tap="modal = 'egg_upgrade'">
 			<image src="/static/image/pet/egg_upgrade.png" mode="widthFix"></image>
-		</view>
+		</view> -->
 		<view class="earn-container" @tap="settle">
-			<image class="mountain" src="/static/image/pet/y2.png" mode="widthFix"></image>
 			<view class="egg flex-set">
 				<view class="num-wrapper position-set">{{spriteInfo.earn}}</view>
 				<image class="flex-set" :src="spriteInfo.egg_info?spriteInfo.egg_info.icon:'/static/image/pet/egg/egg_1.png'" mode="widthFix"></image>
@@ -98,11 +97,12 @@
 					<view class="progress-bar" :style="{width:earnCuttime + '%'}"></view>
 					{{earnCuttime}}
 				</view>
+				
 			</view>
-
-			<view class="hand-wrap position-set" v-show="spriteInfo.earn">
-				<image class='bubble flex-set' src="/static/image/pet/bubble.png" mode="widthFix"></image>
-				<image class='hand' src="/static/image/pet/hand.png" mode="widthFix"></image>
+			<image class="mountain" src="/static/image/pet/y3.png" mode="widthFix"></image>
+			<view class="hand-wrap position-set">
+				<image class='flex-set' :class="[ spriteInfo.earn?'bubble':'bubble1' ]" src="/static/image/pet/bubble.png" mode="widthFix"></image>
+				<image class='hand' v-if="spriteInfo.earn" src="/static/image/pet/hand.png" mode="widthFix"></image>
 			</view>
 		</view>
 		
@@ -881,7 +881,8 @@
 			//HTTP
 			settle() {
 				if (this.spriteInfo.earn == 0) {
-					this.$app.toast('能量太少了，稍后再来吧')
+					// this.$app.toast('能量太少了，稍后再来吧')	
+					this.modal = 'egg_upgrade'
 
 				} else {
 					this.$app.request(this.$app.API.SPRITE_SETTLE, {
@@ -1290,7 +1291,7 @@
 		.nav-container {
 			position: absolute;
 			right: 6%;
-			top: 19%;
+			top: 15%;
 
 			image {
 				margin-bottom: 20upx;
@@ -1304,10 +1305,10 @@
 			z-index: 1;
 			width: 70upx;
 			height: 90upx;
-			top: 28upx;
+			top: -48upx;
 			border-radius: 50%;
-			left: 100upx;
-			background-color: #FFFFFF;
+			left: 45upx;
+			background-color: #ce797c;
 			filter: blur(10upx);
 			animation: shine 1.5s linear infinite;
 		}
@@ -1323,18 +1324,18 @@
 
 		.earn-container {
 			position: absolute;
-			right: -1%;
-			bottom: 22%;
+			right: 3%;
+			bottom: 16%;
 
 			.mountain {
-				width: 230upx;
+				width: 150upx;
 			}
 
 			.egg {
 				width: 90upx;
 				position: absolute;
-				top: 34upx;
-				left: 90upx;
+				top: -34upx;
+				left: 35upx;
 				flex-direction: column;
 				z-index: 2;
 
@@ -1357,7 +1358,7 @@
 					width: 100%;
 					border-radius: 20upx;
 					color: #FFF;
-					background-color: #97cee3;
+					background-color: #ad9b97;
 					border: 4upx solid #68478e;
 					text-align: center;
 					font-size: 20upx;
@@ -1371,7 +1372,7 @@
 						left: 0;
 						right: 0;
 						height: 100%;
-						background-color: #c90186;
+						background-color: $color_2;
 						z-index: -1;
 					}
 
@@ -1393,12 +1394,19 @@
 			
 			.hand-wrap {
 				width: 100upx;
-				top: -4upx;
-				left: 134upx;
+				top: -50rpx;
+				left: 84rpx;
 				z-index: 2;
 
 				.bubble::before {
 					content: "可收集";
+					position: absolute;
+					margin-top: -4upx;
+					font-size: 24upx;
+					font-weight: 700;
+				}
+				.bubble1::before {
+					content: "升级";
 					position: absolute;
 					margin-top: -4upx;
 					font-size: 24upx;
@@ -1434,7 +1442,7 @@
 			height: 140upx;
 			background-color: rgba(255,255,255,0.5);;
 			position: absolute;
-			bottom: 3%;
+			bottom: 2%;
 			display: flex;
 			flex-direction: row;
 			align-items: center;
