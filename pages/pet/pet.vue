@@ -498,8 +498,8 @@
 							</block>
 							<block v-else>
 								<view class="item-button" v-if="index==0" @tap="open_treasure_box(index)">
-									<btnComponent type="palePink">
-										<view class="flex-set" style="width: 140upx;height: 50upx;">打开</view>
+									<btnComponent type="golden">
+										<view class="flex-set" style="width: 140upx;height: 50upx; font-size: 28rpx;">领取</view>
 									</btnComponent>
 								</view>
 								<view class="item-button" v-if="index!=0">
@@ -1919,6 +1919,8 @@
 					.item-img {
 						width: 40%;
 						margin-bottom: 30rpx;
+						margin-top:10rpx;
+
 					}
 					.item-img1 {
 						width: 40%;
