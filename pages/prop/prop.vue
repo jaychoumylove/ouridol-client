@@ -29,7 +29,8 @@
 
 					<view class="right">
 						<btnComponent v-if="item.status == 0" type="css">
-							<view @tap="useProp(item)" class="flex-set" style="width: 140upx;height:70upx;">使用</view>
+							<view v-if="item.prop_id != 7" @tap="useProp(item)" class="flex-set" style="width: 140upx;height:70upx;">使用</view>
+							<view v-else @tap="$app.goPage('/pages/pet/pet')" class="flex-set" style="width: 140upx;height:70upx;">去使用</view>
 						</btnComponent>
 						<btnComponent v-if="item.status == 1" type="disable">
 							<view class="flex-set" style="width: 140upx;height:70upx;">已使用</view>

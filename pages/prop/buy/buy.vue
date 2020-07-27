@@ -152,13 +152,14 @@
 				if (this.exchangeIndex < 0) this.$app.toast(res.msg);
 				
 				const item = this.list[this.exchangeIndex];
+				const exchangeIndex = this.exchangeIndex;
 				this.$app.request(this.$app.API.PROP_EXCHANGE, {
 					id: item.id,
 					num: item.num,
 				}, res => {
 					this.$app.toast(res.msg, 'success');
 					this.exchangeModel(-1, 'close');
-					this.list[this.exchangeIndex].num = 1;
+					this.list[exchangeIndex].num = 1;
 				}, 'POST', true)
 			},
 			handleExchangeInput(evt) {

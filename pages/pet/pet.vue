@@ -89,7 +89,7 @@
 		<!-- <view class="egg-upgrade" v-if="!spriteInfo.earn" @tap="modal = 'egg_upgrade'">
 			<image src="/static/image/pet/egg_upgrade.png" mode="widthFix"></image>
 		</view> -->
-		<view class="earn-container" @tap="settle">
+		<view class="earn-container" @tap="is_settle">
 			<view class="egg flex-set">
 				<view class="num-wrapper position-set">{{spriteInfo.earn}}</view>
 				<image class="flex-set" :src="spriteInfo.egg_info?spriteInfo.egg_info.icon:'/static/image/pet/egg/egg_1.png'" mode="widthFix"></image>
@@ -434,6 +434,68 @@
 				<view class="button" @tap="treasure_box();openBoxData = ''">
 					<btnComponent type="pink">
 						<view class="flex-set" style="width: 240upx;height: 80upx;">确认收到</view>
+					</btnComponent>
+				</view>
+		
+			</view>
+		
+		</modalComponent>
+		
+		<modalComponent v-if="modal == 'is_settle_tips'" title="收取能量" @closeModal="modal = ''">
+		
+			<view class="is-settle-modal-container">
+				<view class="top">领取收益</view>
+				
+				<view class="show_img">
+					<image style="width: 100%;" src="/static/image/user/b1.png" mode="widthFix"></image>
+				</view>
+		
+				<view class="text-wrap">
+					<view class="text"><text style="color: #F75A73;">{{spriteInfo.earn}}能量</text></view>
+				</view>
+				<view class="button">
+					<btnComponent type="disable" @tap="settle();modal = ''">
+						<view class="flex-set" style="width: 240upx;height: 80upx;">直接领取</view>
+					</btnComponent>
+					<btnComponent type="default" @tap="modal = 'useCard7'">
+						<view class="flex-set" style="width: 240upx;height: 80upx;">双倍领取({{spriteInfo.earn*2}})</view>
+					</btnComponent>
+				</view>
+				<!-- <view style="width: 100%; display: flex; justify-content: space-around;margin-top: 30rpx;" v-if="spriteInfo.isExistCard7">
+					<view>
+						<text style="color: #F75A73;">{{spriteInfo.earn}}</text>能量
+					</view>
+					<view>
+						<text style="color: #F75A73;">{{spriteInfo.earn*2}}</text>能量
+					</view>
+				</view> -->
+		
+			</view>
+		
+		</modalComponent>
+		
+		<modalComponent v-if="modal == 'useCard7'" title="使用" @closeModal="modal = ''">
+		
+			<view class="is-settle-modal-container">
+				<view class="top" v-if="spriteInfo.isExistCard7">确认使用<text style="color: #F75A73;">【领能量双倍卡】</text></view>
+				<view class="top" v-else>您还没有<text style="color: #F75A73;">【领能量双倍卡】</text></view>
+				
+				<view class="show_img">
+					<image style="width: 100%;" src="https://mmbiz.qpic.cn/mmbiz_png/CbJC0icY3EzbjrPQMia78VPbkz3u8NehbpCzTL4ftpqRWRroyyqTJz3icbmZfrpuFK2Ezc8WqYwSoRia0AptbSjTWQ/0" mode="widthFix"></image>
+				</view>
+		
+				<view class="text-wrap">
+					<view class="text" v-if="spriteInfo.isExistCard7">你将获得<text style="color: #F75A73;">{{spriteInfo.earn*2}}</text>能量</view>
+				</view>
+				<view class="button">
+					<btnComponent type="disable" @tap="modal = 'is_settle_tips'">
+						<view class="flex-set" style="width: 240upx;height: 80upx;">取消</view>
+					</btnComponent>
+					<btnComponent v-if="spriteInfo.isExistCard7" type="default" @tap="is_exist_card7();modal = ''">
+						<view class="flex-set" style="width: 240upx;height: 80upx;">确认</view>
+					</btnComponent>
+					<btnComponent v-else type="default" @tap="$app.goPage('/pages/prop/buy/buy');modal = ''">
+						<view class="flex-set" style="width: 240upx;height: 80upx;">去看看</view>
 					</btnComponent>
 				</view>
 		
@@ -891,30 +953,47 @@
 				this.modal = ''
 				this.$app.goPage('/pages/subPages/pet/other/other?user_id=' + item.uid + '&off=' + item.off)
 			},
-
-			//HTTP
-			settle() {
+			is_exist_card7(){
+				if(this.spriteInfo.isExistCard7==-1){//已使用一张未过期道具卡，直接结算
+					this.settle()
+				}else{
+					this.$app.request('prop/use', {
+						id: this.spriteInfo.isExistCard7
+					}, res => {
+						//使用道具后在领取
+						this.settle()
+						
+					}, 'POST', true)
+				}
+				
+			},
+			is_settle() {
 				if (this.spriteInfo.earn == 0) {
 					// this.$app.toast('能量太少了，稍后再来吧')	
 					this.modal = 'egg_upgrade'
-
+				
 				} else {
-					this.$app.request(this.$app.API.SPRITE_SETTLE, {
-						user_id: this.$app.getData('userInfo').id,
-						settle: this.spriteInfo.earn
-					}, res => {
-						// 文字跳动
-						this.showCoinAddAnime(res.data)
-						this.getSpriteInfo()
-
-						this.$app.toast('收集成功,能量+' + res.data)
-						this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
-							this.$app.setData('userCurrency', res.data)
-							this.userCurrency = this.$app.getData('userCurrency')
-						})
-						this.earnCuttime = 0
-					}, 'POST', true)
+					this.modal = 'is_settle_tips'
 				}
+			},
+			//HTTP
+			settle() {
+				
+				this.$app.request(this.$app.API.SPRITE_SETTLE, {
+					user_id: this.$app.getData('userInfo').id,
+					settle: this.spriteInfo.earn
+				}, res => {
+					// 文字跳动
+					this.showCoinAddAnime(res.data)
+					this.getSpriteInfo()
+				
+					this.$app.toast('收集成功,能量+' + res.data)
+					this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
+						this.$app.setData('userCurrency', res.data)
+						this.userCurrency = this.$app.getData('userCurrency')
+					})
+					this.earnCuttime = 0
+				}, 'POST', true)
 
 			},
 			/**显示能量增加的动画*/
@@ -1871,6 +1950,47 @@
 				flex-direction: column;
 				justify-content: center;
 				align-items: center;
+			}
+		}
+		
+		.is-settle-modal-container{
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			padding: 20rpx;
+			
+			.top {
+				width: 100%;
+				font-size: 32rpx;
+				font-weight: bold;
+				text-align: center;
+				margin-top: 30rpx;
+			}
+			
+			.show_img {
+				position: relative;
+				width: 150rpx;
+				height: 150rpx;
+				border: 0;
+				margin-top: 30rpx;
+			}
+			
+			
+			.text-wrap {
+				padding: 30rpx 0;
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+			}
+			
+			.button{
+				width: 100%;
+				display: flex;
+				justify-content: space-around;
 			}
 		}
 
