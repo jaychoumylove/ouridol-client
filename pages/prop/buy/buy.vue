@@ -52,10 +52,10 @@
 						</view> -->
 
 						<view class="flex-set action-btn" style="flex-direction: column;">
-							<btnComponent v-if="$app.chargeSwitch()!=0" type="css" style="margin-bottom: 10upx;">
+							<btnComponent v-if="$app.chargeSwitch()==0" type="css" style="margin-bottom: 10upx;">
 								<view class="flex-set" style="width: 130upx;height:50upx;" @tap="payment(item)">购买</view>
 							</btnComponent>
-							<btnComponent v-else type="css" style="margin-bottom: 10upx;">
+							<btnComponent v-else-if="$app.chargeSwitch()==2" type="css" style="margin-bottom: 10upx;">
 								<button class="flex-set comment" style="width: 130upx;height:50upx; padding: 0 auto;" open-type="contact">回复"1"</button>
 							</btnComponent>
 							<btnComponent type="css">

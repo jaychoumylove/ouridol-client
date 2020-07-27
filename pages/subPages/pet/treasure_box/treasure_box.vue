@@ -74,15 +74,31 @@
 					return
 				}
 				if (this.index && this.source_user_id) {
-					this.$app.request(this.$app.API.TREASURE_BOX_OPEN, {
-						index: this.index,
-						user_id: this.source_user_id
-					}, res => {
-
-						this.openBoxData = res.data;
-						this.is_open = true;
-
-					}, 'POST', true)
+					if(this.boxData.treasure_box_times==0){
+						this.$app.modal('是否花费20灵丹开启', () => {
+							this.$app.request(this.$app.API.TREASURE_BOX_OPEN, {
+								index: this.index,
+								user_id: this.source_user_id
+							}, res => {
+							
+								this.openBoxData = res.data;
+								this.is_open = true;
+							
+							}, 'POST', true)
+						})
+					}else{
+						this.$app.request(this.$app.API.TREASURE_BOX_OPEN, {
+							index: this.index,
+							user_id: this.source_user_id
+						}, res => {
+						
+							this.openBoxData = res.data;
+							this.is_open = true;
+						
+						}, 'POST', true)
+					}
+					
+					
 				} else {
 					this.$app.toast('网络延迟，请退出重试')
 				}
@@ -123,7 +139,6 @@
 			font-size: 48rpx;
 			font-weight: bold;
 			color: #FFFFFF;
-			margin-top: 15%;
 		}
 
 		.content {

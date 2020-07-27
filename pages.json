@@ -182,7 +182,7 @@
 			{
 			    "path" : "pet/treasure_box/treasure_box",
 			    "style": {
-			    	"navigationStyle": "custom"
+			    	"navigationBarTitleText": "开宝箱"
 			    }
 			},
 			{
