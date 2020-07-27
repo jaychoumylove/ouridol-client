@@ -450,25 +450,25 @@
 					<image style="width: 100%;" src="/static/image/user/b1.png" mode="widthFix"></image>
 				</view>
 		
-				<view class="text-wrap">
+				<!-- <view class="text-wrap">
 					<view class="text"><text style="color: #F75A73;">{{spriteInfo.earn}}能量</text></view>
-				</view>
+				</view> -->
 				<view class="button">
-					<btnComponent type="disable" @tap="settle();modal = ''">
+					<btnComponent type="receive" @tap="settle();modal = ''">
 						<view class="flex-set" style="width: 240upx;height: 80upx;">直接领取</view>
 					</btnComponent>
 					<btnComponent type="default" @tap="modal = 'useCard7'">
-						<view class="flex-set" style="width: 240upx;height: 80upx;">双倍领取({{spriteInfo.earn*2}})</view>
+						<view class="flex-set" style="width: 240upx;height: 80upx;">双倍领取</view>
 					</btnComponent>
 				</view>
-				<!-- <view style="width: 100%; display: flex; justify-content: space-around;margin-top: 30rpx;" v-if="spriteInfo.isExistCard7">
+				<view style="width: 100%; display: flex; justify-content: space-around; font-weight: bold; font-size: 32rpx;">
 					<view>
-						<text style="color: #F75A73;">{{spriteInfo.earn}}</text>能量
+						<text style="color: #dbd8d8;">{{spriteInfo.earn}}能量</text>
 					</view>
 					<view>
-						<text style="color: #F75A73;">{{spriteInfo.earn*2}}</text>能量
+						<text style="color: #F75A73;">{{spriteInfo.earn*2}}能量</text>
 					</view>
-				</view> -->
+				</view>
 		
 			</view>
 		
@@ -1966,7 +1966,7 @@
 				font-size: 32rpx;
 				font-weight: bold;
 				text-align: center;
-				margin-top: 30rpx;
+				margin-top: 40rpx;
 			}
 			
 			.show_img {
@@ -1974,7 +1974,8 @@
 				width: 150rpx;
 				height: 150rpx;
 				border: 0;
-				margin-top: 30rpx;
+				margin-top: 60rpx;
+				margin-bottom: 30rpx;
 			}
 			
 			
@@ -1991,6 +1992,7 @@
 				width: 100%;
 				display: flex;
 				justify-content: space-around;
+				padding: 30rpx 0;
 			}
 		}
 

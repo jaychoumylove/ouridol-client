@@ -58,6 +58,13 @@
 		background: linear-gradient(to right bottom, #aaa, #666);
 		box-shadow: 0 2upx 4upx rgba(#000, 0.3);//, inset 0 0 4upx rgba(#000, 0.3);
 	}
+	
+	.button.receive {
+		color: #FFF;
+		background: #f6d5d2;
+		box-shadow: 0 2upx 4upx rgba(#000, 0.3);
+	}
+	
 
 	.button.fangde {
 		background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2jwmn4sshg305v05vwea.gif) center no-repeat/100% 100%;
