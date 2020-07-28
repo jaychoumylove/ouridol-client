@@ -90,9 +90,49 @@
 			<loadIconComponent v-if="showBottomLoading"></loadIconComponent>
 
 		</view>
-		<view class="open-ad-container flex-set" v-if="modal=='indexBanner' && $app.getData('config').index_banner && $app.getData('config').index_banner.img_url 
-						&& $app.getData('config').version != $app.getData('VERSION')">
-			<image class="main" :src="$app.getData('config').index_banner.img_url" mode="aspectFill" @tap="modal='';$app.goPage($app.getData('config').index_banner.gopage)"></image>
+		<view class="open-ad-container flex-set" v-if="modal=='indexBanner' && $app.getData('config').index_banner && $app.getData('config').index_banner.img_url && $app.getData('config').version != $app.getData('VERSION')">
+			<block v-if="$app.getData('config').isBirthday==1">
+				<view class="mains">
+					<view class="birStarHead">
+						<image class="birStarHeadImg" :src="$app.getData('userStar').head_img_s"></image>
+						<image src="https://mmbiz.qpic.cn/mmbiz_png/CbJC0icY3Ezb27WAMHWqxDwIiawjQugzBQqbiaA8Naia78bBibL8b93K7KgOayCggEiaarjxBmhtJ2g8WZ0NDnLn6aQw/0"></image>
+						<image src="https://mmbiz.qpic.cn/mmbiz_png/CbJC0icY3Ezb27WAMHWqxDwIiawjQugzBQOiaavsVDC4nsQnnaWtPg5ib4TuEiaArLsTJTz8cV6bKZSHURyHpTcUXBw/0"
+						 mode="aspectFit" class="birStarCake"></image>
+					</view>
+					<view class="birContent">
+						<view style="font-size: 40rpx;" class="birMarginLg"><text style="color: #fa8281;">{{$app.getData('userStar').name}}</text>生日快乐</view>
+
+						<view v-if="$app.chargeSwitch()!=1" class="birMarginLg">
+							<view>爱豆生日专属特权</view>今日购买礼物可获得<text style="color: #D42D00;">双倍</text>
+						</view>
+						<view v-if="$app.chargeSwitch()==2" class="birMarginLg">
+							<view class="birButton">
+								<btnComponent type="default">
+									<button class="flex-set" style="width: 300rpx;height: 80rpx;" open-type="contact" :session-from="$app.getData('userInfo')"
+									 @tap="modal = ''">回复“1”去购买</button>
+								</btnComponent>
+							</view>
+						</view>
+						<view v-if="$app.chargeSwitch()==0" class="birMarginLg">
+							<view class="birButton">
+								<btnComponent type="default">
+									<button class="flex-set" style="width: 300rpx;height: 80rpx;" @tap="modal = '',$app.goPage('/pages/charge/charge')">去充值</button>
+								</btnComponent>
+							</view>
+						</view>
+						<view v-if="$app.chargeSwitch()==1" class="birMarginLg">
+							<view class="birButton">
+								<btnComponent type="default">
+									<button @tap="modal = ''" class="flex-set" style="width: 300rpx;height: 80rpx;">我知道了</button>
+								</btnComponent>
+							</view>
+						</view>
+					</view>
+				</view>
+			</block>
+			<block v-else>
+				<image class="main" :src="$app.getData('config').index_banner.img_url" mode="aspectFill" @tap="modal='';$app.goPage($app.getData('config').index_banner.gopage)"></image>
+			</block>
 			<view class="close-btn flex-set iconfont iconclose" @tap="modal = ''"></view>
 		</view>
 
@@ -133,9 +173,9 @@
 				rankField: 'week_hot',
 				sign: 0,
 				rankList: this.$app.getData('index_rankList') || [],
-				
-				bannerList:[],
-				sList:[],
+
+				bannerList: [],
+				sList: [],
 				muti: false,
 			};
 		},
@@ -261,7 +301,7 @@
 				this.$app.request(this.$app.API.BANNER_LIST, {}, res => {
 					// 底部小banner
 					this.sList = res.data.smallList
-					
+
 					const bannerList = []
 					for (let v of res.data.bannerList) {
 						bannerList.push({
@@ -269,7 +309,7 @@
 							url: v.gopage,
 						})
 					}
-					
+
 					this.bannerList = bannerList
 					if (this.bannerList.length > 2) {
 						this.muti = true
@@ -536,6 +576,67 @@
 				height: 960upx;
 				border-radius: 20upx;
 
+			}
+
+			.mains {
+				width: 500rpx;
+				height: 700upx;
+				border-radius: 20upx;
+				background-color: #FFFFFF;
+				padding: 20rpx;
+
+				image {
+					width: 200rpx;
+					height: 200rpx;
+				}
+
+				.birStarHead {
+					position: relative;
+					top: -160rpx;
+					right: -134rpx
+				}
+
+				.birStarHeadImg {
+					border-radius: 50%;
+					width: 135rpx;
+					height: 135rpx;
+					position: absolute;
+					top: 58rpx;
+					left: 30rpx;
+				}
+
+				.birStarCake {
+					width: 200rpx;
+					height: 200rpx;
+					position: absolute;
+					top: 288rpx;
+					right: 260rpx;
+				}
+
+				.birContent {
+					margin-top: 120rpx;
+					text-align: center;
+				}
+
+				.birMarginLg {
+					margin-top: 30rpx;
+					font-weight: bold;
+
+					.birButton {
+						width: 300rpx;
+						height: 80rpx;
+						line-height: 80rpx;
+						text-align: center;
+						margin: 5rpx auto
+					}
+				}
+
+				.birBuy {
+					border-bottom: 2rpx solid #9C694D;
+					font-size: 25rpx;
+					width: 190rpx;
+					margin: 0 auto;
+				}
 			}
 
 			.close-btn {
