@@ -116,7 +116,7 @@
 						<view v-if="$app.chargeSwitch()==0" class="birMarginLg">
 							<view class="birButton">
 								<btnComponent type="default">
-									<button class="flex-set" style="width: 300rpx;height: 80rpx;" @tap="modal = '',$app.goPage('/pages/charge/charge')">去充值</button>
+									<button class="flex-set" style="width: 300rpx;height: 80rpx;" @tap="modal = '';$app.goPage('/pages/charge/charge')">去充值</button>
 								</btnComponent>
 							</view>
 						</view>
