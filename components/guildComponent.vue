@@ -702,11 +702,11 @@
 								<view class="star-name text-overflow">{{item.nickname}}</view>
 								<view style="font-size: 24rpx;">互动值:{{item.intimacy?item.intimacy:0}}</view>
 							</view>
-							<view class="egg flex-set" v-if="item.treasure_box_times>0" @tap="open_other_treasure_box(item.uid)">
+							<view class="egg flex-set" v-if="treasure_box_times>0" @tap="open_other_treasure_box(item.uid)">
 								<image class="flex-set" src="/static/image/pet/treasure_box_close.png" mode="widthFix"></image>
 								<view class="num-wrapper">{{item.treasure_box_count?item.treasure_box_count:0}}/5</view>
 							</view>
-							<view class="egg flex-set" v-else @tap="treasure_box_times_tips(item.uid,item.treasure_box_times)">
+							<view class="egg flex-set" v-else @tap="treasure_box_times_tips(item.uid)">
 								<image class="flex-set" src="/static/image/pet/treasure_box_close.png" mode="widthFix"></image>
 								<view class="num-wrapper">{{item.treasure_box_count?item.treasure_box_count:0}}/5</view>
 							</view>
@@ -763,7 +763,7 @@
 		</modalComponent>
 		
 		<!-- 帮助好友开箱 -->
-		<modalComponent v-if="modal == 'open_other_treasure_box_tips'" title="帮助好友开箱" @closeModal="getInvitList();modal = 'invit';openOtherBoxData = ''">
+		<modalComponent v-if="modal == 'open_other_treasure_box_tips'" title="帮助好友开箱" @closeModal="modal = 'invit';openOtherBoxData = ''">
 		
 			<view class="open-box-modal-container">
 				<view class="top">今日24:00失效</view>
@@ -1214,6 +1214,7 @@
 				},
 				openOtherBoxData:'',
 				help_friend_id: '',
+				treasure_box_times:'',
 			};
 		},
 		created() {
@@ -1504,7 +1505,7 @@
 					}, 'POST', true)
 				})
 			},
-			treasure_box_times_tips(user_id,treasure_box_times){
+			treasure_box_times_tips(user_id){
 				this.modal = 'treasure_box_times_tips';
 				this.help_friend_id = user_id;
 			},
@@ -1516,7 +1517,7 @@
 			
 					this.openOtherBoxData = res.data;
 					this.modal = 'open_other_treasure_box_tips';
-					
+					this.getInvitList();
 				}, 'POST', true)
 			},
 			// 删除好友
@@ -2011,6 +2012,7 @@
 					this.invitAward = res.data.award
 					const resList = []
 					this.friendTotal = res.data.list.total_count
+					this.treasure_box_times = res.data.list.treasure_box_times
 					res.data.list.list.forEach((e, i) => {
 						resList.push({
 							avatar: e.user && e.user.avatarurl || this.$app.getData('AVATAR'),
@@ -2019,7 +2021,6 @@
 							nickname: e.user && e.user.nickname || this.$app.getData('NICKNAME'),
 							intimacy: e.intimacy,
 							treasure_box_count: e.treasure_box_count,
-							treasure_box_times: e.treasure_box_times,
 						})
 
 					})
