@@ -47,6 +47,7 @@
 
 
 		<view class="sprite" @tap="tapSprite">
+			<image class="sprite-shengji" v-if="userCurrency.stone>=spriteInfo.need_stone" src="https://mmbiz.qpic.cn/mmbiz_png/CbJC0icY3Ezb27WAMHWqxDwIiawjQugzBQI5l7my9NtKXb24uYftUYBxicVnwDlicuylKQFumpdoEuMLYK4BNvG3JA/0" mode="widthFix"></image>
 			<view class="bounce-article">
 				<image class="sprite-main" :src="spriteInfo.sprite_img" mode="widthFix"></image>
 				
@@ -1252,6 +1253,14 @@
 
 			.bounce-article {
 				animation: bounce 4s ease-in-out infinite;
+			}
+			
+			.sprite-shengji {
+				width: 200upx;
+				position: absolute;
+				top: 25%;
+				left: 145rpx;
+				z-index: 9;
 			}
 
 			.sprite-main {

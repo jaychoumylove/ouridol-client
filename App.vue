@@ -66,13 +66,13 @@
 					referrer: this.$app.getData('referrer'),
 				}, res => {
 					// #ifndef H5
-					if (res.data.upSprite) {
-						setTimeout(() => {
-							this.$app.modal("精灵可以升级啦！\n提升精灵等级可获取更多能量哦", () => {
-								this.$app.goPage('/pages/pet/pet')
-							})
-						}, 5000)
-					}
+					// if (res.data.upSprite) {
+					// 	setTimeout(() => {
+					// 		this.$app.modal("精灵可以升级啦！\n提升精灵等级可获取更多能量哦", () => {
+					// 			this.$app.goPage('/pages/pet/pet')
+					// 		})
+					// 	}, 5000)
+					// }
 					// #endif
 
 					this.$app.setData('userInfo', res.data.userInfo)
