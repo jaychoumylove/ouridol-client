@@ -43,14 +43,14 @@
 			<!-- 参与用户列表 -->
 			<view class="user-list flex-set">
 				<view class="item-wrap" v-for="index in 3" :key="index">
+					<view class="extra1 yellow" v-if="index==0">沙发</view>
+					<view class="extra1 yellow" v-else-if="index==1">板凳</view>
+					<view class="extra1 yellow" v-else-if="index==2">地板</view>
 					<image class="avatar" v-if="list[index]" :src="list[index].user.avatarurl" mode="aspectFill"></image>
 					<image class="avatar" v-else src="/static/image/ic_wechat.png" mode="aspectFill"></image>
 
-					<view class="extra yellow" v-if="index==0">沙发</view>
-					<view class="extra yellow" v-else-if="index==1">板凳</view>
-					<view class="extra yellow" v-else-if="index==2">地板</view>
-
-					<view class="earn" v-if="list[index]">+{{list[index].mass_point}}能量</view>
+					<view class="extra" v-if="list[index]">+{{list[index].mass_point}}能量</view>
+					<view class="earn" v-if="list[index]">{{list[index].user.nickname}}</view>
 				</view>
 			</view>
 			<view class="space">至少3人集结视为成功，完成后可获得能量</view>
@@ -58,7 +58,8 @@
 			<view class="user-list flex-set">
 				<view class="item-wrap" v-for="(item,index) in list" :key="index" v-if="index>2">
 					<image class="avatar" :src="list[index].user.avatarurl" mode="aspectFill"></image>
-					<view class="earn" v-if="list[index]">+{{item.mass_point}}能量</view>
+					<view class="extra" v-if="list[index]">+{{item.mass_point}}能量</view>
+					<view class="earn" v-if="list[index]">{{list[index].user.nickname}}</view>
 				</view>
 				<view class="item-wrap" v-for="index in blockUserCount" :key="index">
 					<image class="avatar" src="/static/image/ic_wechat.png" mode="aspectFill"></image>
@@ -350,13 +351,28 @@
 						height: 120upx;
 						border-radius: 50%;
 					}
+					
+					.extra1 {
+						font-size: 22upx;
+						position: absolute;
+						background-color: #ff5770;
+						color: #FFF;
+						padding: 0 15rpx;
+						text-align: center;
+						border-radius: 30upx;
+						top: -15upx;
+						left: 50%;
+						transform: translateX(-50%);
+						white-space: nowrap;
+						z-index: 2;
+					}
 
 					.extra {
 						font-size: 24upx;
 						position: absolute;
 						background-color: #ffaf2c;
 						color: #FFF;
-						width: 90upx;
+						padding: 0 15rpx;
 						text-align: center;
 						border-radius: 30upx;
 						bottom: -10upx;
@@ -372,11 +388,13 @@
 					.earn {
 						font-size: 24upx;
 						position: absolute;
-						width: 90upx;
+						width: 120upx;
+						text-overflow: ellipsis;
+						white-space: nowrap;
+						overflow: hidden;
 						text-align: center;
 						border-radius: 30upx;
-						bottom: -45upx;
-						font-weight: 700;
+						bottom: -50upx;
 						left: 50%;
 						transform: translateX(-50%);
 						white-space: nowrap;
