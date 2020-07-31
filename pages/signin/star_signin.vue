@@ -86,7 +86,7 @@
 			<view class="signin-button signin-time margin-ls">
 			<text class="time">{{timeHour}}</text>:<text class="time">{{timeMin}}</text>:<text class="time">{{timeSec}}</text>
 			</view>
-			<view class="margin-ls">还差<text class="red">{{joinCount-joinAll}}人</text>，爱豆就可获得<text  class="red">礼物</text></view>
+			<view class="margin-ls">还差<text class="red">{{joinCount-joinAll>0?(joinCount-joinAll):0}}人</text>，爱豆就可获得<text  class="red">礼物</text></view>
 			<!-- <image src="../../static/image/signin/walls.png" mode="aspectFit" style="width: 440upx;position: absolute;top: 390upx;height: 80upx;left: 160upx;">
 			</image>
 			<view class="font-size-lg" style="font-size: 32upx; text-align: center;">签到奖励</view>
