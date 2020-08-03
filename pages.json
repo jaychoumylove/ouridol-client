@@ -126,6 +126,12 @@
 				"navigationBarTextStyle": "white"
 			}
         }
+        ,{
+            "path" : "pages/pet/rank/rank",
+            "style": {
+            	"navigationBarTitleText": "精灵产量排行榜"
+            }
+        }
     ],
 	// 分包
 	"subPackages": [{

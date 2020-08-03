@@ -66,8 +66,11 @@
 		<view class="nav-container">
 			
 			<!--排行-->
-			<btnComponent>
+			<!-- <btnComponent>
 				<image src="/static/image/pet/rank.png" mode="widthFix" @tap="modal = 'help_open_box_rank';getOpenBoxRankList()"></image>
+			</btnComponent> -->
+			<btnComponent>
+				<image src="/static/image/pet/rank.png" mode="widthFix" @tap="$app.goPage('/pages/pet/rank/rank')"></image>
 			</btnComponent>
 
 			<!--宝箱-->
