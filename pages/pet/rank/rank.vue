@@ -1,7 +1,8 @@
 <template>
 	<view class="rank-list-container">
 		<view class="top">
-			<view class="title">每日产量排行榜</view>
+			<image style="width: 100%; z-index: 1;" :src="banner" mode="widthFix"></image>
+			<!-- <view class="title">每日产量排行榜</view> -->
 			<view class="rule" @tap="$app.goPage('/pages/notice/notice?id=2')">排行说明</view>
 		</view>
 		<view class="rank-list">
@@ -37,7 +38,7 @@
 		<!-- 我的 -->
 		<view class="my-container">
 			
-			<listItemComponent :rank="myInfo.rank?myInfo.rank:0" :avatar="$app.getData('userInfo').avatarurl || $app.getData('AVATAR')">
+			<listItemComponent :rank="myInfo.thisday_coin?myInfo.rank:'no'" :avatar="$app.getData('userInfo').avatarurl || $app.getData('AVATAR')">
 				<template v-slot:left-container>
 					<view class="left-container">
 						<view class="name">
@@ -96,6 +97,7 @@
 				earn_coin:0,
 				god_earn_coin:0,
 				myInfo:'',
+				banner:'',
 			};
 		},
 		onShareAppMessage(e) {
@@ -126,6 +128,8 @@
 						this.showBottomLoading = false
 					}
 					this.myInfo = res.data.myInfo
+					
+					this.banner = res.data.banner
 			
 					if (this.page == 1) {
 						this.rankList = res.data.list
@@ -155,9 +159,7 @@
 	.rank-list-container{
 		.top{
 			width: 100%;
-			height: 15vh;
 			background:linear-gradient(to right bottom, #FF3A8A 20%, #fa6c9f 82%, #ffe140 100%);
-			box-shadow: 0 2upx 4upx rgba(#000, 0.3);
 			display: flex;
 			align-items: center;
 			justify-content: center;
@@ -166,12 +168,14 @@
 				font-size: 36rpx;
 				font-weight: bold;
 				color: #FFFFFF;
+				z-index: 2;
 			}
 			.rule{
 				position: absolute;
-				right: 0;
-				bottom: 0;
+				right: 5rpx;
+				bottom: 5rpx;
 				color: #FFFFFF;
+				z-index: 2;
 			}
 			.rule::after {
 				content: "\e6e5";
