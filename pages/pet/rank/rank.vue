@@ -242,7 +242,7 @@
 			width: 100%;
 			position: fixed;
 			bottom: 0;
-			background-color: #FFFFFF;
+			background-color: #eec1bc;
 			
 			.right-container {
 				display: flex;
