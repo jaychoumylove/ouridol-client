@@ -95,10 +95,10 @@
 		</view> -->
 		<view class="earn-container" @tap="is_settle">
 			<view class="egg flex-set">
-				<view class="num-wrapper position-set">{{spriteInfo.earn}}</view>
+				<!-- <view class="num-wrapper position-set">{{spriteInfo.earn}}</view> -->
 				<image class="flex-set" :src="spriteInfo.egg_info?spriteInfo.egg_info.icon:'/static/image/pet/egg/egg_1.png'" mode="widthFix"></image>
 				<view class="progress flex-set">
-					<view class="progress-bar" :style="{width:earnCuttime + '%'}"></view>
+					<view class="progress-bar" :style="{width:earnCuttime*10 + '%'}"></view>
 					{{earnCuttime}}
 				</view>
 				
@@ -126,6 +126,8 @@
 				<view class="bottom-tips" @tap.stop="modal = 'tips'">如何获得灵丹升级</view>
 			</view>
 			<view class="right-wrap">
+				<view class="row bottom">产能：<text style="color:#EEADCC;">{{spriteInfo.earnPer}}能量/10秒</text></view>
+				<view class="row bottom">能量蛋已累积：<text style="color:#EEADCC;">{{spriteInfo.earn}}</text></view>
 				<view class="row">
 					<view style="display: flex;flex-direction: row;">
 						<view class="">累计获得：</view>
@@ -136,7 +138,6 @@
 						</view>
 					</view>
 				</view>
-				<view class="row bottom">产能:<text style="color:#EEADCC;">{{spriteInfo.earnPer}}能量/100秒</text></view>
 			</view>
 			
 		</view>
@@ -742,7 +743,7 @@
 				clearInterval(this.$app.petTimeId)
 				this.$app.petTimeId = setInterval(() => {
 					this.earnCuttime++
-					if (this.earnCuttime > 100) {
+					if (this.earnCuttime > 10) {
 						this.earnCuttime = 1
 						this.getSpriteInfo()
 					}
@@ -978,7 +979,7 @@
 					this.modal = 'egg_upgrade'
 				
 				} else {
-					this.modal = 'is_settle_tips'
+					this.settle()
 				}
 			},
 			//HTTP
@@ -1032,7 +1033,7 @@
 						this.$app.toast('能量已满了，快点收能量吧')
 						clearInterval(this.$app.petTimeId)
 						// 倒计时已满
-						this.earnCuttime = 100
+						this.earnCuttime = 10
 					} else {
 						// 开始计时
 						this.initInterval()
@@ -1386,7 +1387,7 @@
 
 			0%,
 			100% {
-				transform: scale(0.8);
+				transform: scale(0.9);
 			}
 
 			50% {
@@ -1410,7 +1411,7 @@
 			position: absolute;
 			z-index: 1;
 			width: 80upx;
-			height: 90upx;
+			height: 110upx;
 			top: -48upx;
 			border-radius: 50%;
 			left: 40upx;
@@ -1454,13 +1455,14 @@
 
 				image {
 					width: 60upx;
+					animation: shine 1.5s linear infinite;
 				}
 
 				.progress {
 
 					height: 30upx;
 					z-index: 1;
-					margin-top: -20upx;
+					margin-top: 10upx;
 					width: 100%;
 					border-radius: 20upx;
 					color: #FFF;
@@ -1545,10 +1547,10 @@
 
 		.bottom-container{
 			width: 100%;
-			height: 140upx;
+			height: 160upx;
 			background-color: rgba(255,255,255,0.5);;
 			position: absolute;
-			bottom: 2%;
+			bottom: 0;
 			display: flex;
 			flex-direction: row;
 			align-items: center;
@@ -1609,6 +1611,8 @@
 			}
 			.right-wrap{
 				line-height: 40rpx;
+				font-size: 24rpx;
+				font-weight: bold;
 
 				.row{
 					display: flex;

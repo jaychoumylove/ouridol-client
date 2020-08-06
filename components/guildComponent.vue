@@ -456,23 +456,23 @@
 
 						</view>
 						<view class="btn-wrapper">
-							<view class="btn flex-set" @tap="sendHot(99)">
-								<image src="/static/image/user/b1.png" mode="widthFix"></image>+99
+							<view class="btn flex-set" @tap="sendHot(1000)">
+								<image src="/static/image/user/b1.png" mode="widthFix"></image>+1000
 							</view>
-							<view class="btn flex-set" @tap="sendHot(520)">
-								<image src="/static/image/user/b1.png" mode="widthFix"></image>+520
+							<view class="btn flex-set" @tap="sendHot(5000)">
+								<image src="/static/image/user/b1.png" mode="widthFix"></image>+5000
 							</view>
-							<view class="btn flex-set" @tap="sendHot(999)">
-								<image src="/static/image/user/b1.png" mode="widthFix"></image>+999
+							<view class="btn flex-set" @tap="sendHot(10000)">
+								<image src="/static/image/user/b1.png" mode="widthFix"></image>+10000
 							</view>
-							<view class="btn flex-set" @tap="sendHot(1314)">
-								<image src="/static/image/user/b1.png" mode="widthFix"></image>+1314
+							<view class="btn flex-set" @tap="sendHot(30000)">
+								<image src="/static/image/user/b1.png" mode="widthFix"></image>+30000
 							</view>
-							<view class="btn flex-set" @tap="sendHot(9999)">
-								<image src="/static/image/user/b1.png" mode="widthFix"></image>+9999
+							<view class="btn flex-set" @tap="sendHot(50000)">
+								<image src="/static/image/user/b1.png" mode="widthFix"></image>+50000
 							</view>
-							<view class="btn flex-set" @tap="sendHot(66666)">
-								<image src="/static/image/user/b1.png" mode="widthFix"></image>+66666
+							<view class="btn flex-set" @tap="sendHot(100000)">
+								<image src="/static/image/user/b1.png" mode="widthFix"></image>+100000
 							</view>
 							<view class="btn flex-set self-input">
 								<input class="" @input="sendCount = $event.detail.value" type="number" placeholder="自定义数额" />
@@ -947,14 +947,14 @@
 						</view>
 						<view class="text">加好友</view>
 					</view>
-					<view class="btn-item" @tap="modal = 'sendOther'">
+					<view class="btn-item" v-if="my_level>currentUser.level&&my_level>=9" @tap="modal = 'sendOther'">
 						<view class="bg flex-set">
 							<image src="/static/image/user/b2.png" mode=""></image>
 						</view>
 						<view class="text">赠送灵丹</view>
 					</view>
 
-					<view class="btn-item" @tap="modal = 'sendOtherItem'">
+					<view class="btn-item" v-if="my_level>currentUser.level&&my_level>=9" @tap="modal = 'sendOtherItem'">
 						<view class="bg flex-set">
 							<image src="/static/image/guild/send-give-1.png" mode=""></image>
 						</view>
@@ -1215,6 +1215,7 @@
 				openOtherBoxData:'',
 				help_friend_id: '',
 				treasure_box_times:'',
+				my_level:1,
 			};
 		},
 		created() {
@@ -1342,6 +1343,7 @@
 							chartList.push(item)
 						})
 						this.disLeastCount = res.data.disLeastCount
+						this.my_level = res.data.my_level
 						this.chartList = chartList
 						this.$nextTick(function() {
 							this.chartIndex = this.chartList.length - 1
