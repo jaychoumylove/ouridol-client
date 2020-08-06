@@ -17,10 +17,10 @@
 				<view class="row bottom">产能：<text style="color:#F00;">{{spriteInfo.earnPer}}</text>能量/<text style="color:#F00;">100</text>秒</view>
 			</view> -->
 			<view class="btn-wrap flex-set">
-				<view class="button-wrap flex-set" @tap="$app.goPage('/pages/prop/prop')">
+				<!-- <view class="button-wrap flex-set" @tap="$app.goPage('/pages/prop/prop')">
 					<image src="/static/image/pet/btn.png" mode="widthFix"></image>
 					<view class="text">精灵加速2小时</view>
-				</view>
+				</view> -->
 				<view class="button-wrap flex-set" @tap="tapSprite">
 					<image src="/static/image/pet/btn.png" mode="widthFix"></image>
 					<view class="text">提高精灵等级</view>
@@ -95,7 +95,7 @@
 		</view> -->
 		<view class="earn-container" @tap="is_settle">
 			<view class="egg flex-set">
-				<!-- <view class="num-wrapper position-set">{{spriteInfo.earn}}</view> -->
+				<view class="num-wrapper position-set">{{spriteInfo.earn}}</view>
 				<image class="flex-set" :src="spriteInfo.egg_info?spriteInfo.egg_info.icon:'/static/image/pet/egg/egg_1.png'" mode="widthFix"></image>
 				<view class="progress flex-set">
 					<view class="progress-bar" :style="{width:earnCuttime*10 + '%'}"></view>
@@ -126,8 +126,6 @@
 				<view class="bottom-tips" @tap.stop="modal = 'tips'">如何获得灵丹升级</view>
 			</view>
 			<view class="right-wrap">
-				<view class="row bottom">产能：<text style="color:#EEADCC;">{{spriteInfo.earnPer}}能量/10秒</text></view>
-				<view class="row bottom">能量蛋已累积：<text style="color:#EEADCC;">{{spriteInfo.earn}}</text></view>
 				<view class="row">
 					<view style="display: flex;flex-direction: row;">
 						<view class="">累计获得：</view>
@@ -138,6 +136,7 @@
 						</view>
 					</view>
 				</view>
+				<view class="row bottom">产能:<text style="color:#EEADCC;">{{spriteInfo.earnPer}}能量/100秒</text></view>
 			</view>
 			
 		</view>
@@ -1462,7 +1461,7 @@
 
 					height: 30upx;
 					z-index: 1;
-					margin-top: 10upx;
+					margin-top: -20upx;
 					width: 100%;
 					border-radius: 20upx;
 					color: #FFF;
@@ -1550,7 +1549,7 @@
 			height: 160upx;
 			background-color: rgba(255,255,255,0.5);;
 			position: absolute;
-			bottom: 0;
+			bottom: 2%;
 			display: flex;
 			flex-direction: row;
 			align-items: center;
@@ -1611,8 +1610,6 @@
 			}
 			.right-wrap{
 				line-height: 40rpx;
-				font-size: 24rpx;
-				font-weight: bold;
 
 				.row{
 					display: flex;
