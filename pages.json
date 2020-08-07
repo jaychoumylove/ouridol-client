@@ -170,7 +170,7 @@
 			{
 				"path": "user/rank/rank",
 				"style": {
-					"navigationBarTitleText": "周贡献榜",
+					"navigationBarTitleText": "贡献榜",
 					"enablePullDownRefresh": true
 				}
 			},
