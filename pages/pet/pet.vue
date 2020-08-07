@@ -47,7 +47,7 @@
 
 
 		<view class="sprite" @tap="tapSprite">
-			<image class="sprite-shengji" v-if="userCurrency.stone>=spriteInfo.need_stone" src="https://mmbiz.qpic.cn/mmbiz_png/CbJC0icY3Ezb27WAMHWqxDwIiawjQugzBQI5l7my9NtKXb24uYftUYBxicVnwDlicuylKQFumpdoEuMLYK4BNvG3JA/0" mode="widthFix"></image>
+			<image class="sprite-shengji" v-if="userCurrency.stone>=spriteInfo.need_stone && spriteInfo.next_sprite_level" src="https://mmbiz.qpic.cn/mmbiz_png/CbJC0icY3Ezb27WAMHWqxDwIiawjQugzBQI5l7my9NtKXb24uYftUYBxicVnwDlicuylKQFumpdoEuMLYK4BNvG3JA/0" mode="widthFix"></image>
 			<view class="bounce-article">
 				<image class="sprite-main" :src="spriteInfo.sprite_img" mode="widthFix"></image>
 				
@@ -117,8 +117,11 @@
 					<view class="lv">Lv.{{spriteInfo.sprite_level}}</view>
 					<view class="progress">
 						<view class="progress-bar" :style="{width:userCurrency.stone / spriteInfo.need_stone * 100 + '%'}"></view>
-						<view class="text position-set">
+						<view class="text position-set" v-if="spriteInfo.next_sprite_level">
 							{{userCurrency.stone>=spriteInfo.need_stone?'可升级！':userCurrency.stone +'/'+ spriteInfo.need_stone}}
+						</view>
+						<view class="text position-set" v-else>
+							已达顶级
 						</view>
 					</view>
 				</view>
@@ -764,6 +767,10 @@
 				})
 			},
 			tapSprite() {
+				if(!this.spriteInfo.next_sprite_level){
+					this.$app.toast('已达顶级');
+					return;
+				}
 				if (this.spriteInfo.need_stone && this.userCurrency.stone >= this.spriteInfo.need_stone) {
 					// 精灵升级
 					this.$app.request(this.$app.API.SPRITE_UPGRAGE, {}, res => {
