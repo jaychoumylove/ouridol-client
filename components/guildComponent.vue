@@ -914,23 +914,23 @@
 				<view class="top">
 					<image class="avatar" :src="currentUser.avatarurl" mode="scaleToFill" @tap="$app.preImg(currentUser.avatarurl)"></image>
 					<view class="nickname">{{currentUser.nickname}}</view>
-					<view class="badge-wrap flex-set" v-if="currentUser.level">
+					<view class="badge-wrap flex-set" v-if="currentUser.sprite_level">
 						<view class="badge">
-							<image v-if="currentUser.level <= 5" :src="'/static/image/guild/level/1.png'" mode=""></image>
-							<image v-else-if="currentUser.level <= 10" :src="'/static/image/guild/level/2.png'" mode=""></image>
-							<image v-else-if="currentUser.level <= 15" :src="'/static/image/guild/level/3.png'" mode=""></image>
-							<image v-else-if="currentUser.level <= 20" :src="'/static/image/guild/level/4.png'" mode=""></image>
-							<image v-else-if="currentUser.level <= 25" :src="'/static/image/guild/level/5.png'" mode=""></image>
+							<image v-if="currentUser.sprite_level <= 5" :src="'/static/image/guild/level/1.png'" mode=""></image>
+							<image v-else-if="currentUser.sprite_level <= 10" :src="'/static/image/guild/level/2.png'" mode=""></image>
+							<image v-else-if="currentUser.sprite_level <= 15" :src="'/static/image/guild/level/3.png'" mode=""></image>
+							<image v-else-if="currentUser.sprite_level <= 20" :src="'/static/image/guild/level/4.png'" mode=""></image>
+							<image v-else-if="currentUser.sprite_level <= 25" :src="'/static/image/guild/level/5.png'" mode=""></image>
 							<image v-else :src="'/static/image/guild/level/6.png'" mode=""></image>
 
-							<view class="level position-set">{{currentUser.level}}</view>
+							<view class="level position-set">{{currentUser.sprite_level}}</view>
 						</view>
 
-						<view v-if="currentUser.level <= 5" class="text i-1">精灵</view>
-						<view v-else-if="currentUser.level <= 10" class="text i-2">精灵</view>
-						<view v-else-if="currentUser.level <= 15" class="text i-3">精灵</view>
-						<view v-else-if="currentUser.level <= 20" class="text i-4">精灵</view>
-						<view v-else-if="currentUser.level <= 25" class="text i-5">精灵</view>
+						<view v-if="currentUser.sprite_level <= 5" class="text i-1">精灵</view>
+						<view v-else-if="currentUser.sprite_level <= 10" class="text i-2">精灵</view>
+						<view v-else-if="currentUser.sprite_level <= 15" class="text i-3">精灵</view>
+						<view v-else-if="currentUser.sprite_level <= 20" class="text i-4">精灵</view>
+						<view v-else-if="currentUser.sprite_level <= 25" class="text i-5">精灵</view>
 						<view v-else class="text i-6">精灵</view>
 					</view>
 				</view>
