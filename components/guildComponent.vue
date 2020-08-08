@@ -544,6 +544,35 @@
 						<text> {{steal_times}}/{{steal_times_max}} </text>次
 					</view>
 				</view>
+				<view style="width: 100%;padding-bottom: 10rpx; display: flex; justify-content: space-around;">
+					<view class="btn" v-if="sprite_level>=5" @tap="steal('',-1,0)">
+						<btnComponent type="default">
+							<view class="flex-set" style="width: 200upx;height: 60upx;">一键偷取</view>
+						</btnComponent>
+					</view>
+					<view class="btn" v-else>
+						<btnComponent type="disable">
+							<view class="flex-set" style="width: 200upx;height: 60upx;">一键偷取</view>
+						</btnComponent>
+						<view class="flex-set" style="font-size: 24rpx;">精灵lv.5解锁</view>
+					</view>
+					<view class="btn" v-if="sprite_level>=10 && is_automatic_steal==0" @tap="automaticSteal()">
+						<btnComponent type="default">
+							<view class="flex-set" style="width: 200upx;height: 60upx;">自动偷取</view>
+						</btnComponent>
+					</view>
+					<view class="btn" v-else-if="sprite_level>=10 && is_automatic_steal==1">
+						<btnComponent type="disable">
+							<view class="flex-set" style="width: 200upx;height: 60upx;">自动偷取中</view>
+						</btnComponent>
+					</view>
+					<view class="btn" v-else-if="sprite_level<10">
+						<btnComponent type="disable">
+							<view class="flex-set" style="width: 200upx;height: 60upx;">自动偷取</view>
+						</btnComponent>
+						<view class="flex-set" style="font-size: 24rpx;">精灵lv.10解锁</view>
+					</view>
+				</view>
 
 				<view class="list-wrapper">
 					<view class="item" v-for="(item,index) in starRankList" :key="index" v-if="index<5">
@@ -665,17 +694,18 @@
 		</modalComponent>
 		<modalComponent v-if="modal == 'invit'" title="好友" @closeModal="modal=''">
 			<view class="invit-modal-container">
-		
+
 				<scroll-view scroll-y class="list-wrapper" @scrolltolower='invitListPage++; getInvitList()'>
-		
+
 					<view class="explain-wrapper">
 						<view style="display: flex; align-items: center;">
 							<text>本月好友互动榜</text>
-							<image @tap="modal = 'intimacy_tips'" style="width: 40rpx;padding-left: 10rpx;" src="/static/image/pet/notice_box.png" mode="widthFix"></image>
+							<image @tap="modal = 'intimacy_tips'" style="width: 40rpx;padding-left: 10rpx;" src="/static/image/pet/notice_box.png"
+							 mode="widthFix"></image>
 						</view>
 						<view class="bottom flex-set">
 							<view>当前好友数<text>{{friendTotal}}/100</text>人</view>
-		
+
 							<btnComponent type="default">
 								<button class="btn" open-type="share" data-share="1">
 									<view class="flex-set" style="font-weight: 700 ;width: 140upx; height: 60upx;">邀请好友</view>
@@ -688,7 +718,7 @@
 					<!-- <button class='explain-wrapper' open-type="share" data-share="1">
 						<image style="width: 100%;" :src="$app.getData('config').zhuren_tips_img" mode="widthFix"></image>
 					</button> -->
-		
+
 					<block v-if="invitList.length > 0">
 						<view class="item" v-for="(item,index) in invitList" :key="index">
 							<view class="rank-num">
@@ -720,7 +750,7 @@
 							</view> -->
 						</view>
 					</block>
-		
+
 					<view v-else class="nodata flex-set">
 						<view class="top">你还没有好友</view>
 						<button open-type="share" data-share="1">
@@ -730,7 +760,7 @@
 				</scroll-view>
 			</view>
 		</modalComponent>
-		
+
 		<modalComponent v-if="modal == 'treasure_box_times_tips'" title="提示" @closeModal="modal='invit';help_friend_id = ''">
 			<view class="tips-modal-container" style="display: flex; flex-direction: column; align-items: center;">
 				<view class="text-wrap" style="text-align: center;">
@@ -746,32 +776,33 @@
 					</view>
 				</view>
 			</view>
-		
+
 		</modalComponent>
-		
+
 		<modalComponent v-if="modal == 'intimacy_tips'" title="说明" @closeModal="modal='invit'">
 			<view class="tips-modal-container">
 				<view class="text-wrap" style="text-align: left;">
-		
+
 					<view class="text">互动值说明</view>
 					<view class="text">1.帮好友开一次宝箱互动值加1</view>
 					<view class="text">2.解除好友关系，互动值清零</view>
 				</view>
-				
+
 			</view>
-		
+
 		</modalComponent>
-		
+
 		<!-- 帮助好友开箱 -->
 		<modalComponent v-if="modal == 'open_other_treasure_box_tips'" title="帮助好友开箱" @closeModal="modal = 'invit';openOtherBoxData = ''">
-		
+
 			<view class="open-box-modal-container">
 				<view class="top">今日24:00失效</view>
 				<view class="show_img">
 					<image style="width: 100%;" src="/static/image/pet/open_box.png" mode="widthFix"></image>
-					<image style="width: 180rpx; position: absolute; bottom: 0%; left: 15%;" :src="openOtherBoxData.imgsrc?openOtherBoxData.imgsrc:'https://mmbiz.qpic.cn/mmbiz_png/CbJC0icY3EzYDtytnskVf0eZwtl4xVKmxFdAicib8taV6ibQUzC8R0Ule7TxB2L1PMr1reibsPbkGEv1wfp5DYNftMg/0'" mode="widthFix"></image>
+					<image style="width: 180rpx; position: absolute; bottom: 0%; left: 15%;" :src="openOtherBoxData.imgsrc?openOtherBoxData.imgsrc:'https://mmbiz.qpic.cn/mmbiz_png/CbJC0icY3EzYDtytnskVf0eZwtl4xVKmxFdAicib8taV6ibQUzC8R0Ule7TxB2L1PMr1reibsPbkGEv1wfp5DYNftMg/0'"
+					 mode="widthFix"></image>
 				</view>
-		
+
 				<view class="text-wrap">
 					<view class="text">开箱成功</view>
 					<view class="text">恭喜你帮助好友获得:<text style="color: #F75A73;">[{{openOtherBoxData.prizeName?openOtherBoxData.prizeName:''}}]+{{openOtherBoxData.num?openOtherBoxData.num:''}}</text></view>
@@ -784,9 +815,9 @@
 						</button>
 					</btnComponent>
 				</view>
-		
+
 			</view>
-		
+
 		</modalComponent>
 		<!-- 好友很久没打榜 -->
 		<modalComponent v-if="modal == 'tips_t'" title="提示" @closeModal="modal=''">
@@ -1212,10 +1243,12 @@
 					coin: 0,
 					people: 0
 				},
-				openOtherBoxData:'',
+				openOtherBoxData: '',
 				help_friend_id: '',
-				treasure_box_times:'',
-				my_level:1,
+				treasure_box_times: '',
+				my_level: 1,
+				is_automatic_steal: 0,
+				stealTime: 0,
 			};
 		},
 		created() {
@@ -1322,6 +1355,25 @@
 							share_img: star.share_img,
 							qrcode: star.qrcode,
 						}
+						this.is_automatic_steal = res.data.is_automatic_steal
+						this.stealTime = res.data.stealTime
+						if (this.is_automatic_steal) {
+							if(this.stealTime==0){
+								this.initStealInterval();
+							}else{
+								let time = Math.round(new Date().getTime() / 1000)-this.stealTime;
+								if(time>=60){
+									this.initStealInterval();
+								}else{
+									setTimeout(() => {
+										this.steal('', -1, 0);
+										this.initStealInterval();
+									}, 60-time)
+								}
+							}
+						}
+						console.log()
+
 						// 聊天
 						const chartList = []
 						res.data.chartList.forEach((e, i) => {
@@ -1368,7 +1420,7 @@
 
 							// 活动
 							this.activeInfo = res.data.activeInfo
-							
+
 							// 是否开启福袋活动
 							this.fudaiActive = res.data.fudai
 
@@ -1420,7 +1472,10 @@
 				})
 			},
 			goReport(data) {
-				const {id, rec} = data;
+				const {
+					id,
+					rec
+				} = data;
 				this.$app.goPage(`/pages/group/report/report?user=${id}&id=${rec}`);
 			},
 			checkForbidden() {
@@ -1433,12 +1488,12 @@
 				if (this.captain == 1) {
 					// 获取禁言配置
 					const forbiddenTime = this.$app.getData('config').forbidden_time
-					
+
 					let key = forbiddenTime.map(item => item.key)
 					let value = forbiddenTime.map(item => item.value)
-					
+
 					return uni.showActionSheet({
-						title:'选择禁言时间',
+						title: '选择禁言时间',
 						itemList: value,
 						success: (e) => {
 							this.forbidden(e.tapIndex)
@@ -1449,7 +1504,9 @@
 			},
 			// 禁言
 			forbidden(time) {
-				let data = {user_id: this.currentUser.id,};
+				let data = {
+					user_id: this.currentUser.id,
+				};
 				if (!!time && time > -1) data.time = time
 				this.$app.modal(`确认将${this.currentUser.nickname}禁言？`, () => {
 					this.$app.request('user/forbidden', data, res => {
@@ -1507,16 +1564,16 @@
 					}, 'POST', true)
 				})
 			},
-			treasure_box_times_tips(user_id){
+			treasure_box_times_tips(user_id) {
 				this.modal = 'treasure_box_times_tips';
 				this.help_friend_id = user_id;
 			},
 			//帮助开宝箱
 			open_other_treasure_box(user_id) {
 				this.$app.request(this.$app.API.TREASURE_BOX_OPEN_OTHER, {
-					user_id:user_id
+					user_id: user_id
 				}, res => {
-			
+
 					this.openOtherBoxData = res.data;
 					this.modal = 'open_other_treasure_box_tips';
 					this.getInvitList();
@@ -1860,6 +1917,22 @@
 					}, 'POST', true)
 				}
 			},
+			/**开启自动偷能量*/
+			automaticSteal() {
+				this.$app.request(this.$app.API.STAR_STEAL_AUTOMATIC, {}, res => {
+					this.$app.toast('开启成功');
+					this.steal('', -1, 0);
+					this.loadData()
+				})
+			},
+			initStealInterval() {
+
+				clearInterval(this.$app.guildTimeId)
+				this.$app.guildTimeId = setInterval(() => {
+					this.steal('', -1, 0);
+				}, 60000)
+
+			},
 			/**偷能量*/
 			steal(starid, index, steal) {
 				if (steal > 0) return
@@ -1867,8 +1940,15 @@
 					starid,
 					index
 				}, res => {
-					this.starRankList[index].steal = res.data.steal
+					if (index >= 0) {
+						this.starRankList[index].steal = res.data.steal
+					} else {
+						this.starRankList.forEach(function(e) {
+							e.steal = res.data.steal
+						});
+					}
 					this.$app.toast(`偷到了${res.data.count}能量`)
+					this.stealTime = res.data.stealTime
 
 					this.getStarRank()
 					this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
@@ -2087,7 +2167,7 @@
 							}
 						}
 						let fudai = res.data.fudai;
-						
+
 						if (!!fudai) {
 							fudai.referrer = fudai.id;
 							delete fudai.id;
@@ -3665,16 +3745,15 @@
 					.egg {
 						flex-direction: column;
 						margin-left: 10rpx;
-						
-						.hand {
-						}
-					
+
+						.hand {}
+
 						.num-wrapper {
 							font-size: 24upx;
 							left: 55% !important;
-					
+
 						}
-					
+
 						image {
 							width: 60upx;
 						}
@@ -4005,7 +4084,7 @@
 				margin: 100upx auto;
 			}
 		}
-		
+
 		.forbiddenPadding {
 			padding-top: 0 !important;
 		}
@@ -4017,12 +4096,14 @@
 			align-items: center;
 			justify-content: space-around;
 			padding: 40upx;
+
 			.forbidden {
 				width: 100%;
 				height: 20upx;
 				line-height: 20upx;
 				color: red;
 			}
+
 			.top {
 				display: flex;
 				flex-direction: column;
@@ -4327,22 +4408,22 @@
 			transform: translateY(0);
 		}
 	}
-	
-	.open-box-modal-container{
+
+	.open-box-modal-container {
 		width: 100%;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
 		padding: 20rpx;
-		
+
 		.top {
 			width: 100%;
 			color: #817F7F;
 			font-weight: bold;
 			text-align: right;
 		}
-		
+
 		.show_img {
 			position: relative;
 			width: 280rpx;
@@ -4350,8 +4431,8 @@
 			border: 0;
 			margin-top: 10rpx;
 		}
-		
-		
+
+
 		.text-wrap {
 			padding: 20rpx 0;
 			width: 100%;
