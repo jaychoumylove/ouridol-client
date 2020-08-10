@@ -556,14 +556,14 @@
 						</btnComponent>
 						<view class="flex-set" style="font-size: 24rpx;">精灵lv.5解锁</view>
 					</view>
-					<view class="btn" v-if="sprite_level>=10 && is_automatic_steal==0" @tap="automaticSteal()">
+					<view class="btn" v-if="sprite_level>=10 && is_automatic_steal==0" @tap="automaticSteal(1)">
 						<btnComponent type="default">
 							<view class="flex-set" style="width: 200upx;height: 60upx;">自动偷取</view>
 						</btnComponent>
 					</view>
-					<view class="btn" v-else-if="sprite_level>=10 && is_automatic_steal==1">
+					<view class="btn" v-else-if="sprite_level>=10 && is_automatic_steal==1" @tap="automaticSteal(0)">
 						<btnComponent type="disable">
-							<view class="flex-set" style="width: 200upx;height: 60upx;">自动偷取中</view>
+							<view class="flex-set" style="width: 200upx;height: 60upx;">暂停自动偷取</view>
 						</btnComponent>
 					</view>
 					<view class="btn" v-else-if="sprite_level<10">
@@ -1248,7 +1248,7 @@
 				treasure_box_times: '',
 				my_level: 1,
 				is_automatic_steal: 0,
-				stealTime: 0,
+				stealCountdown: 0,
 			};
 		},
 		created() {
@@ -1356,23 +1356,18 @@
 							qrcode: star.qrcode,
 						}
 						this.is_automatic_steal = res.data.is_automatic_steal
-						this.stealTime = res.data.stealTime
+						this.stealCountdown = res.data.stealCountdown
 						if (this.is_automatic_steal) {
-							if(this.stealTime==0){
+							if(this.stealCountdown==0){
 								this.initStealInterval();
 							}else{
-								let time = Math.round(new Date().getTime() / 1000)-this.stealTime;
-								if(time>=60){
+								setTimeout(() => {
 									this.initStealInterval();
-								}else{
-									setTimeout(() => {
-										this.steal('', -1, 0);
-										this.initStealInterval();
-									}, 60-time)
-								}
+								},this.stealCountdown*1000)
 							}
+						}else{
+							clearInterval(this.$app.guildTimeId)
 						}
-						console.log()
 
 						// 聊天
 						const chartList = []
@@ -1918,15 +1913,18 @@
 				}
 			},
 			/**开启自动偷能量*/
-			automaticSteal() {
-				this.$app.request(this.$app.API.STAR_STEAL_AUTOMATIC, {}, res => {
-					this.$app.toast('开启成功');
-					this.steal('', -1, 0);
+			automaticSteal(type) {
+				this.$app.request(this.$app.API.STAR_STEAL_AUTOMATIC, {type:type}, res => {
+					if(type == 0){
+						this.$app.toast('暂停成功');
+					}else{
+						this.$app.toast('开启成功');
+					}
 					this.loadData()
 				})
 			},
 			initStealInterval() {
-
+				this.steal('', -1, 0);
 				clearInterval(this.$app.guildTimeId)
 				this.$app.guildTimeId = setInterval(() => {
 					this.steal('', -1, 0);
@@ -1948,7 +1946,6 @@
 						});
 					}
 					this.$app.toast(`偷到了${res.data.count}能量`)
-					this.stealTime = res.data.stealTime
 
 					this.getStarRank()
 					this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
@@ -2342,6 +2339,8 @@
 					this.steal_count = res.data.steal_count
 					this.steal_times = res.data.steal_times
 					this.steal_times_max = res.data.steal_times_max
+					this.is_automatic_steal = res.data.is_automatic_steal
+					
 					// 清除steal倒计时定时器
 					if (!this.$app.timeId) this.$app.timeId = []
 					for (let v of this.$app.timeId) {
