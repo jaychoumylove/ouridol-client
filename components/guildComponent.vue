@@ -796,7 +796,9 @@
 		<modalComponent v-if="modal == 'open_other_treasure_box_tips'" title="帮助好友开箱" @closeModal="modal = 'invit';openOtherBoxData = ''">
 
 			<view class="open-box-modal-container">
-				<view class="top">今日24:00失效</view>
+				<view class="top" v-if="openOtherBoxData.type==0">24小时后失效</view>
+				<view class="top" v-else-if="openOtherBoxData.type==1">每周日24:00清零</view>
+				<view class="top" v-else></view>
 				<view class="show_img">
 					<image style="width: 100%;" src="/static/image/pet/open_box.png" mode="widthFix"></image>
 					<image style="width: 180rpx; position: absolute; bottom: 0%; left: 15%;" :src="openOtherBoxData.imgsrc?openOtherBoxData.imgsrc:'https://mmbiz.qpic.cn/mmbiz_png/CbJC0icY3EzYDtytnskVf0eZwtl4xVKmxFdAicib8taV6ibQUzC8R0Ule7TxB2L1PMr1reibsPbkGEv1wfp5DYNftMg/0'"
@@ -1249,6 +1251,7 @@
 				my_level: 1,
 				is_automatic_steal: 0,
 				stealCountdown: 0,
+				stealLimitTime: 60,
 			};
 		},
 		created() {
@@ -1355,20 +1358,27 @@
 							share_img: star.share_img,
 							qrcode: star.qrcode,
 						}
+						this.stealLimitTime = res.data.stealLimitTime
 						this.is_automatic_steal = res.data.is_automatic_steal
 						this.stealCountdown = res.data.stealCountdown
-						if (this.is_automatic_steal) {
-							if(this.stealCountdown==0){
-								this.initStealInterval();
-							}else{
-								setTimeout(() => {
+						console.log(this.stealLimitTime)
+						console.log(this.is_automatic_steal)
+						console.log(this.stealCountdown)
+						setTimeout(() => {
+							if (this.is_automatic_steal) {
+								if (this.stealCountdown == 0) {
 									this.initStealInterval();
-								},this.stealCountdown*1000)
+								} else {
+									setTimeout(() => {
+										this.initStealInterval();
+									}, this.stealCountdown * 1000-500)
+								}
+							} else {
+								clearInterval(this.$app.guildTimeId)
 							}
-						}else{
-							clearInterval(this.$app.guildTimeId)
-						}
-
+							
+						}, 500)
+						
 						// 聊天
 						const chartList = []
 						res.data.chartList.forEach((e, i) => {
@@ -1914,10 +1924,12 @@
 			},
 			/**开启自动偷能量*/
 			automaticSteal(type) {
-				this.$app.request(this.$app.API.STAR_STEAL_AUTOMATIC, {type:type}, res => {
-					if(type == 0){
+				this.$app.request(this.$app.API.STAR_STEAL_AUTOMATIC, {
+					type: type
+				}, res => {
+					if (type == 0) {
 						this.$app.toast('暂停成功');
-					}else{
+					} else {
 						this.$app.toast('开启成功');
 					}
 					this.loadData()
@@ -1925,10 +1937,11 @@
 			},
 			initStealInterval() {
 				this.steal('', -1, 0);
+				let stealLimitTime = this.stealLimitTime
 				clearInterval(this.$app.guildTimeId)
 				this.$app.guildTimeId = setInterval(() => {
 					this.steal('', -1, 0);
-				}, 60000)
+				}, stealLimitTime * 1000)
 
 			},
 			/**偷能量*/
@@ -2340,7 +2353,7 @@
 					this.steal_times = res.data.steal_times
 					this.steal_times_max = res.data.steal_times_max
 					this.is_automatic_steal = res.data.is_automatic_steal
-					
+
 					// 清除steal倒计时定时器
 					if (!this.$app.timeId) this.$app.timeId = []
 					for (let v of this.$app.timeId) {

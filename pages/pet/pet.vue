@@ -426,7 +426,7 @@
 		<modalComponent v-if="modal == 'open_treasure_box_tips'" title="打开宝箱" @closeModal="treasure_box();openBoxData = ''">
 		
 			<view class="open-box-modal-container">
-				<view class="top" v-if="openBoxData.type==0">今日24:00失效</view>
+				<view class="top" v-if="openBoxData.type==0">24小时后失效</view>
 				<view class="top" v-else-if="openBoxData.type==1">每周日24:00清零</view>
 				<view class="top" v-else></view>
 				<view class="show_img">
@@ -513,7 +513,7 @@
 		<modalComponent v-if="modal == 'open_other_treasure_box_tips'" title="帮助好友开箱" @closeModal="modal = 'invit';openOtherBoxData = ''">
 		
 			<view class="open-box-modal-container">
-				<view class="top" v-if="openOtherBoxData.type==0">今日24:00失效</view>
+				<view class="top" v-if="openOtherBoxData.type==0">24小时后失效</view>
 				<view class="top" v-else-if="openOtherBoxData.type==1">每周日24:00清零</view>
 				<view class="top" v-else></view>
 				<view class="show_img">

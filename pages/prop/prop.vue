@@ -23,7 +23,7 @@
 
 						<view class="content">
 							<view class="top">{{item.prop.name}}</view>
-							<view class="bottom">过期时间：{{item.create_time.slice(0,11) + "24:00:00"}}</view>
+							<view class="bottom">过期时间：{{item.end_time_text}}</view>
 						</view>
 					</view>
 

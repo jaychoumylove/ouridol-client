@@ -26,7 +26,11 @@
 				this.$app.setData('award_type', option.query.award_type)
 			}
 		},
-		onHide: function() {},
+		onHide: function() {
+			this.$app.request(this.$app.API.STAR_STEAL_AUTOMATIC, {type:0}, res => {
+				
+			})
+		},
 		methods: {
 			/**平台判断*/
 			setPlatform() {

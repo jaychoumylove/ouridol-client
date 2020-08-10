@@ -5,7 +5,7 @@
 				<!-- <image src=""></image> -->
 				<view class="text-wrapper">
 					<view class="top flex-set">小贴士</view>
-					<view class="bottom flex-set">道具每日限量,每日24:00失效,请及时使用</view>
+					<view class="bottom flex-set">道具每日限量,购买起24:00小时后失效,请及时使用</view>
 				</view>
 				<block v-if="$app.getData('VERSION')!=$app.getData('config').version">
 					<btnComponent type="default">
