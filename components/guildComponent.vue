@@ -291,6 +291,9 @@
 		</view>
 		<!-- 侧边按钮组 -->
 		<view class='side-btn-group' :class="{chartbottom:$app.getData('config').chart_type == '1', show:sideBtnOpacity}">
+			<view class="btn" v-if="$app.getData('config').version != $app.getData('VERSION')" @tap="$app.goPage('/pages/group/invite/invite')">
+				<image class="img" src="/static/image/signin/sign.png" mode=""></image>
+			</view>
 			<view class="btn" @tap="modal ='joinGroup'" v-if="$app.getData('platform')=='MP-WEIXIN'&&$app.getData('config').version != $app.getData('VERSION') && $app.getData('userExt') && $app.getData('userExt').is_join_wxgroup == 0">
 				<image class="img" src="/static/image/guild/joingroup.png" mode=""></image>
 			</view>

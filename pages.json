@@ -132,6 +132,12 @@
             	"navigationBarTitleText": "精灵产量排行榜"
             }
         }
+        ,{
+            "path" : "pages/group/invite/invite",
+            "style": {
+            	"navigationBarTitleText": "拉新活动"
+            }
+        }
     ],
 	// 分包
 	"subPackages": [{
