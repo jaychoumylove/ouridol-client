@@ -16,7 +16,7 @@
 					<text>拉新奖励</text>
 					<image class="image_b5" src="/static/image/help-img.png" mode="widthFix"></image>
 				</view>
-				<view class="get_detail " @tap="$app.goPage('/pages/group/invite/invite_rank')">
+				<view class="get_detail" @tap="$app.goPage('/pages/group/invite/invite_reward_log?type=reward')">
 					<view style="padding-left: 10rpx;">领取记录</view>
 				</view>
 			</view>
@@ -52,7 +52,7 @@
 										
 										
 									</view>
-									<!-- <view class="name">{{item.reward}}<image class="image_b5" src="/static/image/user/b1.png" mode="widthFix"></image></view> -->
+									
 									<view class="value">{{item.invite_num}}</image></view>
 								</view>
 							</view>
@@ -75,13 +75,20 @@
 					还差<text style="color: #FF9799;font-size: 32rpx;padding: 0 10rpx;">{{invite_new_info.my_next_invitenum-invite_new_info.my_invite_info.invite_energy>0?(invite_new_info.my_next_invitenum-invite_new_info.my_invite_info.invite_energy):0}}</text>电量,即可获得奖励
 				</view>
 			</view>
-			<view v-if="joinGroupQueue.length>0" class="notice">
+			<view class="notice">
 				<view class="notice-cont">
-					<swiper class="small" autoplay interval="3000" vertical circular>
-						<swiper-item class="swiper-item" v-for="(item,index) in joinGroupQueue" :key='index'>
-							<image src="/static/image/guild/quanzi_icon_lingdang.png" mode="widthFix"></image>
-							<view class="item-text">
-								恭喜<text>{{item.nickname}}</text>获得<text>{{item.starname}}</text>
+					<swiper class="small" autoplay interval="3000" vertical="true" circular="true">
+						<swiper-item class="swiper-item" v-for="(item,index) in getInviteReward" :key='index'>
+							<view class="item">
+								<image src="/static/image/guild/icon_gonggao.png" mode="widthFix"></image>
+								<image class="avatar" style="width: 60rpx; border-radius: 50%;" :src="item.avatarurl" mode="widthFix"></image>
+								<view class="item-text">
+									恭喜<text style="padding: 0 10rpx;">{{item.nickname}}</text>获得
+									<text style="padding: 0 10rpx;" v-if="item.reward.coin">能量:{{item.reward.coin}}</text>
+									<text style="padding: 0 10rpx;" v-if="item.reward.stone">灵丹:{{item.reward.stone}}</text>
+									<text style="padding: 0 10rpx;" v-if="item.reward.trumpet">喇叭:{{item.reward.trumpet}}</text>
+									<text style="padding: 0 10rpx;" v-if="item.prop_text">{{item.prop_text}}</text>
+								</view>
 							</view>
 						</swiper-item>
 						<!-- <swiper-item class="swiper-item">
@@ -109,9 +116,10 @@
 					<view class="get_help">
 						<text>做任务得电量</text>
 					</view>
-					<!-- <view class="get_detail " @tap="$app.goPage('/pages/notice/notice?id='+invite_new_info.notice)">
-						<view style="padding-left: 10rpx;">领取记录</view>
-					</view> -->
+					<view class="get_detail" @tap="$app.goPage('/pages/group/invite/invite_reward_log?type=user')">
+						<view style="padding-left: 10rpx;">拉新记录</view>
+					</view>
+					
 				</view>
 				<view class="invit-list">
 					<view class="invit-item">
@@ -127,7 +135,7 @@
 									<view class="flex-set" style="width: 140upx;height: 60upx;">去拉新</view>
 								</button>
 							</btnComponent>
-							<btnComponent v-else type="success" @tap="getInvitAward()">
+							<btnComponent v-else type="success" @tap="getInvitEnergy(1)">
 								<view class="flex-set" style="width: 140upx;height: 60upx;">去领取</view>
 							</btnComponent>
 						</view>
@@ -145,7 +153,7 @@
 									<view class="flex-set" style="width: 140upx;height: 60upx;">去拉新</view>
 								</button>
 							</btnComponent>
-							<btnComponent v-else type="success" @tap="getInvitAward()">
+							<btnComponent v-else type="success" @tap="getInvitEnergy(2)">
 								<view class="flex-set" style="width: 140upx;height: 60upx;">去领取</view>
 							</btnComponent>
 						</view>
@@ -165,11 +173,11 @@
 				<block v-if="invitRankList.length>0" v-for="(item,index) in invitRankList" :key="index">
 					<view class="item">
 						<view class="item-info">
-							<image class="rank-img" v-if="index==0" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9HhvlXURtbJbFvRVwdINYhHcvbxyK2p9RfyBWvElE6xwtFt3PoIwISs0vLHUhmiaKvhnIL6kzh38uA/0"
+							<image class="rank-img" v-if="index==0" src="/static/image/guild/1.png"
 							 mode="widthFix"></image>
-							<image class="rank-img" v-else-if="index==1" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9HhvlXURtbJbFvRVwdINYhHREheWFHXGbHGf3unhB8zN0siaVwoZzictZOjBZzhyR5ibvLFMIPwibSWDQ/0"
+							<image class="rank-img" v-else-if="index==1" src="/static/image/guild/2.png"
 							 mode="widthFix"></image>
-							<image class="rank-img" v-else-if="index==2" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9HhvlXURtbJbFvRVwdINYhHibnaZud2z8MHeCCXWDicbgiajDCV5ke7vaCkk0040I7m4OVeGPIAibnpbA/0"
+							<image class="rank-img" v-else-if="index==2" src="/static/image/guild/3.png"
 							 mode="widthFix"></image>
 							<view class="rank-img" v-else>{{index+1}}</view>
 							<block v-if="rank_type=='group'">
@@ -180,7 +188,7 @@
 								<view style="margin-left: 20rpx;">
 									<view class="name">{{item.star.name || '神秘爱豆'}}</view>
 									<view style="color: #909090; font-size: 24rpx;">
-										总电量:{{item.total_invite_num || 0}}
+										总电量:{{item.total_invite_energy || 0}}
 										<image style="width: 40rpx; margin-left: 10rpx;" src="/static/image/user/electricity.png" mode="widthFix"></image>
 									</view>
 								</view>
@@ -206,7 +214,7 @@
 								
 							</block>
 						</view>
-						<view class="energy" v-if="rank_type=='group'">
+						<view class="energy" v-if="rank_type=='group' && index<=1">
 							<view v-if="index==0">1000元奖金</view>
 							<view v-if="index==1">500元奖金</view>
 						</view>
@@ -237,8 +245,8 @@
 				invitRankList: [],
 				my_remaining_time: 0,
 				rankPage: 1,
-				joinGroupQueue: this.$app.joinGroupQueue,
-				rank_type:'world',
+				getInviteReward: this.$app.getInviteRewardQueue,
+				rank_type:'group',
 			};
 		},
 		onShow() {
@@ -268,6 +276,7 @@
 				this.$app.request(this.$app.API.INVITE_NEW_INFO, {}, res => {
 					this.invite_new_info = res.data;
 					this.addTimer(res.data.my_remaining_time);
+					this.rankPage = 1
 					this.getInviteRank();
 				});
 				
@@ -300,12 +309,22 @@
 						text += res.data.prop_text + ' +1';
 					}
 					this.$app.toast(text)
-					this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
-						this.$app.setData('userCurrency', res.data)
-					});
 					
 					this.loadData();
 				}, 'POST', true)
+			},
+			getInvitEnergy(type){
+				this.$app.request(this.$app.API.INVIT_ENERGY, {
+					type:type,
+				}, res => {
+				
+					let text = '领取成功';
+					if (res.data.energy > 0) {
+						text += ',电量 +' + res.data.energy;
+					}
+					this.$app.toast(text)
+					this.loadData();
+				})
 			},
 			// 拉票
 			getInviteRank() {
@@ -424,18 +443,7 @@
 				display: flex;
 				flex-direction: row;
 				align-items: center;
-				.item {
-					position: relative;
-					margin-left: -10rpx;
-							
-					.avatar-s {
-						width: 40upx;
-						height: 40upx;
-						border-radius: 50%;
-							
-					}	
-							
-				}
+				
 			}
 		}
 
@@ -553,7 +561,6 @@
 								background-color: #66b8e1;
 							}
 						}
-
 					}
 
 				}
@@ -579,33 +586,42 @@
 			padding: 20rpx 0;
 			display: flex;
 			justify-content: center;
-			align-items: center;
 			.notice-cont{
 				width: 600rpx;
-				height: 40rpx;
+				height: 70rpx;
 				font-size: 22rpx;
 				font-weight: bold;
-				padding: 5rpx 15rpx;
+				padding: 0rpx 15rpx;
 				background: #FFFFFF;
-				border-radius: 25rpx;
+				border-radius: 40rpx;
 				overflow: hidden;
 				image {
-					width: 30rpx;
+					width: 40rpx;
 					margin: 5rpx 10rpx 0rpx 10rpx;
 				}
 				.swiper-item{
 					width: 100%;
 					display: flex;
 					flex-direction: row;
-					text-align: center;
-					.item-text{
-						width: 550rpx;
-						overflow: hidden;
-						text-overflow: ellipsis;
-						white-space: nowrap;
-					}
-					text {
-						color: #F57FA3;
+					justify-content: center;
+					
+					.item{
+						width: 100%;
+						height: 70rpx;
+						display: flex;
+						flex-direction: row;
+						align-items: center;
+						.item-text{
+							width: 550rpx;
+							overflow: hidden;
+							text-overflow: ellipsis;
+							white-space: nowrap;
+							display: flex;
+							flex-direction: row;
+						}
+						text {
+							color: #F57FA3;
+						}
 					}
 				}
 			}
@@ -620,9 +636,25 @@
 		.list-wrapper {
 			overflow-y: auto;
 			.invit-title{
-				font-size: 28rpx;
-				font-weight: bold;
 				padding: 0 20rpx;
+				display: flex;
+				justify-content: space-between;
+				
+				.get_help {
+					font-size: 28rpx;
+					font-weight: bold;
+				}
+				
+				.get_detail {
+					font-size: 24rpx;
+					color: #FF9191;
+					font-weight: bold;
+					text-decoration: underline;
+					display: flex;
+					flex-direction: row;
+					align-items: center;
+					
+				}
 			}
 			
 			.invit-list {

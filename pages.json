@@ -138,6 +138,13 @@
             	"navigationBarTitleText": "拉新活动"
             }
         }
+        ,{
+            "path" : "pages/group/invite/invite_reward_log",
+            "style": {
+            	"navigationBarTitleText": "拉新记录"
+            }
+        }
+        
     ],
 	// 分包
 	"subPackages": [{

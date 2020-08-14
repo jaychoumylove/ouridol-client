@@ -292,7 +292,7 @@
 		<!-- 侧边按钮组 -->
 		<view class='side-btn-group' :class="{chartbottom:$app.getData('config').chart_type == '1', show:sideBtnOpacity}">
 			<view class="btn" v-if="$app.getData('config').version != $app.getData('VERSION')" @tap="$app.goPage('/pages/group/invite/invite')">
-				<image class="img" src="/static/image/signin/sign.png" mode=""></image>
+				<image class="img" src="/static/image/guild/invite-img.png" mode="aspectFill"></image>
 			</view>
 			<view class="btn" @tap="modal ='joinGroup'" v-if="$app.getData('platform')=='MP-WEIXIN'&&$app.getData('config').version != $app.getData('VERSION') && $app.getData('userExt') && $app.getData('userExt').is_join_wxgroup == 0">
 				<image class="img" src="/static/image/guild/joingroup.png" mode=""></image>
@@ -2141,6 +2141,7 @@
 				}
 
 				this.$app.request(this.$app.API.STAR_SENDHOT, {
+					referrer: this.$app.getData('referrer'),
 					starid: this.star.id,
 					// 如果送的是礼物，hot为item_id
 					hot: parseInt(this.sendCount),

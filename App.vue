@@ -10,6 +10,8 @@
 			this.$app.setData('sysInfo', uni.getSystemInfoSync())
 			// 弹幕队列
 			this.$app.danmakuQueue = []
+			// 拉新队列
+			this.$app.getInviteRewardQueue = []
 		},
 		onShow: function(option) {
 			// 处理入口option
