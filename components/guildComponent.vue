@@ -468,17 +468,17 @@
 							<view class="btn flex-set" @tap="sendHot(10000)">
 								<image src="/static/image/user/b1.png" mode="widthFix"></image>+10000
 							</view>
-							<view class="btn flex-set" @tap="sendHot(30000)">
-								<image src="/static/image/user/b1.png" mode="widthFix"></image>+30000
-							</view>
 							<view class="btn flex-set" @tap="sendHot(50000)">
 								<image src="/static/image/user/b1.png" mode="widthFix"></image>+50000
 							</view>
 							<view class="btn flex-set" @tap="sendHot(100000)">
 								<image src="/static/image/user/b1.png" mode="widthFix"></image>+100000
 							</view>
+							<view class="btn flex-set" @tap="sendCount = $app.getData('userCurrency')['coin'];">
+								<image src="/static/image/user/b1.png" mode="widthFix"></image>全送
+							</view>
 							<view class="btn flex-set self-input">
-								<input class="" @input="sendCount = $event.detail.value" type="number" placeholder="自定义数额" />
+								<input class="" @input="sendCount = $event.detail.value" :value="sendCount?sendCount:''" type="number" placeholder="自定义数额" />
 							</view>
 							<view class="btn flex-set pick" @tap="sendHot()">PICK</view>
 						</view>
