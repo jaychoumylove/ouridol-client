@@ -168,6 +168,7 @@
 				<view class="group-title-item" :class="{active:rank_type=='world'}" @tap="switchAct('world')">世界电量排行</view>
 			</view>
 		</view>
+		<view style="width: 100%; text-align: center; font-size: 24rpx;" v-if="rank_type=='group'">{{$app.getData('config').is_invite_active.end_time}}截止，根据排名发放奖励</view>
 		<view class="rank-list">
 			<view class="list">
 				<block v-if="invitRankList.length>0" v-for="(item,index) in invitRankList" :key="index">
