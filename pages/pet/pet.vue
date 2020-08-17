@@ -74,7 +74,7 @@
 				<image src="/static/image/pet/rank.png" mode="widthFix" @tap="modal = 'help_open_box_rank';getOpenBoxRankList()"></image>
 			</btnComponent> -->
 			<btnComponent>
-				<image src="/static/image/pet/rank.png" mode="widthFix" @tap="$app.goPage('/pages/pet/rank/rank')"></image>
+				<image src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9E52jbGogfOlguQzpRTjxYicHYZS9yZJ5sTgJWY5qWINqunb5U5iaicuIUHs8z8GayfGA3TdatRv9Lgg/0" mode="widthFix" @tap="$app.goPage('/pages/pet/rank/rank')"></image>
 			</btnComponent>
 
 			<!--宝箱-->
@@ -84,12 +84,12 @@
 
 			<!--道具-->
 			<btnComponent>
-				<image src="/static/image/pet/prop.png" mode="widthFix" @tap="$app.goPage('/pages/prop/prop')"></image>
+				<image src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9E52jbGogfOlguQzpRTjxYiclC1xTUj6toLcCveS0Ticx8waWib2jXmgkLgy6QD1Px3YM17nDNUSkBEw/0" mode="widthFix" @tap="$app.goPage('/pages/prop/prop')"></image>
 			</btnComponent>
 
 			<!--帮助-->
 			<btnComponent>
-				<image src="/static/image/pet/help.png" mode="widthFix" @tap="$app.goPage('/pages/notice/notice?id=2')"></image>
+				<image src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9E52jbGogfOlguQzpRTjxYicU4Z8xGibLGCgicEtibG1FwXWcKSsCyExL0LrAia3micgCakZ2jJOgNDAyOA/0" mode="widthFix" @tap="$app.goPage('/pages/notice/notice?id=2')"></image>
 			</btnComponent>
 
 		</view>
