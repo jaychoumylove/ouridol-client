@@ -21,6 +21,10 @@
 					<image src="/static/image/pet/btn.png" mode="widthFix"></image>
 					<view class="text">精灵加速2小时</view>
 				</view> -->
+				<view class="button-wrap flex-set" @tap="modal = 'tips'">
+					<image src="/static/image/pet/btn.png" mode="widthFix"></image>
+					<view class="text">如何获得灵丹</view>
+				</view>
 				<view class="button-wrap flex-set" @tap="tapSprite">
 					<image src="/static/image/pet/btn.png" mode="widthFix"></image>
 					<view class="text">提高精灵等级</view>
@@ -126,7 +130,7 @@
 					</view>
 				</view>
 				
-				<view class="bottom-tips" @tap.stop="modal = 'tips'">如何获得灵丹升级</view>
+				<view class="bottom-tips" v-if="spriteInfo.tips_text">{{spriteInfo.tips_text}}</view>
 			</view>
 			<view class="right-wrap">
 				<view class="row">
@@ -1571,7 +1575,7 @@
 			
 			.sprite-level{
 				width: 45%;
-				padding-left: 20rpx;
+				padding-left: 10rpx;
 				
 				.sprite-level-info{
 					display: flex;
@@ -1606,7 +1610,7 @@
 				}	
 				
 				.bottom-tips {
-					width: 210rpx;
+					width: 270rpx;
 					font-size: 24upx;
 					font-weight: bold;
 					letter-spacing: 2upx;
