@@ -45,7 +45,7 @@
 				<view class="tips">你的后援会职位证明截图</view>
 			</view> -->
 			<view class="input-group" style="padding-top: 40upx;">
-				<button form-type="submit" style="width: 180upx;margin: auto;">
+				<button form-type="submit" style="width: 220upx;margin: auto; border-radius: 60rpx;">
 					<btnComponent type="css">
 						<view class="flex-set" style="width: 180upx;height: 90upx;">提交</view>
 					</btnComponent>
@@ -118,6 +118,7 @@
 <style lang="scss">
 	.fanclub-container {
 		padding: 20upx 40upx;
+		background-color: $text-color-10;
 
 		.tips {
 			color: #888;
@@ -151,6 +152,7 @@
 					background-color: rgba(#FFF, 0.6);
 					height: 80upx;
 					padding: 0 20upx;
+					border-radius: 40rpx;
 				}
 			}
 		}

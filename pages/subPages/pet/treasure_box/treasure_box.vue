@@ -12,7 +12,7 @@
 				<image class="show_img" src="/static/image/pet/treasure_box_share.png" mode="widthFix"></image>
 				<view style="font-size: 24rpx;" v-if="boxData.treasure_box_times==0">已经没有开箱次数了,继续开启将花费20灵丹</view>
 				<view class="button" @tap="openBox">
-					<btnComponent type="golden">
+					<btnComponent type="default">
 						<view class="flex-set" style="width: 280upx;height: 80upx;">开启</view>
 					</btnComponent>
 				</view>
@@ -31,7 +31,7 @@
 
 				</block>
 				<view class="button" @tap="$app.goPage('/pages/pet/pet')">
-					<btnComponent type="golden">
+					<btnComponent type="default">
 						<view class="flex-set" style="width: 280upx;height: 80upx;">去开其他宝箱</view>
 					</btnComponent>
 				</view>

@@ -5,6 +5,13 @@
 			<!-- <view class="title">每日产量排行榜</view> -->
 			<view class="rule" @tap="$app.goPage('/pages/notice/notice?id=2')">排行说明</view>
 		</view>
+		<view class='tab-container'>
+			<view class="tab">
+				<view class="tab-item" :class='{active:current==0}' @tap='switchAct(0)'>今日排行</view>
+				<view class="tab-item" :class='{active:current==1}' @tap='switchAct(1)'>昨日排行</view>
+			</view>
+		
+		</view>
 		<view class="rank-list">
 			<view class="rank-list-item" v-for="(item,index) in rankList" :key="index">
 				<listItemComponent :rank="index+1" :avatar="item.user.avatarurl || $app.getData('AVATAR')">
@@ -17,14 +24,15 @@
 								</view>
 							</view>
 							<view class="bottom-text">
-								<view class="hot-count">今日获得:{{item.thisday_coin}}</view>
-								<image class="icon-heart" src="/static/image/index/ic_hot.png" mode=""></image>
+								<view class="hot-count" v-if="current==0">今日获得:{{item.thisday_coin}}</view>
+								<view class="hot-count" v-if="current==1">昨日获得:{{item.lastday_coin}}</view>
+								<image class="icon-heart" src="/static/image/user/b1.png" mode=""></image>
 							</view>
 						</view>
 					</template>
 				
 					<template v-slot:right-container>
-						<view class="right-container" @tap="playGod(item.user_id)">
+						<view class="right-container" v-if="current==0" @tap="playGod(item.user_id)">
 							<btnComponent type="default">
 								<view class="flex-set" style="width: 130upx;height: 60upx;">膜拜</view>
 							</btnComponent>
@@ -38,7 +46,7 @@
 		<!-- 我的 -->
 		<view class="my-container">
 			
-			<listItemComponent :rank="myInfo.thisday_coin?myInfo.rank:'no'" :avatar="$app.getData('userInfo').avatarurl || $app.getData('AVATAR')">
+			<listItemComponent :rank="myInfo.daycoin?myInfo.rank:'no'" :avatar="$app.getData('userInfo').avatarurl || $app.getData('AVATAR')">
 				<template v-slot:left-container>
 					<view class="left-container">
 						<view class="name">
@@ -52,8 +60,9 @@
 			
 				<template v-slot:right-container>
 					<view class="right-container">
-						<view class="hot-count">今日获得:{{myInfo.thisday_coin?myInfo.thisday_coin:0}}</view>
-						<image class="icon-heart" src="/static/image/index/ic_hot.png" mode=""></image>
+						<view class="hot-count" v-if="current==0">今日获得:{{myInfo.daycoin?myInfo.daycoin:0}}</view>
+						<view class="hot-count" v-if="current==1">昨日获得:{{myInfo.daycoin?myInfo.daycoin:0}}</view>
+						<image class="icon-heart" src="/static/image/user/b1.png" mode=""></image>
 					</view>
 				</template>
 			</listItemComponent>
@@ -98,6 +107,7 @@
 				god_earn_coin:0,
 				myInfo:'',
 				banner:'',
+				current: 0,
 			};
 		},
 		onShareAppMessage(e) {
@@ -118,12 +128,24 @@
 			this.getRankList()
 		},
 		methods:{
+			switchAct(current) {
+				this.page = 1
+				this.current = current
+				this.getRankList()
+			},
 			getRankList() {
+				let rankField;
+				if (this.current == 0) {
+					rankField = 'thisday_coin'
+				} else if (this.current == 1) {
+					rankField = 'lastday_coin'
+				}
 				this.showBottomLoading = true
 				this.$app.request(this.$app.API.SPRITE_RANK, {
 					page: this.page,
+					rankField: rankField
 				}, res => {
-					if (res.data.list.length < 15) {
+					if (res.data.list.length < 10) {
 						// 内容不足隐藏loadicon
 						this.showBottomLoading = false
 					}
@@ -157,9 +179,12 @@
 
 <style lang="scss">
 	.rank-list-container{
+		background-color: $text-color-10;
+		height: 100%;
+		
 		.top{
 			width: 100%;
-			background:linear-gradient(to right bottom, #FF3A8A 20%, #fa6c9f 82%, #ffe140 100%);
+			background:linear-gradient(90deg,rgba(254,140,175,1),rgba(255,120,161,1));
 			display: flex;
 			align-items: center;
 			justify-content: center;
@@ -170,6 +195,7 @@
 				color: #FFFFFF;
 				z-index: 2;
 			}
+			
 			.rule{
 				position: absolute;
 				right: 5rpx;
@@ -182,6 +208,41 @@
 				font-family: "iconfont" !important;
 				padding-left: 10upx;
 			}
+		}
+		
+		.tab-container {
+			width: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding-top: 20rpx;
+		
+			.tab {
+				width: 100%;
+				height: 80rpx;
+				color: #FFFFFF;
+				display: flex;
+				align-items: center;
+		
+				.tab-item {
+					width: 200rpx;
+					padding: 15upx 0upx;
+					margin: 0 40rpx;
+					background:linear-gradient(0deg,rgba(208,208,208,1) 0%,rgba(175,175,175,1) 100%);
+					box-shadow: 0 2upx 4upx rgba(#000, 0.3);
+					justify-content: center;
+					display: flex;
+					font-size: 28upx;
+					flex: 1;
+					border-radius: 60rpx;
+				}
+		
+				.tab-item.active {
+					background:linear-gradient(90deg,rgba(254,140,175,1),rgba(255,120,161,1)) !important;
+					text-align: center;
+				}
+			}
+		
 		}
 		
 		.left-container {
@@ -229,8 +290,11 @@
 		.rank-list {
 			padding: 20rpx;
 			margin-bottom: 100rpx;
+			background-color: #FFFFFF;
+			margin-top: 20rpx;
 		
 			.rank-list-item {
+				border-bottom: 1rpx solid $text-color-10;
 		
 				.right-container {
 					margin-right: 20upx;
@@ -242,7 +306,7 @@
 			width: 100%;
 			position: fixed;
 			bottom: 0;
-			background-color: #eec1bc;
+			background-color: $color_5;
 			
 			.right-container {
 				display: flex;

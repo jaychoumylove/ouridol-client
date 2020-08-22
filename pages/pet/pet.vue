@@ -1,39 +1,34 @@
 <template>
-	<view class="pet-container">
+	<view class="pet-container" :style="spriteInfo.sprite_bg_img?'background: url('+spriteInfo.sprite_bg_img+') center no-repeat/cover;':''" >
 		<view class="top-row-container">
-
-			<!-- <view class="left-wrap">
+			<view class="left-wrap">
 				<view class="row flex-set">
-					<image class="coin-img" src="/static/image/user/b1.png" mode="widthFix"></image>
-					<view class="">
-						<view class="">累计获得：</view>
-						<view class="count flex-set">
-							<view class="num" :class="{active:blockScale}">{{spriteInfo.total_coin}}</view>
-							<image v-if="useCard" class="icon m" src="/static/image/prop/2.png" mode="widthFix"></image>
-							<text v-if="blockScale" class="top-num">+{{addCount}}</text>
+					<image class="coin-img" :src="$app.getData('userInfo').avatarurl" mode="aspectFill"></image>
+					<view style="padding-left: 20rpx;">
+						<view class="row-text">
+							<view class="text">累计获得：</view>
+							<view class="count flex-set">
+								<view class="num" :class="{active:blockScale}">{{spriteInfo.total_coin}}</view>
+								<image v-if="useCard" class="icon m" src="/static/image/prop/2.png" mode="widthFix"></image>
+								<text v-if="blockScale" class="top-num">+{{addCount}}</text>
+							</view>
 						</view>
+						
+						<view class="row bottom">产能：<text style="color:#FF5174;">{{spriteInfo.earnPer}}能量/100秒</text></view>
 					</view>
 				</view>
-				<view class="row bottom">产能：<text style="color:#F00;">{{spriteInfo.earnPer}}</text>能量/<text style="color:#F00;">100</text>秒</view>
-			</view> -->
+				
+			</view>
 			<view class="btn-wrap flex-set">
-				<!-- <view class="button-wrap flex-set" @tap="$app.goPage('/pages/prop/prop')">
-					<image src="/static/image/pet/btn.png" mode="widthFix"></image>
-					<view class="text">精灵加速2小时</view>
-				</view> -->
-				<view class="button-wrap flex-set" @tap="modal = 'tips'">
+				<!-- <view class="button-wrap flex-set" @tap="modal = 'tips'">
 					<image src="/static/image/pet/btn.png" mode="widthFix"></image>
 					<view class="text">如何获得灵丹</view>
-				</view>
-				<view class="button-wrap flex-set" @tap="tapSprite">
-					<image src="/static/image/pet/btn.png" mode="widthFix"></image>
-					<view class="text">提高精灵等级</view>
-				</view>
+				</view> -->
 			</view>
 
 		</view>
 
-		<view class="left-container">
+		<!-- <view class="left-container">
 			<btnComponent>
 				<image @tap="openInvitModal" src="/static/image/pet/add.png" mode="widthFix"></image>
 			</btnComponent>
@@ -41,22 +36,39 @@
 
 			<view class="friend-wrapper">
 				<image @tap="openInvitModal" v-for="(item,index) in invitList" :key="index" v-if="index<3" :src="item.avatar" mode="aspectFill"></image>
-				<!-- 				<image @tap="goOther(item)" v-for="(item,index) in invitList" :key="index" v-if="index<3" :src="item.avatar" mode="widthFix"></image> -->
+				
 			</view>
 
-			<!-- <btnComponent>
-				<image src="/static/image/pet/help.png" mode="widthFix" @tap="$app.goPage('/pages/notice/notice?id=2')"></image>
-			</btnComponent> -->
+		</view> -->
+		
+		<!-- 七夕背景专属区 -->
+		<view class="qixi" style="" v-if="spriteInfo.sprite_bg_id==9">
+			<image class="sprite_bg_upload_img" :src="spriteInfo.sprite_bg_upload_img||''" mode="aspectFill"></image>
+			<image class="sprite_bg" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9E69pHJIdb31PXQySxuBibtqq6ibQf6FE9Ske3SzOLcK6teJVfcfcksqeyvYj0OmSzFZ6w2eOzUYDAw/0" mode="widthFix"></image>
 		</view>
 
-
+		<!-- 精灵 -->
 		<view class="sprite" @tap="tapSprite">
 			<image class="sprite-shengji" v-if="userCurrency.stone>=spriteInfo.need_stone && spriteInfo.next_sprite_level" src="https://mmbiz.qpic.cn/mmbiz_png/CbJC0icY3Ezb27WAMHWqxDwIiawjQugzBQI5l7my9NtKXb24uYftUYBxicVnwDlicuylKQFumpdoEuMLYK4BNvG3JA/0" mode="widthFix"></image>
 			<view class="bounce-article">
 				<image class="sprite-main" :src="spriteInfo.sprite_img" mode="widthFix"></image>
-				
 			</view>
-
+			<view class="sprite-level">
+				<view class="sprite-level-info">
+					<view class="lv">Lv.{{spriteInfo.sprite_level}}</view>
+					<view class="progress">
+						<view class="progress-bar" :style="{width:userCurrency.stone / spriteInfo.need_stone * 100 + '%'}"></view>
+						<view class="text position-set" v-if="spriteInfo.next_sprite_level">
+							{{userCurrency.stone>=spriteInfo.need_stone?'可升级！':userCurrency.stone +'/'+ spriteInfo.need_stone}}
+						</view>
+						<view class="text position-set" v-else>
+							已达顶级
+						</view>
+					</view>
+				</view>
+				
+				<view class="bottom-tips" v-if="spriteInfo.tips_text">{{spriteInfo.tips_text}}</view>
+			</view>
 			<view class="skill-container position-set" :class="{show:skillShow}">
 				<btnComponent>
 					<view class="skill-wrapper one" @tap="openSkillModal(1)">
@@ -67,36 +79,53 @@
 			</view>
 		</view>
 
-		<view class="nav-container">
+		<!-- 左侧功能区 -->
+		<view class="nav-container-left">
+			<!--好友-->
+			<btnComponent>
+				<image src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9GmQ1IcplIogdH7ApsqYhZhPiappUv3bUmbGTDKzJAZPegibK652SyBqT0BqN0CugQbkJkdE50r8BmA/0" mode="widthFix" @tap="openInvitModal"></image>
+			</btnComponent>
+			
+			<!--精灵-->
+			<btnComponent>
+				<image src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9FmibDk8LrMNNib025upafEqqKLKu0GvM9ccAwVziaa7qibIKTO1A57ib0ba0fCJrlLw4ia2MR5SqAcPUAA/0" mode="widthFix" @tap="handbooklist()"></image>
+			</btnComponent>
+
+			<!--背景-->
+			<btnComponent>
+				<image src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9FmibDk8LrMNNib025upafEqq6zsKtSCtKY6Wunn0GoEQvSb3Su4m6trunlU2W34G7kbBibac0bxHA8w/0" mode="widthFix" @tap="$app.goPage('/pages/pet/pet_bg/pet_bg')"></image>
+			</btnComponent>
+
+		</view>
+		
+		<!-- 右侧功能区 -->
+		<view class="nav-container-right">
 			
 			<!--排行-->
 			<!-- <btnComponent>
 				<image src="/static/image/pet/rank.png" mode="widthFix" @tap="modal = 'help_open_box_rank';getOpenBoxRankList()"></image>
 			</btnComponent> -->
 			<btnComponent>
-				<image src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9E52jbGogfOlguQzpRTjxYicHYZS9yZJ5sTgJWY5qWINqunb5U5iaicuIUHs8z8GayfGA3TdatRv9Lgg/0" mode="widthFix" @tap="$app.goPage('/pages/pet/rank/rank')"></image>
+				<image src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9FmibDk8LrMNNib025upafEqqnibwlXxwjpQFgcicuqJicEBDaWuBrSqYP8bjlHsPCofMoe7RKgD54NL1g/0" mode="widthFix" @tap="$app.goPage('/pages/pet/rank/rank')"></image>
 			</btnComponent>
-
+		
 			<!--宝箱-->
 			<btnComponent>
-				<image src="/static/image/pet/treasure_box.png" mode="widthFix" @tap="treasure_box()"></image>
+				<image src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9FmibDk8LrMNNib025upafEqq0N4B7D0vQVHbW6Pgkg5r3HlYxT76oBsS1c78u2HgEOhCKqricDuxbvw/0" mode="widthFix" @tap="treasure_box()"></image>
 			</btnComponent>
-
+		
 			<!--道具-->
 			<btnComponent>
-				<image src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9E52jbGogfOlguQzpRTjxYiclC1xTUj6toLcCveS0Ticx8waWib2jXmgkLgy6QD1Px3YM17nDNUSkBEw/0" mode="widthFix" @tap="$app.goPage('/pages/prop/prop')"></image>
+				<image src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9FmibDk8LrMNNib025upafEqqNNtdjFDibx0YGTYHhsgnPQRArko4GZ4WDDF8YxC6RRSkJslc5ibMNjkg/0" mode="widthFix" @tap="$app.goPage('/pages/prop/prop')"></image>
 			</btnComponent>
-
+		
 			<!--帮助-->
 			<btnComponent>
-				<image src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9E52jbGogfOlguQzpRTjxYicU4Z8xGibLGCgicEtibG1FwXWcKSsCyExL0LrAia3micgCakZ2jJOgNDAyOA/0" mode="widthFix" @tap="$app.goPage('/pages/notice/notice?id=2')"></image>
+				<image src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9FmibDk8LrMNNib025upafEqqkricavHBicicYWR5pFYxzREOmfCT6rZH6JvYVle4OJibOcdYKicvUjdjAlQ/0" mode="widthFix" @tap="$app.goPage('/pages/notice/notice?id=2')"></image>
 			</btnComponent>
-
+		
 		</view>
 
-		<!-- <view class="egg-upgrade" v-if="!spriteInfo.earn" @tap="modal = 'egg_upgrade'">
-			<image src="/static/image/pet/egg_upgrade.png" mode="widthFix"></image>
-		</view> -->
 		<view class="earn-container" @tap="is_settle">
 			<view class="egg flex-set">
 				<view class="num-wrapper position-set">{{spriteInfo.earn}}</view>
@@ -114,7 +143,7 @@
 			</view>
 		</view>
 		
-		<view class="bottom-container">
+		<!-- <view class="bottom-container">
 			<image class="avatarurl" :src="$app.getData('userInfo').avatarurl" mode="aspectFill"></image>
 			<view class="sprite-level">
 				<view class="sprite-level-info">
@@ -146,7 +175,7 @@
 				<view class="row bottom">产能:<text style="color:#EEADCC;">{{spriteInfo.earnPer}}能量/10秒</text></view>
 			</view>
 			
-		</view>
+		</view> -->
 		
 
 		<!-- <modalComponent v-if="modal == 'invit'" title="好友" @closeModal="modal=''">
@@ -299,7 +328,7 @@
 				</view>
 				<view class="flex-set">
 					<view class="btn" style="width: 240rpx;" @tap="open_other_treasure_box(help_friend_id);">
-						<btnComponent type="pink">
+						<btnComponent type="default">
 							<view class="flex-set" style="width: 240upx;height: 80upx; font-size: 24rpx;">花费20灵丹开启</view>
 						</btnComponent>
 					</view>
@@ -345,7 +374,7 @@
 				</scroll-view>
 			</view>
 		</modalComponent>
-
+		
 		<modalComponent v-if="modal == 'tips'" title="提示" @closeModal="modal=''">
 			<view class="tips-modal-container">
 				<view class="text-wrap">
@@ -443,7 +472,7 @@
 					<view class="text"><text style="color: #AAA7A7; font-size: 24rpx;">{{openBoxData.desc?openBoxData.desc:''}}</text></view>
 				</view>
 				<view class="button" @tap="treasure_box();openBoxData = ''">
-					<btnComponent type="pink">
+					<btnComponent type="default">
 						<view class="flex-set" style="width: 240upx;height: 80upx;">确认收到</view>
 					</btnComponent>
 				</view>
@@ -531,7 +560,7 @@
 					<view class="text"><text style="color: #AAA7A7; font-size: 24rpx;">{{openOtherBoxData.desc?openOtherBoxData.desc:''}}</text></view>
 				</view>
 				<view class="button">
-					<btnComponent type="pink">
+					<btnComponent type="default">
 						<button class="btn" open-type="share" data-share="1">
 							<view class="flex-set" style="width: 240upx;height: 80upx;">通知好友</view>
 						</button>
@@ -542,8 +571,7 @@
 		
 		</modalComponent>
 
-		<listModalComponent v-if="modal == 'treasure_box'" title="我的宝箱" headimg="/static/image/pet/box_title_img.png"
-		 @closeModal="modal=''">
+		<listModalComponent v-if="modal == 'treasure_box'" title="我的宝箱" @closeModal="modal=''">
 
 			<view class="box-modal-container">
 				<view class="box-top">
@@ -571,12 +599,12 @@
 							</block>
 							<block v-else>
 								<view class="item-button" v-if="index==0" @tap="open_treasure_box(index)">
-									<btnComponent type="golden">
+									<btnComponent type="success">
 										<view class="flex-set" style="width: 140upx;height: 50upx; font-size: 28rpx;">领取</view>
 									</btnComponent>
 								</view>
 								<view class="item-button" v-if="index!=0">
-									<btnComponent type="palePink">
+									<btnComponent type="default">
 										<button open-type="share" data-share="12" :data-otherparam="'index=' + index">
 											<view class="flex-set" style="width: 140upx;height: 50upx; display: flex; flex-direction: row;">
 												<image style="width: 35rpx; padding-right: 10rpx;" src="/static/image/pet/share.png" mode="widthFix"></image>
@@ -601,6 +629,60 @@
 
 		</listModalComponent>
 
+		<modalComponent v-if="modal == 'handbook'" type="center" title="图鉴" @closeModal="modal=''">
+			<view class="handbook-modal-container">
+				<view class="swiper-left">
+					<image src="/static/image/pet/left.png" mode="widthFix" v-if="handbookLeft" @tap="getHandbookLeft"></image>
+				</view>
+				<swiper @change="swiperCurrentVal" :current="selectStatus" class="handbook-swiper">
+					<block v-for="(item,index) in handbook" :key="index">
+						<swiper-item class="item" v-if="item.image==spriteInfo.sprite_img">
+							<view class="item-name flex-set" v-if="item.name">
+								{{item.name}}
+							</view>
+							<view class="item-image flex-set">
+								<image :src="item.image"></image>
+								<view class="item-text">
+									<view class="item-color"></view>
+									<view class="flex-set item-text-color">使用中</view>
+									<view class="item-color"></view>
+								</view>
+							</view>
+						</swiper-item>
+						<swiper-item v-else-if="spriteInfo.sprite_level>=item.level&&sitem.image!=spriteInfo.sprite_img" class="item">
+							<view class="item-name flex-set" v-if="item.name">
+								{{item.name}}
+							</view>
+							<view class="item-image flex-set">
+								<image :src="item.image"  mode="widthFix"></image>
+								<view class="item-text">
+									<view class="item-color"></view>
+									<view class="flex-set item-text-color" style="color: #FF5174;" @tap="switchImage(item.level)">使用</view>
+									<view class="item-color"></view>
+								</view>
+							</view>
+						</swiper-item>
+						<swiper-item v-else class="item">
+							<view class="item-name flex-set" v-if="item.name">
+								{{item.name}}
+							</view>
+							<view class="item-image flex-set">
+								<image :src="item.shadow_image" mode="widthFix"></image>
+								<view class="item-text">
+									<view class="item-color"></view>
+									<view class="flex-set item-text-color" style="color: #000;">Lv.{{item.level}}解锁</view>
+									<view class="item-color"></view>
+								</view>
+							</view>
+						</swiper-item>
+					</block>
+				</swiper>
+		
+				<view class="swiper-right" @tap="getHandbookRight">
+					<image src="/static/image/pet/right.png" mode="widthFix" v-if="handbookRight"></image>
+				</view>
+			</view>
+		</modalComponent>
 	</view>
 </template>
 
@@ -654,6 +736,10 @@
 				my_help_open_rank: 0,
 				my_help_open_times: 0,
 				treasure_box_times: 0,
+				selectStatus: 0,
+				handbook: [],
+				handbookLeft: false,
+				handbookRight: true,
 			};
 		},
 		onShareAppMessage(e) {
@@ -678,6 +764,56 @@
 			}
 		},
 		methods: {
+			//精灵图鉴
+			handbooklist(){
+				this.modal = "handbook";
+				this.getHandBookList();
+			},
+			getHandBookList() {
+				this.$app.request('sprite/getHandBook', {}, res => {
+					this.handbook = res.data;
+					
+					if (this.selectStatus >= 1) this.handbookLeft = true;
+				})
+			},
+			getHandbookLeft() {
+			
+				this.selectStatus = this.selectStatus - 1
+			},
+			getHandbookRight() {
+			
+				if (this.selectStatus == this.handbook.length - 1) {
+					this.selectStatus = this.selectStatus
+				} else {
+					this.selectStatus = this.selectStatus + 1
+				}
+			},
+			swiperCurrentVal(e) {
+				this.selectStatus = e.detail.current
+			
+				if (this.selectStatus == 0) {
+					this.handbookRight = true;
+					this.handbookLeft = false;
+				} else if (this.selectStatus >= 0 && this.selectStatus == this.handbook.length - 1) {
+					this.handbookLeft = true;
+					this.handbookRight = false;
+				} else {
+					this.handbookRight = true;
+					this.handbookLeft = true;
+				}
+			
+			},
+			//换肤
+			switchImage(level) {
+				this.$app.request('sprite/switchImage', {
+					level: level
+				}, res => {
+					this.$app.toast('换肤成功', 'success')
+					this.modal = '';
+					this.getSpriteInfo();
+				})
+			},
+			
 			//宝箱信息
 			treasure_box() {
 				if (!this.$app.getData('userStar').id) {
@@ -1062,78 +1198,96 @@
 <style lang="scss" scoped>
 	.pet-container {
 		height: 100%;
-		background: url(https://mmbiz.qpic.cn/mmbiz_jpg/CbJC0icY3EzZkic73fibNnibpIvllj1icjrN7XT1X8XQKQpD8qFbzF7OyjcSdw9R8HC72q6ia1pdmCxicua6UB55RX9oA/0) center no-repeat/cover;
+		position: relative;
 
 		.top-row-container {
 			display: flex;
 			align-items: center;
-			justify-content: flex-end;
-			padding: 20upx;
-			color: #aa877d;
-			color: #000;
+			justify-content: space-between;
+			padding: 20upx 20upx;
+			position: relative;
+			z-index: 3;
 
 			.left-wrap {
-				font-size: 20upx;
-				color: #000;
-				margin-left: 10upx;
+				padding: 10rpx 20rpx 10rpx 10rpx;
+				// border-radius: 60rpx 10rpx 10rpx 60rpx;
+				background: url(https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9EGvgQPPkLDsvGOw8k56iceeGMnMiccpDoKJpyIxgBM2qD74jAzIVqgb8v8rQbMykNpGtCOZQFJ21ibA/0);
+				background-size: 100% 100%;
+
+				// background-color: #FFFFFF;
+				font-size: 28upx;
 
 				.row {
 					justify-content: flex-start;
 
 					.coin-img {
-						width: 70upx;
-						height: 70upx;
-						margin-right: 20upx;
+						width: 90upx;
+						height: 90upx;
+						border-radius: 50%;
+						border: 4rpx solid #EEADCC;
 					}
-
-					.count {
-						font-size: 32upx;
-						color: #ff5b5c;
-						justify-content: flex-start;
-
-						.num {
-							font-weight: 700;
+					.row-text{
+						display: flex;
+						flex-direction: row;
+						line-height: 50rpx;
+						font-weight: bold;
+						.text{
+							color: $text-color-5;
 						}
-
-						.num.active {
-							animation: scaleA 0.8s linear;
+						
+						.count {
+							font-size: 28upx;
+							color: $text-color-3;
+							justify-content: flex-start;
+						
+							.num {
+								
+							}
+						
+							.num.active {
+								animation: scaleA 0.8s linear;
+							}
+						
+							.icon {
+								width: 30upx;
+								height: 30upx;
+							}
 						}
-
-						.icon {
-							width: 30upx;
-							height: 30upx;
-						}
+						
 					}
-
+					
 
 				}
 
 				.row.bottom {
-					margin-top: 10upx;
-					background-color: rgba(#FFF, .3);
-					border-radius: 50upx;
-					padding: 5upx 20upx;
+					font-size: 24rpx;
 				}
 
 			}
-
-			.button-wrap {
-				font-size: 24upx;
-				margin: 0 10upx;
-				width: 188upx;
-				height: 74upx;
-				position: relative;
-
-				image {
-					position: absolute;
+			
+			.btn-wrap{
+				flex-direction: column;
+				padding-top: 10rpx;
+				
+				.button-wrap {
+					font-size: 24upx;
+					width: 188upx;
+					height: 74upx;
+					position: relative;
+				
+					image {
+						position: absolute;
+					}
+				
+					.text {
+						position: absolute;
+						z-index: 2;
+					}
+				
 				}
-
-				.text {
-					position: absolute;
-					z-index: 2;
-				}
-
 			}
+			
+			
 
 			.block {
 				display: flex;
@@ -1151,7 +1305,7 @@
 				// 	transition: 0.3s;
 				// }
 
-				.block-text.active {
+				.active {
 					// transform: scale(1.2);
 
 					animation: scaleA 0.8s linear;
@@ -1243,12 +1397,35 @@
 			width: 400upx;
 			height: 300upx;
 		}
+		
+		.qixi{
+			width: 58.6%;
+			position: absolute;
+			top: 0;
+			right: 10%; 
+			z-index: 0;
+			.sprite_bg_upload_img{
+				border-radius: 50%; 
+				opacity: 0.2; 
+				position: absolute;
+				z-index: 2; 
+				width: 96%; 
+				height: 96%; 
+				left: 10rpx; 
+				top: 10rpx;
+			}
+			.sprite_bg_upload_img{
+				border-radius: 50%; 
+				position: absolute;
+				z-index: 1;
+			}
+		}
 
 		.sprite {
 			position: absolute;
 			left: 50%;
 			transform: translateX(-50%);
-			top: 19%;
+			bottom: 5%;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
@@ -1266,101 +1443,71 @@
 			}
 
 			.bounce-article {
-				animation: bounce 4s ease-in-out infinite;
+				// animation: bounce 4s ease-in-out infinite;
 			}
 			
 			.sprite-shengji {
 				width: 200upx;
 				position: absolute;
 				top: 25%;
-				left: 145rpx;
+				left: 165rpx;
 				z-index: 9;
 			}
 
 			.sprite-main {
-				width: 505upx;
+				width: 550upx;
 			}
 
-			.sprite-level {
-				bottom: -60upx;
-				color: #111;
-				font-size: 28upx;
-				text-align: center;
-
-				image {
-					width: 160upx;
-				}
-
-				.text {
-					top: 36upx;
-				}
-			}
-
-			.shadow {
-				height: 40upx;
-				width: 140upx;
-				height: 10upx;
-				margin: auto;
-				border-radius: 50%;
-				background: #fff;
-				box-shadow: 0 0 5upx #fff;
-				animation: shadow 3s ease-in-out infinite;
-			}
-
-			@keyframes shadow {
-
-				0%,
-				100% {
-					transform: scaleX(1);
-				}
-
-				50% {
-					transform: scaleX(0.9);
-				}
-			}
-
-			.progress-wrap {
-				background-color: #FFF;
-				border-radius: 30upx;
-
-				display: flex;
-				align-items: center;
-				padding: 5upx 20upx;
-
-				.lv {
-					font-weight: 700;
-					padding: 5upx 10upx;
-				}
-
-				.progress {
-					border-radius: 30upx;
-					background-color: #ad9b97;
-					width: 195upx;
-					height: 30upx;
-					position: relative;
-					overflow: hidden;
-
-					.progress-bar {
-						background-color: $color_2;
+			.sprite-level{
+				.sprite-level-info{
+					display: flex;
+					flex-direction: row;
+					align-items: center;
+					justify-content: center;
+					
+					.lv {
+						font-weight: 700;
+						padding: 5upx 10upx;
+					}
+					
+					.progress {
 						border-radius: 30upx;
-						height: 100%;
+						background-color: $text-color-12;
+						border: 4upx solid $text-color-2;
+						width: 195upx;
+						height: 30upx;
+						position: relative;
+						overflow: hidden;
+								
+						.progress-bar {
+							background-color: $text-color-3;
+							border-radius: 30upx;
+							height: 100%;
+						}
+								
+						.text {
+							position: absolute;
+							color: #FFF;
+							font-size: 22upx;
+						}
 					}
-
-					.text {
-						position: absolute;
-						color: #FFF;
-						font-size: 22upx;
-					}
+				}	
+				.bottom-tips {
+					width: 320rpx;
+					font-size: 24upx;
+					font-weight: bold;
+					letter-spacing: 2upx;
+					text-align: center;
+					text-decoration: underline;
+					background-color: $text-color-10;
+					border-radius: 20rpx;
+					padding: 2rpx 10rpx;
+					
 				}
+				
+				
 			}
 
-			.bottom-tips {
-				margin-top: 10upx;
-				font-size: 28upx;
-				letter-spacing: 4upx;
-				border-bottom: 2upx solid $text-color-2;
-
-			}
 
 			.skill-container {
 				width: 500upx;
@@ -1405,14 +1552,24 @@
 			}
 		}
 
-		.nav-container {
+		.nav-container-left {
 			position: absolute;
-			right: 6%;
-			top: 15%;
+			left: 2%;
+			bottom: 8%;
 
 			image {
 				margin-bottom: 20upx;
-				width: 100upx;
+				width: 120upx;
+			}
+		}
+		.nav-container-right {
+			position: absolute;
+			right: 4%;
+			top: 20%;
+		
+			image {
+				margin-bottom: 20upx;
+				width: 120upx;
 			}
 		}
 
@@ -1442,7 +1599,7 @@
 		.earn-container {
 			position: absolute;
 			right: 3%;
-			bottom: 16%;
+			bottom: 13%;
 
 			.mountain {
 				width: 150upx;
@@ -1476,8 +1633,8 @@
 					width: 100%;
 					border-radius: 20upx;
 					color: #FFF;
-					background-color: #dcdcdc;
-					border: 4upx solid #aa89bd;
+					background-color: $text-color-12;
+					border: 4upx solid $text-color-2;
 					text-align: center;
 					font-size: 20upx;
 					position: relative;
@@ -1490,7 +1647,7 @@
 						left: 0;
 						right: 0;
 						height: 100%;
-						background-color: #f19ec2;
+						background-color: $text-color-3;
 						z-index: -1;
 					}
 
@@ -1555,7 +1712,7 @@
 			}
 		}
 
-		.bottom-container{
+		/*.bottom-container{
 			width: 100%;
 			height: 160upx;
 			background-color: rgba(255,255,255,0.5);;
@@ -1644,7 +1801,7 @@
 				
 			}
 			
-		}
+		}*/
 		
 		.invit-modal-container {
 			width: 100%;
@@ -2034,7 +2191,7 @@
 				padding-bottom: 20rpx;
 
 				.left {
-					color: #ce797c;
+					color: $text-color-7;
 					font-size: 32rpx;
 				}
 
@@ -2096,6 +2253,78 @@
 				}
 			}
 
+		}
+		
+		.handbook-modal-container {
+			height: 700rpx;
+			display: flex;
+			padding: 0 20rpx;
+			justify-content: space-between;
+			align-items: center;
+		
+			.swiper-left {
+				width: 60rpx;
+				height: 60rpx;
+			}
+		
+			.swiper-right {
+				width: 60rpx;
+				height: 60rpx;
+			}
+		
+			.handbook-swiper {
+				width: 500rpx;
+				height: 700rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+		
+				.item {
+		
+					.item-name {
+						width: 80rpx;
+						height: 172rpx;
+						position: fixed;
+						padding: 0 28rpx;
+						background-repeat: no-repeat;
+						background-size: 100% 100%;
+						background-image: url(https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9GRusOpzBN1KiaAFnN0QUzUonicibteibn8GkP45rKhn4Sicamch9TrXm5Gt3FkRAMTCLMYWGXLWjUWjibA/0);
+					}
+		
+					.item-image {
+						height: 532rpx;
+						margin-top: 25rpx;
+						image{
+							padding: 0 20rpx;
+							margin: 20rpx 0;
+						}
+		
+						.item-text {
+							height: 82rpx;
+							width: 400rpx;
+							position: fixed;
+							bottom: 1%;
+							display: flex;
+							flex-direction: column;
+							align-items: center;
+							justify-content: space-around;
+						}
+		
+						.item-text-color {
+							width: 100%;
+							height: 100%;
+							background: linear-gradient(270deg, rgba(255, 220, 220, 0) 0%, rgba(255, 220, 220, 1) 27%, rgba(255, 220, 220, 1) 64%, rgba(255, 220, 220, 0) 100%);
+						}
+		
+						.item-color {
+							height: 4rpx;
+							width: 400rpx;
+							background: linear-gradient(270deg, rgba(251, 140, 138, 0) 0%, rgba(251, 140, 138, 1) 28%, rgba(251, 140, 138, 1) 64%, rgba(251, 140, 138, 0) 100%);
+						}
+					}
+				}
+			}
+		
 		}
 	}
 </style>

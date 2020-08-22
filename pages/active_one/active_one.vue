@@ -39,11 +39,11 @@
 			<view class="progress-wrap">
 				<view class="title">{{activeInfo.title}}</view>
 				<view class="progress">
-					<progress activeColor="#e02d2d" stroke-width="10" backgroundColor="#f9f9f9" :percent="activeInfo.progress.join_people/activeInfo.target_people*100" />
+					<progress activeColor="#FF5174" stroke-width="10" backgroundColor="#E5DFDC" :percent="activeInfo.progress.join_people/activeInfo.target_people*100" />
 					<text>参与人数{{activeInfo.progress.join_people||0}}</text>
 				</view>
 				<view class="progress">
-					<progress activeColor="#962de0" stroke-width="10" backgroundColor="#f9f9f9" :percent="activeInfo.progress.complete_people/activeInfo.target_people*100" />
+					<progress activeColor="#f4a1bd" stroke-width="10" backgroundColor="#E5DFDC" :percent="activeInfo.progress.complete_people/activeInfo.target_people*100" />
 					<text>完成人数{{activeInfo.progress.complete_people||0}}</text>
 				</view>
 				<view class="bottom-text">
@@ -91,20 +91,20 @@
 					<image class="avatar" :src="star.avatar" mode="aspectFill"></image>
 					<view>为爱解锁应援金活动</view>
 					<block v-if="activeInfo.progress.join_people < activeInfo.target_people">
-						<view class="">已有<text style="color: #F00;">{{activeInfo.progress.join_people}}</text>人参与</view>
+						<view class="">已有<text style="color: #F6AFAF;">{{activeInfo.progress.join_people}}</text>人参与</view>
 					</block>
 					<block v-else>
-						<view class="">已有<text style="color: #007EFF;">{{activeInfo.progress.complete_people}}</text>人完成,还差<text style="color: #F00;">{{activeInfo.target_people-activeInfo.progress.complete_people}}</text>人完成</view>
+						<view class="">已有<text style="color: #F6AFAF;">{{activeInfo.progress.complete_people}}</text>人完成,还差<text style="color: #FF5174;">{{activeInfo.target_people-activeInfo.progress.complete_people}}</text>人完成</view>
 					</block>
 				</view>
 				
 				<view class="progress-wrap">
 					<view class="progress">
-						<progress activeColor="#e02d2d" stroke-width="10" backgroundColor="#f9f9f9" :percent="activeInfo.progress.join_people/activeInfo.target_people*100" />
+						<progress activeColor="#FF5174" stroke-width="10" backgroundColor="#E5DFDC" :percent="activeInfo.progress.join_people/activeInfo.target_people*100" />
 						<text>参与人数{{activeInfo.progress.join_people||0}}</text>
 					</view>
 					<view class="progress">
-						<progress activeColor="#962de0" stroke-width="10" backgroundColor="#f9f9f9" :percent="activeInfo.progress.complete_people/activeInfo.target_people*100" />
+						<progress activeColor="#f4a1bd" stroke-width="10" backgroundColor="#E5DFDC" :percent="activeInfo.progress.complete_people/activeInfo.target_people*100" />
 						<text>完成人数{{activeInfo.progress.complete_people||0}}</text>
 					</view>
 					<view class="bottom-text">
@@ -406,15 +406,16 @@
 <style lang="scss" scoped="">
 	.active_one-container {
 		padding: 20upx;
+		background-color: $text-color-10;
 
 		.progress-wrap {
 			padding: 30upx;
-			color: #666;
 
 			.title {
 				font-size: 30upx;
 				font-weight: 600;
 				padding: 10upx 0;
+				color: $text-color-7;
 			}
 
 			.progress {
@@ -461,7 +462,7 @@
 			margin: 20upx;
 
 			text {
-				background-color: $color_2;
+				background-color: $text-color-8;
 				border-radius: 10upx;
 				color: #FFF;
 				width: 40upx;

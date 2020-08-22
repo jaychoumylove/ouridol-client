@@ -9,24 +9,26 @@
 		},
 		{
 			"path": "pages/index/index",
-			"style": {}
+			"style": {
+				"navigationStyle": "custom"
+			}
 		}, {
 			"path": "pages/user/user",
 			"style": {
-				"navigationBarTitleText": "个人中心"
-
+				"navigationStyle": "custom"
 			}
 		}, {
 			"path": "pages/pet/pet",
 			"style": {
 				"navigationBarTitleText": "精灵",
+				"navigationBarBackgroundColor":"#FFFFFF",
+				"navigationBarTextStyle":"black",
 				"disableScroll": true
 			}
 		}, {
 			"path": "pages/group/group",
 			"style": {
-				"navigationBarTitleText": "偶像圈",
-				"disableScroll": true
+				"navigationStyle": "custom"
 			}
 		},
 		{
@@ -145,6 +147,12 @@
             }
         }
         
+        ,{
+            "path" : "pages/pet/pet_bg/pet_bg",
+            "style": {
+            	"navigationBarTitleText": "精灵背景"
+            }
+        }
     ],
 	// 分包
 	"subPackages": [{
@@ -160,6 +168,7 @@
 			{
 				"path": "star/star",
 				"style": {
+					"navigationStyle": "custom",
 					"disableScroll": true
 				}
 			},
@@ -240,10 +249,12 @@
 		}
 	},
 	"tabBar": {
-		"color": "#b296ad",
-		"selectedColor": "#694491",
-		"backgroundColor": "#efccc8",
-		"borderStyle": "black",
+		"color": "#5F6176",
+		"selectedColor": "#FF5174",
+		"backgroundColor": "#FFFFFF",
+		"borderStyle": "white",
+		"fontSize":"30px",
+		"iconWidth":"30px",
 		"list": [{
 				"pagePath": "pages/index/index",
 				"iconPath": "/static/image/tab/rank.png",
@@ -281,9 +292,9 @@
 		]
 	},
 	"globalStyle": {
-		"navigationBarTextStyle": "black",
+		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "我们的偶像",
-		"navigationBarBackgroundColor": "#efccc8",
+		"navigationBarBackgroundColor": "#F6AFAF",
 		"enablePullDownRefresh": false,
 		"onReachBottomDistance": 100
 

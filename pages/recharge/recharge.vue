@@ -258,13 +258,14 @@
 
 <style lang="scss" scoped>
 	.recharge-container {
-		padding: 40upx;
+		padding: 40upx 0;
 
 		.top-row {
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
 			margin-bottom: 40upx;
+			padding: 0 40upx;
 
 			.user-container {
 				height: 70upx;
@@ -283,6 +284,7 @@
 				.nickname {
 					font-size: 32upx;
 					margin-right: 30upx;
+					color: $text-color-7;
 				}
 			}
 
@@ -316,12 +318,13 @@
 		}
 
 		.count-wrap {
-			background-color: #fac7cc;
+			background-color: $text-color-11;
 			display: flex;
 			justify-content: space-around;
 			align-items: center;
 			line-height: 100upx;
 			position: relative;
+			margin: 0 40upx;
 
 			.top-title {
 				position: relative;
@@ -364,6 +367,7 @@
 			line-height: 1.6;
 			flex-direction: column;
 			border-bottom: 1px dashed #EEE;
+			margin: 0 40upx;
 
 		}
 
@@ -378,13 +382,13 @@
 			display: flex;
 			flex-wrap: wrap;
 			background-color: #FFF;
-			padding: 8upx;
+			margin: 0 30rpx;
 
 			.btn {
-				background-color: #fac7cc;
+				background-color: $text-color-11;
 				width: 200upx;
 				height: 320upx;
-				margin: 8upx;
+				margin: 15upx;
 				position: relative;
 				padding: 8upx;
 				display: flex;
@@ -456,7 +460,7 @@
 					}
 
 					.cur-fee {
-						font-weight: 700;
+						color: $text-color-7;
 					}
 				}
 			}

@@ -2,14 +2,13 @@
 	<view class="active_one-container" v-if="starid">
 
 		<view class="top-container">
-			<image :src="info.banner"
-				 mode="widthFix"></image>
+			<image :src="info.banner" mode="widthFix"></image>
 		</view>
 
 		<view class="active-center-container">
 			<view class="header">
 				<view class="lable">
-					7月福利
+				本月福利
 				</view>
 				<view class="title">
 					为{{$app.getData('userStar').name || '明星'}}完成看视频任务，解锁应援金
@@ -18,8 +17,8 @@
 			<view class="progress-wrap">
 				<view class="bottom-text">
 					<!-- <view>已参与人数：<text style="color:#007EFF;">{{activeInfo.join_people}}</text></view> -->
-					<view>已解锁：<text style="color:#ff0000;">{{reward.done}}元</text></view>
-					<view>正在解锁：<text style="color:#ff5cf7;">{{reward.doing}}元</text></view>
+					<view>已解锁：<text style="color:#FF5174;">{{reward.done}}元</text></view>
+					<view>正在解锁：<text style="color:#FF5174;">{{reward.doing}}元</text></view>
 				</view>
 
 				<!-- 里程碑进度条 -->
@@ -32,22 +31,22 @@
 						<view class="dot" :class="{finished:item.precent==100}">
 							<view class="name">￥{{item.reward}}</view>
 							<view class="value">{{item.step}}天</view>
-·						</view>
+						</view>
 					</view>
 
 
 				</view>
 
 				<view class="bottom-text">
-					<view>目标人数：<text style="color:#007EFF;">{{info.people}}</text></view>
-					<view>参与人数：<text style="color:#ff5cf7;">{{people.join_num}}</text></view>
-					<view>达标人数：<text style="color:#ff5cf7;">{{people.finish_num}}</text></view>
+					<view>目标人数：<text style="color:#FF5174;">{{info.people}}</text></view>
+					<view>参与人数：<text style="color:#F6AFAF;">{{people.join_num}}</text></view>
+					<view>达标人数：<text style="color:#F6AFAF;">{{people.finish_num}}</text></view>
 				</view>
 			</view>
 			
 			<view class="active-container">
 				<view class="lable">
-					你已打卡：<text style="color:#007EFF;">{{my.sup_num}}</text> 天
+					你已打卡：<text style="color:#F6AFAF;">{{my.sup_num}}</text> 天
 				</view>
 				<btnComponent v-if="is_today" type='default' @tap="setCard">
 					<view class="card-action">今日已打卡</view>
@@ -63,7 +62,7 @@
 			</view>
 
 			<view class="notice-container">
-				<view class="article-name">为爱解锁活动说明</view>
+				<view class="article-name"><image style="width: 40rpx;" src="/static/image/star.png" mode="widthFix"></image>为爱解锁活动说明</view>
 
 				<block v-for="(item,index) in info.desc" :key="index">
 					<view class="article-group">
@@ -102,7 +101,7 @@
 			<view class="modal-container flex-set">
 				<view class="top-wrap">
 					<image class="avatar" :src="$app.getData('userStar').head_img_s" mode="aspectFill"></image>
-					<view class="">打卡成功<text style="color: #007EFF;">+1000</text>能量 助力<text style="color: red;">{{$app.getData('userStar').name}}</text>拿第一</view>
+					<view class="">打卡成功<text style="color: #FF5174;">+1000</text>能量 助力<text style="color: red;">{{$app.getData('userStar').name}}</text>拿第一</view>
 					<view class="">你还可以通知后援会来解锁<text style="color: red;">500</text>元应援金</view>
 				</view>
 				<view class="milestone-container">
@@ -522,6 +521,7 @@
 	$color_1: white;
 	.active_one-container {
 		padding: 20upx;
+		background-color: $text-color-10;
 
 		.milestone-wrap {
 			width: 100%;
@@ -559,7 +559,7 @@
 			}
 
 			.dot.finished {
-				background-color: #007EFF;
+				background-color: $text-color-3;
 			}
 
 			.item-box {
@@ -576,7 +576,7 @@
 					.progress-finished {
 						width: 0%;
 						height: 100%;
-						background-color: #007EFF;
+						background-color: $text-color-3;
 					}
 				}
 
@@ -665,15 +665,15 @@
 				justify-content: flex-start;
 				margin: 20upx 0;
 				.lable {
-					padding: 0 20upx;
+					padding: 3rpx 10rpx;
 					display: inline-block;
-					border-top-right-radius: 8upx;
-					border-top-left-radius: 8upx;
-					background-color: #f1b3b0;
-					margin-left: 20upx;
+					background-color: $text-color-3;
+					border-radius: 10rpx;
+					margin-right: 20upx;
 					color: white;
 				}
 				.title {
+					color: $text-color-7;
 					font-size: 30upx;
 					font-weight: 700;
 				}
@@ -686,7 +686,7 @@
 				display: flex;
 				align-items: center;
 				justify-content: space-between;
-				color: #007EFF;
+				color: $text-color-3;
 
 				.left {
 					display: flex;
@@ -733,7 +733,8 @@
 
 			.progress-wrap {
 				padding: 30upx;
-				background-color: #F5EBE6;
+				background-color: #FFFFFF;
+				border-radius: 30rpx;
 
 				// 				.progress {
 				// 					margin: 14upx 0;
@@ -764,7 +765,7 @@
 			
 			.active-container {
 				display: flex;
-				margin: 10upx 0;
+				margin: 20upx 0;
 				justify-content: flex-end;
 				// height: 40upx;
 				line-height: 70upx;
@@ -776,7 +777,7 @@
 				}
 				.card-action {
 					height: 70upx;
-					margin: 0 10upx;
+					margin: 0 20upx;
 					padding: 0 10upx;
 				}
 				.friend {
@@ -785,15 +786,15 @@
 			}
 
 			.notice-container {
-				color: #FFF;
-				background-color: #f1b3b0;
+				background-color: #FFFFFF;
+				border-radius: 30rpx;
 				padding: 10upx 20upx;
 
 				.article-name {
 					text-align: center;
 					font-size: 32upx;
-					font-weight: 700;
-					text-shadow: 0 4upx 6upx rgba(#000, 0.3);
+					font-weight: bold;
+					color: $text-color-8;
 					padding: 5upx 10upx;
 				}
 
@@ -863,10 +864,11 @@
 						padding: 0 40upx;
 						width: 350upx;
 
-						.name {}
+						.name {
+							color: $text-color-7;
+						}
 
 						.card {
-							color: #db7979;
 							font-size: 24upx;
 						}
 
@@ -885,7 +887,7 @@
 						transform: translateY(-50%);
 						border-radius: 50%;
 						color: #FFF;
-						background-color: #b90504;
+						background-color: $text-color-3;
 						font-size: 32upx;
 					}
 				}

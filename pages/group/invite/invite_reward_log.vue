@@ -84,6 +84,7 @@
 			.item {
 				margin: 20upx;
 				background-color: rgba(#FFF, 0.3);
+				border-bottom: 1rpx solid $text-color-10;
 				display: flex;
 				padding: 20upx 40upx;
 				justify-content: space-between;

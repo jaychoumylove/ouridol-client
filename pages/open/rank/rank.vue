@@ -32,14 +32,14 @@
 			<view class="item" v-for="(item,index) in list" :key="index">
 				<image class="img" :src="item.img_url" mode="aspectFill" @tap="goPage('/pages/open/userRank/userRank?oid='+item.id)"></image>
 				<view class="content">
-					<view class="flex-set">
-						<text style="max-width: 150upx;" class='text-overflow'>{{item.star.name}}</text>
+					<view class="text flex-set">
+						<text style="max-width: 150upx; color: #5F6176;" class='text-overflow'>{{item.star.name}}</text>
 						<btnComponent type="css">
 							<view class="flex-set" style="width: 160upx;height: 60upx;" @tap="preSend(item)">助力开屏</view>
 						</btnComponent>
 					</view>
 
-					<view>礼物能量 <text style='color:#F00'>{{item.hot}}</text></view>
+					<view>礼物能量 <text style='color:#FF5174'>{{item.hot}}</text></view>
 				</view>
 			</view>
 
@@ -71,11 +71,11 @@
 				</view>
 				<block v-if="$app.getData('VERSION')!=$app.getData('config').version">
 					<view class="gift flex-set" @tap="$app.goPage('/pages/recharge/recharge')" v-if="$app.chargeSwitch()==0">
-						<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+						<image src="/static/image/user/gift.png" mode="widthFix"></image>
 						<view class="text">购买礼物补充能量</view>
 					</view>
 					<button open-type="contact" class="gift flex-set" v-if="$app.chargeSwitch()==2">
-						<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
+						<image src="/static/image/user/gift.png" mode="widthFix"></image>
 						<view class="text">购买礼物补充能量回复"1"</view>
 					</button>
 				</block>
@@ -89,7 +89,7 @@
 					<image class="avatar" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9HhvlXURtbJbFvRVwdINYhHcI1krgG784vHafRPrqpicP7KKTbav91rJF5ibqKPcPEV5zp3oUhRyicZg/0"
 					 mode=""></image>
 					<view class="title">恭喜获得【能量福袋】</view>
-					<view class="text flex-set">共<text style="color:#F00;">{{sendFudaiInfo.coin}}能量</text>，
+					<view class="text flex-set">共<text style="color:#FF5174;">{{sendFudaiInfo.coin}}能量</text>，
 						<text style="color:#ffaa00;">{{sendFudaiInfo.people}}人</text>瓜分</view>
 					<view class="tips">将福袋分享到不同的群，让更多的人来领取吧</view>
 				</view>
@@ -226,6 +226,8 @@
 <style lang="scss" scoped>
 	.rank-container {
 		padding: 10upx 20upx;
+		background: $text-color-10;
+		height: 100%;
 
 		.fixed-btn {
 			position: fixed;
@@ -297,7 +299,13 @@
 				}
 
 				.content {
-					padding: 10upx;
+					padding-bottom: 25upx;
+					width: 100%;
+					.text{
+						display: flex;
+						justify-content: space-between;
+						padding: 15rpx;
+					}
 				}
 			}
 		}

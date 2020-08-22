@@ -123,6 +123,9 @@
 
 <style lang="scss" scoped>
 	.prop-container {
+		background: $text-color-10;
+		height: 100%;
+		
 		.nodata {
 			margin-top: 30%;
 			color: $text-color-2;
@@ -135,13 +138,14 @@
 		}
 
 		.top-enter-wrapper {
+			background-color: #FFFFFF;
 
 			.explain-wrapper {
 				padding: 10upx 20upx;
 				margin: 20upx;
 				// box-shadow: 0upx 2upx 4upx rgba(#000, .3);
 				border-radius: 30upx;
-				background-color: rgba(#FFF, .3);
+				background-color: #FFFFFF;
 				justify-content: space-around;
 
 				text {
@@ -160,8 +164,9 @@
 		// 列表
 		.list-item {
 			padding: 10upx 20upx;
-			background-color: rgba(#FFF, .3);
-			margin: 20upx 0;
+			background-color: #FFFFFF;
+			border-bottom: 1rpx solid $text-color-10;
+			margin: 10upx 0;
 
 			.row {
 				padding: 10upx 20upx;

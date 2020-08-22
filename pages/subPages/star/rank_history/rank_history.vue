@@ -6,35 +6,36 @@
 			<view class="title">{{item.date}}</view>
 			<view class="topthree-container">
 				<view class="content">
-					<image class='crown' src="/static/image/index/ic_huangguang_2.png" mode=""></image>
-					<view class="avatar" style="background-color: #9E9095;">
-						<image class='position-set' :src="item.rankList[1]&&item.rankList[1].avatar" mode="aspectFill"></image>
+					<view class="avatar">
+						<image class='crown' src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9FmibDk8LrMNNib025upafEqqHmueeZYKuacYia8j4bAp6QvdV6QiaEOnbkHrmldib4cWCX0Z9zH9icI0Fw/0" mode="widthFix"></image>
+						<image class='star-img star-img2' :src="item.rankList[1]&&item.rankList[1].avatar" mode="aspectFill"></image>
 					</view>
 					<view class="starname">{{item.rankList[1]&&item.rankList[1].name}}</view>
 					<view class="hot">{{item.rankList[1]&&item.rankList[1].hot}}
-						<image src="/static/image/index/ic_hot.png" mode=""></image>
+						<image src="/static/image/user/b1.png" mode=""></image>
 					</view>
 				</view>
 				<view class="content">
-					<image class='crown' src="/static/image/index/ic_huangguang_1.png" mode=""></image>
-					<view class="avatar" style="background-color: #FFC329;">
-						<image class='position-set' :src="item.rankList[0]&&item.rankList[0].avatar" mode="aspectFill"></image>
+					<view class="avatar">
+						<image class='crown' src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9FmibDk8LrMNNib025upafEqqh1dCicMH9zslul4jQDl03ibeuBmTKsICIS3b0qpO60uiamrNjakg7AUEA/0" mode="widthFix"></image>
+						<image class='star-img star-img1' :src="item.rankList[0]&&item.rankList[0].avatar" mode="aspectFill"></image>
 					</view>
 					<view class="starname">{{item.rankList[0]&&item.rankList[0].name}}</view>
 					<view class="hot">{{item.rankList[0]&&item.rankList[0].hot}}
-						<image src="/static/image/index/ic_hot.png" mode=""></image>
+						<image src="/static/image/user/b1.png" mode=""></image>
 					</view>
 				</view>
 				<view class="content">
-					<image class='crown' src="/static/image/index/ic_huangguang_3.png" mode=""></image>
-					<view class="avatar" style="background-color: #EC7E3D;">
-						<image class='position-set' :src="item.rankList[2]&&item.rankList[2].avatar" mode="aspectFill"></image>
+					<view class="avatar">
+						<image class='crown' src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9FmibDk8LrMNNib025upafEqqboqMXAAOFaApkN81oVuJVgE61VOLl522ZZKMVTMJ4tJhQibIz6GpJNQ/0" mode="widthFix"></image>
+						<image class='star-img star-img3' :src="item.rankList[2]&&item.rankList[2].avatar" mode="aspectFill"></image>
 					</view>
 					<view class="starname">{{item.rankList[2]&&item.rankList[2].name}}</view>
 					<view class="hot">{{item.rankList[2]&&item.rankList[2].hot}}
-						<image src="/static/image/index/ic_hot.png" mode=""></image>
+						<image src="/static/image/user/b1.png" mode=""></image>
 					</view>
 				</view>
+				
 			</view>
 		</view>
 	</view>
@@ -114,11 +115,13 @@
 				padding-top: 18upx;
 				font-weight: 700;
 				font-size: 32upx;
+				color: $text-color-7;
 			}
 
 			.topthree-container {
 				display: flex;
 				justify-content: space-between;
+				margin-top: 50rpx;
 
 				.content {
 					width: 100%;
@@ -128,23 +131,33 @@
 					flex-direction: column;
 					align-items: center;
 
-					.crown {
-						width: 82upx;
-						height: 66upx;
-						margin-top: 60upx;
-					}
-
 					.avatar {
 						width: 160upx;
-						height: 160upx;
 						border-radius: 50%;
 						margin-top: -10upx;
-						position: relative;
+						display: flex;
+						flex-direction: column;
+						justify-content: center;
+						align-items: center;
+						.crown {
+							width: 100rpx;
+						}
+						
+						.star-img1 {
+							border: 10rpx solid #ffde5d;
+						}
+						.star-img2 {
+							border: 10rpx solid #e7f1f6;
+						}
+						.star-img3 {
+							border: 10rpx solid #ead0ba;
+						}
 
-						image {
+						.star-img {
 							border-radius: 50%;
-							width: 140upx;
-							height: 140upx;
+							width: 180upx;
+							height: 180upx;
+							margin-top: -10rpx;
 						}
 					}
 

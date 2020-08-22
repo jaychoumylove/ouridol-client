@@ -1,5 +1,13 @@
 <template>
 	<view class="star-container">
+		<view class="top-bg-container">
+			<view :style="'height:'+header+';width:100%;'"></view>
+			<view class="index-avurl">
+				<image @tap="navigateBack" style="width: 20rpx; position: absolute; left: 20rpx;" mode="widthFix" src="/static/image/back_white.png"></image>
+				偶像圈
+			</view>
+		</view>
+		
 		<guildComponent ref="guildComponent"></guildComponent>
 		<button open-type="getUserInfo" @getuserinfo="getUserInfo">
 			<view v-if="tips" class="tips-container">
@@ -19,6 +27,7 @@
 		data() {
 			return {
 				tips: false,
+				header: '',
 			};
 		},
 		onShareAppMessage() {
@@ -32,6 +41,7 @@
 		},
 		onReady() {},
 		onShow() {
+			this.header = uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			if (!this.$app.getData('userStar').id) this.tips = true
 			this.$refs.guildComponent.load(this.starid)
 		},
@@ -42,6 +52,10 @@
 		},
 
 		methods: {
+			//退回上一层
+			navigateBack() {
+				uni.navigateBack()
+			},
 			getUserInfo(e) {
 				const userInfo = e.detail.userInfo
 				if (userInfo) {
@@ -73,7 +87,26 @@
 	.star-container {
 		position: relative;
 		height: 100%;
-
+		background-image: url(https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9FmibDk8LrMNNib025upafEqqhEUGibBibYVXfsFS2GOqq8XDoBzgib1He6p3OSpwDCuhuMzMxa3yXp4icA/0);
+		background-size: 100% 100%;
+		.top-bg-container {
+			width: 100%;
+			
+			.top-bg{
+				width: 100%; 
+			}
+			
+			.index-avurl {
+				padding: 0 40rpx;
+				height: 80rpx;
+				font-size: 32rpx;
+				color: #FFFFFF;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+		}
+		
 		.tips-container {
 			position: fixed;
 			top: 0;

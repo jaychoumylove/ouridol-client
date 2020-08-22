@@ -15,7 +15,8 @@
 
 				<view class="right-content">
 					<view class="right-item" v-if="item.count">
-						<image :src="item.imgsrc" mode="widthFix"></image>
+						<image v-if="item.type!=0" style="width: 40rpx;" :src="item.imgsrc" mode="widthFix"></image>
+						<image v-if="item.type==0" :src="item.imgsrc" mode="widthFix"></image>
 						<view class="add-count add" v-if="item.count > 0"><text style="color: #F75A73; font-weight: bold;">+{{item.count}}</text></view>
 					</view>
 				</view>
@@ -51,7 +52,8 @@
 							help_user_id: v.help_user_id,
 							help_user_info: v.help_user_info,
 							helped_user_info: v.helped_user_info,
-							create_time: v.create_time.slice(5)
+							create_time: v.create_time.slice(5),
+							type: v.type
 						})
 					}
 
@@ -76,6 +78,7 @@
 			.item {
 				margin: 20upx;
 				background-color: rgba(#FFF, 0.3);
+				border-bottom: 1rpx solid $text-color-10;
 				display: flex;
 				padding: 10upx 40upx;
 				justify-content: space-between;

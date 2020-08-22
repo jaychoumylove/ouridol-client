@@ -37,8 +37,9 @@
 		align-items: center;
 		padding: 6upx 0;
 		background-color: rgba(255, 255, 255, .3);
-		margin: 5upx 0;
+		padding: 20rpx 0;
 		width: 100%;
+		color: $text-color-7;
 
 
 		.left-container {
@@ -49,8 +50,8 @@
 			}
 
 			.avatar {
-				width: 110upx;
-				height: 110upx;
+				width: 90upx;
+				height: 90upx;
 				border-radius: 50%;
 				margin-right: 40upx;
 			}

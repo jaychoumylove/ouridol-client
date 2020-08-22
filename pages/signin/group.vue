@@ -137,6 +137,8 @@
 
 <style lang="scss">
 	.group-container {
+		background: $text-color-10;
+		height: 100%;
 
 		.top-container {
 			margin: 30upx;
@@ -189,12 +191,14 @@
 
 		.mid-container {
 			padding: 20upx 30upx;
-			background-color: #FFF;
-			padding-top: 80upx;
-			margin-top: -80upx;
+			margin-top: -20upx;
 
 			.top-wrap {
 				justify-content: space-between;
+				background-color: #FFFFFF;
+				border-top-left-radius: 20rpx;
+				border-top-right-radius: 20rpx;
+				padding: 30rpx 20rpx 0 20rpx;
 
 				.left {
 					.t {
@@ -209,8 +213,13 @@
 			}
 
 			.list-container {
+				background-color: #FFFFFF;
+				border-bottom-left-radius: 20rpx;
+				border-bottom-right-radius: 20rpx;
+				padding: 0 20rpx;
+
 				.item {
-					padding: 20upx 0;
+					padding: 20upx 20rpx;
 					border-bottom: 1upx solid #EEE;
 
 					.top {

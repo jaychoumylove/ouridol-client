@@ -239,6 +239,7 @@
 
 <style lang="scss" scoped>
 	.buy-container {
+		height: 100%;
 		
 		.top-enter-wrapper {
 		
@@ -265,6 +266,7 @@
 		.list-item {
 			padding: 10upx 20upx;
 			background-color: rgba(#FFF, .3);
+			border-bottom: 1rpx solid $text-color-10;
 			margin: 20upx 0;
 
 			.row {

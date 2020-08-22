@@ -2,9 +2,10 @@
 	<view class="container">
 		<!-- 列表 -->
 		<view class="list-wrapper">
-			<view class="item" :class="{one:index==0,two:index==1,three:index==2}" v-for="(item,index) in userRank" :key="index">
+			<view class="item" v-for="(item,index) in userRank" :key="index">
 				<view class="rank-num">
-					<view>{{index+1}}</view>
+					<image v-if="index<3" :src="'/static/image/guild/'+(index+1)+'.png'" mode="widthFix"></image>
+					<view v-else>{{index+1}}</view>
 				</view>
 				<view class='avatar'>
 					<image :src="item.user.avatarurl" mode="aspectFill"></image>
@@ -59,22 +60,32 @@
 <style lang="scss" scoped>
 	.container {
 		.list-wrapper {
+			background: #FFFFFF;
 
 			.item {
 				margin: 20upx 0;
-				height: 130upx;
-				background: url(https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9Hf1Erx2q066sKAsgEzqUsxtR4IyxJscPr234VZVlMPb9Z2TSwvzWYBOMtribqMrLGIUAbJGtyERqA/0) right center no-repeat/contain;
+				height: 100upx;
+				background-color: rgba(#FFF, .3);
+				border-bottom: 1rpx solid $text-color-10;
 				display: flex;
 				align-items: center;
 
 				.rank-num {
-					margin-left: 106upx;
+					margin-left: 40upx;
+					width: 40rpx;
+					display: flex;
+					justify-content: center;
+					
+					image {
+						width: 40upx;
+						min-height: 40upx;
+					}
 				}
 
 				.avatar image {
-					margin-left: 60upx;
-					width: 100upx;
-					height: 100upx;
+					margin-left: 40upx;
+					width: 70upx;
+					height: 70upx;
 					border-radius: 50%;
 				}
 
@@ -82,11 +93,11 @@
 					margin-left: 30upx;
 					width: 250upx;
 					line-height: 44upx;
+					color: $text-color-4;
 
 					.bottom-text {
 						display: flex;
 						align-items: center;
-						color: $color_2;
 					}
 				}
 
@@ -96,22 +107,23 @@
 
 				.count {
 					margin-left: 30upx;
+					color: $text-color-3;
 				}
 
 
 			}
 
-			.item.one {
-				background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2enrl4pe1g30j703n0sk.gif) right center no-repeat/contain;
-			}
+			// .item.one {
+			// 	background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2enrl4pe1g30j703n0sk.gif) right center no-repeat/contain;
+			// }
 
-			.item.two {
-				background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2enrl5aerg30j703ndfn.gif) right center no-repeat/contain;
-			}
+			// .item.two {
+			// 	background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2enrl5aerg30j703ndfn.gif) right center no-repeat/contain;
+			// }
 
-			.item.three {
-				background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2enrl4zd6g30j703ngle.gif) right center no-repeat/contain;
-			}
+			// .item.three {
+			// 	background: url(http://tva1.sinaimg.cn/large/0060lm7Tly1g2enrl4zd6g30j703ngle.gif) right center no-repeat/contain;
+			// }
 		}
 
 		.my-wrap {

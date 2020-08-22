@@ -102,6 +102,7 @@
 				display: flex;
 				align-items: center;
 				background-color: rgba(#FFF, 0.3);
+				border-bottom: 1rpx solid $text-color-10;
 				margin: 20upx -30upx;
 				padding: 20upx;
 

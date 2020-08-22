@@ -249,6 +249,7 @@
 <style lang="scss" scoped="">
 	.active_one-container {
 		padding: 20upx;
+		height: 100%;
 
 		.full {
 			position: absolute;

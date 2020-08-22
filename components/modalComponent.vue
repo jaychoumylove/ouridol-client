@@ -2,20 +2,15 @@
 	<view class='container flex-set' :class="{show:show}" @tap="closeModal">
 		<view class="modal-container" :class="[type]" @tap.stop="">
 			<view class="top-wrapper" v-if="headimg!='false'">
-				<image v-if="type == 'send'" src="/static/image/guild/send-modal-bg-1_01.png" mode="widthFix" class="title-bg"></image>
+				<image v-if="type == 'send'" src="/static/image/guild/send-modal-bg-1_01.png" mode="aspectFill" class="title-bg"></image>
 				<view v-if="type == 'default'" class="title-bg linear"></view>
 				<view class="title">{{title}}</view>
-				<image class='center-img' :src="headimg" mode=""></image>
+				<view class="close-btn flex-set iconfont iconclose" @tap="closeModal"></view>
 
 			</view>
 			<view class="content">
 				<slot></slot>
 			</view>
-		</view>
-		<view class="close-btn flex-set iconfont iconclose" @tap="closeModal">
-			<!-- <btnComponent>
-				<image @tap="closeModal" src="/static/image/guild/close-btn.png" mode=""></image>
-			</btnComponent> -->
 		</view>
 	</view>
 </template>
@@ -36,7 +31,7 @@
 				default: '提示'
 			},
 			headimg: {
-				default: "/static/image/guild/hart.png"
+				default: ""
 			},
 			type: {
 				default: 'default'
@@ -77,17 +72,19 @@
 		.modal-container {
 			margin-top: 90upx;
 			width: 600upx;
-			min-height: 730upx;
+			min-height: 780upx;
 			box-shadow: 0 1px 2px rgba(#000, .3);
-			border-radius: 20upx;
-			// background-color: #fdd6cf;
-			background-color: #fff;
+			border-radius: 30upx;
+			background: #FFFFFF;
 			display: flex;
 			flex-direction: column;
 			.top-wrapper {
 				width: 100%;
-				height: 95upx;
+				height: 100upx;
 				position: relative;
+				background: $text-color-8;
+				border-top-left-radius: 30upx;
+				border-top-right-radius: 30upx;
 
 				.title-bg {
 					position: absolute;
@@ -97,18 +94,16 @@
 					border-top-right-radius: 20upx;
 				}
 				
-				.title-bg.linear {
-					
-					background: linear-gradient(to bottom, #e5b4b0, #f6e3df);
-				}
 
 				.title {
-					font-size: 34upx;
+					width: 100%;
+					font-size: 40upx;
+					font-weight: bold;
 					position: absolute;
 					top: 50%;
 					transform: translateY(-50%);
-					left: 30upx;
-					// color: #FFF;
+					text-align: center;
+					color: #FFF;
 				}
 
 				.center-img {
@@ -131,14 +126,42 @@
 
 		}
 
+		// 中心弹出
+		.modal-container.center {
+			width: 600rpx !important;
+			left: 50%;
+			top: 50%;
+			bottom: auto;
+			border-radius: 30upx;
+		}
+		// 中心弹出
+		.modal-container.centers {
+			width: 90% !important;
+			left: 50%;
+			top: 50%;
+			bottom: auto;
+			border-radius: 30upx;
+		}
+		
+		// 中心弹出透明
+		.modal-container.centerNobg {
+			width: 600upx !important;
+			left: 50%;
+			top: 50%;
+			bottom: auto;
+			background-color:transparent;
+			box-shadow:none;
+			border: none;
+		}
 		.close-btn {
 
 			width: 80upx;
 			height: 80upx;
-			margin-top: 10upx;
+			position: absolute;
+			top: 10%;
+			right: 5%;
 			z-index: 10;
 			border-radius: 50%;
-			background-color: rgba(0, 0, 0, .3);
 			color: #FFF;
 			font-size: 45upx;
 		}

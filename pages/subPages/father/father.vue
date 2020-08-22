@@ -17,7 +17,7 @@
 					<image src="/static/image/guild/ft-1.png" mode="widthFix"></image> 徒弟人数：{{sonTotal}}
 				</view>
 				<view class="row-wrapper flex-set s-f">
-					<image src="/static/image/guild/ft-2.png" mode="widthFix"></image> 今日收益：{{todayTotal}}
+					<image src="/static/image/guild/ft-4.png" mode="widthFix"></image> 今日收益：{{todayTotal}}
 				</view>
 			</view>
 			<view class="text-wrapper btn">
@@ -178,11 +178,15 @@
 
 <style lang="scss" scoped>
 	.father-container {
+		height: 100%;
+		background-color: $text-color-10;
+		
 		.top-container {
 			padding: 40upx;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
+			background-color: #FFFFFF;
 
 			.avatar {
 				position: relative;
@@ -247,8 +251,8 @@
 				display: flex;
 				align-items: center;
 				padding: 15upx 0;
-				background-color: rgba(255, 255, 255, .3);
-				margin: 10upx 0;
+				border-bottom: 1rpx solid $text-color-10;
+				background-color: #FFFFFF;
 
 				.rank-num {
 					width: 90upx;

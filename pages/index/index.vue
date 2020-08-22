@@ -1,6 +1,25 @@
 <template>
 	<view class="index-container">
+		<view class="top-bg-container">
+			<image class="top-bg" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9FmibDk8LrMNNib025upafEqqmMpRVFe409FmCYYzia23unEt9A9ic2hzMiawbwPyeOlvnJb85ux5UYqUw/0" mode="widthFix"></image>
+			<view :style="'height:'+header+';width:100%;'"></view>
+			<view class="index-avurl">
+				爱豆明星排行榜
+			</view>
+			
+			<view class="top-banner">
+				<bannerComponent :bannerList="bannerList" :sList="sList" :muti="muti" bannerHeight="280"></bannerComponent>
+			</view>
+			
+		</view>
+		
+
 		<view class="top-tab-container">
+			<view class="right-search">
+				<input :class="{show:!searchHide}" type="text" :value="keywords" @input="searchInput" placeholder="搜索爱豆名字"
+				 placeholder-class="placeholder-style" placeholder-style="color:#8181A7; font-size: 24rpx " />
+				<view class="iconfont flex-set iconfangdajing"></view>
+			</view>
 			<view class="left-tab-group">
 				<view class="tab-item" :class="{active:rankField == 'week_hot'}" @tap="changeField('week_hot');getSunday()">周榜</view>
 				<view class="tab-item" v-if="$app.getData('config').show_month != 0" :class="{active:rankField == 'month_hot'}"
@@ -8,57 +27,54 @@
 				<view v-if="$app.getData('config').version != $app.getData('VERSION')" class="tab-item" @tap="$app.goPage('/pages/open/rank/rank')">开屏备选</view>
 				<!-- <view class="tab-item" :class="{active:sign == 2}" @tap="changeSign(2)">创造营</view> -->
 			</view>
-			<view class="right-search">
-				<input :class="{show:!searchHide}" type="text" :value="keywords" @input="searchInput" placeholder="搜索爱豆名字"
-				 placeholder-class="placeholder-style" placeholder-style="color:#FFF;" />
-				<view class="iconfont flex-set" :class="[searchHide?'iconfangdajing':'iconclose']" @tap="searchToggle()"></view>
-			</view>
 		</view>
-		<bannerComponent :bannerList="bannerList" :sList="sList" :muti="muti" bannerHeight="280"></bannerComponent>
-
+		
 		<view class="middle-text-container">
-			<view class="" @tap="$app.goPage('/pages/subPages/star/rank_history/rank_history?rankField='+rankField)">往期榜单</view>
-			<view class="" style='font-size: 24upx;'>本{{rankField=='week_hot'?'周':'月'}}截止：{{cutOffDate}}23:59</view>
-			<view class="rule" @tap="$app.goPage('/pages/notice/notice?id=1')">打榜说明</view>
+			<view class="past-rank" @tap="$app.goPage('/pages/subPages/star/rank_history/rank_history?rankField='+rankField)">
+				往期榜单
+				<image style="width: 30rpx;" src="/static/image/xiajiantou.png" mode="widthFix"></image>
+			</view>
+			<!-- <view class="" style='font-size: 24upx;'>本{{rankField=='week_hot'?'周':'月'}}截止：{{cutOffDate}}23:59</view> -->
+			<view class="rule" @tap="$app.goPage('/pages/notice/notice?id=1')">规则</view>
 		</view>
 		<view class="topthree-container" v-if="!keywords">
-			<view class="content" @tap="goGroup(rankList[1]&&rankList[1].starid)">
-				<image class='crown' src="/static/image/index/ic_huangguang_2.png" mode=""></image>
-				<view class="avatar" style="background-color: #9E9095;">
-					<image class='position-set' :src="rankList[1]&&rankList[1].avatar" mode="aspectFill"></image>
+			<view class="content" style="margin-top: 50rpx;" @tap="goGroup(rankList[1]&&rankList[1].starid)">
+				<view class="avatar avatar2">
+					<image class='crown' src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9FmibDk8LrMNNib025upafEqqHmueeZYKuacYia8j4bAp6QvdV6QiaEOnbkHrmldib4cWCX0Z9zH9icI0Fw/0" mode="widthFix"></image>
+					<image class='star-img' :src="rankList[1]&&rankList[1].avatar" mode="aspectFill"></image>
 				</view>
 				<view class="starname">{{rankList[1]&&rankList[1].name}}</view>
 				<view class="hot">{{rankList[1]&&rankList[1].hot||0}}
-					<image src="/static/image/index/ic_hot.png" mode=""></image>
+					<image src="/static/image/user/b1.png" mode=""></image>
 				</view>
 				<btnComponent type="default">
-					<view class="flex-set" style="width: 130upx;height: 60upx;">打榜</view>
+					<view class="flex-set" style="width: 130rpx;height: 55rpx;">打榜</view>
 				</btnComponent>
 			</view>
-			<view class="content" @tap="goGroup(rankList[0]&&rankList[0].starid)">
-				<image class='crown' src="/static/image/index/ic_huangguang_1.png" mode=""></image>
-				<view class="avatar" style="background-color: #FFC329;">
-					<image class='position-set' :src="rankList[0]&&rankList[0].avatar" mode="aspectFill"></image>
+			<view class="content" style="width: 250rpx;" @tap="goGroup(rankList[0]&&rankList[0].starid)">
+				<view class="avatar avatar1">
+					<image class='crown' src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9FmibDk8LrMNNib025upafEqqh1dCicMH9zslul4jQDl03ibeuBmTKsICIS3b0qpO60uiamrNjakg7AUEA/0" mode="widthFix"></image>
+					<image class='star-img' :src="rankList[0]&&rankList[0].avatar" mode="aspectFill"></image>
 				</view>
 				<view class="starname">{{rankList[0]&&rankList[0].name}}</view>
 				<view class="hot">{{rankList[0]&&rankList[0].hot||0}}
-					<image src="/static/image/index/ic_hot.png" mode=""></image>
+					<image src="/static/image/user/b1.png" mode=""></image>
 				</view>
 				<btnComponent type="default">
-					<view class="flex-set" style="width: 130upx;height: 60upx;">打榜</view>
+					<view class="flex-set" style="width: 130rpx;height: 55rpx;">打榜</view>
 				</btnComponent>
 			</view>
-			<view class="content" @tap="goGroup(rankList[2]&&rankList[2].starid)">
-				<image class='crown' src="/static/image/index/ic_huangguang_3.png" mode=""></image>
-				<view class="avatar" style="background-color: #EC7E3D;">
-					<image class='position-set' :src="rankList[2]&&rankList[2].avatar" mode="aspectFill"></image>
+			<view class="content" style="margin-top: 80rpx;" @tap="goGroup(rankList[2]&&rankList[2].starid)">
+				<view class="avatar avatar3">
+					<image class='crown' src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9FmibDk8LrMNNib025upafEqqboqMXAAOFaApkN81oVuJVgE61VOLl522ZZKMVTMJ4tJhQibIz6GpJNQ/0" mode="widthFix"></image>
+					<image class='star-img' :src="rankList[2]&&rankList[2].avatar" mode="aspectFill"></image>
 				</view>
 				<view class="starname">{{rankList[2]&&rankList[2].name}}</view>
 				<view class="hot">{{rankList[2]&&rankList[2].hot||0}}
-					<image src="/static/image/index/ic_hot.png" mode=""></image>
+					<image src="/static/image/user/b1.png" mode=""></image>
 				</view>
 				<btnComponent type="default">
-					<view class="flex-set" style="width: 130upx;height: 60upx;">打榜</view>
+					<view class="flex-set" style="width: 130rpx;height: 55rpx;">打榜</view>
 				</btnComponent>
 			</view>
 		</view>
@@ -72,7 +88,7 @@
 							<view class="star-name">{{item.name}}</view>
 							<view class="bottom-text">
 								<view class="hot-count">{{item.hot}}</view>
-								<image class="icon-heart" src="/static/image/index/ic_hot.png" mode=""></image>
+								<image class="icon-heart" src="/static/image/user/b1.png" mode=""></image>
 							</view>
 						</view>
 					</template>
@@ -80,7 +96,7 @@
 					<template v-slot:right-container>
 						<view class="right-container">
 							<btnComponent type="default">
-								<view class="flex-set" style="width: 130upx;height: 60upx;">打榜</view>
+								<view class="flex-set" style="width: 130rpx;height: 55rpx;">打榜</view>
 							</btnComponent>
 						</view>
 					</template>
@@ -160,6 +176,7 @@
 		},
 		data() {
 			return {
+				header: '',
 				modal: 'indexBanner',
 				showBottomLoading: true,
 				requestCount: 1,
@@ -200,6 +217,7 @@
 		onShow() {
 			this.page = 1
 			this.keywords = ''
+			this.header = uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			this.getRankList()
 			this.getBannerList()
 		},
@@ -357,39 +375,98 @@
 
 <style lang="scss" scoped>
 	.index-container {
-
-
-		padding: 90upx 20upx 0;
 		/* #ifdef H5 */
 		margin-bottom: 100upx;
 
 		/* #endif */
+		.top-bg-container {
+			width: 100%;
+			position: relative;
+			z-index: 1;
+			.top-bg{
+				width: 100%; 
+				position: absolute; 
+				z-index: 1;
+			}
+			
+			.index-avurl {
+				padding: 0 40rpx;
+				height: 80rpx;
+				font-size: 32rpx;
+				color: #FFFFFF;
+				display: flex;
+				align-items: center;
+				margin-bottom: 60rpx;
+				position: relative;
+				z-index: 2;
+			}
+			
+			.top-banner{
+				padding: 0 40rpx;
+				position: relative; 
+				z-index: 2;
+			}
+		}
+		
 		.top-tab-container {
-			height: 70upx;
 			color: $text-color-2;
 			display: flex;
-			justify-content: space-between;
+			flex-direction: column;
 			align-items: center;
-			position: fixed;
 			width: 100%;
-			left: 0;
-			margin-top: -90upx;
 			z-index: 6;
 			padding: 0 20upx;
 			background-color: $text-color-1;
+			
+			.right-search {
+				position: relative;
+				overflow: hidden;
+				border-radius: 30upx;
+				color: #FFFFFF;
+				padding: 40rpx 0rpx 20rpx 0rpx;
+			
+				input {
+					background: $text-color-11;
+					color: $text-color-2;
+					border-radius: 30upx;
+					width: 600rpx;
+					height: 50rpx;
+					padding: 0rpx 0rpx 0rpx 80rpx;
+					transform: translateX(100%);
+					transition: transform .3s ease;
+				}
+			
+				input.show {
+					transform: translateX(0);
+				}
+			
+				.iconfont {
+					width: 35upx;
+					height: 35upx;
+					font-size: 35upx;
+					position: absolute;
+					top: 58%;
+					transform: translateY(-50%);
+					left: 30rpx;
+					z-index: 1;
+					border-radius: 30upx;
+				}
+			
+			
+			}
 
 			.left-tab-group {
-				font-size: 26upx;
+				font-size: 28upx;
 				display: flex;
 
 				.tab-item {
-					margin-left: 10upx;
-					margin-right: 30upx;
+					padding: 0 30rpx;
 					position: relative;
 				}
 
 				.tab-item.active {
-					font-size: 28upx;
+					font-size: 30upx;
+					color: $text-color-3 !important;
 				}
 
 				.tab-item.active::before {
@@ -401,59 +478,29 @@
 					bottom: -10upx;
 					left: 50%;
 					transform: translateX(-50%);
-					background-color: $text-color-2;
+					background-color: $text-color-3;
 
 				}
 			}
 
-			.right-search {
-				margin: 0 10upx;
-				position: relative;
-				overflow: hidden;
-				border-radius: 30upx;
-				color: #FFF;
-
-				input {
-					background-color: $color_3;
-					border-radius: 30upx;
-					width: 300upx;
-					height: 54upx;
-					padding: 0 20upx;
-					transform: translateX(100%);
-					transition: transform .3s ease;
-				}
-
-				input.show {
-					transform: translateX(0);
-				}
-
-				.iconfont {
-					width: 54upx;
-					height: 54upx;
-					font-size: 40upx;
-					position: absolute;
-					top: 50%;
-					transform: translateY(-50%);
-					right: 0;
-					background-color: $color_3;
-
-					z-index: 1;
-					border-radius: 30upx;
-				}
-
-
-			}
 		}
 
 		.middle-text-container {
 			display: flex;
 			justify-content: space-between;
-			color: $color_2;
 			align-items: center;
 			height: 96upx;
+			padding: 0 20rpx;
 
 			view {
 				padding: 0 10upx;
+			}
+			.past-rank{
+				color: $text-color-7;
+			}
+			
+			.rule{
+				color: #ccc;
 			}
 
 			.rule::after {
@@ -467,34 +514,67 @@
 			height: 420upx;
 			display: flex;
 			justify-content: space-between;
+			color: $text-color-7;
+			margin-top: -60rpx;
+			padding: 0 20rpx;
 
 			.content {
 				width: 224upx;
 				height: 100%;
-				background-color: rgba($color_2, .3);
 				border-radius: 10upx;
 				display: flex;
 				flex-direction: column;
 				align-items: center;
 
-				.crown {
-					width: 82upx;
-					height: 66upx;
-					margin-top: 20upx;
+				.avatar1 {
+					width: 190upx;
+					
+					.crown {
+						width: 100rpx;
+					}
+					.star-img {
+						border-radius: 50%;
+						width: 180upx;
+						height: 180upx;
+						border: 10rpx solid #ffde5d;
+						margin-top: -10rpx;
+					}
+				}
+				.avatar2 {
+					width: 160upx;
+					
+					.crown {
+						width: 80rpx;
+					}
+					.star-img {
+						border-radius: 50%;
+						width: 150upx;
+						height: 150upx;
+						border: 8rpx solid #e7f1f6;
+						margin-top: -10rpx;
+					}
+				}
+				.avatar3 {
+					width: 140upx;
+					.crown {
+						width: 60rpx;
+					}
+					.star-img {
+						border-radius: 50%;
+						width: 130upx;
+						height: 130upx;
+						border: 6rpx solid #ead0ba;
+						margin-top: -5rpx;
+					}
 				}
 
 				.avatar {
-					width: 160upx;
-					height: 160upx;
 					border-radius: 50%;
 					margin-top: -10upx;
-					position: relative;
-
-					image {
-						border-radius: 50%;
-						width: 140upx;
-						height: 140upx;
-					}
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
 				}
 
 				.starname {
@@ -506,7 +586,7 @@
 					margin-bottom: 10upx;
 					display: flex;
 					align-items: center;
-					color: $text-color-2;
+					color: $text-color-6;
 
 					image {
 						width: 30upx;
@@ -526,11 +606,10 @@
 		}
 
 		.rank-list-container {
-			margin-top: 20upx;
-			margin-left: -20upx;
-			margin-right: -20upx;
+			margin-top: 20rpx;
 
 			.rank-list-item {
+				border-bottom: 1rpx solid $text-color-10;
 
 				.left-container {
 					line-height: 44upx;
@@ -540,7 +619,7 @@
 						align-items: center;
 
 						.hot-count {
-							color: $color_2;
+							color: $text-color-6;
 							margin-right: 4upx;
 						}
 

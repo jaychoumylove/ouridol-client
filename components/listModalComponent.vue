@@ -32,7 +32,7 @@
 				default: '提示'
 			},
 			headimg: {
-				default: "/static/image/guild/hart.png"
+				default: ""
 			},
 			type: {
 				default: 'default'
@@ -72,7 +72,7 @@
 			box-shadow: 0 -2px 4px rgba(#000, .5);
 			border-top-left-radius: 40upx;
 			border-top-right-radius: 40upx;
-			background-color: #FCF4F5;
+			background-color: $text-color-10;
 
 			position: absolute;
 			bottom: var(--window-bottom);
@@ -86,7 +86,7 @@
 
 				width: 80upx;
 				height: 80upx;
-				color: #999;
+				color: #FFFFFF;
 				font-size: 45upx;
 				z-index: 9;
 			}
@@ -106,7 +106,7 @@
 				
 				.title-bg.linear {
 					
-					background: linear-gradient(to bottom, #e5b4b0, #f6e3df);
+					background: $text-color-8;
 				}
 			
 				.title {
@@ -115,7 +115,7 @@
 					top: 50%;
 					transform: translateY(-50%);
 					left: 30upx;
-					// color: #FFF;
+					color: #FFF;
 				}
 			
 				.center-img {

@@ -89,12 +89,17 @@
 
 			.item {
 				margin: 20upx;
-				background-color: rgba(#FFF, 0.3);
+				border-bottom: 1rpx solid $text-color-10;
+				color: $text-color-5;
 				display: flex;
 				padding: 20upx 40upx;
 				justify-content: space-between;
 				align-items: center;
 				border-radius: 60upx;
+				
+				.add{
+					color: $text-color-3;
+				}
 
 				.left-content {
 					display: flex;
@@ -110,7 +115,6 @@
 
 						.bottom {
 							font-size: 24upx;
-							color: #888;
 						}
 					}
 				}

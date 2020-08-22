@@ -1,37 +1,48 @@
 <template>
 	<view class="container">
+		<view class="top-bg-container">
+			<image class="top-bg" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9FmibDk8LrMNNib025upafEqqx2EpvWdqIZPHszJZ3icwCtuSMIIfowtXqV1x5qfUfrJ6Du1IxNMrhAw/0" mode="widthFix"></image>
+			<view :style="'height:'+header+';width:100%;'"></view>
+			<view class="index-avurl">
+				个人中心
+			</view>
+		</view>
 		<view class="top-content-container">
 			<view class="row userinfo">
-
-				<button open-type="getUserInfo" @getuserinfo="getUserInfo">
-					<view class="avatar">
-						<image :src="userInfo.avatarurl" mode="aspectFill"></image>
-						<view class="tips">点击获取</view>
-					</view>
-				</button>
+				<view class="get_user_info">
+					<button open-type="getUserInfo" @getuserinfo="getUserInfo">
+						<view class="avatar">
+							<image :src="userInfo.avatarurl" mode="aspectFill"></image>
+							<view class="tips">点击获取</view>
+						</view>
+					</button>
+				</view>
+				
 				<view class="info-content">
 					<view class="item-line top">
 						<view class="username">{{userInfo.nickname}}</view>
 						<!-- <image class='vip' src="/static/image/user/h2-1.png" mode=""></image>
 						<view class="vip-expire">(2019年6月18日到期)</view> -->
-						<view class="id-content flex-set" v-if="userInfo.id" @tap="$app.copy(userInfo.id*1234)">ID:{{userInfo.id*1234}}</view>
+						<view class="id-content flex-set" v-if="userStar.id" @tap="$app.goPage('/pages/group/group')">{{userStar.name}}</view>
+						<view class="id-content flex-set" style="background-color: #FF5174; color: #FFFFFF;" v-if="$app.getData('userInfo').type==1">管理员</view>
+						<!-- <view class="id-content flex-set" v-if="userInfo.id" @tap="$app.copy(userInfo.id*1234)">ID:{{userInfo.id*1234}}</view> -->
 					</view>
-					<view class="item-line middle">
-						<view class="mystar flex-set" v-if="userStar.id" @tap="$app.goPage('/pages/group/group')">{{userStar.name}}偶像圈</view>
-						<view class="mystar flex-set" style="background-color: #415236;" v-if="userStar.id" @tap="$app.goPage('/pages/subPages/fanclub_list/fanclub_list')">
-							<image src="/static/image/user/s8.png" style="width: 30upx;height: 30upx;" mode="widthFix"></image>
-							后援会
+					<view class="item-line">
+						<view class="flex-set" v-if="userInfo.id" @tap="$app.copy(userInfo.id*1234)">
+							<text style="font-weight: bold; padding-right: 10rpx;">ID:{{userInfo.id*1234}}</text> 复制
 						</view>
-						<view class="mystar flex-set" style="background-color: #67458F;" v-if="$app.getData('userInfo').type==1">
-							管理员
-						</view>
-
-						<!-- <view class="fan-level">
-							<image src="/static/image/user/h1-2.png" mode=""></image>
-							<view class="fan-text">高积分</view>
-						</view> -->
+					
 					</view>
-					<!-- <view class="item-line bottom">"江城纯色美"</view> -->
+					<view class="item-line">
+						<view class="progress">
+							<view class="progress-bar" :style="{width:userLevel.count / userLevel.next_count * 100 + '%'}"></view>
+						</view>
+					
+					</view>
+					<view class="item-line tips" @tap="$app.preImg(levelImg)">
+						<view>粉丝等级Lv.{{userLevel.level?userLevel.level:1}}</view>
+						<view>还差{{userGap}}人气升级</view> 
+					</view>
 				</view>
 			</view>
 
@@ -41,22 +52,43 @@
 				<view class="item-content-top">
 					<image src="/static/image/user/b1.png" mode="aspectFit"></image>
 					<view class="num">{{userCurrency.coin}}</view>
+					<block v-if="$app.getData('VERSION')!=$app.getData('config').version && $app.getData('platform')!='MP-QQ'">
+						<view v-if="$app.chargeSwitch()==0" @tap="$app.goPage('/pages/recharge/recharge')">
+							<image style="width: 30rpx;" src="/static/image/user/add.png" mode="widthFix"></image>
+						</view>
+						<button open-type="contact" :session-from="$app.getData('userInfo').id" v-else-if="$app.chargeSwitch()==2">
+							<image style="width: 30rpx;" src="/static/image/user/add.png" mode="widthFix"></image>
+						</button>
+					</block>
 				</view>
-				<view class="item-content-bottom">能量</view>
 			</view>
 			<view class="item-content flex-set">
 				<view class="item-content-top">
 					<image src="/static/image/user/b2.png" mode="aspectFit"></image>
 					<view class="num">{{userCurrency.stone}}</view>
+					<block v-if="$app.getData('VERSION')!=$app.getData('config').version && $app.getData('platform')!='MP-QQ'">
+						<view v-if="$app.chargeSwitch()==0" @tap="$app.goPage('/pages/recharge/recharge')">
+							<image style="width: 30rpx;" src="/static/image/user/add.png" mode="widthFix"></image>
+						</view>
+						<button open-type="contact" :session-from="$app.getData('userInfo').id" v-else-if="$app.chargeSwitch()==2">
+							<image style="width: 30rpx;" src="/static/image/user/add.png" mode="widthFix"></image>
+						</button>
+					</block>
 				</view>
-				<view class="item-content-bottom">灵丹</view>
 			</view>
 			<view class="item-content flex-set">
 				<view class="item-content-top">
-					<image src="/static/image/user/b3.png" mode="aspectFit"></image>
-					<view class="num">{{userCurrency.trumpet}}</view>
+					<image src="/static/image/user/gift.png" mode="aspectFit"></image>
+					<view class="num">{{userCurrency.item_count}}</view>
+					<block v-if="$app.getData('VERSION')!=$app.getData('config').version && $app.getData('platform')!='MP-QQ'">
+						<view v-if="$app.chargeSwitch()==0" @tap="$app.goPage('/pages/recharge/recharge')">
+							<image style="width: 30rpx;" src="/static/image/user/add.png" mode="widthFix"></image>
+						</view>
+						<button open-type="contact" :session-from="$app.getData('userInfo').id" v-else-if="$app.chargeSwitch()==2">
+							<image style="width: 30rpx;" src="/static/image/user/add.png" mode="widthFix"></image>
+						</button>
+					</block>
 				</view>
-				<view class="item-content-bottom">喇叭</view>
 			</view>
 			<!-- <view class="item-content flex-set" @tap="$app.toast('敬请期待')">
 					<view class="item-content-top">
@@ -67,53 +99,85 @@
 				</view> -->
 		</view>
 				
-		<view class="item-wrap" @tap="$app.preImg(levelImg)">
+		<!-- <view class="item-wrap" @tap="$app.preImg(levelImg)">
 			<view class="left-wrap">
-				<!-- <image class="icon" :src="`/static/image/icon/level/lv${userLevel}.png`" mode="aspectFill"></image> -->
 				<view class="tips flex-set">粉丝等级<view class="highlight">LV{{userLevel}}</view>，再贡献 <view class="highlight">{{userGap}}</view> 人气可升至下一级</view>
+			</view>
+		</view> -->
+		
+		<view class="user-center">
+			<view class="func-list">
+		
+				<block v-if="$app.getData('VERSION')!=$app.getData('config').version && $app.getData('platform')!='MP-QQ'">
+					<view class="func-item" v-if="$app.chargeSwitch()==0" @tap="$app.goPage('/pages/recharge/recharge')">
+		
+						<btnComponent>
+							<view class="btn-wrap">
+								<image src="/static/image/user/r7.png" mode="aspectFit"></image>
+							</view>
+						</btnComponent>
+		
+						<view class="text">获取能量</view>
+		
+					</view>
+					<button class="func-item" open-type="contact" :session-from="$app.getData('userInfo').id" v-else-if="$app.chargeSwitch()==2">
+					
+						<btnComponent>
+							<view class="btn-wrap">
+								<image src="/static/image/user/r7.png" mode="aspectFit"></image>
+							</view>
+						</btnComponent>
+					
+						<view class="text">回复“1”获取</view>
+					
+					</button>
+				</block>
+				<view class="func-item" v-if="$app.getData('config').version != $app.getData('VERSION')" @tap="$app.goPage('/pages/gift_package/gift_package')">
+				
+					<btnComponent>
+						<view class="btn-wrap">
+							<image src="/static/image/user/r8.png" mode="aspectFit"></image>
+						</view>
+					</btnComponent>
+				
+					<view class="text">礼物背包</view>
+				
+				</view>
+				<view class="func-item" v-if="$app.getData('config').version != $app.getData('VERSION')&&$app.getData('platform')=='MP-WEIXIN'"
+			 @tap="$app.goPage('/pages/prop/prop')">
+		
+					<btnComponent>
+						<view class="btn-wrap">
+							<image src="/static/image/user/r6.png" mode="aspectFit"></image>
+						</view>
+					</btnComponent>
+		
+					<view class="text">我的道具</view>
+		
+				</view>
+				<view class="func-item" @tap="$app.goPage('/pages/subPages/task/task')">
+		
+					<btnComponent>
+						<view class="btn-wrap">
+							<image src="/static/image/user/r2.png" mode="aspectFit"></image>
+						</view>
+					</btnComponent>
+		
+					<view class="text">每日任务</view>
+		
+				</view>
+				
 			</view>
 		</view>
 		
 		<view class="function-container-list">
-			<view class="list-item red" @tap="$app.goPage('/pages/recharge/recharge')" v-if="$app.getData('config').version != $app.getData('VERSION') && $app.chargeSwitch()==0">
+			<view class="list-item" v-if="userStar.id" @tap="$app.goPage('/pages/subPages/fanclub_list/fanclub_list')">
 				<view class="left-wrap">
-					<image src="/static/image/guild/gift/gift.png" mode="widthFix"></image>
-					<view class="text">购买礼物给爱豆打榜</view>
+					<image src="/static/image/user/s1.png" mode="widthFix"></image>
+					<view class="text">后援会</view>
 				</view>
 				<view class="right-wrap iconfont iconjiantou"></view>
 			</view>
-			<button open-type="contact" :session-from="$app.getData('userInfo').id" v-if="$app.getData('config').version != $app.getData('VERSION') && $app.chargeSwitch()==2">
-				<view class="list-item red">
-					<view class="left-wrap">
-						<image src="/static/image/user/r7.png" mode="widthFix"></image>
-						<view class="text">回复"1" 获得更多能量</view>
-					</view>
-					<view class="right-wrap iconfont iconjiantou"></view>
-				</view>
-			</button>
-			<view class="list-item" v-if="$app.getData('config').version != $app.getData('VERSION')" @tap="$app.goPage('/pages/gift_package/gift_package')">
-				<view class="left-wrap">
-					<image src="/static/image/user/r8.png" mode="widthFix"></image>
-					<view class="text">礼物背包</view>
-				</view>
-				<view class="right-wrap iconfont iconjiantou"></view>
-			</view>
-			<view class="list-item" v-if="$app.getData('config').version != $app.getData('VERSION')&&$app.getData('platform')=='MP-WEIXIN'"
-			 @tap="$app.goPage('/pages/prop/prop')">
-				<view class="left-wrap">
-					<image src="/static/image/user/r6.png" mode="widthFix"></image>
-					<view class="text">我的道具</view>
-				</view>
-				<view class="right-wrap iconfont iconjiantou"></view>
-			</view>
-			<view class="list-item" @tap="$app.goPage('/pages/subPages/task/task')">
-				<view class="left-wrap">
-					<image src="/static/image/user/r2.png" mode="widthFix"></image>
-					<view class="text">每日任务</view>
-				</view>
-				<view class="right-wrap iconfont iconjiantou"></view>
-			</view>
-
 			<view class="list-item" @tap="$app.goPage('/pages/subPages/log/log')">
 				<view class="left-wrap">
 					<image src="/static/image/user/s2.png" mode="widthFix"></image>
@@ -165,7 +229,7 @@
 				<view class="right-wrap iconfont iconjiantou"></view>
 			</view>
 
-			<view v-if="userStar.id && $app.getData('userInfo').type == 0" class="list-item" @tap="exitGroup">
+			<view v-if="userStar.id && $app.getData('userInfo').type == 0" class="list-item" @tap="modal='exitGroup'">
 				<view class="left-wrap">
 					<image src="/static/image/user/r4.png" mode="widthFix"></image>
 					<view class="text">退出偶像圈</view>
@@ -174,6 +238,28 @@
 			</view>
 
 		</view>
+		<modalComponent v-if="modal=='exitGroup'" type="center" @closeModal="modal=''">
+			<view class="modal-container exitGroup-modal-container" v-if="exitGroupInfo.status">
+				<view class="title">退出当前公会</view>
+				<view class="desc">下次退圈需要<text class="modal-color">半年</text>之后才能操作</view>
+				<input type="text" @input="userID = $event.detail.value" placeholder="输入你的ID确认退圈" placeholder-class="placeholder-style" placeholder-style="color:#6D718E;" />
+				<view class="btn-wrap">
+					<btnComponent type="default">
+						<view class="btn flex-set" @tap="exitGroup">确定</view>
+					</btnComponent>
+				</view>
+			</view>
+			<view class="modal-container exitGroup-modal-container" v-else>
+				<view class="title">退出当前公会</view>
+				<view class="desc">未到冷却时间</view>
+				<view class="desc"><text class="modal-color">{{exitGroupInfo.exit_group_time}}</text>才可进行退圈操作</view>
+				<view class="btn-wrap">
+					<btnComponent type="default">
+						<view class="btn flex-set" @tap="modal=''">我知道了</view>
+					</btnComponent>
+				</view>
+			</view>
+		</modalComponent>
 	</view>
 </template>
 
@@ -190,19 +276,22 @@
 		data() {
 			return {
 				requestCount: 0,
-
+				header: '',
 				userInfo: {},
 				userCurrency: {},
 				userStar: {},
-				modal: '',
+				exitGroupInfo:'',
+				userID:'',
+				modal:'',
 				rechargeList: [],
-				userLevel:1,
+				userLevel:'',
 				userGap:0,
 				levelImg:this.$app.getData('config').level_img,
 			};
 		},
 		onLoad() {},
 		onShow() {
+			this.header = uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			this.userInfo = {
 				avatarurl: this.$app.getData('userInfo')['avatarurl'] || this.$app.getData('AVATAR'),
 				nickname: this.$app.getData('userInfo')['nickname'] || this.$app.getData('NICKNAME'),
@@ -221,6 +310,7 @@
 			})
 			
 			this.getUserLevel();
+			this.exitInfo();
 			// this.$app.openInterstitialAd()
 		},
 		onShareAppMessage(e) {
@@ -236,13 +326,21 @@
 					}
 				})
 			},
+			exitInfo(){
+				this.$app.request('user/exitInfo',{},res=>{
+					this.exitGroupInfo=res.data;
+				})
+			},
 			exitGroup() {
-				this.$app.modal(`${this.$app.getData('config').exitgroup_tips}\n\n是否退出${this.$app.getData('userStar').name}偶像圈？`, () => {
-					this.$app.request(this.$app.API.USER_EXIT, {}, res => {
-						this.$app.toast('退出成功')
-						this.$app.setData('userStar', {}, true)
-						this.userStar = {}
-					})
+				if (this.userID/1234 != this.$app.getData('userInfo').id) {
+					this.$app.toast('ID输入不正确')
+					return
+				}
+				this.$app.request(this.$app.API.USER_EXIT, {}, res => {
+					this.$app.toast('退出成功')
+					this.$app.setData('userStar', {}, true)
+					this.userStar = {};
+					this.modal = ''
 				})
 			},
 			// HTTP
@@ -250,8 +348,8 @@
 				this.$app.request('user/level', {
 					user_id: this.userInfo.id
 				}, res => {
-					this.userLevel = res.data.level
-					this.userGap = res.data.gap ? (res.data.gap / 10000).toFixed(1) + '万' : '0'
+					this.userLevel = res.data
+					this.userGap = res.data.gap ? (res.data.gap / 10000).toFixed(2) + '万' : '0'
 				})
 			},
 			// HTTP
@@ -286,15 +384,51 @@
 
 <style lang="scss" scoped>
 	.container {
-		padding: 20upx;
+		// padding: 20upx;
+		background-color: $text-color-10;
+		
+		.top-bg-container {
+			width: 100%;
+			position: relative;
+			z-index: 1;
+			
+			.top-bg{
+				width: 100%; 
+				position: absolute; 
+				z-index: 1;
+			}
+			
+			.index-avurl {
+				padding: 0 40rpx;
+				height: 80rpx;
+				font-size: 32rpx;
+				color: #FFFFFF;
+				display: flex;
+				align-items: center;
+				margin-bottom: 60rpx;
+				position: relative;
+				z-index: 2;
+			}
+		}
 
 		.top-content-container {
-			border-radius: 10upx;
-			// background-color: #fff;
-			padding: 40upx 30upx;
+			
+			padding: 0 30upx;
+			position: relative;
+			z-index: 2;
 
 			.row.userinfo {
 				display: flex;
+				border-radius: 30upx;
+				background-image: url(https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9FmibDk8LrMNNib025upafEqqaB6iazPjm7Yajdx5R3LVxpBdicE4pfiarQYCicw5qHVW5kB0RXV0Su0Ukg/0);
+				background-size: 100% 100%;
+				padding: 30rpx 20rpx 40rpx 20rpx;
+				
+				.get_user_info{
+					display: flex;
+					align-items: center;
+					padding-left: 20rpx;
+				}
 
 				.avatar {
 					position: relative;
@@ -321,20 +455,28 @@
 				}
 
 				.info-content {
-					margin: 4upx 30upx;
+					padding-left: 30rpx;
 					display: flex;
+					flex: 1 0%;
 					justify-content: space-around;
 					flex-direction: column;
 					font-size: 26upx;
-
+					.tips{
+						justify-content: space-between;
+						font-size: 22rpx;
+					}
 					.item-line {
+						width: 90%;
 						display: flex;
 						align-items: center;
+						padding: 10rpx 0;
 
 						.username {
 							font-weight: 700;
 							font-size: 30upx;
 							margin-right: 8upx;
+							color: $text-color-7;
+							max-width: 300rpx;
 						}
 
 						image.vip {
@@ -352,10 +494,10 @@
 
 						.id-content {
 							border-radius: 20upx;
-							// font-size: 24upx;
+							font-size: 22upx;
 							background-color: #FDDE2F;
 							padding: 0 10upx;
-							color: #853E1D;
+							color: $text-color-5;
 							margin: 0 10upx;
 						}
 
@@ -366,32 +508,26 @@
 							background-color: #23aecf;
 							padding: 0 10upx;
 							color: #FFF;
+							font-size: 22rpx;
 							letter-spacing: 3upx;
 							white-space: nowrap;
 						}
 
-						.fan-level {
-							font-size: 24upx;
+						.progress {
+							border-radius: 30upx;
+							background-color: $text-color-11;
+							width: 100%;
+							height: 10upx;
 							position: relative;
-							margin-left: 10upx;
-
-							image {
-								width: 44upx;
-								height: 44upx;
-								position: absolute;
-								bottom: -2upx;
-								left: 0;
+							overflow: hidden;
+									
+							.progress-bar {
+								background-color: $text-color-3;
+								border-radius: 30upx;
+								height: 100%;
 							}
-
-							.fan-text {
-								background-color: #f1f1f1;
-								color: #999;
-
-								border-top-right-radius: 20upx;
-								border-bottom-right-radius: 20upx;
-								padding: 0 36upx;
-								margin-left: 14upx;
-							}
+									
+							
 						}
 					}
 
@@ -404,12 +540,12 @@
 		}
 
 		.row.currency {
+			
+			background: #FFFFFF;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			background-color: rgba(#000, .05);
-			margin-left: -20upx;
-			margin-right: -20upx;
+			margin-top: 20upx;
 			padding: 30upx 0;
 
 			.item-content {
@@ -422,9 +558,9 @@
 					position: relative;
 
 					image {
-						width: 50upx;
-						height: 50upx;
-						margin-right: 4upx;
+						width: 40upx;
+						height: 40upx;
+						margin: 0 15upx;
 					}
 				}
 
@@ -472,8 +608,66 @@
 			}
 		}
 
+		.user-center {
+			width: 100%;
+			margin: 10rpx 0;
+			padding: 0 20rpx;
+			background-color: #FFFFFF;
+			border-radius: 20rpx;
+			color: $text-color-2;
+		
+			.func-list {
+				display: flex;
+				justify-content: space-around;
+				padding: 30rpx 0;
+		
+				.func-item {
+					font-size: 24upx;
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					justify-content: center;
+					position: relative;
+		
+					.reddot {
+						width: 20rpx;
+						height: 20rpx;
+						background-color: #f00f00;
+						border-radius: 50%;
+						margin-top: -20rpx;
+						position: absolute;
+						right: -5rpx;
+						top: 15rpx;
+						z-index: 10;
+		
+					}
+		
+					.btn-wrap {
+						position: relative;
+		
+						.badge-wrap {
+							position: absolute;
+							top: 10upx;
+							right: 10upx;
+						}
+		
+					}
+		
+					.text {
+						margin-top: 15rpx;
+					}
+		
+					image {
+						height: 68upx;
+						width: 68upx;
+					}
+				}
+			}
+		}
+		
 		.function-container-list {
-			margin-top: 20upx;
+			padding: 0 20rpx;
+			background-color: #FFFFFF;
 			.red{
 				color: red;
 			}
@@ -482,24 +676,23 @@
 				justify-content: space-between;
 				align-items: center;
 				margin: 0 20upx;
-				padding: 22upx 0;
-				border-radius: 18rpx;
-				border-bottom: 1rpx solid #EFEFEF;
+				padding: 30upx 0;
+				border-bottom: 1rpx solid $text-color-10;
+				color: $text-color-5;
 				
 				.left-wrap {
 					display: flex;
 					align-items: center;
 					
 					image {
-						width: 48upx;
-						height: 48upx;
-						margin-right: 20upx;
+						width: 40upx;
+						height: 40upx;
+						margin-right: 30upx;
 					}
 				}
 				
 				.right-wrap {
 					font-size: 22upx;
-					color: #999;
 				}
 			}
 		}
@@ -533,6 +726,61 @@
 			}
 		}
 
+		.modal-container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 40upx;
+			height: 100%;
+			justify-content: center;
+		
+			.title {
+				font-size: 36upx;
+				font-weight: 700;
+			}
+		
+			.desc {
+				display: flex;
+				align-items: center;
+				padding-top: 10upx;
+				.modal-color{
+					font-weight: 550;
+				}
+				image{
+					width: 30rpx;
+					height: 30rpx;
+					margin: 0 5rpx;
+				}
+			}
+			
+			input{
+				color: $text-color-5;
+				border-radius: 30upx;
+				height: 90rpx;
+				background: $text-color-11;
+				width: 88%;
+				padding: 23rpx 40rpx;
+				margin: 40rpx 0 0 0;
+		
+			}
+		
+			.btn-wrap {
+				margin: 40upx 0;
+				text-align: center;
+				display: flex;
+				width: 100%;
+				justify-content: space-around;
+				padding: 0 20upx;
+			}
+			.btn {
+				font-size: 30upx;
+				font-weight: 600;
+				height: 80rpx;
+				width: 300rpx;
+					
+			}
+		
+		}
 
 	}
 </style>

@@ -165,6 +165,7 @@
 					padding: 15upx 0upx;
 					margin: 0 40rpx;
 					background:linear-gradient(0deg,rgba(208,208,208,1) 0%,rgba(175,175,175,1) 100%);
+					box-shadow: 0 2upx 4upx rgba(#000, 0.3);
 					justify-content: center;
 					display: flex;
 					font-size: 28upx;
@@ -173,7 +174,7 @@
 				}
 		
 				.tab-item.active {
-					background:linear-gradient(to right bottom, #FF3A8A 20%, #fa6c9f 82%, #ffe140 100%) !important;
+					background:linear-gradient(90deg,rgba(254,140,175,1),rgba(255,120,161,1)) !important;
 					text-align: center;
 				}
 			}
@@ -298,7 +299,6 @@
 				border-bottom: 2rpx solid #F3F3F3;
 				display: flex;
 				align-items: center;
-				color: #4D2D2D;
 				font-weight: bold;
 				z-index: 9;
 
@@ -356,13 +356,15 @@
 			margin: 20upx 0;
 			height: 130upx;
 			display: flex;
-			background-color: #EFCCC8;
+			background-color: $color_5;
 			align-items: center;
 			font-weight: bold;
 			z-index: 99;
+			padding: 0 20rpx;
 
 			.rank-num {
 				margin-left: 30upx;
+				color: $text-color-7;
 				
 			}
 
@@ -382,6 +384,7 @@
 				overflow: hidden;
 				
 				.star-name{
+					color: $text-color-7;
 				}
 			
 				.bottom-text {
@@ -400,6 +403,7 @@
 				padding-right: 30upx;
 				flex: 1 0%;
 				text-align: right;
+				color: $color_2;
 			}
 
 		}

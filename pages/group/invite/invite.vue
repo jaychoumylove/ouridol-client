@@ -1,7 +1,8 @@
 <template>
 	<view class="invite_new-container">
 		<view class="top">
-			<image class="top-img1" :src="invite_new_info.title_img?invite_new_info.title_img:'https://mmbiz.qpic.cn/mmbiz_png/CbJC0icY3EzbJr8mapPIWxKuKcJbWNsEWdawwzx3iaQ6ic98lPlR6GgswenIgrpscqGbhV2C1G7oicO9D3pmVK7RXQ/0'" mode="widthFix"></image>
+			<image class="top-img1" :src="invite_new_info.title_img?invite_new_info.title_img:'https://mmbiz.qpic.cn/mmbiz_png/CbJC0icY3EzbJr8mapPIWxKuKcJbWNsEWdawwzx3iaQ6ic98lPlR6GgswenIgrpscqGbhV2C1G7oicO9D3pmVK7RXQ/0'"
+			 mode="widthFix"></image>
 			<view class="top-img2">
 				<view class="text-wrap">
 					<image src="/static/image/user/electricity.png" mode="widthFix"></image>
@@ -34,7 +35,7 @@
 									<view class="name" @tap="invite_steps_reward(index)">
 										<view class="reward">
 											<image style="width: 100rpx;" v-if="index==0" src="/static/image/active/reward1.png" mode="widthFix"></image>
-											<image style="width: 100rpx;" v-if="index==1" src="/static/image/active/reward2.png" mode="widthFix"></image>
+											<image style="width: 100rpx;" v-if="index==1" src="/static/image/active/reward5.png" mode="widthFix"></image>
 											<image style="width: 100rpx;" v-if="index==2" src="/static/image/active/reward3.png" mode="widthFix"></image>
 											<image style="width: 100rpx;" v-if="index==3" src="/static/image/active/reward4.png" mode="widthFix"></image>
 										</view>
@@ -49,11 +50,12 @@
 												<view class="flex-set" style="width: 100upx;height: 35upx;">未完成</view>
 											</btnComponent>
 										</view>
-										
-										
+
+
 									</view>
-									
-									<view class="value">{{item.invite_num}}</image></view>
+
+									<view class="value">{{item.invite_num}}</image>
+									</view>
 								</view>
 							</view>
 						</view>
@@ -103,11 +105,11 @@
 								恭喜<text>哈滚滚滚哈哈</text>获得<text>嘿嘿斤斤计较嘿</text>
 							</view>
 						</swiper-item> -->
-					
+
 					</swiper>
 				</view>
 			</view>
-			
+
 		</view>
 
 		<view class="invit-cont">
@@ -119,7 +121,7 @@
 					<view class="get_detail" @tap="$app.goPage('/pages/group/invite/invite_reward_log?type=user')">
 						<view style="padding-left: 10rpx;">拉新记录</view>
 					</view>
-					
+
 				</view>
 				<view class="invit-list">
 					<view class="invit-item">
@@ -146,7 +148,7 @@
 							<text style="padding-right: 10rpx;">+{{invite_new_info.my_invite_info.get_old_invite_energy||1}}</text>
 							<image style="width: 40rpx;" src="/static/image/user/electricity.png" mode="widthFix"></image>
 						</view>
-					
+
 						<view class="but flex-set">
 							<btnComponent v-if="invite_new_info.my_invite_info.get_old_invite_energy==0" type="default">
 								<button open-type="share">
@@ -168,24 +170,21 @@
 				<view class="group-title-item" :class="{active:rank_type=='world'}" @tap="switchAct('world')">世界电量排行</view>
 			</view>
 		</view>
-		<view style="width: 100%; text-align: center; font-size: 24rpx;" v-if="rank_type=='group'">{{$app.getData('config').is_invite_active.end_time}}截止，根据排名发放奖励</view>
+		<view class="tips" v-if="rank_type=='group'">{{$app.getData('config').is_invite_active.end_time}}截止，根据排名发放奖励</view>
 		<view class="rank-list">
 			<view class="list">
 				<block v-if="invitRankList.length>0" v-for="(item,index) in invitRankList" :key="index">
 					<view class="item">
 						<view class="item-info">
-							<image class="rank-img" v-if="index==0" src="/static/image/guild/1.png"
-							 mode="widthFix"></image>
-							<image class="rank-img" v-else-if="index==1" src="/static/image/guild/2.png"
-							 mode="widthFix"></image>
-							<image class="rank-img" v-else-if="index==2" src="/static/image/guild/3.png"
-							 mode="widthFix"></image>
+							<image class="rank-img" v-if="index==0" src="/static/image/guild/1.png" mode="widthFix"></image>
+							<image class="rank-img" v-else-if="index==1" src="/static/image/guild/2.png" mode="widthFix"></image>
+							<image class="rank-img" v-else-if="index==2" src="/static/image/guild/3.png" mode="widthFix"></image>
 							<view class="rank-img" v-else>{{index+1}}</view>
 							<block v-if="rank_type=='group'">
 								<view class="avatar-img">
 									<image :src="item.star.head_img_s || $app.getData('AVATAR')" mode="aspectFill"></image>
 								</view>
-										
+
 								<view style="margin-left: 20rpx;">
 									<view class="name">{{item.star.name || '神秘爱豆'}}</view>
 									<view style="color: #909090; font-size: 24rpx;">
@@ -193,37 +192,38 @@
 										<image style="width: 40rpx; margin-left: 10rpx;" src="/static/image/user/electricity.png" mode="widthFix"></image>
 									</view>
 								</view>
-								
+
 							</block>
 							<block v-if="rank_type=='world'">
 								<view class="avatar-img">
 									<image :src="item.user.avatarurl || $app.getData('AVATAR')" mode="aspectFill"></image>
 								</view>
-										
+
 								<view style="margin-left: 20rpx;">
 									<view class="user-info">
 										<view class="name">{{item.user.nickname || '神秘粉丝'}}</view>
-										<image style="width: 76rpx; margin: 0 10rpx;" :src="'/static/image/icon/level/lv'+ item.user.level +'.png'" mode="widthFix"></image>
+										<image style="width: 76rpx; margin: 0 10rpx;" :src="'/static/image/icon/level/lv'+ item.user.level +'.png'"
+										 mode="widthFix"></image>
 										<view class="star-name" v-if="item.user.starname">{{item.user.starname}}</view>
 									</view>
-									<view>
+									<view style="color: #909090; font-size: 24rpx;">
 										总电量：<text style="color: #EF8392;">{{item.total_invite_energy || 0}}</text>
 										<image style="width: 40rpx; margin-left: 10rpx;" src="/static/image/user/electricity.png" mode="widthFix"></image>
 									</view>
-									
+
 								</view>
-								
+
 							</block>
 						</view>
 						<view class="energy" v-if="rank_type=='group' && index<=1">
 							<view v-if="index==0">1000元奖金</view>
 							<view v-if="index==1">500元奖金</view>
 						</view>
-						
+
 					</view>
 				</block>
 			</view>
-		
+
 		</view>
 
 	</view>
@@ -247,7 +247,7 @@
 				my_remaining_time: 0,
 				rankPage: 1,
 				getInviteReward: this.$app.getInviteRewardQueue,
-				rank_type:'group',
+				rank_type: 'group',
 			};
 		},
 		onShow() {
@@ -263,7 +263,7 @@
 		 */
 		onReachBottom() {
 			this.rankPage++;
-			if(this.rankPage<=10){
+			if (this.rankPage <= 10) {
 				this.getInviteRank();
 			}
 		},
@@ -280,7 +280,7 @@
 					this.rankPage = 1
 					this.getInviteRank();
 				});
-				
+
 			},
 			addTimer(my_remaining_time) { //倒计时
 				let timeId = null;
@@ -310,15 +310,15 @@
 						text += res.data.prop_text + ' +1';
 					}
 					this.$app.toast(text)
-					
+
 					this.loadData();
 				}, 'POST', true)
 			},
-			getInvitEnergy(type){
+			getInvitEnergy(type) {
 				this.$app.request(this.$app.API.INVIT_ENERGY, {
-					type:type,
+					type: type,
 				}, res => {
-				
+
 					let text = '领取成功';
 					if (res.data.energy > 0) {
 						text += ',电量 +' + res.data.energy;
@@ -330,7 +330,7 @@
 			// 拉票
 			getInviteRank() {
 				this.$app.request(this.$app.API.INVIT_GROUP_INVITE_RANK, {
-					rank_type:this.rank_type,
+					rank_type: this.rank_type,
 					page: this.rankPage,
 				}, res => {
 
@@ -353,6 +353,8 @@
 		width: 100%;
 		display: flex;
 		flex-direction: column;
+		height: 100%;
+		background-color: $text-color-10;
 	}
 
 	.image_b5 {
@@ -444,7 +446,7 @@
 				display: flex;
 				flex-direction: row;
 				align-items: center;
-				
+
 			}
 		}
 
@@ -514,16 +516,19 @@
 							transform: translateX(-50%);
 							font-size: 24upx;
 							white-space: nowrap;
+
 							.prop-img {
 								width: 40rpx;
 							}
-							.reward{
+
+							.reward {
 								width: 100rpx;
 								display: flex;
 								flex-direction: column;
 								align-items: center;
 							}
-							.reward-text{
+
+							.reward-text {
 								font-size: 22rpx;
 								padding-top: 10rpx;
 							}
@@ -566,12 +571,6 @@
 
 				}
 
-				.schedule-text {
-					display: flex;
-					align-items: center;
-					justify-content: center;
-					color: #541C21;
-				}
 			}
 
 			.rule {
@@ -581,13 +580,14 @@
 				padding: 20rpx;
 			}
 		}
-		
+
 		.notice {
 			width: 100%;
 			padding: 20rpx 0;
 			display: flex;
 			justify-content: center;
-			.notice-cont{
+
+			.notice-cont {
 				width: 600rpx;
 				height: 70rpx;
 				font-size: 22rpx;
@@ -596,23 +596,26 @@
 				background: #FFFFFF;
 				border-radius: 40rpx;
 				overflow: hidden;
+
 				image {
 					width: 40rpx;
 					margin: 5rpx 10rpx 0rpx 10rpx;
 				}
-				.swiper-item{
+
+				.swiper-item {
 					width: 100%;
 					display: flex;
 					flex-direction: row;
 					justify-content: center;
-					
-					.item{
+
+					.item {
 						width: 100%;
 						height: 70rpx;
 						display: flex;
 						flex-direction: row;
 						align-items: center;
-						.item-text{
+
+						.item-text {
 							width: 550rpx;
 							overflow: hidden;
 							text-overflow: ellipsis;
@@ -620,32 +623,34 @@
 							display: flex;
 							flex-direction: row;
 						}
+
 						text {
 							color: #F57FA3;
 						}
 					}
 				}
 			}
-			
-			
+
+
 		}
 	}
 
 	.invit-cont {
 		padding-top: 20rpx;
-	
+
 		.list-wrapper {
 			overflow-y: auto;
-			.invit-title{
+
+			.invit-title {
 				padding: 0 20rpx;
 				display: flex;
 				justify-content: space-between;
-				
+
 				.get_help {
 					font-size: 28rpx;
 					font-weight: bold;
 				}
-				
+
 				.get_detail {
 					font-size: 24rpx;
 					color: #FF9191;
@@ -654,13 +659,13 @@
 					display: flex;
 					flex-direction: row;
 					align-items: center;
-					
+
 				}
 			}
-			
+
 			.invit-list {
 				padding: 0 20rpx;
-	
+
 				.invit-item {
 					height: 100rpx;
 					border-radius: 25rpx;
@@ -672,31 +677,30 @@
 					padding: 0 40rpx;
 					justify-content: space-between;
 					align-items: center;
-	
+
 					.title {
-						color: #541C21;
+						color: $text-color-7;
 						font-size: 30rpx;
-						font-weight: bold;
 					}
-	
+
 					.num {
 						display: flex;
 						align-items: center;
 						color: #FF9799;
 						font-size: 24rpx;
-	
+
 						image {
 							width: 30rpx;
 							height: 30rpx;
 							margin: 0 10rpx;
 						}
-	
+
 					}
-	
+
 					.but {
 						color: #C29B9E;
 					}
-	
+
 					.buts {
 						color: #F7B500;
 					}
@@ -704,9 +708,10 @@
 			}
 		}
 	}
-	
+
 	.group-content {
 		padding: 20rpx;
+		background-color: $text-color-10;
 
 		.group-title {
 			display: flex;
@@ -716,15 +721,16 @@
 				width: 200rpx;
 				padding: 15upx 0upx;
 				margin: 0 40rpx;
-				background:linear-gradient(0deg,rgba(208,208,208,1) 0%,rgba(175,175,175,1) 100%);
+				background: linear-gradient(0deg, rgba(208, 208, 208, 1) 0%, rgba(175, 175, 175, 1) 100%);
 				justify-content: center;
 				display: flex;
 				font-size: 28upx;
 				flex: 1;
 				border-radius: 60rpx;
 			}
+
 			.group-title-item.active {
-				background:linear-gradient(to right bottom, #FF3A8A 20%, #fa6c9f 82%, #ffe140 100%) !important;
+				background: linear-gradient(90deg, rgba(254, 140, 175, 1), rgba(255, 120, 161, 1)) !important;
 				text-align: center;
 				color: #FFFFFF;
 			}
@@ -743,8 +749,8 @@
 				width: 100%;
 				z-index: 1;
 			}
-			
-			.total_coin{
+
+			.total_coin {
 				color: #FF9799;
 				font-size: 34rpx;
 				font-weight: bold;
@@ -770,10 +776,19 @@
 		}
 	}
 
+	.tips {
+		width: 100%;
+		text-align: center;
+		font-size: 24rpx;
+		background-color: $text-color-10;
+		padding-bottom: 20rpx;
+	}
+
 	.rank-list {
 		width: 100%;
 		padding: 0rpx 20rpx;
 		margin-bottom: 20rpx;
+		background-color: #FFFFFF;
 
 		.list {
 			width: 100%;
@@ -784,9 +799,9 @@
 				display: flex;
 				flex-direction: row;
 				justify-content: space-between;
+				border-bottom: 1rpx solid $text-color-10;
 				align-items: center;
 				padding: 15rpx 20rpx;
-				background-color: #FFFFFF;
 				margin: 10rpx 0;
 				border-radius: 30rpx;
 
@@ -811,21 +826,22 @@
 							border: 3rpx solid #EF8392;
 						}
 					}
-					.user-info{
+
+					.user-info {
 						display: flex;
 						flex-direction: row;
 						align-items: center;
+
 						.name {
 							max-width: 300rpx;
 							overflow: hidden;
 							text-overflow: ellipsis;
 							white-space: nowrap;
 							font-size: 28rpx;
-							color: #431618;
-							font-weight: bold;
-							
+
 						}
-						.star-name{
+
+						.star-name {
 							font-size: 22rpx;
 							color: #FFFFFF;
 							background: #EF8392;
@@ -833,7 +849,7 @@
 							padding: 2rpx 10rpx;
 						}
 					}
-					
+
 				}
 
 				.energy {
@@ -845,7 +861,7 @@
 					padding: 5rpx 10rpx;
 					text-align: center;
 				}
-				
+
 			}
 		}
 	}

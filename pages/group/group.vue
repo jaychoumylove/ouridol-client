@@ -1,5 +1,12 @@
 <template>
 	<view class="group-container">
+		
+		<view class="top-bg-container">
+			<view :style="'height:'+header+';width:100%;'"></view>
+			<view class="index-avurl">
+				偶像圈
+			</view>
+		</view>
 
 		<guildComponent v-if="starid" ref="guildComponent"></guildComponent>
 		<view v-else class="blank-container">
@@ -13,7 +20,7 @@
 			<view v-else class="select-container">
 
 				<view class="search-wrapper">
-					<input type="text" value="" placeholder="搜索爱豆" @input="searchInput" />
+					<input type="text" value="" placeholder="搜索爱豆" placeholder-style="color:#8181A7; font-size: 24rpx " @input="searchInput" />
 				</view>
 
 				<scroll-view scroll-x>
@@ -52,7 +59,7 @@
 		data() {
 			return {
 				starid: this.$app.getData('userStar')['id'] || null,
-
+				header: '',
 				requestCount: 1,
 				blankHide: true,
 				rankList: this.$app.getData('group_rankList') || [],
@@ -64,6 +71,7 @@
 		},
 		onLoad() {},
 		onShow() {
+			this.header = uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			this.starid = this.$app.getData('userStar')['id'] || null
 			if (this.starid) {
 				this.$nextTick(function() {
@@ -133,6 +141,25 @@
 <style lang="scss" scoped>
 	.group-container {
 		height: 100%;
+		background-image: url(https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9FmibDk8LrMNNib025upafEqqhEUGibBibYVXfsFS2GOqq8XDoBzgib1He6p3OSpwDCuhuMzMxa3yXp4icA/0);
+		background-size: 100% 100%;
+		
+		.top-bg-container {
+			width: 100%;
+			
+			.top-bg{
+				width: 100%; 
+			}
+			
+			.index-avurl {
+				padding: 0 40rpx;
+				height: 80rpx;
+				font-size: 32rpx;
+				color: #FFFFFF;
+				display: flex;
+				align-items: center;
+			}
+		}
 
 		.blank-container {
 			height: 100%;
@@ -162,13 +189,13 @@
 					input {
 						height: 70upx;
 						width: 400upx;
-						background-color: $text-color-1;
+						background-color: $text-color-11;
 						border-radius: 60upx;
 						padding: 10upx 20upx;
 						margin: 20upx;
 						position: relative;
 						text-align: center;
-						color: #FFF;
+						color: $text-color-2;
 					}
 
 					input::after {
@@ -184,7 +211,7 @@
 
 				scroll-view {
 					width: 100%;
-					border-bottom: 1px solid $text-color-1;
+					border-bottom: 1px solid $text-color-8;
 				}
 
 				.starlist-wrapper {
@@ -207,6 +234,7 @@
 						}
 
 						.name {
+							color: $text-color-7;
 							text-align: center;
 							width: 100upx;
 						}
@@ -218,7 +246,7 @@
 					font-size: 30upx;
 					display: flex;
 					flex-direction: column;
-					color: #b9796e;
+					color: $text-color-8;
 
 					image {
 						width: 120upx;
