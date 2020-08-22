@@ -2843,6 +2843,11 @@
 
 					.content {
 						color: $text-color-3;
+						max-width: 420rpx;
+						text-overflow: ellipsis;
+						white-space: nowrap;
+						overflow: hidden;
+
 					}
 				}
 
