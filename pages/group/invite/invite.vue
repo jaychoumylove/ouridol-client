@@ -1,8 +1,7 @@
 <template>
 	<view class="invite_new-container">
 		<view class="top">
-			<image class="top-img1" :src="invite_new_info.title_img?invite_new_info.title_img:'https://mmbiz.qpic.cn/mmbiz_png/CbJC0icY3EzbJr8mapPIWxKuKcJbWNsEWdawwzx3iaQ6ic98lPlR6GgswenIgrpscqGbhV2C1G7oicO9D3pmVK7RXQ/0'"
-			 mode="widthFix"></image>
+			<image class="top-img1" :src="invite_new_info.title_img?invite_new_info.title_img:'https://mmbiz.qpic.cn/mmbiz_png/CbJC0icY3EzbJr8mapPIWxKuKcJbWNsEWdawwzx3iaQ6ic98lPlR6GgswenIgrpscqGbhV2C1G7oicO9D3pmVK7RXQ/0'" mode="widthFix"></image>
 			<view class="top-img2">
 				<view class="text-wrap">
 					<image src="/static/image/user/electricity.png" mode="widthFix"></image>
@@ -367,13 +366,11 @@
 		width: 100%;
 		padding: 20rpx;
 		z-index: 1;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
+		
 
 		.top-img1 {
 			width: 100%;
+			height: 240rpx;
 			z-index: 1;
 		}
 
@@ -381,12 +378,13 @@
 			width: 410rpx;
 			height: 120rpx;
 			background: url(https://mmbiz.qpic.cn/mmbiz_png/CbJC0icY3EzbJr8mapPIWxKuKcJbWNsEWsde1ErKIEhZ6oiaakmXkIZXkXf650ia2kMtwoG9rMMfWiaWblpOLicx5lA/0) center center/100% 100% no-repeat;
-			margin-top: -60rpx;
+			margin: -60rpx auto 0;
 			z-index: 2;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
 			justify-content: center;
+			position: relative;
 
 			.text-wrap {
 				width: 100%;

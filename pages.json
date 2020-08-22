@@ -28,7 +28,8 @@
 		}, {
 			"path": "pages/group/group",
 			"style": {
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				"disableScroll": true
 			}
 		},
 		{
