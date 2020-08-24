@@ -227,6 +227,12 @@
 				}
 			},
 			{
+				"path": "father_apply/father_apply",
+				"style": {
+					"navigationBarTitleText": "师徒申请"
+				}
+			},
+			{
 				"path": "fanclub/fanclub",
 				"style": {}
 			},
