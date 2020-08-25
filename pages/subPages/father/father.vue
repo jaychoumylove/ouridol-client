@@ -65,12 +65,11 @@
 							<image class="level" v-if="item.level" :src="'/static/image/icon/level/lv'+ item.level +'.png'" mode="widthFix"></image>
 						</view>
 						<view class="bottom-text">
-							<view class="hot-count" v-if="item.cur_contribute">贡献:{{item.cur_contribute}}</view>
+							<view class="hot-count" v-if="item.cur_contribute">贡献：{{item.cur_contribute}}</view>
+							<view class="add-count hot-count" style="padding-left: 10rpx; color: #FF5174;" v-if="item.earn">
+								<text>收益：{{item.earn}}</text>
+							</view>
 						</view>
-					</view>
-					<view class="add-count flex-set" v-if="item.earn">
-						<text>+{{item.earn}}</text>
-						<image src="/static/image/user/b1.png" mode="widthFix"></image>
 					</view>
 
 					<view class="btn" @tap="getSonEarn(item.uid,item.earn,index)">
