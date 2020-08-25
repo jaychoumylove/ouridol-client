@@ -329,9 +329,9 @@
 					}
 
 					this.bannerList = bannerList
-					if (this.bannerList.length > 2) {
-						this.muti = true
-					}
+					// if (this.bannerList.length > 2) {
+					// 	this.muti = true
+					// }
 				})
 			},
 			getRankList() {
