@@ -158,10 +158,11 @@
 			};
 		},
 		onShow() {
-			this.getTaskList()
+			
 		},
 		onLoad() {
 			this.getShareText()
+			this.getTaskList()
 		},
 		onShareAppMessage(e) {
 			const shareType = e.target && e.target.dataset.share
