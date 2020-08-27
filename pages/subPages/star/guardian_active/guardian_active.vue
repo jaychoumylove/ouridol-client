@@ -34,7 +34,7 @@
 				<view class="tab">
 					<view class="tab-item" :class='{active:current==0}' @tap='switchAct(0)'>守护爱豆</view>
 					<view class="tab-item" :class='{active:current==1}' @tap='switchAct(1)'>爱豆守护排行榜</view>
-					<view class="tab-item" :class='{active:current==2}' @tap='switchAct(2)'>世界守护排行榜</view>
+					<view class="tab-item" :class='{active:current==2}' @tap='switchAct(2)'>守护爱豆排行榜</view>
 				</view>
 
 			</view>
@@ -102,7 +102,7 @@
 				</view>
 			</block>
 			<block v-if="current!=0">
-				<view class="active-list-desc">{{active_time.end_time_text}}活动截止，根据排名发放奖励</view>
+				<view class="active-list-desc"><block v-if="current==1">{{active_time.end_time_text}}活动截止，根据排名发放奖励</block></view>
 				<view class="rank-list">
 					<block v-if="guardianRankList.length>0" v-for="(item,index) in guardianRankList" :key="index">
 						<view class="item">
