@@ -1493,7 +1493,7 @@
 					}
 				}	
 				.bottom-tips {
-					width: 320rpx;
+					max-width: 550rpx;
 					font-size: 24upx;
 					font-weight: bold;
 					letter-spacing: 2upx;
@@ -1501,7 +1501,7 @@
 					text-decoration: underline;
 					background-color: $text-color-10;
 					border-radius: 20rpx;
-					padding: 2rpx 10rpx;
+					padding: 4rpx 20rpx;
 					
 				}
 				

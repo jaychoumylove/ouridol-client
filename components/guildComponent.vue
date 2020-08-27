@@ -21,11 +21,17 @@
 					</view>
 				</view>
 				<view class="row-info">
-					<view class="avatar-wrapper" @tap="drawCanvas">
+					<view class="avatar-wrapper" v-if="!is_guardian_active">
 						<image class="avatar" :class="{share:$app.getData('userStar').id == star.id}" :src="star.avatar" mode="aspectFill"></image>
-						<!-- <view class="tips">分享海报</view> -->
-						<!-- <view class="rank">{{star.name}}</view> -->
-						<!-- <view class="star-name-wrapper text-overflow">NO.{{star.weekRank}}</view> -->
+					</view>
+					<view class="avatar-wrapper" v-else @tap="$app.goPage('/pages/subPages/star/guardian_active/guardian_active')">
+						<image class="avatar" :class="{share:$app.getData('userStar').id == star.id}" :src="star.avatar" mode="aspectFill"></image>
+						<view class='guardian-active row'>
+							<view class="guardian-info" v-if="guardian_active_info && $app.getData('userStar').id == star.id">
+								<image class="avatar" :src="guardian_active_info.user.avatarurl || $app.getData('AVATAR')" mode="aspectFill"></image>
+							</view> 
+							<view class="text">{{guardian_active_info?'守护中':'我来守护'}}></view>
+						</view>
 					</view>
 
 					<view class="top-text-wrapper">
@@ -533,23 +539,38 @@
 
 				<view class="list-wrapper">
 					<view class="item" v-for="(item,index) in starRankList" :key="index" v-if="index<5">
-						<view class='avatar'>
-							<image :src="item.avatar" mode="aspectFill"></image>
-						</view>
-						<view class="text-container">
-							<view class="star-name">{{item.name}}</view>
-							<view class="bottom-text">
-								<view class="hot-count">{{item.hot}}</view>
-								<!-- <image class="icon-heart" src="/static/image/index/ic_hot.png" mode=""></image> -->
+						<view class="steal-info">
+							<view class='avatar'>
+								<image :src="item.avatar" mode="aspectFill"></image>
+							</view>
+							<view class="text-container">
+								<view class="star-name">{{item.name}}</view>
+								<view class="bottom-text">
+									<view class="hot-count">{{item.hot}}</view>
+									<!-- <image class="icon-heart" src="/static/image/index/ic_hot.png" mode=""></image> -->
+								</view>
+							</view>
+							<view class="steal-count flex-set">+{{item.steal_count}}
+								<image src="/static/image/user/b1.png" mode="widthFix"></image>
+							</view>
+							<view class="btn" v-if="!item.guardian_active_info" @tap="steal(item.starid,index,item.steal)">
+								<btnComponent type="default">
+									<view class="flex-set" style="width: 130upx;height: 60upx;">{{item.steal>0?item.steal:'偷取'}}</view>
+								</btnComponent>
+							</view>
+							<view class="btn" v-if="item.guardian_active_info">
+								<btnComponent type="default">
+									<view class="flex-set" style="width: 130upx;height: 60upx;">{{item.steal>0?item.steal:'守护中'}}</view>
+								</btnComponent>
 							</view>
 						</view>
-						<view class="steal-count flex-set">+{{item.steal_count}}
-							<image src="/static/image/user/b1.png" mode="widthFix"></image>
-						</view>
-						<view class="btn" @tap="steal(item.starid,index,item.steal)">
-							<btnComponent type="default">
-								<view class="flex-set" style="width: 130upx;height: 60upx;">{{item.steal>0?item.steal:'偷取'}}</view>
-							</btnComponent>
+						<view class="guardian_active_info" v-if="item.guardian_active_info">
+							<view class="">{{item.guardian_active_info.time_text}}</view>
+							<view class="user-text">守护者：</view>
+							<view class="guardian-info">
+								<image class="avatar" :src="item.guardian_active_info.user.avatarurl || $app.getData('AVATAR')" mode="aspectFill"></image>
+								<text class="guardian-name text-overflow">{{item.guardian_active_info.user.nickname || $app.getData('NICKNAME')}}</text>
+							</view>
 						</view>
 					</view>
 				</view>
@@ -1207,6 +1228,8 @@
 				is_automatic_steal: 0,
 				stealCountdown: 0,
 				stealLimitTime: 60,
+				is_guardian_active: false,
+				guardian_active_info: '',
 			};
 		},
 		created() {
@@ -1241,44 +1264,9 @@
 
 					let time = Math.round(new Date().getTime() / 1000)
 
-					// // 加群提醒
-					// if (this.$app.getData('userExt') && this.$app.getData('userExt').is_join_wxgroup == 0) {
-					// 	let joinGroupModal = this.$app.getData('joinGroupModal')
-					// 	if (time - joinGroupModal > 3600 * 24) {
-					// 		this.$app.setData('joinGroupModal', time)
-					// 		setTimeout(() => {
-					// 			this.modal = 'joinGroup'
-					// 		}, 20000)
-					// 	}
-					// } else {
-					// 	// 打榜提醒
-					// 	let urgeSendModal = this.$app.getData('urgeSendModal')
-					// 	if (time - urgeSendModal > 3600 * 12) {
-					// 		let tipsArr = this.$app.getData('config').urge_send_tips
-					// 		let tipsIndex = this.$app.getRandom(0, tipsArr.length - 1)
-					// 		this.urgeSendTips = tipsArr[tipsIndex]
-
-					// 		this.$app.setData('urgeSendModal', time)
-					// 		setTimeout(() => {
-					// 			this.modal = 'urgeSend'
-					// 		}, 3000)
-					// 	}
-					// }
-
 				}
 				// 请求数据
 				this.loadData()
-
-				// this.getStarInfo()
-				// this.getUserRank()
-				// this.getChartList()
-				// this.joinGroup()
-				// this.getMass()
-				// this.getInvitList()
-				// this.treasureInterval()
-				// this.getArticle()
-				// this.checkFatherEarn()
-				// this.getActiveInfo()
 
 				this.userCurrency = this.$app.getData('userCurrency') || {
 					coin: 0,
@@ -1313,12 +1301,11 @@
 							share_img: star.share_img,
 							qrcode: star.qrcode,
 						}
+						//自动偷心
 						this.stealLimitTime = res.data.stealLimitTime
 						this.is_automatic_steal = res.data.is_automatic_steal
 						this.stealCountdown = res.data.stealCountdown
-						console.log(this.stealLimitTime)
-						console.log(this.is_automatic_steal)
-						console.log(this.stealCountdown)
+						
 						setTimeout(() => {
 							if (this.is_automatic_steal) {
 								if (this.stealCountdown == 0) {
@@ -1333,6 +1320,11 @@
 							}
 
 						}, 500)
+						
+						//守护活动
+						this.is_guardian_active = res.data.is_guardian_active
+						this.guardian_active_info = res.data.guardian_active_info?res.data.guardian_active_info:'';
+						console.log(res.data)
 
 						// 聊天
 						const chartList = []
@@ -2326,7 +2318,8 @@
 								steal_count: res.data.steal_count,
 								avatar: e.star.head_img_s ? e.star.head_img_s : e.star.head_img_l,
 								hot: this.$app.formatNumberRgx(e['week_hot']),
-								steal: res.data.steal[index]
+								steal: res.data.steal[index],
+								guardian_active_info: e.guardian_active_info,
 							})
 							if (res.data.steal[index] > 0) {
 								this.startStealTimeInterval(index)
@@ -2564,21 +2557,50 @@
 							height: 170upx;
 							z-index: 1;
 						}
-
-						.avatar.share::after {
-							content: "召集打榜";
-							position: absolute;
-							width: 100%;
-							background-color: rgba(0, 0, 0, .3);
-							bottom: 0;
-							left: 0;
-							height: 40upx;
-							color: #fff;
+						
+						.guardian-active {
+							display: flex;
+							flex-direction: row;
+							align-items: center;
 							font-size: 22upx;
-							text-align: center;
-							z-index: 2;
+							background-color: rgba($color: #000, $alpha: 0.5);
+							color: #FFFFFF;
+							border-radius: 30rpx;
+							padding: 5rpx 10rpx;
+							position: absolute;
+							bottom: -10rpx;
+							z-index: 9;
 
+						
+							.guardian-info{
+								display: flex;
+								flex-direction: row;
+								align-items: center;
+								image {
+									width: 30upx;
+									height: 30upx;
+									border-radius: 50%;
+									margin-right: 10rpx;
+								}
+							}
+							
+						
 						}
+
+						// .avatar.share::after {
+						// 	content: "召集打榜";
+						// 	position: absolute;
+						// 	width: 100%;
+						// 	background-color: rgba(0, 0, 0, .3);
+						// 	bottom: 0;
+						// 	left: 0;
+						// 	height: 40upx;
+						// 	color: #fff;
+						// 	font-size: 22upx;
+						// 	text-align: center;
+						// 	z-index: 2;
+
+						// }
 
 						.rank {
 							font-weight: 700;
@@ -2751,7 +2773,6 @@
 				display: flex;
 				align-items: center;
 				background-color: #FFF;
-				box-shadow: 0rpx 8rpx 7rpx 0rpx rgba(0, 0, 0, 0.07);
 				position: relative;
 
 				.func-list-wrapper {
@@ -2836,7 +2857,6 @@
 				justify-content: space-between;
 				align-items: center;
 				background: rgba(0, 0, 0, 0.1);
-				margin-top: 20rpx;
 
 				.left {
 					display: flex;
@@ -2895,6 +2915,8 @@
 			overflow-y: auto;
 			position: relative;
 			margin-bottom: 90rpx;
+			background: url(https://mmbiz.qpic.cn/mmbiz_jpg/w5pLFvdua9EUOian1yLA231LtWCWY3fswYia9CKdEFlV9kPibmeG6oeYFcHbQ4d2bTiaC1eMCuXiboMyN3QshTOGdTQ/0);
+			background-size: 100%;
 
 			.msg-item {
 				padding: 16upx 32upx;
@@ -3590,53 +3612,88 @@
 			.list-wrapper {
 				.item {
 					display: flex;
+					flex-direction: column;
 					justify-content: flex-start;
 					align-items: center;
 					padding: 10upx 20upx;
-					border-radius: 60upx;
+					border-radius: 80upx;
 					background-color: rgba($color_3, .3);
 					margin: 10upx;
 
-					.rank-num {
-						width: 90upx;
-						text-align: center;
-					}
-
-					.avatar image {
-						width: 90upx;
-						height: 90upx;
-						border-radius: 50%;
-					}
-
-					.text-container {
-						width: 220upx;
-						padding: 0 30upx;
-						line-height: 44upx;
-
-						.bottom-text {
-							display: flex;
-							align-items: center;
-
-							.hot-count {
-								color: $color_3;
-								margin-right: 4upx;
+					.steal-info{
+						display: flex;
+						flex-direction: row;
+						align-items: center;
+						
+						.rank-num {
+							width: 90upx;
+							text-align: center;
+						}
+						
+						.avatar image {
+							width: 90upx;
+							height: 90upx;
+							border-radius: 50%;
+						}
+						
+						.text-container {
+							width: 220upx;
+							padding: 0 30upx;
+							line-height: 44upx;
+						
+							.bottom-text {
+								display: flex;
+								align-items: center;
+						
+								.hot-count {
+									color: $color_3;
+									margin-right: 4upx;
+								}
+						
+								.icon-heart {
+									width: 30upx;
+									height: 30upx;
+								}
 							}
-
-							.icon-heart {
+						}
+						
+						.steal-count {
+							margin-right: 20upx;
+						
+							image {
+								width: 40upx;
+								min-height: 40upx;
+							}
+						}
+					}
+					.guardian_active_info{
+						display: flex;
+						flex-direction: row;
+						font-size: 22rpx;
+						background-color: #FFFFFF;
+						padding: 5rpx 10rpx;
+						border-radius: 20rpx;
+						.user-text {
+							color: $color_3;
+							margin-left: 10rpx;
+						}
+						.guardian-info{
+							display: flex;
+							flex-direction: row;
+							align-items: center;
+							image {
 								width: 30upx;
 								height: 30upx;
+								border-radius: 50%;
+								margin-right: 10upx;
+							}
+							
+							.guardian-name{
+								max-width: 100rpx;
 							}
 						}
 					}
-
-					.steal-count {
-						margin-right: 20upx;
-
-						image {
-							width: 40upx;
-							min-height: 40upx;
-						}
-					}
+					
 				}
 
 			}

@@ -180,6 +180,12 @@
 				}
 			},
 			{
+			    "path" : "star/guardian_active/guardian_active",
+			    "style": {
+			    	"navigationBarTitleText": "守护爱豆"
+			    }
+			},
+			{
 				"path": "task/task",
 				"style": {
 					"navigationBarTitleText": "任务"
