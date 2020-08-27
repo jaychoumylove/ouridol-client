@@ -14,7 +14,7 @@
 							</view>
 						</view>
 						
-						<view class="row bottom">产能：<text style="color:#FF5174;">{{spriteInfo.earnPer}}能量/100秒</text></view>
+						<view class="row bottom">产能：<text style="color:#FF5174;">{{spriteInfo.earnPer}}能量/10秒</text></view>
 					</view>
 				</view>
 				
