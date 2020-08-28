@@ -29,7 +29,7 @@
 						<view class='guardian-active row'>
 							<view class="guardian-info" v-if="guardian_active_info && $app.getData('userStar').id == star.id">
 								<image class="avatar" :src="guardian_active_info.user.avatarurl || $app.getData('AVATAR')" mode="aspectFill"></image>
-							</view> 
+							</view>
 							<view class="text">{{guardian_active_info?'守护中':'我来守护'}}></view>
 						</view>
 					</view>
@@ -538,41 +538,43 @@
 				</view>
 
 				<view class="list-wrapper">
-					<view class="item" v-for="(item,index) in starRankList" :key="index" v-if="index<5">
-						<view class="steal-info">
-							<view class='avatar'>
-								<image :src="item.avatar" mode="aspectFill"></image>
-							</view>
-							<view class="text-container">
-								<view class="star-name">{{item.name}}</view>
-								<view class="bottom-text">
-									<view class="hot-count">{{item.hot}}</view>
-									<!-- <image class="icon-heart" src="/static/image/index/ic_hot.png" mode=""></image> -->
+					<scroll-view scroll-y style="height: 600rpx;">
+						<view class="item" v-for="(item,index) in starRankList" :key="index">
+							<view class="steal-info">
+								<view class='avatar'>
+									<image :src="item.avatar" mode="aspectFill"></image>
+								</view>
+								<view class="text-container">
+									<view class="star-name">{{item.name}}</view>
+									<view class="bottom-text">
+										<view class="hot-count">{{item.hot}}</view>
+										<!-- <image class="icon-heart" src="/static/image/index/ic_hot.png" mode=""></image> -->
+									</view>
+								</view>
+								<view class="steal-count flex-set">+{{item.steal_count}}
+									<image src="/static/image/user/b1.png" mode="widthFix"></image>
+								</view>
+								<view class="btn" v-if="!item.guardian_active_info" @tap="steal(item.starid,index,item.steal)">
+									<btnComponent type="default">
+										<view class="flex-set" style="width: 130upx;height: 60upx;">{{item.steal>0?item.steal:'偷取'}}</view>
+									</btnComponent>
+								</view>
+								<view class="btn" v-if="item.guardian_active_info">
+									<btnComponent type="default">
+										<view class="flex-set" style="width: 130upx;height: 60upx;">守护中</view>
+									</btnComponent>
 								</view>
 							</view>
-							<view class="steal-count flex-set">+{{item.steal_count}}
-								<image src="/static/image/user/b1.png" mode="widthFix"></image>
-							</view>
-							<view class="btn" v-if="!item.guardian_active_info" @tap="steal(item.starid,index,item.steal)">
-								<btnComponent type="default">
-									<view class="flex-set" style="width: 130upx;height: 60upx;">{{item.steal>0?item.steal:'偷取'}}</view>
-								</btnComponent>
-							</view>
-							<view class="btn" v-if="item.guardian_active_info">
-								<btnComponent type="default">
-									<view class="flex-set" style="width: 130upx;height: 60upx;">{{item.steal>0?item.steal:'守护中'}}</view>
-								</btnComponent>
+							<view class="guardian_active_info" v-if="item.guardian_active_info">
+								<view class="">{{item.guardian_active_info.time_text}}</view>
+								<view class="user-text">守护者：</view>
+								<view class="guardian-info">
+									<image class="avatar" :src="item.guardian_active_info.user.avatarurl || $app.getData('AVATAR')" mode="aspectFill"></image>
+									<text class="guardian-name text-overflow">{{item.guardian_active_info.user.nickname || $app.getData('NICKNAME')}}</text>
+								</view>
 							</view>
 						</view>
-						<view class="guardian_active_info" v-if="item.guardian_active_info">
-							<view class="">{{item.guardian_active_info.time_text}}</view>
-							<view class="user-text">守护者：</view>
-							<view class="guardian-info">
-								<image class="avatar" :src="item.guardian_active_info.user.avatarurl || $app.getData('AVATAR')" mode="aspectFill"></image>
-								<text class="guardian-name text-overflow">{{item.guardian_active_info.user.nickname || $app.getData('NICKNAME')}}</text>
-							</view>
-						</view>
-					</view>
+					</scroll-view>
 				</view>
 			</view>
 		</modalComponent>
@@ -1305,7 +1307,7 @@
 						this.stealLimitTime = res.data.stealLimitTime
 						this.is_automatic_steal = res.data.is_automatic_steal
 						this.stealCountdown = res.data.stealCountdown
-						
+
 						setTimeout(() => {
 							if (this.is_automatic_steal) {
 								if (this.stealCountdown == 0) {
@@ -1320,10 +1322,10 @@
 							}
 
 						}, 500)
-						
+
 						//守护活动
 						this.is_guardian_active = res.data.is_guardian_active
-						this.guardian_active_info = res.data.guardian_active_info?res.data.guardian_active_info:'';
+						this.guardian_active_info = res.data.guardian_active_info ? res.data.guardian_active_info : '';
 						console.log(res.data)
 
 						// 聊天
@@ -1809,6 +1811,7 @@
 			},
 			// 偷花倒计时
 			startStealTimeInterval(index) {
+				console.log(index)
 				this.$app.timeId.push(setInterval(() => {
 					--this.starRankList[index].steal
 				}, 1000))
@@ -2291,9 +2294,7 @@
 			},
 			getStarRank() {
 				// 偷花
-				this.$app.request(this.$app.API.STAR_RANK, {
-					type: 1
-				}, res => {
+				this.$app.request(this.$app.API.STAR_STEAL_RANK, {}, res => {
 					this.steal_num = res.data.steal_num
 					this.sprite_level = res.data.sprite_level
 					this.steal_num_max = res.data.steal_num_max
@@ -2311,7 +2312,7 @@
 					const resList = []
 					let index = 0
 					res.data.list.forEach((e, i) => {
-						if (i < 6 && e.star.id != this.$app.getData('userStar')['id']) {
+						if(!e.guardian_active_info){
 							resList.push({
 								starid: e.star.id,
 								name: e.star.name,
@@ -2321,13 +2322,25 @@
 								steal: res.data.steal[index],
 								guardian_active_info: e.guardian_active_info,
 							})
-							if (res.data.steal[index] > 0) {
-								this.startStealTimeInterval(index)
-							}
 							index++
+						}else{
+							resList.push({
+								starid: e.star.id,
+								name: e.star.name,
+								steal_count: res.data.steal_count,
+								avatar: e.star.head_img_s ? e.star.head_img_s : e.star.head_img_l,
+								hot: this.$app.formatNumberRgx(e['week_hot']),
+								steal: 0,
+								guardian_active_info: e.guardian_active_info,
+							})
 						}
 					})
-
+					resList.forEach((e, i) => {
+						if (e.steal > 0) {
+							this.startStealTimeInterval(i)
+						}
+					})
+					
 					this.starRankList = resList
 				})
 			},
@@ -2557,7 +2570,7 @@
 							height: 170upx;
 							z-index: 1;
 						}
-						
+
 						.guardian-active {
 							display: flex;
 							flex-direction: row;
@@ -2571,11 +2584,12 @@
 							bottom: -10rpx;
 							z-index: 9;
 
-						
-							.guardian-info{
+
+							.guardian-info {
 								display: flex;
 								flex-direction: row;
 								align-items: center;
+
 								image {
 									width: 30upx;
 									height: 30upx;
@@ -2583,8 +2597,8 @@
 									margin-right: 10rpx;
 								}
 							}
-							
-						
+
+
 						}
 
 						// .avatar.share::after {
@@ -3620,80 +3634,84 @@
 					background-color: rgba($color_3, .3);
 					margin: 10upx;
 
-					.steal-info{
+					.steal-info {
 						display: flex;
 						flex-direction: row;
 						align-items: center;
-						
+
 						.rank-num {
 							width: 90upx;
 							text-align: center;
 						}
-						
+
 						.avatar image {
 							width: 90upx;
 							height: 90upx;
 							border-radius: 50%;
 						}
-						
+
 						.text-container {
 							width: 220upx;
 							padding: 0 30upx;
 							line-height: 44upx;
-						
+
 							.bottom-text {
 								display: flex;
 								align-items: center;
-						
+
 								.hot-count {
 									color: $color_3;
 									margin-right: 4upx;
 								}
-						
+
 								.icon-heart {
 									width: 30upx;
 									height: 30upx;
 								}
 							}
 						}
-						
+
 						.steal-count {
 							margin-right: 20upx;
-						
+
 							image {
 								width: 40upx;
 								min-height: 40upx;
 							}
 						}
 					}
-					.guardian_active_info{
+
+					.guardian_active_info {
 						display: flex;
 						flex-direction: row;
 						font-size: 22rpx;
 						background-color: #FFFFFF;
 						padding: 5rpx 10rpx;
 						border-radius: 20rpx;
+
 						.user-text {
 							color: $color_3;
 							margin-left: 10rpx;
 						}
-						.guardian-info{
+
+						.guardian-info {
 							display: flex;
 							flex-direction: row;
 							align-items: center;
+
 							image {
 								width: 30upx;
 								height: 30upx;
 								border-radius: 50%;
 								margin-right: 10upx;
 							}
-							
-							.guardian-name{
+
+							.guardian-name {
 								max-width: 100rpx;
 							}
 						}
 					}
-					
+
 				}
 
 			}
