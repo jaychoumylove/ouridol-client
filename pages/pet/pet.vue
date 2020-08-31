@@ -641,7 +641,7 @@
 								{{item.name}}
 							</view>
 							<view class="item-image flex-set">
-								<image :src="item.image"></image>
+								<image :src="item.image" mode="widthFix"></image>
 								<view class="item-text">
 									<view class="item-color"></view>
 									<view class="flex-set item-text-color">使用中</view>
@@ -2296,7 +2296,7 @@
 						margin-top: 25rpx;
 						image{
 							padding: 0 20rpx;
-							margin: 20rpx 0;
+							margin-top: 20rpx;
 						}
 		
 						.item-text {
