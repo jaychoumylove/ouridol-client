@@ -209,11 +209,11 @@
 						return
 					}
 				} else {
-					this.$app.request('badge/use', {
-						badge_id: item.id
-					}, res => {
-						this.getTaskList()
-					}, 'POST', true)
+					// this.$app.request('badge/use', {
+					// 	badge_id: item.id
+					// }, res => {
+					// 	this.getTaskList()
+					// }, 'POST', true)
 
 				}
 			},
