@@ -50,8 +50,9 @@
 				<view class="rank-num">
 					<view>{{index+1}}</view>
 				</view>
-				<view class='avatar'>
-					<image :src="item.avatar || AVATAR" mode="aspectFill"></image>
+				<view class="avatar-block">
+					<image class="avatar" :src="item.avatar || AVATAR" mode="aspectFill"></image>
+					<image class="headwear position-set" v-if="item.headwear&&item.headwear.img" :src="item.headwear.img"></image>
 				</view>
 				<view class="text-container">
 					<view class="star-name text-overflow">{{item.nickname || NICKNAME}}</view>
@@ -66,8 +67,9 @@
 			<view class="rank-num">
 				<view>{{myInfo.rank}}</view>
 			</view>
-			<view class='avatar'>
-				<image :src="$app.getData('userInfo').avatarurl" mode="aspectFill"></image>
+			<view class="avatar-block">
+				<image class="avatar" :src="$app.getData('userInfo').avatarurl" mode="aspectFill"></image>
+				<image class="headwear position-set" v-if="myInfo.headwear&&myInfo.headwear.img" :src="myInfo.headwear.img"></image>
 			</view>
 			<view class="text-container">
 				<view class="star-name text-overflow">{{$app.getData('userInfo').nickname}}</view>
@@ -130,6 +132,7 @@
 							avatar: e.user && e.user.avatarurl || this.$app.getData('AVATAR'),
 							nickname: e.user && e.user.nickname || this.$app.getData('NICKNAME'),
 							hot: this.$app.formatNumberRgx(e.hot),
+							headwear: e.headwear
 						})
 					})
 
@@ -307,13 +310,22 @@
 					
 				}
 
-				.avatar image {
+				.avatar-block{
 					margin-left: 60upx;
-					width: 80upx;
-					height: 80upx;
-					border-radius: 50%;
+					position: relative;
+					
+					.avatar{
+						width: 80upx;
+						height: 80upx;
+						border-radius: 50%;
+					}
+					.headwear{
+						width: 120upx;
+						height: 120upx;
+					}
+					
 				}
-
+				
 				.text-container {
 					margin-left: 30upx;
 					width: 250upx;
@@ -368,11 +380,20 @@
 				
 			}
 
-			.avatar image {
+			.avatar-block{
 				margin-left: 60upx;
-				width: 80upx;
-				height: 80upx;
-				border-radius: 50%;
+				position: relative;
+				
+				.avatar{
+					width: 80upx;
+					height: 80upx;
+					border-radius: 50%;
+				}
+				.headwear{
+					width: 120upx;
+					height: 120upx;
+				}
+				
 			}
 
 			.text-container {

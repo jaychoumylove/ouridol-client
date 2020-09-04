@@ -8,7 +8,7 @@
 		<view class="active-center-container">
 			<view class="header">
 				<view class="lable">
-				本月福利
+					本月福利
 				</view>
 				<view class="title">
 					为{{$app.getData('userStar').name || '明星'}}完成看视频任务，解锁应援金
@@ -43,7 +43,7 @@
 					<view>达标人数：<text style="color:#F6AFAF;">{{people.finish_num}}</text></view>
 				</view>
 			</view>
-			
+
 			<view class="active-container">
 				<view class="lable">
 					你已打卡：<text style="color:#F6AFAF;">{{my.sup_num}}</text> 天
@@ -62,7 +62,9 @@
 			</view>
 
 			<view class="notice-container">
-				<view class="article-name"><image style="width: 40rpx;" src="/static/image/star.png" mode="widthFix"></image>为爱解锁活动说明</view>
+				<view class="article-name">
+					<image style="width: 40rpx;" src="/static/image/star.png" mode="widthFix"></image>为爱解锁活动说明
+				</view>
 
 				<block v-for="(item,index) in info.desc" :key="index">
 					<view class="article-group">
@@ -80,7 +82,10 @@
 			<view class='scroll-view'>
 
 				<view class='item-wrap' v-for="(item,index) in userRank" :key="index">
-					<image class='avatar' :src="item.avatarurl" mode="aspectFill"></image>
+					<view class="avatar-block">
+						<image class='avatar' :src="item.avatarurl" mode="aspectFill"></image>
+						<image class="headwear position-set" v-if="item.user.headwear" :src="item.user.headwear.img"></image>
+					</view>
 					<view class="text-wrap">
 						<view class="name">{{item.nickname}}</view>
 						<view class="card">累计打卡：{{item.sup_num}}天</view>
@@ -187,7 +192,7 @@
 		},
 		data() {
 			return {
-				starid:0,
+				starid: 0,
 				star: {},
 				activeInfo: {
 					can_card: 1,
@@ -234,9 +239,8 @@
 			const shareType = e.target && e.target.dataset.share
 			return this.$app.commonShareAppMessage(11)
 		},
-		onLoad(option) {
-		},
-		onShow(){
+		onLoad(option) {},
+		onShow() {
 			if (this.$app.getData('userStar').id) {
 				this.starid = this.$app.getData('userStar').id
 			} else {
@@ -348,7 +352,7 @@
 										success: res => {
 											this.canvasImg = res.tempFilePath
 											console.log(this.canvasImg);
-											
+
 										}
 									}, this);
 								})
@@ -374,7 +378,15 @@
 			},
 			getInfo() {
 				this.$app.request(this.$app.API.YINGYUAN_INFO, {}, res => {
-					const {info, progressing, is_today, reward, sup_ext, people, step} = res.data;
+					const {
+						info,
+						progressing,
+						is_today,
+						reward,
+						sup_ext,
+						people,
+						step
+					} = res.data;
 					this.info = info;
 					this.progressing = progressing;
 					this.reward = reward;
@@ -387,7 +399,7 @@
 			},
 			getList() {
 				if (this.end) return;
-				
+
 				this.$app.request(this.$app.API.YINGYUAN_LIST, {
 					page: this.page
 				}, res => {
@@ -417,7 +429,7 @@
 						this.getInfo()
 						this.$app.toast('今日打卡成功', 'success')
 					}, 'POST', true)
-				}, this.$app.getData('config').kindness_swithch)//没有广告不给奖励
+				}, this.$app.getData('config').kindness_swithch) //没有广告不给奖励
 			},
 			// 打卡
 			card(e) {
@@ -516,9 +528,9 @@
 </script>
 
 <style lang="scss" scoped="">
-	
 	$color_0: white;
 	$color_1: white;
+
 	.active_one-container {
 		padding: 20upx;
 		background-color: $text-color-10;
@@ -588,6 +600,7 @@
 			display: flex;
 			flex-direction: column;
 			align-items: center;
+
 			image {
 				border-radius: 20upx;
 			}
@@ -664,6 +677,7 @@
 				display: flex;
 				justify-content: flex-start;
 				margin: 20upx 0;
+
 				.lable {
 					padding: 3rpx 10rpx;
 					display: inline-block;
@@ -672,12 +686,14 @@
 					margin-right: 20upx;
 					color: white;
 				}
+
 				.title {
 					color: $text-color-7;
 					font-size: 30upx;
 					font-weight: 700;
 				}
 			}
+
 			.top-wrap {
 				border-top-left-radius: 30upx;
 				border-top-right-radius: 30upx;
@@ -762,27 +778,28 @@
 					justify-content: space-between;
 				}
 			}
-			
+
 			.active-container {
 				display: flex;
 				margin: 20upx 0;
 				justify-content: flex-end;
 				// height: 40upx;
 				line-height: 70upx;
+
 				.lable {
 					margin-left: 20upx;
 					margin-right: auto;
 					display: inline-block;
 					height: 70upx;
 				}
+
 				.card-action {
 					height: 70upx;
 					margin: 0 20upx;
 					padding: 0 10upx;
 				}
-				.friend {
-					
-				}
+
+				.friend {}
 			}
 
 			.notice-container {
@@ -849,12 +866,21 @@
 					display: flex;
 					position: relative;
 					background-color: #fbdedb;
-					padding: 10upx 40upx;
+					padding: 20upx 40upx;
+
+					.avatar-block {
+						position: relative;
+					}
 
 					.avatar {
 						width: 100upx;
 						height: 100upx;
 						border-radius: 50%;
+					}
+
+					.headwear {
+						width: 150upx;
+						height: 150upx;
 					}
 
 					.text-wrap {

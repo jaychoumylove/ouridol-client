@@ -2,7 +2,10 @@
 	<view class="container">
 		<view class="left-container flex-set">
 			<view class="rank-num">{{rank}}</view>
-			<image class='avatar' v-if="avatar" :src="avatar" mode="aspectFill"></image>
+			<view class="avatar-block">
+				<image class='avatar' v-if="avatar" :src="avatar" mode="aspectFill"></image>
+				<image class="headwear position-set" v-if="headwear" :src="headwear.img"></image>
+			</view>
 
 			<slot name="left-container"></slot>
 		</view>
@@ -25,7 +28,10 @@
 			},
 			avatar: {
 				default: ''
-			}
+			},
+			headwear: {
+				default: ''
+			},
 		}
 	}
 </script>
@@ -49,11 +55,18 @@
 				width: 90upx;
 			}
 
+			.avatar-block{
+				position: relative;
+				margin-right: 40upx;
+			}
 			.avatar {
 				width: 90upx;
 				height: 90upx;
 				border-radius: 50%;
-				margin-right: 40upx;
+			}
+			.headwear{
+				width: 135upx;
+				height: 135upx;
 			}
 		}
 	}

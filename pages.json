@@ -149,9 +149,27 @@
         }
         
         ,{
-            "path" : "pages/pet/pet_bg/pet_bg",
+            "path" : "pages/pet/dress_up/pet_bg",
             "style": {
             	"navigationBarTitleText": "精灵背景"
+            }
+        }
+        ,{
+            "path" : "pages/group/marry/marry",
+            "style": {
+            	"navigationBarTitleText": "结婚系统"
+            }
+        }
+        ,{
+            "path" : "pages/pet/dress_up/dress_up",
+            "style": {
+            	"navigationStyle": "custom"
+            }
+        }
+        ,{
+            "path" : "pages/pet/dress_up/headwear",
+            "style": {
+            	"navigationBarTitleText": "头像挂饰"
             }
         }
     ],

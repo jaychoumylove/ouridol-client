@@ -14,7 +14,7 @@
 		</view>
 		<view class="rank-list">
 			<view class="rank-list-item" v-for="(item,index) in rankList" :key="index">
-				<listItemComponent :rank="index+1" :avatar="item.user.avatarurl || $app.getData('AVATAR')">
+				<listItemComponent :rank="index+1" :avatar="item.user.avatarurl || $app.getData('AVATAR')" :headwear="item.headwear || ''">
 					<template v-slot:left-container>
 						<view class="left-container">
 							<view class="name">

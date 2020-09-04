@@ -88,8 +88,6 @@
 		},
 		data() {
 			return {
-				header: this.header = uni.getSystemInfoSync()['statusBarHeight'] + 'px',
-				page: 1,
 				sprite_bg_id: 0,
 				list: [],
 				modal: '',
@@ -102,10 +100,6 @@
 			this.loadData();
 		},
 		methods: {
-			//退回上一层
-			navigateBack() {
-				uni.navigateBack()
-			},
 			//展示说明
 			showDesc(desc){
 				this.modal = 'desc';
@@ -149,7 +143,8 @@
 			},
 			//解锁
 			unlock(id){
-				this.$app.request(this.$app.API.SPRITE_BG_UNLOCK, {
+				this.$app.request(this.$app.API.DRESSUP_UNLOCK, {
+					type:0,
 					id: id
 				}, (res) => {
 					this.$app.toast('解锁成功')
@@ -163,7 +158,8 @@
 					content: '是否购买此背景？',
 					success: res => {
 						if (res.confirm) {
-							this.$app.request(this.$app.API.SPRITE_BG_BUY, {
+							this.$app.request(this.$app.API.DRESSUP_BUY, {
+								type:0,
 								id: id
 							}, (res) => {
 								this.$app.toast('购买成功')
@@ -174,7 +170,8 @@
 				})
 			},
 			use(id) {
-				this.$app.request(this.$app.API.SPRITE_BG_USE, {
+				this.$app.request(this.$app.API.DRESSUP_USE, {
+					type:0,
 					id: id
 				}, (res) => {
 					this.$app.toast('使用成功')
@@ -182,15 +179,21 @@
 				}, 'POST', true)
 			},
 			loadData() {
-				this.$app.request(this.$app.API.SPRITE_BG_LIST, {
+				this.spriteBgList()
+			},
+			spriteBgList() {
+				this.$app.request(this.$app.API.DRESSUP_SELECT, {
+					type:0,
 				}, res => {
-
+			
 					this.list = res.data.list
 					this.sprite_bg_id = res.data.sprite_bg_id;
 				})
-			}
+			},
+			
 		}
 	}
+	
 </script>
 
 <style lang="scss">

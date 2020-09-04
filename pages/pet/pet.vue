@@ -93,7 +93,7 @@
 
 			<!--背景-->
 			<btnComponent>
-				<image src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9FmibDk8LrMNNib025upafEqq6zsKtSCtKY6Wunn0GoEQvSb3Su4m6trunlU2W34G7kbBibac0bxHA8w/0" mode="widthFix" @tap="$app.goPage('/pages/pet/pet_bg/pet_bg')"></image>
+				<image src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9Fic6VmPQYib2ktqATmSxJmUtlibbDuSxOgGUBqx8K7dWSppqJnoNOPOMKWCbf9OH5QHtrYwJqqE8P6Q/0" mode="widthFix" @tap="$app.goPage('/pages/pet/dress_up/dress_up')"></image>
 			</btnComponent>
 
 		</view>
@@ -253,8 +253,9 @@
 								<image v-if="index<3" :src="'/static/image/guild/'+(index+1)+'.png'" mode="widthFix"></image>
 								<view v-else>{{index+1}}</view>
 							</view>
-							<view class='avatar' @tap="goOther(item)">
-								<image :src="item.avatar" mode="aspectFill"></image>
+							<view class='avatar-block' @tap="goOther(item)">
+								<image class="avatar" :src="item.avatar" mode="aspectFill"></image>
+								<image class="headwear position-set" v-if="item.headwear" :src="item.headwear.img"></image>
 							</view>
 							<view class="text-container">
 								<view class="star-name text-overflow">{{item.nickname}}</view>
@@ -1088,6 +1089,7 @@
 							nickname: e.user && e.user.nickname || this.$app.getData('NICKNAME'),
 							intimacy: e.intimacy, //互动值
 							treasure_box_count: e.treasure_box_count,
+							headwear: e.headwear,
 						})
 
 					})
@@ -1851,11 +1853,16 @@
 						}
 					}
 
-					.avatar {
-						image {
+					.avatar-block {
+						position: relative;
+						.avatar {
 							width: 90upx;
 							height: 90upx;
 							border-radius: 50%;
+						}
+						.headwear{
+							width: 135upx;
+							height: 135upx;
 						}
 					}
 

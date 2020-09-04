@@ -203,8 +203,9 @@
 					{{item.sendtime}}
 				</view>
 				<view class="main-msg-wrapper">
-					<view class="avatar" :class="{captain:item.captain == 1}" @tap="tapUser(item.uid)">
+					<view class="avatar" :class="{captain:item.captain != 1}" @tap="tapUser(item.uid)">
 						<image class="avatar-img" :src="item.avatar" mode="aspectFill"></image>
+						<image class="headwear position-set" v-if="item.curHeadwear&&item.curHeadwear.img" :src="item.curHeadwear.img"></image>
 					</view>
 					<view class="content">
 						<view class="top">
@@ -215,9 +216,9 @@
 									<image class="level" :src="'/static/image/icon/level/lv'+ item.level +'.png'" mode="widthFix"></image>
 								</view>
 								<!-- 徽章 -->
-								<view class="fan" v-if="item.badgeId">
+								<!-- <view class="fan" v-if="item.badgeId">
 									<image class="badge" :src="'/static/image/icon/badge/icon'+item.badgeId+'.png'" mode=""></image>
-								</view>
+								</view> -->
 
 							</view>
 						</view>
@@ -237,6 +238,7 @@
 				</view>
 				<view class='avatar'>
 					<image :src="item.avatar" mode="aspectFill"></image>
+					<image class="headwear position-set" v-if="item.curHeadwear&&item.curHeadwear.img" :src="item.curHeadwear.img"></image>
 				</view>
 				<view class="text-container">
 					<view class="star-name text-overflow">{{item.nickname}}</view>
@@ -248,10 +250,11 @@
 		</view>
 		<!-- 侧边按钮组 -->
 		<view class='side-btn-group' :class="{chartbottom:$app.getData('config').chart_type == '1', show:sideBtnOpacity}">
-			<view class="btn" v-if="$app.getData('config').version != $app.getData('VERSION') && $app.getData('config').is_invite_active.status == 1"
-			 @tap="$app.goPage('/pages/group/invite/invite')">
-				<image class="img" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9E52jbGogfOlguQzpRTjxYicHjADPUyaz45eHEQuDTK6ay06Ao4AEThxJ60TG4XXrWNWRmUGW6NS8w/0"
-				 mode="aspectFill"></image>
+			<!-- <view class="btn" v-if="$app.getData('config').version != $app.getData('VERSION') && $app.getData('config').is_marry_active.status == 1" @tap="$app.goPage('/pages/group/marry/marry')">
+				<image class="img" src="/static/image/guild/joingroup.png" mode="aspectFill"></image>
+			</view> -->
+			<view class="btn" v-if="$app.getData('config').version != $app.getData('VERSION') && $app.getData('config').is_invite_active.status == 1" @tap="$app.goPage('/pages/group/invite/invite')">
+				<image class="img" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9E52jbGogfOlguQzpRTjxYicHjADPUyaz45eHEQuDTK6ay06Ao4AEThxJ60TG4XXrWNWRmUGW6NS8w/0" mode="aspectFill"></image>
 			</view>
 			<view class="btn" @tap="modal ='joinGroup'" v-if="$app.getData('platform')=='MP-WEIXIN'&&$app.getData('config').version != $app.getData('VERSION') && $app.getData('userExt') && $app.getData('userExt').is_join_wxgroup == 0">
 				<image class="img" src="/static/image/guild/joingroup.png" mode=""></image>
@@ -1340,6 +1343,7 @@
 								level: e.user && e.user.level,
 								badgeId: e.user && e.user.user_ext && e.user.user_ext.badge_id,
 								sendtimeInt: this.$app.strToTime(e.create_time),
+								curHeadwear: e.user && e.user.headwear,
 							}
 							const leastTime = chartList[i - 1] && chartList[i - 1].sendtimeInt || 0
 							if (item.sendtimeInt - leastTime > 60 * 5) {
@@ -1364,6 +1368,7 @@
 									avatar: e.user && e.user.avatarurl || this.$app.getData('AVATAR'),
 									nickname: e.user && e.user.nickname || this.$app.getData('NICKNAME'),
 									hot: e.thisweek_count,
+									curHeadwear: e.user && e.user.headwear,
 								})
 							})
 							this.userRankList = userRankList
@@ -1796,6 +1801,7 @@
 					level: data.user && data.user.level,
 					badgeId: data.user && data.user.user_ext.badge_id,
 					sendtimeInt: this.$app.strToTime(data.create_time),
+					curHeadwear: e.user && e.user.headwear,
 				}
 				const leastTime = this.chartList[this.chartList.length - 1] && this.chartList[this.chartList.length - 1].sendtimeInt ||
 					0
@@ -2354,6 +2360,7 @@
 							avatar: e.user && e.user.avatarurl || this.$app.getData('AVATAR'),
 							nickname: e.user && e.user.nickname || this.$app.getData('NICKNAME'),
 							hot: e.thisweek_count,
+							curHeadwear: e.user && e.user.headwear,
 						})
 					})
 					this.userRankList = resList
@@ -2375,6 +2382,7 @@
 							content: e.content,
 							captain: e.user && e.user.user_star && e.user.user_star.captain || 0,
 							sendtimeInt: this.$app.strToTime(e.create_time),
+							curHeadwear: e.user && e.user.headwear,
 						}
 						const leastTime = resList[i - 1] && resList[i - 1].sendtimeInt || 0
 						if (item.sendtimeInt - leastTime > 60 * 5) {
@@ -2933,7 +2941,7 @@
 			background-size: 100%;
 
 			.msg-item {
-				padding: 16upx 32upx;
+				padding: 16upx 20upx;
 				// display: flex;
 
 				.sendtime-wrapper {
@@ -2948,7 +2956,7 @@
 					.avatar {
 						width: 80upx;
 						height: 80upx;
-						margin-right: 10upx;
+						margin-right: 20upx;
 						margin-left: 10upx;
 						position: relative;
 
@@ -2967,6 +2975,11 @@
 						font-size: 20upx;
 						right: 0;
 						bottom: 0;
+					}
+					
+					.headwear{
+						width: 120rpx;
+						height: 120rpx;
 					}
 
 
