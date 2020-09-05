@@ -31,7 +31,7 @@
 				</view>
 				<view class="dressup-item">
 					<view class="item" @tap="$app.goPage('/pages/pet/dress_up/headwear')">
-						<image src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9HrdPxWibdec5B8xuaXDQD2XOwlqYiaLRcMsN3YpFHHhcurTyibYWLgkkNrAZF0Cmp21fw4ibBDXXwdzg/0" mode="widthFix"></image>
+						<image src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9HbURBc4icwIfibfezPVz80jBq2MrgQxchV9IeUrsgVXDJx67Il3llNB1X4yF0maFjO3DGicicqhV0Qag/0" mode="widthFix"></image>
 						<view class="name">聊天头饰</view>
 					</view>
 				</view>
