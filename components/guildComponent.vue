@@ -1801,7 +1801,7 @@
 					level: data.user && data.user.level,
 					badgeId: data.user && data.user.user_ext.badge_id,
 					sendtimeInt: this.$app.strToTime(data.create_time),
-					curHeadwear: e.user && e.user.headwear,
+					curHeadwear: data.user && data.user.headwear,
 				}
 				const leastTime = this.chartList[this.chartList.length - 1] && this.chartList[this.chartList.length - 1].sendtimeInt ||
 					0
