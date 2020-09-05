@@ -35,7 +35,8 @@
 		</view>
 
 		<view class="explain-container flex-set">
-			<image :src="$app.getData('config').father_tips_img" mode="widthFix"></image>
+			<image v-if="is_teacher_active" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9HbURBc4icwIfibfezPVz80jBgDXbQgibicUFa8Afhb7qw760KQrawVz31IZhmZu6fGG6TDXVaX6vwEXg/0" mode="widthFix"></image>
+			<image v-else :src="$app.getData('config').father_tips_img" mode="widthFix"></image>
 		</view>
 
 		<view class="tab-container">
@@ -67,7 +68,8 @@
 						<view class="bottom-text">
 							<view class="hot-count" v-if="item.cur_contribute">贡献：{{item.cur_contribute}}</view>
 							<view class="add-count hot-count" style="padding-left: 10rpx; color: #FF5174;" v-if="item.earn">
-								<text>收益：{{item.earn}}</text>
+								<text>收益：{{item.earn}} </text>
+								<text v-if="is_teacher_active" style="padding-left: 5rpx;"> x2</text>
 							</view>
 						</view>
 					</view>
@@ -161,6 +163,7 @@
 					id: this.$app.getData('userInfo')['id'] || null,
 				},
 				fatherRank: [],
+				is_teacher_active: false,
 			};
 		},
 		onShow() {
@@ -281,6 +284,7 @@
 					const resList = []
 					this.todayTotal = res.data.earn
 					this.father = res.data.father
+					this.is_teacher_active = res.data.is_teacher_active
 					for (let v of res.data.list) {
 						resList.push({
 							uid: v.user && v.user.id,
