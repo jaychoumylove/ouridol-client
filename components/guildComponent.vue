@@ -203,7 +203,7 @@
 					{{item.sendtime}}
 				</view>
 				<view class="main-msg-wrapper">
-					<view class="avatar" :class="{captain:item.captain != 1}" @tap="tapUser(item.uid)">
+					<view class="avatar" :class="{captain:item.captain == 1}" @tap="tapUser(item.uid)">
 						<image class="avatar-img" :src="item.avatar" mode="aspectFill"></image>
 						<image class="headwear position-set" v-if="item.curHeadwear&&item.curHeadwear.img" :src="item.curHeadwear.img"></image>
 					</view>
