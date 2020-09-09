@@ -3,8 +3,9 @@
 		由于相关规范，充值功能暂不可用
 	</view>
 	<view v-else class="recharge-container">
+	<!-- <view class="recharge-container"> -->
 			<view v-if="go_browser_modal" class="tips-container" @tap="loadGoBrowser(false)">
-				<image src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9EMGfE6hy6KPqPPAqcOK7rch5JSpAmq86caKtnXkRibO52P0Ce7NAWEL9plPwWQMSjJbNib2NNoLuBw/0"
+				<image src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9EqEN4oDJLWPM1lyhQVjeydnMs82ibmBrzgk8uo95haibSFHnsmX5mexTOIQPDAVpCW0qf0Hw46KqRg/0"
 					 mode="widthFix"></image>
 			</view>
 
@@ -12,8 +13,13 @@
 
 				<view class="user-container">
 					<image :src="userInfo.avatarurl" mode="widthFix"></image>
-					<view class="nickname">
-						{{userInfo.nickname}}
+					<view class="user-info"> 
+						<view class="nickname">
+							{{userInfo.nickname}}
+						</view>
+						<view class="id">
+							{{userInfo.id*1234}}
+						</view>
 					</view>
 				</view>
 				
@@ -303,6 +309,12 @@
 							item: v.item,
 						})
 					}
+					if (res.data.hasOwnProperty('currency')) {
+						this.userCurrency = res.data.currency
+					}
+					if (res.data.hasOwnProperty('gift_num')) {
+						this.giftNum = res.data.gift_num
+					}
 					this.rechargeList = resList
 					this.item_double = res.data.item_double
 					this.$app.setData('goodsList', this.rechargeList)
@@ -348,11 +360,18 @@
 					border-radius: 50%;
 					margin-right: 20upx;
 				}
+				.user-info {
+					display: flex;
+					flex-direction: column;
 
-				.nickname {
-					font-size: 32upx;
-					margin-right: 30upx;
-					color: $text-color-7;
+					.nickname {
+						font-size: 32upx;
+						margin-right: 30upx;
+						color: $text-color-7;
+					}
+					.id {
+						font-size: 24rpx;
+					}
 				}
 			}
 			
