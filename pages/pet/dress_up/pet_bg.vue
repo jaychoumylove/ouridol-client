@@ -6,11 +6,13 @@
 				<view class="item-cont">
 					<view class="item-func">
 						<view class="desc" @tap="showDesc(item.desc)" v-if="item.desc">说明</view>
-						<view class="upload" @tap="uploadAvatar(item.id)" v-if="item.type==2 && item.have_it">
-							<btnComponent type="default">
-								<view class="flex-set" style="width: 140upx;height: 50upx;">上传头像</view>
-							</btnComponent>
-						</view>
+						<block v-if="item.type==2 && item.have_it">
+							<view class="upload" @tap="uploadAvatar(item.id)" v-if="item.id==9">
+								<btnComponent type="default">
+									<view class="flex-set" style="width: 140upx;height: 50upx;">上传头像</view>
+								</btnComponent>
+							</view>
+						</block>
 						<image class="item-img" :src="item.show_img" mode="widthFix"></image>
 					</view>
 					<view class="item-name">{{item.name}}</view>
@@ -224,8 +226,10 @@
 						
 						.desc{
 							position: absolute;
+							top: 25rpx;
+							left: 25rpx;
 							z-index: 2; 
-							color: $text-color-2; 
+							color: #FFFFFF; 
 							border: 2rpx solid;
 							padding: 0 10rpx;
 							border-radius: 10rpx;
