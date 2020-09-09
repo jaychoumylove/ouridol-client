@@ -41,8 +41,14 @@
 					this.$app.setData('platform', 'MP-QQ')
 				}
 				// H5
+				// 微信H5
 				// #ifdef H5
-				this.$app.setData('platform', 'H5')
+				var ua = window.navigator.userAgent.toLowerCase();
+				if (~ua.indexOf('micromessenger')) {
+					this.$app.setData('platform', 'H5')
+				} else {
+					this.$app.setData('platform', 'H5-OTHER')
+				}
 				// #endif
 				// APP
 				// #ifdef APP-PLUS
