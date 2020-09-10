@@ -216,9 +216,13 @@
 									<image class="level" :src="'/static/image/icon/level/lv'+ item.level +'.png'" mode="widthFix"></image>
 								</view>
 								<!-- 徽章 -->
-								<!-- <view class="fan" v-if="item.badgeId">
-									<image class="badge" :src="'/static/image/icon/badge/icon'+item.badgeId+'.png'" mode=""></image>
-								</view> -->
+								<view class="fan" v-if="item.badge">
+									<view class="user-badge">
+										<block v-for="(badge,badgeIndex) in item.badge" :key="badgeIndex">
+											<image class="badge-item" v-if="badge.img" :src="badge.img" mode="widthFix"></image>
+										</block>
+									</view>
+								</view>
 
 							</view>
 						</view>
@@ -250,9 +254,9 @@
 		</view>
 		<!-- 侧边按钮组 -->
 		<view class='side-btn-group' :class="{chartbottom:$app.getData('config').chart_type == '1', show:sideBtnOpacity}">
-			<!-- <view class="btn" v-if="$app.getData('config').version != $app.getData('VERSION') && $app.getData('config').is_marry_active.status == 1" @tap="$app.goPage('/pages/group/marry/marry')">
-				<image class="img" src="/static/image/guild/joingroup.png" mode="aspectFill"></image>
-			</view> -->
+			<view class="btn" v-if="$app.getData('config').version != $app.getData('VERSION') && $app.getData('config').is_marry_active.status == 1" @tap="$app.goPage('/pages/group/marry/marry')">
+				<image class="img" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9E9lB1uaR0AK0a1icXKrcZOnMFlxwdDwlYibt7dY2GgYJAAoibTle18HUrO2xaDAsPeriaOvWTaeQ7C2w/0" mode="aspectFill"></image>
+			</view>
 			<view class="btn" v-if="$app.getData('config').version != $app.getData('VERSION') && $app.getData('config').is_invite_active.status == 1" @tap="$app.goPage('/pages/group/invite/invite')">
 				<image class="img" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9E52jbGogfOlguQzpRTjxYicHjADPUyaz45eHEQuDTK6ay06Ao4AEThxJ60TG4XXrWNWRmUGW6NS8w/0" mode="aspectFill"></image>
 			</view>
@@ -1341,7 +1345,7 @@
 								content: e.content,
 								captain: e.user && e.user.user_star && e.user.user_star.captain || 0,
 								level: e.user && e.user.level,
-								badgeId: e.user && e.user.user_ext && e.user.user_ext.badge_id,
+								badge: e.user && e.user.badge,
 								sendtimeInt: this.$app.strToTime(e.create_time),
 								curHeadwear: e.user && e.user.headwear,
 							}
@@ -1799,7 +1803,7 @@
 					content: data.content,
 					captain: data.user && data.user.user_star && data.user.user_star.captain || 0,
 					level: data.user && data.user.level,
-					badgeId: data.user && data.user.user_ext.badge_id,
+					badge: data.user && data.user.badge,
 					sendtimeInt: this.$app.strToTime(data.create_time),
 					curHeadwear: data.user && data.user.headwear,
 				}
@@ -2383,6 +2387,7 @@
 							captain: e.user && e.user.user_star && e.user.user_star.captain || 0,
 							sendtimeInt: this.$app.strToTime(e.create_time),
 							curHeadwear: e.user && e.user.headwear,
+							badge: data.user && data.user.badge,
 						}
 						const leastTime = resList[i - 1] && resList[i - 1].sendtimeInt || 0
 						if (item.sendtimeInt - leastTime > 60 * 5) {
@@ -3010,30 +3015,13 @@
 
 									.level {
 										width: 76upx;
-										// height: 38upx;
 										margin-top: 2upx;
 									}
-
-									.badge {
-										width: 112upx;
-										height: 33upx;
+									
+									.user-badge .badge-item {
+										width: 50upx;
+										margin-left: 5upx;
 									}
-
-									// .level {
-									// 	color: #FFF;
-									// 	font-size: 16upx;
-									// 	top: 40%;
-									// }
-
-									// .fan-text {
-									// 	background: linear-gradient(to right, #FFF, #ffcccc);
-									// 	border-radius: 20upx;
-									// 	color: #fd9176;
-									// 	font-size: 24upx;
-									// 	padding: 2upx 12upx;
-									// 	margin-left: -12upx;
-									// }
-
 								}
 							}
 

@@ -172,6 +172,24 @@
             	"navigationBarTitleText": "头像挂饰"
             }
         }
+        ,{
+            "path" : "pages/group/marry/marry_apply",
+            "style": {
+            	"navigationBarTitleText": "我们结婚吧"
+            }
+        }
+        ,{
+            "path" : "pages/group/marry/marry_list",
+            "style": {
+            	"navigationBarTitleText": "我的CP"
+            }
+        }
+        ,{
+            "path" : "pages/pet/dress_up/badge",
+            "style": {
+            	"navigationBarTitleText": "徽章"
+            }
+        }
     ],
 	// 分包
 	"subPackages": [{

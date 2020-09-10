@@ -35,13 +35,13 @@
 						<view class="name">聊天头饰</view>
 					</view>
 				</view>
-				<!-- <view class="dressup-item">
+				<view class="dressup-item">
 					<view class="item" @tap="$app.goPage('/pages/pet/dress_up/badge')">
 						<image src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9HrdPxWibdec5B8xuaXDQD2XqLzO1PXtEDFwlu2cSnks64FvTYDRwtS7UUdGHicYRxa8ult4uib8xc4A/0" mode="widthFix"></image>
-						<view class="name">荣誉徽章</view>
+						<view class="name">徽章</view>
 					</view>
 				</view>
-				<view class="dressup-item">
+				<!-- <view class="dressup-item">
 					<view class="item" @tap="$app.goPage('/pages/pet/dress_up/bubble')">
 						<image src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9HrdPxWibdec5B8xuaXDQD2XddIeIC7iaLlTajm0VbUv2xzbBPvW5OKichAIsyZOZwKtuHsolOMiaeNkg/0" mode="widthFix"></image>
 						<view class="name">聊天气泡</view>
