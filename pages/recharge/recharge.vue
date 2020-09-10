@@ -156,7 +156,7 @@
 				}
 			}, 300)
 			
-			// #ifdef MP-WEIXIN
+			// #ifdef MP-WEIXIN || MP-QQ
 			this.pay_type = "wechat_pay";
 			// #endif
 			

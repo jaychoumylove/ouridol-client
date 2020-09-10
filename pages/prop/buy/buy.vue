@@ -1,5 +1,33 @@
  <template>
 	<view class="buy-container">
+		<view v-if="go_browser_modal" class="tips-container" @tap="loadGoBrowser(false)">
+			<image src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9EqEN4oDJLWPM1lyhQVjeydnMs82ibmBrzgk8uo95haibSFHnsmX5mexTOIQPDAVpCW0qf0Hw46KqRg/0"
+				 mode="widthFix"></image>
+		</view>
+		<view class="top-row" v-if="['H5-OTHER', 'H5'].indexOf($app.getData('platform')) > -1">
+		<!-- <view class="top-row"> -->
+			<view class="user-container">
+				<image :src="userInfo.avatarurl" mode="widthFix"></image>
+				<view class="user-info"> 
+					<view class="nickname">
+						{{userInfo.nickname}}
+					</view>
+					<view class="id">
+						{{userInfo.id*1234}}
+					</view>
+				</view>
+			</view>
+			<view class="right-btn">
+				<view class="ali-pay-btn flex-set" @tap="loadGoBrowser(true)" v-if="pay_switch">支付宝购买</view>
+				<btnComponent type="css" v-if="pay_type=='ali_pay'">
+					<view class="proxy flex-set" @tap="modal='proxyRecharge'">
+						<!-- <image src="/static/image/recharge/proxy.png" mode=""></image> -->
+						<text>搜索ID购买</text>
+					</view>
+				</btnComponent>
+			</view>
+		</view>
+		
 		<view class="top-enter-wrapper">
 			<view class="explain-wrapper flex-set">
 				<!-- <image src=""></image> -->
@@ -108,6 +136,27 @@
 				</view>				
 			</view>
 		</modalComponent>
+		<!-- 搜索id -->
+		<modalComponent v-if="modal == 'proxyRecharge'" title="搜索ID购买" @closeModal="modal=''">
+			<view class="userinfo-modal-container">
+				<view class="top">
+					<image class="avatar" :src="currentUser.avatarurl" mode="scaleToFill"></image>
+					<view class="nickname">{{currentUser.nickname}}</view>
+				</view>
+		
+				<view class="send-input">
+					<input type="number" confirm-type="search" @blur="kickBack()" @confirm="searchUser()" :value="currentUserid"
+					 @input="currentUserid = $event.detail.value" placeholder="请输入对方的ID" />
+				</view>
+				<btnComponent type="css">
+					<view class="btn flex-set" @tap="searchUser()">查找用户</view>
+				</btnComponent>
+				<btnComponent type="css">
+					<view class="btn flex-set" @tap="confirm()">为TA购买</view>
+				</btnComponent>
+			</view>
+		</modalComponent>
+		<view v-if="pay_type=='ali_pay'" id="alipay" style="display: none;"></view>
 	</view>
 </template>
 
@@ -125,13 +174,77 @@
 				list: [],
 				num: 1,
 				modal: '',
-				exchangeIndex: -1
+				exchangeIndex: -1,
+				userInfo: {
+					avatarurl: this.$app.getData('userInfo')['avatarurl'] || this.$app.getData('AVATAR'),
+					nickname: this.$app.getData('userInfo')['nickname'] || this.$app.getData('NICKNAME'),
+					id: this.$app.getData('userInfo')['id'] || null,
+				},
+				currentUser: {
+					avatarurl: this.$app.getData('AVATAR'),
+				},
+				pay_type: '', // 支付方式
+				pay_switch: false, // 是否可以切换支付方式 微信-支付宝
+				go_browser_modal: false, // 打开浏览器遮照层
 			};
 		},
 		onShow() {
+			// #ifdef MP-WEIXIN || MP-QQ
+			this.pay_type = "wechat_pay";
+			// #endif
+			
+			// #ifdef H5
+			const isWechat = this.isWechat();
+			if (isWechat) {
+				this.pay_type = "wechat_pay";
+				this.pay_switch = true;
+			} else {
+				this.pay_type = "ali_pay";
+			}
+			// #endif
 			this.loadData()
 		},
 		methods: {
+			// #ifdef H5
+			isWechat () { 
+				//判断是否是微信
+			    var ua = navigator.userAgent.toLowerCase();
+			    return ua.match(/MicroMessenger/i) == "micromessenger";
+			},
+			// #endif
+			kickBack() {
+				// #ifdef H5
+				setTimeout(() => {
+					window.scrollTo(0, document.body.scrollTop + 1);
+					document.body.scrollTop >= 1 && window.scrollTo(0, document.body.scrollTop - 1);
+				}, 10)
+				// #endif
+			},
+			// ID确认
+			confirm() {
+				if (this.currentUser.nickname) {
+					this.userInfo = this.currentUser
+					this.modal = ''
+				} else {
+					this.$app.toast('请先查找用户')
+				}
+			},
+			searchUser() {
+				if (!this.currentUserid) return
+				const uid = this.currentUserid / 1234
+				this.$app.request('user/info', {
+					user_id: uid
+				}, res => {
+					if (res.data.nickname) {
+						this.currentUser = res.data
+					} else {
+						this.$app.toast('未找到用户')
+					}
+				}, 'POST', true)
+			},
+			loadGoBrowser(open) {
+				this.go_browser_modal = open;
+			},
 			numChange(index, plus) {
 				if (plus.detail) {
 					this.list[index].num = plus.detail.value
@@ -174,31 +287,43 @@
 				this.$app.request(this.$app.API.PAY_ORDER, {
 					goods_id: item.id,
 					goods_num: item.num,
-					user_id: this.$app.getData('userInfo').id,
+					user_id: this.userInfo.id,
 					type: 1,
+					pay_type: this.pay_type
 				}, res => {
 					// #ifdef H5
-					WeixinJSBridge.invoke('getBrandWCPayRequest', {
-						"appId": res.data.appId, //公众号名称，由商户传入
-						"timeStamp": res.data.timeStamp, //时间戳，自1970年以来的秒数     
-						"nonceStr": res.data.nonceStr, //随机串
-						"package": res.data.package,
-						"signType": res.data.signType, //微信签名方式：     
-						"paySign": res.data.paySign //微信签名 
-					}, res => {
-						console.log(res);
-						if (res.err_msg == "get_brand_wcpay_request:ok") {
-							// 使用以上方式判断前端返回,微信团队郑重提示：
-							//res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+					if (this.pay_type == 'wechat_pay') {
+						WeixinJSBridge.invoke('getBrandWCPayRequest', {
+							"appId": res.data.appId, //公众号名称，由商户传入
+							"timeStamp": res.data.timeStamp, //时间戳，自1970年以来的秒数     
+							"nonceStr": res.data.nonceStr, //随机串
+							"package": res.data.package,
+							"signType": res.data.signType, //微信签名方式：     
+							"paySign": res.data.paySign //微信签名 
+						}, res => {
+							console.log(res);
+							if (res.err_msg == "get_brand_wcpay_request:ok") {
+								// 使用以上方式判断前端返回,微信团队郑重提示：
+								//res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
 
-							this.$app.toast('支付成功', 'success')
-							this.loadData()
-							this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
-								this.$app.setData('userCurrency', res.data)
-								this.userCurrency = this.$app.getData('userCurrency')
-							})
-						}
-					});
+								this.$app.toast('支付成功', 'success')
+								this.loadData()
+								this.$app.request(this.$app.API.USER_CURRENCY, {}, res => {
+									this.$app.setData('userCurrency', res.data)
+									this.userCurrency = this.$app.getData('userCurrency')
+								})
+							}
+						});
+					}
+					
+					if (this.pay_type == 'ali_pay') {
+						// 支付包表单填充
+						document.getElementById('alipay').innerHTML = res.data;
+						setTimeout(() => {
+							// 支付宝表单提交
+							document.forms["alipaysubmit"].submit();
+						}, 50)
+					}
 					// #endif
 					// #ifndef H5
 					uni.requestPayment({
@@ -240,6 +365,77 @@
 <style lang="scss" scoped>
 	.buy-container {
 		height: 100%;
+		.tips-container {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(#000, 0.8);
+			z-index: 6;
+			image {
+				width: 100%;
+			}
+		}
+		.top-row {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin: 20upx;
+			padding: 0 40upx;
+		
+			.user-container {
+				height: 70upx;
+				background-color: rgba(255, 255, 255, .3);
+				display: flex;
+				align-items: center;
+				border-radius: 30upx;
+		
+				image {
+					width: 70upx;
+					height: 70upx;
+					border-radius: 50%;
+					margin-right: 20upx;
+				}
+				.user-info {
+					display: flex;
+					flex-direction: column;
+		
+					.nickname {
+						font-size: 32upx;
+						margin-right: 30upx;
+						color: $text-color-7;
+					}
+					.id {
+						font-size: 24rpx;
+					}
+				}
+			}
+			
+			.right-btn {
+				display: flex;
+				justify-content: space-between;
+			}
+			.ali-pay-btn {
+				background-color: #0088ff;
+				color: white;
+				border-radius: 40upx;
+				margin: 0 10rpx;
+				padding: 10upx 20upx;
+				font-size: 30upx;
+			}
+
+			.proxy {
+				padding: 10upx 20upx;
+				height: 70upx;
+
+				image {
+					width: 50upx;
+					height: 50upx;
+					margin: 0 10upx;
+				}
+			}
+		}
 		
 		.top-enter-wrapper {
 		
@@ -266,7 +462,7 @@
 		.list-item {
 			padding: 10upx 20upx;
 			background-color: rgba(#FFF, .3);
-			border-bottom: 1rpx solid $text-color-10;
+			border-bottom: 1rpx solid #ddd;
 			margin: 20upx 0;
 
 			.row {
@@ -435,6 +631,106 @@
 			}
 			.mTop {
 				margin-bottom: 20upx;
+			}
+		}
+		
+		
+		.userinfo-modal-container {
+			height: 640upx;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: space-around;
+			padding: 40upx;
+	
+			.top {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				line-height: 1.6;
+	
+				.avatar {
+					width: 160rpx;
+					height: 160rpx;
+					border-radius: 50%;
+				}
+	
+				.nickname {
+					font-size: 36upx;
+					font-weight: 600;
+					height: 80upx;
+				}
+			}
+	
+			.btn-list {
+				width: 100%;
+				justify-content: space-around;
+	
+				.btn-item {
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+	
+					.bg {
+						background-color: #FFF;
+						border-radius: 20upx;
+						width: 100upx;
+						height: 100upx;
+	
+						image {
+							width: 60upx;
+							height: 60upx;
+						}
+					}
+	
+					.text {
+						margin-top: 10upx;
+					}
+				}
+			}
+	
+	
+			.content {
+				line-height: 1.6;
+			}
+	
+			.btn {
+				font-size: 32upx;
+				font-weight: 700;
+				width: 300upx;
+				height: 80upx;
+			}
+	
+			.row {
+				width: 100%;
+				justify-content: space-around;
+	
+				.btn {
+					width: 200upx;
+				}
+			}
+	
+			.send-input {
+				position: relative;
+	
+				input {
+					background-color: #EEE;
+					border-radius: 60upx;
+					text-align: center;
+					width: 300upx;
+					height: 80upx;
+					font-size: 32upx;
+					font-weight: 700;
+				}
+	
+				image {
+					position: absolute;
+					width: 50upx;
+					height: 50upx;
+					right: 20upx;
+					top: 50%;
+					transform: translateY(-50%);
+				}
 			}
 		}
 	}
