@@ -9,7 +9,7 @@
 				<view class="avatar">
 					<image :src="info.apply_user.avatarurl?info.apply_user.avatarurl:$app.getData('AVATAR')" mode="widthFix"></image>
 				</view>
-				<view class="desc">来自<text style="color: #F75A73;">{{info.apply_user.nickname?info.apply_user.nickname:$app.getData('NICKNAME')}}</text>的求婚</view>
+				<view class="desc"><text style="color: #F75A73;">{{info.apply_user.nickname?info.apply_user.nickname:$app.getData('NICKNAME')}}</text>邀请你一起组CP</view>
 				<view class="desc">组成CP后，未完成CP任务前，不可再组CP</view>
 				<image class="show_img" src="https://mmbiz.qpic.cn/mmbiz_jpg/w5pLFvdua9HbURBc4icwIfibfezPVz80jBWr6EtVp3lawX9aIjmZjRgYhiaLX8oB6e7rxIgxcqyE7PIJq6wl2C4Bg/0" mode="widthFix"></image>
 				<view class="button" @tap="agreeMarry()">
