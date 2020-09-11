@@ -11,13 +11,26 @@
 				</view>
 			</view>
 		</view>
-		<view class="list-container">
+		<view class="marry-bottom">
+			<view class="cp_list flexcenter" @tap="loadDate(1)">
+				<btnComponent type="default">
+					<view class="flex-set" style="width: 200upx;height: 60upx;">我的CP</view>
+				</btnComponent>
+			</view>
+			<view class="cp_list flexcenter" @tap="loadDate(2)">
+				<btnComponent type="default">
+					<view class="flex-set" style="width: 200upx;height: 60upx;">CP排行榜</view>
+				</btnComponent>
+			</view>
+		</view>
+		
+		<view class="list-container" v-if="type==1">
 			<view class="item" v-for="(item,index) in applylist" :key="index">
 				<image style="width: 80rpx; border-radius: 50%;" v-if="item.husband_info.id==$app.getData('userInfo').id" :src="item.wife_info.avatarurl" mode="widthFix"></image>
 				<image style="width: 80rpx; border-radius: 50%;" v-else :src="item.husband_info.avatarurl" mode="widthFix"></image>
 				<view class="name-info">
 					<view class="name text-overflow">{{item.husband_info.id==$app.getData('userInfo').id?item.wife_info.nickname:item.husband_info.nickname}}</view>
-					<view class="create-time"><text class="text-color-3">{{item.create_time.slice(0,10)}}</text>走向结婚历程</view>
+					<view class="create-time"><text class="text-color-3">{{item.create_time.slice(0,10)}}</text>组成CP</view>
 				</view>
 				<view @tap="send(item)">
 					<btnComponent type="default">
@@ -30,12 +43,27 @@
 				<image style="width: 80rpx; border-radius: 50%;" v-else :src="item.husband_info.avatarurl" mode="widthFix"></image>
 				<view class="name-info">
 					<view class="name text-overflow">{{item.husband_info.id==$app.getData('userInfo').id?item.wife_info.nickname:item.husband_info.nickname}}</view>
-					<view class="create-time"><text class="text-color-3">{{item.create_time.slice(0,10)}}</text>成婚</view>
+					<view class="create-time"><text class="text-color-3">{{item.create_time.slice(0,10)}}</text>完成CP任务</view>
 				</view>
 				<view @tap="send(item)">
 					<btnComponent type="default">
 						<view class="flex-set" style="width: 180upx;height: 60upx;">赠送礼物</view>
 					</btnComponent>
+				</view>
+			</view>
+		</view>
+		<view class="list-container" v-if="type==2">
+			<view class="item" v-for="(item,index) in list" :key="index">
+				<view class="rank">{{index+1}}</view>
+				<image style="width: 80rpx; border-radius: 50%;" :src="item.wife_info.avatarurl || $app.getData('AVATAR')" mode="widthFix"></image>
+				<image style="width: 80rpx; border-radius: 50%;" :src="item.husband_info.avatarurl || $app.getData('AVATAR')" mode="widthFix"></image>
+				<view class="name-info" style="width: 40%;">
+					<view class="name text-overflow">{{item.husband_info.nickname || $app.getData('NICKNAME')}}</view>
+					<view class="name text-overflow">{{item.wife_info.nickname || $app.getData('NICKNAME')}}</view>
+				</view>
+				<view>
+					<view class="create-time" style="font-size: 24rpx;"><text class="text-color-3">{{item.create_time.slice(5,16)}}</text></view>
+					<view class="create-time" style="font-size: 24rpx; padding: 0 10rpx;">完成CP任务</view>
 				</view>
 			</view>
 		</view>
@@ -79,18 +107,21 @@
 				modal: '',
 				currentUser: [],
 				itemList: [],
+				type: 1,
 			};
 		},
 		onShow() {
-			this.loadDate();
+			this.loadDate(1);
 		},
 		methods: {
-			loadDate() {
-				this.$app.request('active/has_marry_list', {}, res => {
+			loadDate(type) {
+				this.type = type;
+				this.$app.request('active/has_marry_list', {type:type}, res => {
 					this.list = res.data.list;
 					this.applylist = res.data.applylist;
 				})
 			},
+			
 			send(item){
 				this.getItemList();
 				this.modal = 'sendOtherItem';
@@ -174,6 +205,17 @@
 		
 		}
 		
+		.marry-bottom{
+			width: 100%;
+			display: flex;
+			flex-wrap: wrap;
+			padding-top: 10rpx;
+			.cp_list {
+				display: flex;
+				flex: 1 0%;
+			}
+		}
+		
 		.list-container{
 			padding: 20rpx;
 			.item{
@@ -184,6 +226,9 @@
 				flex-wrap: wrap;
 				align-items: center;
 				margin: 15rpx 0;
+				.rank{
+					padding: 0 20rpx;
+				}
 				.name-info{
 					width: 60%;
 					display: flex;

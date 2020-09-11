@@ -21,14 +21,19 @@
 								<view class="flex-set" style="height: 50upx;">使用</view>
 							</btnComponent>
 						</view>
-						<view class="item-button" v-else-if="!item.have_it && item.type==1" @tap="buy(item.id)">
+						<view class="item-button" v-if="!item.have_it && item.sold_out==0 && item.type==1" @tap="buy(item.id)">
 							<btnComponent type="disable">
 								<view class="flex-set" style="height: 50upx;">{{item.stone}}灵丹</view>
 							</btnComponent>
 						</view>
-						<view class="item-button" v-else-if="!item.have_it && item.type==2" @tap="unlock(item.id)">
+						<view class="item-button" v-if="!item.have_it && item.sold_out==0 && item.type==2" @tap="unlock(item.id)">
 							<btnComponent type="disable">
 								<view class="flex-set" style="height: 50upx;">解锁</view>
+							</btnComponent>
+						</view>
+						<view class="item-button" v-if="!item.have_it && item.sold_out==1">
+							<btnComponent type="disable">
+								<view class="flex-set" style="height: 50upx;">已售空</view>
 							</btnComponent>
 						</view>
 					</block>

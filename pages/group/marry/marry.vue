@@ -19,6 +19,14 @@
 			<view class="text-color-3" v-if="marryInfo">{{list[1].need_coin-marryInfo.count>0?(list[1].need_coin-marryInfo.count):list[1].need_coin}}</view>
 			<view class="text-color-3" v-else>{{list[1].need_coin}}</view>
 		</view>
+		
+		<view class="marry-bottom">
+			<view class="cp_list flexcenter" @tap="$app.goPage('/pages/group/marry/marry_list')">
+				<btnComponent type="default">
+					<view class="flex-set" style="width: 200upx;height: 60upx;">我的CP</view>
+				</btnComponent>
+			</view>
+		</view>
 
 		<view class="marry-info-container">
 			<view class="marriage-cont">
@@ -135,24 +143,6 @@
 						</view>
 					</view>
 				</view>
-			</view>
-		</view>
-
-		<view class="marry-bottom">
-			<view class="cp_list flexcenter" @tap="$app.goPage('/pages/group/marry/marry_list')">
-				<btnComponent type="default">
-					<view class="flex-set" style="width: 200upx;height: 60upx;">CP榜</view>
-				</btnComponent>
-			</view>
-			<view class="cp_list flexcenter" @tap="$app.goPage('/pages/group/marry/marry_list')">
-				<btnComponent type="default">
-					<view class="flex-set" style="width: 200upx;height: 60upx;">我的CP</view>
-				</btnComponent>
-			</view>
-			<view class="cp_list flexcenter" @tap="$app.goPage('/pages/group/marry/marry_list')">
-				<btnComponent type="default">
-					<view class="flex-set" style="width: 200upx;height: 60upx;">魅力榜</view>
-				</btnComponent>
 			</view>
 		</view>
 		
@@ -543,11 +533,10 @@
 		}
 			
 		.marry-bottom{
-			width: 100%;
-			display: flex;
-			flex-wrap: wrap;
-			padding-top: 10rpx;
-			padding-bottom: 30rpx;
+			position: absolute;
+			top: 200rpx;
+			left: 20rpx;
+			padding-top: 20rpx;
 			.cp_list {
 				display: flex;
 				flex: 1 0%;
