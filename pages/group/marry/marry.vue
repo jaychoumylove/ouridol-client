@@ -229,7 +229,7 @@
 						id: id
 					}, res => {
 						
-						this.$app.toast('领取成功');
+						this.$app.toast('领取成功,对方也同时领取了');
 						this.loadDate();
 					})
 				}
@@ -566,6 +566,7 @@
 		
 				.text {
 					line-height: 1.7;
+					font-size: 26rpx;
 				}
 		
 				.avatar {
