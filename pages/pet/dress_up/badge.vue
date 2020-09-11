@@ -1,13 +1,38 @@
 <template>
 	<view class="badge-container">
+		<!-- 顶部用户头像 -->
+		<view class="avatar-wrap flex-set">
+			<view class="avatar-block">
+				<image class="avatar" :src="$app.getData('userInfo').avatarurl || $app.getData('AVATAR')"></image>
+			</view>
+			<view class="name-info">
+				<view class="name text-overflow">{{$app.getData('userInfo').nickname}}</view>
+				<!-- 粉丝等级 -->
+				<view class="fan" v-if="userInfo.level">
+					<image class="level" :src="'/static/image/icon/level/lv'+ userInfo.level +'.png'" mode="widthFix"></image>
+				</view>
+				<!-- 徽章 -->
+				<view class="fan" v-if="badge_cur">
+					<view class="user-badge">
+						<image class="badge-item" :src="badge_cur" mode="widthFix"></image>
+					</view>
+				</view>
+			
+			</view>
+			
+			
+		</view>
+		
+		<view class="tips flex-set">点击徽章可预览效果</view>
+		
 		<view class='tab-container'>
 			<view class="tab">
-				<view class="tab-item" :class='{active:badge_type==2}' @tap='switchAct(2)'>结婚限定</view>
+				<view class="tab-item" :class='{active:badge_type==2}' @tap='switchAct(2)'>限定戒指</view>
 			</view>
 		</view>
-
-		<view class="badge-list">
-			<view class="item" v-for="(item,index) in list" :key="index">
+		<view class="list-title" v-if="mylist.length>0">我的</view>
+		<view class="badge-list" v-if="mylist.length>0">
+			<view class="item" v-for="(item,index) in mylist" :key="index">
 				<view class="item-cont">
 					<view class="desc" @tap="showDesc(item.desc)" v-if="item.desc">说明</view>
 					<view class="item-func flexcenter">
@@ -15,32 +40,49 @@
 					</view>
 					<view class="item-name">{{item.name}}</view>
 					
-					<block v-if="item.have_it!=2">
-						<view class="item-button" v-if="item.have_it" @tap="use(item.id)">
+					<block v-if="item.is_use==0">
+						<view class="item-button" @tap="use(item.id)">
 							<btnComponent type="default">
 								<view class="flex-set" style="height: 50upx;">使用</view>
 							</btnComponent>
 						</view>
-						<view class="item-button" v-if="!item.have_it && item.sold_out==0 && item.type==1" @tap="buy(item.id)">
+					</block>
+					<block v-if="item.is_use==1">
+						<view class="item-button" @tap="cancel(item.id)">
+							<btnComponent type="disable">
+								<view class="flex-set" style="height: 50upx;">取消使用</view>
+							</btnComponent>
+						</view>
+					</block>
+				</view>
+			</view>
+		</view>
+		<view class="list-title" v-if="list.length>0">全部</view>
+		<view class="badge-list" v-if="list.length>0">
+			<view class="item" v-for="(item,index) in list" :key="index">
+				<view class="item-cont">
+					<view class="desc" @tap="showDesc(item.desc)" v-if="item.desc">说明</view>
+					<view class="item-func flexcenter" @tap="showImg(item.img)">
+						<image class="item-img" :src="item.img" mode="widthFix"></image>
+					</view>
+					<view class="item-name">{{item.name}}</view>
+					
+					<block v-if="item.sold_out==0">
+						<view class="item-button" v-if="item.type==1" @tap="buy(item.id)">
 							<btnComponent type="disable">
 								<view class="flex-set" style="height: 50upx;">{{item.stone}}灵丹</view>
 							</btnComponent>
 						</view>
-						<view class="item-button" v-if="!item.have_it && item.sold_out==0 && item.type==2" @tap="unlock(item.id)">
+						<view class="item-button" v-if="item.type==2" @tap="unlock(item.id)">
 							<btnComponent type="disable">
 								<view class="flex-set" style="height: 50upx;">解锁</view>
 							</btnComponent>
 						</view>
-						<view class="item-button" v-if="!item.have_it && item.sold_out==1">
+					</block>
+					<block v-if="item.sold_out==1">
+						<view class="item-button">
 							<btnComponent type="disable">
 								<view class="flex-set" style="height: 50upx;">已售空</view>
-							</btnComponent>
-						</view>
-					</block>
-					<block v-else>
-						<view class="item-button" @tap="cancel(item.id)">
-							<btnComponent type="disable">
-								<view class="flex-set" style="height: 50upx;">取消使用</view>
 							</btnComponent>
 						</view>
 					</block>
@@ -75,9 +117,12 @@
 		data() {
 			return {
 				list: [],
+				mylist: [],
 				modal: '',
 				desc: '',
 				badge_type: 2,
+				userInfo: [],
+				badge_cur: '',
 			};
 		},
 		onShow() {
@@ -88,6 +133,10 @@
 			showDesc(desc){
 				this.modal = 'desc';
 				this.desc = desc;
+			},
+			showImg(img){
+				console.log(img)
+				this.badge_cur = img;
 			},
 			switchAct(badge_type) {
 				this.page = 1
@@ -142,6 +191,7 @@
 			},
 			loadData() {
 				this.badgeList()
+				this.getInfo()
 			},
 			badgeList() {
 				this.$app.request(this.$app.API.DRESSUP_SELECT, {
@@ -150,6 +200,13 @@
 				}, res => {
 			
 					this.list = res.data.list
+					this.mylist = res.data.mylist
+				})
+			},
+			getInfo(){
+				this.$app.request(this.$app.API.USER_INFO, {}, res => {
+					this.userInfo = res.data;
+					this.$app.setData('userInfo', res.data, true)
 				})
 			},
 			
@@ -163,12 +220,70 @@
 		min-height: 100%;
 		background: $text-color-10;
 		
+		.avatar-wrap {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 20rpx;
+			position: relative;
+			.avatar-block {
+				margin: 20rpx;
+				width: 160rpx;
+				height: 160rpx;
+				position: relative;
+			}
+			.avatar {
+				width: 100%;
+				height: 100%;
+				border-radius: 50%;
+			}
+			.name-info {
+				display: flex;
+				align-items: center;
+			
+				.name {
+					color: $color_2;
+					font-size: 36upx;
+					max-width: 350upx;
+				}
+			
+			
+				.fan {
+					display: flex;
+					align-items: center;
+					margin: 0 5upx;
+					position: relative;
+			
+					.level {
+						width: 90upx;
+						margin-top: 2upx;
+					}
+					
+					.user-badge .badge-item {
+						width: 70upx;
+						margin-left: 5upx;
+					}
+				}
+			}
+			
+		}
+		.name{
+			
+		}
+		
+		.tips {
+			height: 80rpx;
+			font-size: 24rpx;
+			background-color: #fef8d4;
+		}
+		
+		
 		.tab-container {
 			width: 100%;
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			padding-top: 40rpx;
+			padding-top: 20rpx;
 		
 			.tab {
 				width: 100%;
@@ -198,11 +313,18 @@
 		
 		}
 
+		.list-title{
+			padding: 20rpx;
+			font-weight: bold;
+			color: $text-color-7;
+			font-size: 32rpx;
+		}
+		
 		.badge-list {
 			width: 100%;
 			display: flex;
 			flex-wrap: wrap;
-			padding: 20rpx;
+			padding: 0rpx 20rpx 20rpx 20rpx;
 
 			.item {
 				width: 33.3%;

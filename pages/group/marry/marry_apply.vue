@@ -54,7 +54,7 @@
 		},
 		methods: {
 			agreeMarry(){
-				this.$app.modal('是否答应他（她）的求婚,组成CP，携手贡献走向婚礼殿堂', () => {
+				this.$app.modal('是否答应他（她）的CP请求，一起完成CP任务，领取超多奖励', () => {
 					this.$app.request('active/agree_marry', {
 						apply_user: this.$app.getData('referrer')
 					}, res => {

@@ -1,12 +1,25 @@
 <template>
 	<view class="pet_bg-container">
 
+		<view class="top-container">
+			<view class="cp_list flexcenter" @tap="spriteBgList(1)">
+				<btnComponent type="default">
+					<view class="flex-set" style="width: 200upx;height: 60upx;">未获得</view>
+				</btnComponent>
+			</view>
+			<view class="cp_list flexcenter" @tap="spriteBgList(2)">
+				<btnComponent type="default">
+					<view class="flex-set" style="width: 200upx;height: 60upx;">已拥有</view>
+				</btnComponent>
+			</view>
+		</view>
+		
 		<view class="pet_bg-list">
 			<view class="item" v-for="(item,index) in list" :key="index">
 				<view class="item-cont">
 					<view class="item-func">
 						<view class="desc" @tap="showDesc(item.desc)" v-if="item.desc">说明</view>
-						<block v-if="item.type==2 && item.have_it">
+						<block v-if="item.type==2 && sprite_bg_type==2">
 							<view class="upload" @tap="uploadAvatar(item.id)" v-if="item.id==9">
 								<btnComponent type="default">
 									<view class="flex-set" style="width: 140upx;height: 50upx;">上传头像</view>
@@ -16,31 +29,30 @@
 						<image class="item-img" :src="item.show_img" mode="widthFix"></image>
 					</view>
 					<view class="item-name">{{item.name}}</view>
-					<block v-if="sprite_bg_id!=item.id">
-						<view class="item-button" v-if="item.have_it" @tap="use(item.id)">
-							<btnComponent type="default">
-								<view class="flex-set" style="height: 60upx;">使用</view>
-							</btnComponent>
-						</view>
-						<view class="item-button" v-else-if="!item.have_it && item.type==1" @tap="buy(item.id)">
+					<block v-if="sprite_bg_type == 1">
+						<view class="item-button" v-if="item.type==1" @tap="buy(item.id)">
 							<btnComponent type="disable">
 								<view class="flex-set" style="height: 60upx;">{{item.stone}}灵丹</view>
 							</btnComponent>
 						</view>
-						<view class="item-button" v-else-if="!item.have_it && item.type==2" @tap="unlock(item.id)">
+						<view class="item-button" v-else-if="item.type==2" @tap="unlock(item.id)">
 							<btnComponent type="disable">
 								<view class="flex-set" style="height: 60upx;">解锁</view>
 							</btnComponent>
 						</view>
 					</block>
-					<block v-else>
-						<view class="item-button">
+					<block v-if="sprite_bg_type == 2">
+						<view class="item-button" v-if="sprite_bg_id!=item.id" @tap="use(item.id)">
+							<btnComponent type="default">
+								<view class="flex-set" style="height: 60upx;">使用</view>
+							</btnComponent>
+						</view>
+						<view class="item-button" v-else>
 							<btnComponent type="disable">
 								<view class="flex-set" style="height: 60upx;">已使用</view>
 							</btnComponent>
 						</view>
 					</block>
-					
 					
 				</view>
 			</view>
@@ -96,10 +108,11 @@
 				desc: '',
 				avatar: this.$app.getData('userStar').head_img_s,
 				upload_id: 0,
+				sprite_bg_type: 1,
 			};
 		},
 		onShow() {
-			this.loadData();
+			this.loadData(1);
 		},
 		methods: {
 			//展示说明
@@ -139,7 +152,7 @@
 				}, res => {
 					this.$app.toast('上传成功！')
 					this.modal = '';
-					this.loadData()
+					this.spriteBgList(this.sprite_bg_type)
 				}, 'POST', true)
 			
 			},
@@ -177,15 +190,17 @@
 					id: id
 				}, (res) => {
 					this.$app.toast('使用成功')
-					this.loadData()
+					this.spriteBgList(this.sprite_bg_type)
 				}, 'POST', true)
 			},
 			loadData() {
-				this.spriteBgList()
+				this.spriteBgList(1)
 			},
-			spriteBgList() {
+			spriteBgList(sprite_bg_type) {
+				this.sprite_bg_type = sprite_bg_type;
 				this.$app.request(this.$app.API.DRESSUP_SELECT, {
 					type:0,
+					sprite_bg_type:sprite_bg_type,
 				}, res => {
 			
 					this.list = res.data.list
@@ -202,6 +217,17 @@
 	.pet_bg-container {
 		height: 100%;
 		background: #f5f5f5;
+		
+		.top-container{
+			width: 100%;
+			display: flex;
+			flex-wrap: wrap;
+			padding-top: 20rpx;
+			.cp_list {
+				display: flex;
+				flex: 1 0%;
+			}
+		}
 
 		.pet_bg-list {
 			width: 100%;

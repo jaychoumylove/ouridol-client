@@ -15,7 +15,7 @@
 		<view class="text-container flexcenter">
 			<view class="text-color-7">CP贡献能量</view>
 			<view class="text-color-3">{{marryInfo?marryInfo.count:0}}</view>
-			<view class="text-color-7">完成结婚任务还差</view>
+			<view class="text-color-7">完成CP任务还差</view>
 			<view class="text-color-3" v-if="marryInfo">{{list[1].need_coin-marryInfo.count>0?(list[1].need_coin-marryInfo.count):list[1].need_coin}}</view>
 			<view class="text-color-3" v-else>{{list[1].need_coin}}</view>
 		</view>
@@ -136,7 +136,7 @@
 									<button open-type="share" data-share="13">
 										<image class="avatarurl" src="https://mmbiz.qpic.cn/mmbiz_png/w5pLFvdua9E9lB1uaR0AK0a1icXKrcZOnvRPOia0qJ634WWoRKBHiclxWr4cMIouSrIXpW5pUw8U2HCiaibZcRViaZtg/0"
 										 mode="widthFix"></image>
-										<view class="marry_apply flexcenter">求婚</view>
+										<view class="marry_apply flexcenter">组CP</view>
 									</button>
 								</block>
 							</view>
@@ -150,7 +150,7 @@
 		
 			<view class="tips-modal-container">
 				<view class="text-wrap">
-					<view class="text">恭喜你，完成了结婚任务，成功组成CP</view>
+					<view class="text">恭喜你，完成了CP任务，成功组成CP</view>
 					<view class="text">获得奖励：10张双倍领取能量卡+戒指一对</view>
 					<view class="text">你与你的CP将获得一次解锁戒指的机会</view>
 					<view class="text">戒指双方只能选择一个，一方选择双方拥有</view>
@@ -214,7 +214,7 @@
 			},
 			getReward(id) {
 				if(id==8){
-					this.$app.modal('成功领取戒指你们将结婚，CP任务清空，请确认已领取其他奖励', () => {
+					this.$app.modal('成功领取戒指你们将完成所有任务，CP任务清空，可立刻向其他人组CP，请确认已领取所有奖励', () => {
 						this.$app.request('active/get_marry_reward', {
 							id: id
 						}, res => {

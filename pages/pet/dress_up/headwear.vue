@@ -9,7 +9,7 @@
 			<view>{{$app.getData('userInfo').nickname}}</view>
 		</view>
 
-		<view class="tips flex-set">点击可预览效果</view>
+		<view class="tips flex-set">点击头饰可预览效果</view>
 
 		<view class="list-wrap">
 			<view class="item" v-for="(item, index) in list" :key="index">
