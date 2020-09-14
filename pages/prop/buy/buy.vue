@@ -80,6 +80,12 @@
 						</view> -->
 
 						<view class="flex-set action-btn" style="flex-direction: column;">
+							<!-- #ifdef H5 -->
+							<btnComponent type="css" style="margin-bottom: 10upx;">
+								<view class="flex-set" style="width: 130upx;height:50upx;" @tap="payment(item)">购买</view>
+							</btnComponent>
+							<!-- #endif -->
+							<!-- #ifndef H5 -->
 							<btnComponent v-if="$app.chargeSwitch()==0" type="css" style="margin-bottom: 10upx;">
 								<view class="flex-set" style="width: 130upx;height:50upx;" @tap="payment(item)">购买</view>
 							</btnComponent>
@@ -89,6 +95,7 @@
 							<btnComponent type="css">
 								<view class="flex-set ldexchange" style="width: 130upx;height:50upx;padding: 0 auto;" @tap="exchangeModel(index, 'open')">{{item.stone}}灵丹</view>
 							</btnComponent>
+							<!-- #endif -->
 						</view>
 					</view>
 				</view>
