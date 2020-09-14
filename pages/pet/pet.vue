@@ -535,7 +535,7 @@
 					<btnComponent v-if="spriteInfo.isExistCard7" type="default" @tap="is_exist_card7();modal = ''">
 						<view class="flex-set" style="width: 240upx;height: 80upx;">确认</view>
 					</btnComponent>
-					<btnComponent v-else type="default" @tap="$app.goPage('/pages/prop/buy/buy');modal = ''">
+					<btnComponent v-else type="default" @tap="goOtherPage()">
 						<view class="flex-set" style="width: 240upx;height: 80upx;">去看看</view>
 					</btnComponent>
 				</view>
@@ -1121,13 +1121,21 @@
 				}
 				
 			},
+			goOtherPage(){
+				if(this.$app.getData('config').is_marry_active.status==1){
+					this.$app.goPage('/pages/group/marry/marry');
+				}else{
+					this.$app.goPage('/pages/prop/buy/buy');
+				}
+				this.modal = '';
+			},
 			is_settle() {
 				if (this.spriteInfo.earn == 0) {
 					// this.$app.toast('能量太少了，稍后再来吧')	
 					this.modal = 'egg_upgrade'
 				
 				} else {
-					this.settle()
+					this.modal = 'is_settle_tips'
 				}
 			},
 			//HTTP

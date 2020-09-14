@@ -48,9 +48,9 @@
 					<view class="extra1 yellow" v-else-if="index==2">地板</view>
 					<image class="avatar" v-if="list[index]" :src="list[index].user.avatarurl" mode="aspectFill"></image>
 					<image class="avatar" v-else src="/static/image/ic_wechat.png" mode="aspectFill"></image>
-
 					<view class="extra" v-if="list[index]">+{{list[index].mass_point}}能量</view>
 					<view class="earn" v-if="list[index]">{{list[index].user.nickname}}</view>
+					<view class="group_mass_times text-color-3" v-if="list[index]">今日集结{{list[index].group_mass_times?list[index].group_mass_times:0}}次</view>
 				</view>
 			</view>
 			<view class="space">至少3人集结视为成功，完成后可获得能量</view>
@@ -60,6 +60,7 @@
 					<image class="avatar" :src="list[index].user.avatarurl" mode="aspectFill"></image>
 					<view class="extra" v-if="list[index]">+{{item.mass_point}}能量</view>
 					<view class="earn" v-if="list[index]">{{list[index].user.nickname}}</view>
+					<view class="group_mass_times text-color-3" v-if="list[index]">今日集结{{list[index].group_mass_times?list[index].group_mass_times:0}}次</view>
 				</view>
 				<view class="item-wrap" v-for="index in blockUserCount" :key="index">
 					<image class="avatar" src="/static/image/ic_wechat.png" mode="aspectFill"></image>
@@ -145,7 +146,7 @@
 			return this.$app.commonShareAppMessage(shareType)
 		},
 		onShow(option) {
-			
+
 			// 爱豆id
 			this.starid = this.$app.getData('query').starid || this.$app.getData('userStar').id
 			if (!this.$app.getData('userStar').id) {
@@ -167,7 +168,7 @@
 				return
 			}
 			// #endif
-			
+
 			this.getShareInfo()
 		},
 		methods: {
@@ -175,7 +176,7 @@
 			ad() {
 				this.$app.openVideoAd(() => {
 					this.join(this.base_count * 10)
-				},this.$app.getData('config').kindness_switch)
+				}, this.$app.getData('config').kindness_switch)
 			},
 			join(force) {
 				this.$app.request('share/group/join', {
@@ -345,41 +346,49 @@
 
 				.item-wrap {
 					margin: 40upx;
-					position: relative;
+					// position: relative;
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
+
 
 					.avatar {
 						width: 120upx;
 						height: 120upx;
 						border-radius: 50%;
+						margin-top: -15rpx;
 					}
-					
+
 					.extra1 {
 						font-size: 22upx;
-						position: absolute;
+						position: relative;
 						background-color: #ff5770;
 						color: #FFF;
 						padding: 0 15rpx;
 						text-align: center;
 						border-radius: 30upx;
-						top: -15upx;
-						left: 50%;
-						transform: translateX(-50%);
+						// top: -15upx;
+						// left: 50%;
+						// transform: translateX(-50%);
 						white-space: nowrap;
 						z-index: 2;
 					}
 
 					.extra {
+						margin-top: -10rpx;
 						font-size: 24upx;
-						position: absolute;
+						position: relative;
 						background-color: #ffaf2c;
 						color: #FFF;
 						padding: 0 15rpx;
 						text-align: center;
 						border-radius: 30upx;
-						bottom: -10upx;
-						left: 50%;
-						transform: translateX(-50%);
+						// bottom: -10upx;
+						// left: 50%;
+						// transform: translateX(-50%);
 						white-space: nowrap;
+						z-index: 2;
 					}
 
 					.extra.yellow {
@@ -388,18 +397,29 @@
 
 					.earn {
 						font-size: 24upx;
-						position: absolute;
+						// position: absolute;
 						width: 120upx;
 						text-overflow: ellipsis;
 						white-space: nowrap;
 						overflow: hidden;
 						text-align: center;
 						border-radius: 30upx;
-						bottom: -50upx;
-						left: 50%;
-						transform: translateX(-50%);
+						// bottom: -50upx;
+						// left: 50%;
+						// transform: translateX(-50%);
 						white-space: nowrap;
 					}
+
+					.group_mass_times {
+						// position: absolute;
+						// bottom: -80upx;
+						// width: 150rpx;
+						padding: 2rpx 10rpx;
+						border-radius: 30rpx;
+						background-color: #f4a1bd;
+						font-size: 22rpx;
+					}
+
 				}
 
 			}
@@ -419,7 +439,7 @@
 				width: 150upx;
 				margin-right: 20upx;
 			}
-			
+
 			.right {
 				flex: 1;
 			}
