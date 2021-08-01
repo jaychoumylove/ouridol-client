@@ -41,20 +41,20 @@
         },
         "usingComponents" : true,
         "navigateToMiniProgramAppIdList" : [
-			"wx3a69eb5e1b2a7fa9", //爱豆圈子
-			"wxb90a2375e2c7b52a", //超级明星榜
-			"wxb34a8a040639df9f", //童话村lite
-			"wx333c1a79a14c39a1", //最美偶像
-			"wx0f567ae09209c9c2", //爱豆庄园
-			"wx9b35343852f7c374", //明星餐厅
-			"wxd59271d054170d7d", //爱豆星球
-			"wxd56f3b4fa99c500e" //算术达人
+            "wx3a69eb5e1b2a7fa9", //爱豆圈子
+            "wxb90a2375e2c7b52a", //超级明星榜
+            "wxb34a8a040639df9f", //童话村lite
+            "wx333c1a79a14c39a1", //最美偶像
+            "wx0f567ae09209c9c2", //爱豆庄园
+            "wx9b35343852f7c374", //明星餐厅
+            "wxd59271d054170d7d", //爱豆星球
+            "wxd56f3b4fa99c500e" //算术达人
         ]
     },
     "h5" : {
         "title" : "我们的偶像",
         "template" : "index.html",
-        "domain" : "ouridol.anaculture.com",
+        "domain" : "ouridol.xiaolishu.com",
         "router" : {
             "mode" : "hash"
         },
@@ -70,13 +70,13 @@
             "es6" : true,
             "minified" : true
         },
-		"usingComponents" : true,
-		"navigateToMiniProgramAppIdList" : [
-			"1109953774", //爱豆圈子
-			"1109694099", //最美偶像
-			"1109771368", //超级明星榜
-			"1109771378", //爱豆庄园
-			"1110245390" //爱豆星球
-		]
+        "usingComponents" : true,
+        "navigateToMiniProgramAppIdList" : [
+            "1109953774", //爱豆圈子
+            "1109694099", //最美偶像
+            "1109771368", //超级明星榜
+            "1109771378", //爱豆庄园
+            "1110245390" //爱豆星球
+        ]
     }
 }
